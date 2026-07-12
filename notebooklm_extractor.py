@@ -79,15 +79,17 @@ def get_notebook_id(client):
     notebooks = client.list_notebooks()
     
     for nb in notebooks:
-        title = nb.get("title", "")
+        # 객체 속성 및 dict 키 접근 둘 다 안전하게 지원
+        title = nb.title if hasattr(nb, "title") else nb.get("title", "")
         if NOTEBOOK_TITLE in title or title == NOTEBOOK_TITLE:
-            print(f"[+] Found existing notebook. ID: {nb['id']}")
-            return nb["id"]
+            notebook_id = nb.id if hasattr(nb, "id") else nb.get("id")
+            print(f"[+] Found existing notebook. ID: {notebook_id}")
+            return notebook_id
             
     # 없는 경우 새로 생성
     print(f"[*] Creating a new notebook named '{NOTEBOOK_TITLE}'...")
     new_nb = client.create_notebook(NOTEBOOK_TITLE)
-    nid = new_nb.get("id")
+    nid = new_nb.id if hasattr(new_nb, "id") else new_nb.get("id")
     print(f"[+] Notebook created successfully. ID: {nid}")
     return nid
 
