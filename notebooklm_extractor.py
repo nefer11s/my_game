@@ -1,7 +1,6 @@
 import os
 import sys
 import json
-import subprocess
 import re
 import time
 import argparse
@@ -10,6 +9,31 @@ import argparse
 if sys.platform.startswith('win'):
     import io
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+# NotebookLM MCP 모듈 임포트
+from notebooklm_tools.core.client import NotebookLMClient
+from notebooklm_tools.utils.cdp import extract_cookies_via_existing_cdp
+import notebooklm_tools.core.base as base
+
+# 윈도우 크롬 User-Agent 멍키패치 적용
+WINDOWS_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+base.BaseClient._PAGE_FETCH_HEADERS["User-Agent"] = WINDOWS_UA
+
+# _get_client / _get_async_client User-Agent 패치
+original_get_client = base.BaseClient._get_client
+def patched_get_client(self):
+    client = original_get_client(self)
+    client.headers["User-Agent"] = WINDOWS_UA
+    return client
+base.BaseClient._get_client = patched_get_client
+
+original_get_async_client = base.BaseClient._get_async_client
+def patched_get_async_client(self):
+    client = original_get_async_client(self)
+    client.headers["User-Agent"] = WINDOWS_UA
+    return client
+base.BaseClient._get_async_client = patched_get_async_client
+
 
 # 천간 정의
 STEMS = [
@@ -29,82 +53,48 @@ CHECKPOINT_FILE = 'checkpoint_extraction.json'
 PDF_PATH = r"docs\nss-궁통보감-2023-fin_unlocked.pdf"
 NOTEBOOK_TITLE = "궁통보감 사주 AI"
 
-def run_cmd(command, env=None):
-    """실행 중인 셸 명령어 호출 및 UTF-8 디코딩 처리"""
-    if env is None:
-        env = os.environ.copy()
-    env["PYTHONIOENCODING"] = "utf-8"
-    
-    # 윈도우 파워쉘/CMD 인코딩 세팅 호환성을 위해 shell=True 사용
-    process = subprocess.Popen(
-        command,
-        shell=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        env=env
-    )
-    stdout, stderr = process.communicate()
-    
-    # 리턴코드 확인
-    if process.returncode != 0:
-        err_msg = stderr.decode('utf-8', errors='ignore')
-        out_msg = stdout.decode('utf-8', errors='ignore')
-        raise RuntimeError(f"Command failed with code {process.returncode}.\nSTDOUT: {out_msg}\nSTDERR: {err_msg}")
-        
-    return stdout.decode('utf-8', errors='ignore')
+def get_live_client(retries=3):
+    """CDP를 통해 실시간 크롬 세션을 하이재킹하여 NotebookLMClient 객체 생성"""
+    for attempt in range(retries + 1):
+        try:
+            # 9222 포트의 디버깅 크롬 브라우저로부터 라이브 세션 추출
+            result = extract_cookies_via_existing_cdp("http://127.0.0.1:9222", wait_for_login=True, login_timeout=15)
+            
+            client = NotebookLMClient(
+                cookies=result["cookies"],
+                csrf_token=result["csrf_token"],
+                session_id=result["session_id"],
+                build_label=result["build_label"]
+            )
+            return client
+        except Exception as e:
+            if attempt == retries:
+                raise e
+            print(f"    [!] Failed to connect to Chrome session (Attempt {attempt+1}/{retries+1}): {e}. Retrying in 5 seconds...")
+            time.sleep(5)
 
-def get_notebook_id():
+def get_notebook_id(client):
     """기존 '궁통보감 사주 AI' 노트북 ID 조회, 없을 시 신규 생성"""
     print(f"[*] Checking for existing notebook: '{NOTEBOOK_TITLE}'...")
-    output = run_cmd("nlm list notebooks")
+    notebooks = client.list_notebooks()
     
-    try:
-        notebooks = json.loads(output)
-    except json.JSONDecodeError:
-        # 혹시 JSON 형태가 아니면 파싱 시도
-        notebooks = []
-        # nlm list notebooks 결과에서 ID 추출 시도
-        matches = re.findall(r'"id":\s*"([^"]+)",\s*"title":\s*"([^"]+)"', output)
-        for nid, title in matches:
-            notebooks.append({"id": nid, "title": title})
-            
     for nb in notebooks:
-        # 인코딩 깨짐을 감안해 완전히 일치하거나 일부 매칭되는지 확인
-        if NOTEBOOK_TITLE in nb.get("title", "") or nb.get("title", "") == NOTEBOOK_TITLE:
+        title = nb.get("title", "")
+        if NOTEBOOK_TITLE in title or title == NOTEBOOK_TITLE:
             print(f"[+] Found existing notebook. ID: {nb['id']}")
             return nb["id"]
             
     # 없는 경우 새로 생성
     print(f"[*] Creating a new notebook named '{NOTEBOOK_TITLE}'...")
-    create_output = run_cmd(f'nlm create notebook "{NOTEBOOK_TITLE}"')
-    
-    # 생성된 노트북 ID 파싱
-    try:
-        new_nb = json.loads(create_output)
-        nid = new_nb.get("id")
-    except json.JSONDecodeError:
-        # 텍스트 형태 출력에서 ID 파싱 (예: "ID: 5716f648-6ecf-4831-bd6d-e2fbb88ce756")
-        match = re.search(r'(?:id|ID):\s*([a-f0-9\-]{36})', create_output, re.IGNORECASE)
-        if match:
-            nid = match.group(1)
-        else:
-            raise RuntimeError(f"Failed to parse created notebook ID from:\n{create_output}")
-            
+    new_nb = client.create_notebook(NOTEBOOK_TITLE)
+    nid = new_nb.get("id")
     print(f"[+] Notebook created successfully. ID: {nid}")
     return nid
 
-def upload_pdf_source(notebook_id):
+def upload_pdf_source(client, notebook_id):
     """노트북에 궁통보감 PDF 소스가 있는지 검사 및 업로드"""
     print("[*] Checking notebook sources...")
-    sources_output = run_cmd(f"nlm source list {notebook_id}")
-    
-    try:
-        sources = json.loads(sources_output)
-    except json.JSONDecodeError:
-        sources = []
-        matches = re.findall(r'"id":\s*"([^"]+)",\s*"title":\s*"([^"]+)"', sources_output)
-        for sid, title in matches:
-            sources.append({"id": sid, "title": title})
+    sources = client.get_notebook_sources_with_types(notebook_id)
             
     pdf_filename = os.path.basename(PDF_PATH)
     for src in sources:
@@ -116,55 +106,47 @@ def upload_pdf_source(notebook_id):
     if not os.path.exists(PDF_PATH):
         raise FileNotFoundError(f"Source PDF file not found at: {PDF_PATH}")
         
-    upload_output = run_cmd(f'nlm source add {notebook_id} --file "{PDF_PATH}" --wait')
+    # Python API의 add_file(notebook_id, file_path, wait=True) 호출
+    upload_result = client.add_file(notebook_id, PDF_PATH, wait=True, wait_timeout=300.0)
     print("[+] PDF uploaded and processed successfully!")
-    
-    # 새로 등록된 소스 ID 다시 확인
-    sources_output = run_cmd(f"nlm source list {notebook_id}")
-    try:
-        sources = json.loads(sources_output)
-        for src in sources:
-            if pdf_filename in src.get("title", ""):
-                return src["id"]
-    except Exception:
-        pass
-    return None
+    return upload_result.get("id")
 
 def clean_json_text(text):
     """답변 텍스트에서 JSON 배열 부분만 추출하여 깔끔하게 정제"""
-    # ```json ... ``` 블록 추출
     match = re.search(r'```(?:json)?\s*(\[\s*\{.*\}\s*\])\s*```', text, re.DOTALL | re.IGNORECASE)
     if match:
         return match.group(1).strip()
         
-    # 대괄호로 묶인 배열 추출 시도
     match_arr = re.search(r'(\[\s*\{.*\}\s*\])', text, re.DOTALL)
     if match_arr:
         return match_arr.group(1).strip()
         
     return text.strip()
 
-def query_notebook_with_retry(notebook_id, question, conversation_id=None, retries=2):
-    """NotebookLM 쿼리 및 재시도 처리"""
-    cmd = f'nlm query notebook {notebook_id} "{question}"'
-    if conversation_id:
-        cmd += f' --conversation-id {conversation_id}'
-        
+def query_client_with_retry(client, notebook_id, question, conversation_id=None, retries=2):
+    """NotebookLM 쿼리 전송 및 재시도 처리"""
     for attempt in range(retries + 1):
         try:
-            output = run_cmd(cmd)
-            response_data = json.loads(output)
-            value = response_data.get("value", {})
-            answer = value.get("answer", "")
-            conv_id = value.get("conversation_id", "")
+            # list_notebooks를 가볍게 찔러서 세션 활성화
+            client.list_notebooks()
+            
+            # query(notebook_id, question, conversation_id) 호출
+            result = client.query(notebook_id, question, conversation_id)
+            answer = result.get("answer", "")
+            conv_id = result.get("conversation_id", "")
             return answer, conv_id
         except Exception as e:
             if attempt == retries:
                 raise e
-            print(f"    [!] Query failed (Attempt {attempt+1}/{retries+1}): {e}. Retrying in 5 seconds...")
+            print(f"    [!] Query failed (Attempt {attempt+1}/{retries+1}): {e}. Re-binding session and retrying in 5 seconds...")
+            # 세션 만료 가능성을 예방하기 위해 CDP를 통해 클라이언트를 재생성합니다.
+            try:
+                client = get_live_client()
+            except Exception:
+                pass
             time.sleep(5)
 
-def extract_stem_season(notebook_id, stem, season_name, season_info):
+def extract_stem_season(client, notebook_id, stem, season_name, season_info):
     """1개 천간 x 1개 계절에 대해 3단계 재귀검증 추출 실행"""
     months_str = ", ".join(season_info['months'])
     print(f"\n>>> Processing: {stem} - {season_info['desc']}")
@@ -180,20 +162,25 @@ def extract_stem_season(notebook_id, stem, season_name, season_info):
         "JSON Schema:\n"
         "[\n"
         "  {\n"
-        f"    \"천간\": \"{stem}\",\n"
+        f"    \"일간\": \"{stem}\",\n"
         f"    \"계절\": \"{season_name}\",\n"
-        "    \"월\": \"인월(寅月) 또는 묘월(卯月) 또는 진월(辰月) 등 해당하는 월명\",\n"
-        "    \"핵심용신\": \"문헌에서 제시한 핵심 용신 오행/글자\",\n"
-        "    \"보조용신\": \"보조 용신 또는 희신 오행/글자\",\n"
-        "    \"희신\": \"생조하거나 도우는 희신 목록\",\n"
-        "    \"기신\": \"꺼리거나 제극하는 기신 목록\",\n"
-        "    \"명리학적조건식\": \"해당 월의 명리학적 조건 규칙 (예: 신강/신약, 조후 습난 상태에 따른 용신 채택 기준)\",\n"
-        "    \"조후요약\": \"해당 월의 조후 및 억부 핵심 요약\"\n"
+        "    \"월별\": \"인월(寅月) 또는 묘월(卯月) 또는 진월(辰月) 등 해당하는 월명\",\n"
+        "    \"조후_및_용신\": {\n"
+        "      \"핵심용신\": \"문헌에서 제시한 핵심 용신 오행/글자\",\n"
+        "      \"보조용신\": \"보조 용신 또는 희신 오행/글자\",\n"
+        "      \"취용요약\": \"해당 월령의 조후 및 억부 핵심 취용 요약\"\n"
+        "    },\n"
+        "    \"조건식\": [\n"
+        "      {\n"
+        "        \"조건\": \"명리학적 세부 조건 (예: 어떤 글자가 투출하거나 지지에 국을 이룰 때)\",\n"
+        "        \"결과\": \"그 조건에 따른 성격(成格) 여부, 용신 선택법, 삶의 부귀빈천 결과\"\n"
+        "      }\n"
+        "    ]\n"
         "  }\n"
         "]"
     )
     
-    answer_draft, conv_id = query_notebook_with_retry(notebook_id, prompt_extract)
+    answer_draft, conv_id = query_client_with_retry(client, notebook_id, prompt_extract)
     
     # -------------------------------------------------------------
     # [2단계: 1차 팩트체크 - 원전 교차 검증]
@@ -205,7 +192,7 @@ def extract_stem_season(notebook_id, stem, season_name, season_info):
         "오류나 혼입이 발견된다면 수정 보정하고, 아무 설명 없이 보정된 최종 JSON 배열(```json ... ```)만 다시 출력해줘."
     )
     
-    answer_fc1, conv_id = query_notebook_with_retry(notebook_id, prompt_fc1, conversation_id=conv_id)
+    answer_fc1, conv_id = query_client_with_retry(client, notebook_id, prompt_fc1, conversation_id=conv_id)
     
     # -------------------------------------------------------------
     # [3단계: 2차 팩트체크 - 명리학 논리 검증]
@@ -216,7 +203,7 @@ def extract_stem_season(notebook_id, stem, season_name, season_info):
         "모순이 있다면 명리학 이치에 맞게 보정하고, 마찬가지로 설명 없이 오직 최종 완성된 JSON 배열(```json ... ```)만 최종 출력해줘."
     )
     
-    answer_fc2, conv_id = query_notebook_with_retry(notebook_id, prompt_fc2, conversation_id=conv_id)
+    answer_fc2, conv_id = query_client_with_retry(client, notebook_id, prompt_fc2, conversation_id=conv_id)
     
     # -------------------------------------------------------------
     # [4단계: JSON 파싱 및 구조 유효성 검사]
@@ -231,24 +218,20 @@ def extract_stem_season(notebook_id, stem, season_name, season_info):
             
         validated_list = []
         for item in parsed_data:
-            # 유연한 필드 매핑 및 통일화
             monthly_record = {}
             monthly_record["일간"] = item.get("일간") or item.get("천간") or stem
             monthly_record["계절"] = item.get("계절") or season_name
             monthly_record["월별"] = item.get("월별") or item.get("월") or ""
             
-            # 조후 및 용신
             johoo_data = item.get("조후_및_용신") or {}
             monthly_record["핵심용신"] = johoo_data.get("핵심용신") or item.get("핵심용신") or ""
             monthly_record["보조용신"] = johoo_data.get("보조용신") or item.get("보조용신") or ""
             monthly_record["취용요약"] = johoo_data.get("취용요약") or item.get("조후요약") or item.get("취용요약") or ""
             
-            # 조건식 리스트 확보
             cond_list = item.get("조건식") or []
             if not isinstance(cond_list, list):
                 cond_list = []
             
-            # 명리학적조건식이 텍스트 형태로 온 경우 구조화 시도
             if not cond_list and item.get("명리학적조건식"):
                 cond_list = [{"조건": "기본", "결과": item.get("명리학적조건식")}]
                 
@@ -293,22 +276,30 @@ def main():
     
     print("=== Gungtongbagam AI Database Extraction Pipeline ===")
     
-    # 1. 노트북 획득 및 연결 검증
+    # 1. 라이브 클라이언트 생성 (CDP 연동)
     try:
-        notebook_id = get_notebook_id()
+        client = get_live_client()
+        print("[+] CDP Connection successfully established.")
     except Exception as e:
-        print(f"[!] Initialization error: {e}")
-        print("[!] Please check if 'nlm login' is authenticated properly.")
+        print(f"[!] CDP connection failed: {e}")
+        print("[!] Please ensure Chrome is running on port 9222 and logged in to NotebookLM.")
         sys.exit(1)
         
-    # 2. PDF 소스 업로드
+    # 2. 노트북 획득
     try:
-        upload_pdf_source(notebook_id)
+        notebook_id = get_notebook_id(client)
+    except Exception as e:
+        print(f"[!] Failed to get notebook ID: {e}")
+        sys.exit(1)
+        
+    # 3. PDF 소스 업로드
+    try:
+        upload_pdf_source(client, notebook_id)
     except Exception as e:
         print(f"[!] Source PDF upload failed: {e}")
         sys.exit(1)
         
-    # 3. 데이터 추출 루프 가동
+    # 4. 데이터 추출 루프 가동
     checkpoint = load_checkpoint()
     completed_keys = checkpoint.get("completed", [])
     records = checkpoint.get("records", [])
@@ -325,7 +316,6 @@ def main():
             
     if args.test:
         print("\n[!] Running in TEST mode. Will only execute 1 task.")
-        # 미완료인 것 중 첫 번째나 혹은 을목-봄 조합을 우선 테스팅
         test_task = None
         for task in tasks:
             if task[1] == "을목(乙木)" and task[2] == "봄":
@@ -346,11 +336,15 @@ def main():
             continue
             
         try:
-            # 3단계 재귀 추출 실행
-            extracted_list = extract_stem_season(notebook_id, stem, season_name, season_info)
+            # 매 Task 시작 전마다 라이브 세션 쿠키를 동적으로 갱신하여 인스턴스 획득
+            # 이를 통해 구글 측의 1회성 토큰 만료 정책을 완벽하게 우회합니다.
+            live_client = get_live_client()
             
-            # 기존 레코드에서 동일 키의 구 데이터 삭제 후 추가 (중복 방지)
-            records = [r for r in records if not (r["천간"] == stem and r["계절"] == season_name)]
+            # 3단계 재귀 추출 실행
+            extracted_list = extract_stem_season(live_client, notebook_id, stem, season_name, season_info)
+            
+            # 기존 레코드 제거 후 추가
+            records = [r for r in records if not (r["일간"] == stem and r["계절"] == season_name)]
             records.extend(extracted_list)
             
             if key not in completed_keys:
@@ -360,7 +354,7 @@ def main():
             success_count += 1
             
             # API Rate Limit 보호를 위해 대기시간 부여
-            print("  [*] Waiting 5 seconds before next task to prevent rate limiting...")
+            print("  [*] Waiting 5 seconds before next task...")
             time.sleep(5)
             
         except Exception as e:
@@ -369,13 +363,12 @@ def main():
             if args.test:
                 print("[!] Test failed. Exiting.")
                 sys.exit(1)
-            print("  [*] Sleeping 15 seconds to let API cooldown before continuing...")
+            print("  [*] Sleeping 15 seconds before continuing...")
             time.sleep(15)
             
-    # 4. 최종 데이터 병합 및 정렬 (CSV / JSON 출력)
+    # 5. 최종 데이터 병합 및 정렬 (CSV / JSON 출력)
     if not args.test and success_count > 0:
         print("\n[*] Exporting final database...")
-        # 12개월(인~축) 정렬 순서 정의
         month_order = {
             '인월(寅月)': 1, '묘월(卯月)': 2, '진월(辰月)': 3,
             '사월(巳月)': 4, '오월(午月)': 5, '미월(未月)': 6,
@@ -388,10 +381,9 @@ def main():
         def get_sort_key(r):
             s_idx = stem_order.get(r.get("일간", ""), 99)
             m_name = r.get("월별", "")
-            # 월령 이름에 한자가 붙어있는 등의 변칙 매핑
             m_idx = 99
             for k, idx in month_order.items():
-                if k[:2] in m_name:  # 예: '인월'이 포함되어 있으면
+                if k[:2] in m_name:
                     m_idx = idx
                     break
             return (s_idx, m_idx)
