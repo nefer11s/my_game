@@ -132,8 +132,8 @@ def query_client_with_retry(client, notebook_id, question, conversation_id=None,
             # list_notebooks를 가볍게 찔러서 세션 활성화
             client.list_notebooks()
             
-            # query(notebook_id, question, conversation_id) 호출
-            result = client.query(notebook_id, question, conversation_id)
+            # query(notebook_id, question, conversation_id=conversation_id) 호출
+            result = client.query(notebook_id, question, conversation_id=conversation_id)
             answer = result.get("answer", "")
             conv_id = result.get("conversation_id", "")
             return answer, conv_id
