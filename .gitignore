@@ -1,0 +1,14 @@
+# Temporary and local debug files
+temp/
+data/
+checkpoint_extraction.json
+
+# Large PDF documents
+docs/nss-*.pdf
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
