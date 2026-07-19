@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v2.5.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v2.6.0)</title>
     <style>
         body {
             margin: 0;
@@ -239,7 +239,7 @@
 
 <body>
 
-    <h1>HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v2.5.0</span></h1>
+    <h1>HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v2.6.0</span></h1>
 
     <div id="gameWrapper">
         <div id="gameContainer">
@@ -247,7 +247,7 @@
 
             <div id="menuOverlay">
                 <div class="menu-title" style="font-size: 26px; color: #00d2d3; text-shadow: 0 0 15px rgba(0, 210, 211, 0.5); margin-bottom: 5px; letter-spacing: 2px;">HY 세라믹 솔라 파이터</div>
-                <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 1.5px; font-weight: bold; margin-bottom: 8px;">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 4px;">(v2.5.0)</span></div>
+                <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 1.5px; font-weight: bold; margin-bottom: 8px;">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 4px;">(v2.6.0)</span></div>
                 <div id="menuHighScore">🏆 최고 기록 스코어: 0 PTS</div>
 
                 <!-- 1. 난이도 프리셋 설정 -->
@@ -366,7 +366,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v2.5.0";
+        const GAME_VERSION = "v2.6.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 1.0, bossHpMultiplier = 1.0, zombieCountMultiplier = 1.0;
         let healWeight = 30, healAmount = 25, wpnWeight = 40, wpnDurationConfig = 420, buffWeight = 40, buffDurationConfig = 420, currentSplashRange = 40, defWeight = 30, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -397,6 +397,38 @@
         const player = { x: 270, y: 590, radius: 17, speed: 0.22, targetX: 270, targetY: 590, allies: [], shootCooldown: 0, shootInterval: 12, hp: 100, maxHp: 100, weaponType: "NORMAL", buffType: "NONE", defenseType: "NONE", weaponTimer: 0, buffTimer: 0, defenseTimer: 0, ultimateStock: 3 };
         let bullets = [], enemies = [], enemyLasers = [], gates = [], trappedHero = null, particles = [], muzzleFlashes = [], floatingTexts = [], droppedItems = [];
         let activeAnnihilationEffect = null, annihilationCounter = 0;
+
+        // Sprite Assets Preloading
+        const imgHero = new Image(); imgHero.src = 'assets/hero_ship.png';
+        const imgEnemy = new Image(); imgEnemy.src = 'assets/zombie_enemy.png';
+        const imgBoss = new Image(); imgBoss.src = 'assets/zombie_boss.png';
+
+        const imgAlienTypes = [];
+        for (let i = 0; i < 10; i++) {
+            const img = new Image();
+            img.src = `assets/alien_${i}.png`;
+            imgAlienTypes.push(img);
+        }
+
+        const imgBossTypes = [];
+        for (let i = 0; i < 10; i++) {
+            const img = new Image();
+            img.src = `assets/boss_${i}.png`;
+            imgBossTypes.push(img);
+        }
+
+        const itemImages = {};
+        const itemFileMap = {
+            "HEAL": "item_heal.png", "LASER": "item_laser.png", "GATLING": "item_gatling.png", "ROCKET": "item_rocket.png",
+            "MISSILE": "item_missile.png", "DAMAGE_X2": "item_damage_x2.png", "SPLASH_RANGE": "item_splash_range.png",
+            "BOMBARD": "item_bombard.png", "NANO_SHIELD": "item_nano_shield.png", "HEAVY_ARMOR": "item_heavy_armor.png",
+            "ALLY": "item_ally.png", "BOMB": "item_bomb.png", "ULTIMATE": "item_ultimate.png"
+        };
+        Object.keys(itemFileMap).forEach(k => {
+            const img = new Image();
+            img.src = `assets/${itemFileMap[k]}`;
+            itemImages[k] = img;
+        });
 
         // Dynamic Runtime Chromakey Black-Box Removal Helper
         const processedCanvasCache = new WeakMap();
