@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v4.2.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v4.3.0)</title>
     <style>
         body {
             margin: 0;
@@ -255,7 +255,7 @@
 
 <body style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
 
-    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v4.2.0</span></h1>
+    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v4.3.0</span></h1>
 
     <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
         <div id="gameContainer" style="position: relative;">
@@ -264,7 +264,7 @@
             <div id="menuOverlay" style="padding: 30px 20px; box-sizing: border-box; justify-content: space-between;">
                 <div style="margin-top: 30px; display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <div class="menu-title" style="font-size: 32px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.7); margin-bottom: 6px; letter-spacing: 3px;">HY 세라믹 솔라 파이터</div>
-                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v4.2.0)</span></div>
+                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v4.3.0)</span></div>
                     <div id="menuHighScore" style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">🏆 HIGH SCORE: 0 PTS</div>
 
                     <div style="font-size: 13px; color: #a4b0be; margin-bottom: 10px; font-weight: bold;">🎯 작전 난이도 선택 (전체 난이도 10% 하향 조율)</div>
@@ -461,7 +461,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v4.2.0";
+        const GAME_VERSION = "v4.3.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9, bossHpMultiplier = 0.9, zombieCountMultiplier = 0.9;
         let healWeight = 35, healAmount = 30, wpnWeight = 45, wpnDurationConfig = 420, buffWeight = 45, buffDurationConfig = 420, currentSplashRange = 45, defWeight = 35, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -795,10 +795,26 @@
             player.targetX = Math.max(40, Math.min(canvas.width - 40, player.targetX)); player.targetY = Math.max(145, Math.min(canvas.height - 40, player.targetY));
         });
 
-        // Mobile Multi-Touch Controls (2 Fingers -> Pause & Open Menu)
+        // Mobile Multi-Touch Controls (2 Fingers -> Pause, 💥 Touch Button -> Ultimate)
         function handleTouch(e) {
             if (gameState !== "PLAYING") return;
             
+            // Check touch hit on Ultimate Touch Button (Bottom-Right: width-65, height-65)
+            if (e.touches) {
+                const rect = canvas.getBoundingClientRect();
+                for (let i = 0; i < e.touches.length; i++) {
+                    const tx = (e.touches[i].clientX - rect.left) * (canvas.width / rect.width);
+                    const ty = (e.touches[i].clientY - rect.top) * (canvas.height / rect.height);
+                    if (Math.hypot(tx - (canvas.width - 65), ty - (canvas.height - 65)) <= 42) {
+                        e.preventDefault();
+                        if (e.type === 'touchstart') {
+                            triggerUltimateAnnihilation();
+                        }
+                        return;
+                    }
+                }
+            }
+
             // Check if two or more fingers touch the screen -> Trigger Pause & Arsenal Menu
             if (e.touches && e.touches.length >= 2) {
                 e.preventDefault();
@@ -819,6 +835,16 @@
                 player.targetY = Math.max(145, Math.min(canvas.height - 40, player.targetY));
             }
         }
+
+        canvas.addEventListener('click', (e) => {
+            if (gameState !== "PLAYING" || isPaused) return;
+            const rect = canvas.getBoundingClientRect();
+            const cx = (e.clientX - rect.left) * (canvas.width / rect.width);
+            const cy = (e.clientY - rect.top) * (canvas.height / rect.height);
+            if (Math.hypot(cx - (canvas.width - 65), cy - (canvas.height - 65)) <= 42) {
+                triggerUltimateAnnihilation();
+            }
+        });
 
         canvas.addEventListener('touchstart', handleTouch, { passive: false });
         canvas.addEventListener('touchmove', handleTouch, { passive: false });
@@ -1550,6 +1576,20 @@
 
             ctx.fillStyle = waveCount >= 20 ? '#ff2d55' : '#feca57';
             ctx.fillText(`📊 STAGE ${stageNum}-${waveInStage}  |  ${nextBossStr}`, canvas.width - 20, 116);
+
+            // Draw Mobile On-Screen Ultimate Skill Touch Button (💥 필살기 버튼)
+            if (gameState === "PLAYING") {
+                ctx.save();
+                const bx = canvas.width - 65, by = canvas.height - 65, br = 34;
+                ctx.fillStyle = player.ultimateStock > 0 ? 'rgba(255, 56, 56, 0.45)' : 'rgba(60, 60, 60, 0.35)';
+                ctx.beginPath(); ctx.arc(bx, by, br, 0, Math.PI * 2); ctx.fill();
+                ctx.strokeStyle = player.ultimateStock > 0 ? '#ff3838' : '#7f8c8d'; ctx.lineWidth = 3; ctx.stroke();
+                ctx.font = '900 13px Arial'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffffff';
+                ctx.fillText('💥 필살기', bx, by - 2);
+                ctx.font = 'bold 11px Arial'; ctx.fillStyle = player.ultimateStock > 0 ? '#ffd32c' : '#bdc3c7';
+                ctx.fillText(`(${player.ultimateStock}/5)`, bx, by + 14);
+                ctx.restore();
+            }
         }
 
         function loop() {
