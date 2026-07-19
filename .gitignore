@@ -2,6 +2,9 @@
 temp/
 data/
 checkpoint_extraction.json
+README.md
+notebooklm_extractor.py
+.vscode/
 
 # Large PDF documents
 docs/nss-*.pdf
