@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v3.1.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v3.3.0)</title>
     <style>
         body {
             margin: 0;
@@ -255,7 +255,7 @@
 
 <body style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
 
-    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v3.1.0</span></h1>
+    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v3.3.0</span></h1>
 
     <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
         <div id="gameContainer" style="position: relative;">
@@ -264,7 +264,7 @@
             <div id="menuOverlay" style="padding: 30px 20px; box-sizing: border-box; justify-content: space-between;">
                 <div style="margin-top: 30px; display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <div class="menu-title" style="font-size: 32px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.7); margin-bottom: 6px; letter-spacing: 3px;">HY 세라믹 솔라 파이터</div>
-                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v3.1.0)</span></div>
+                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v3.3.0)</span></div>
                     <div id="menuHighScore" style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">🏆 HIGH SCORE: 0 PTS</div>
 
                     <!-- 1. 난이도 프리셋 셀렉터 -->
@@ -337,10 +337,16 @@
                 <button style="background: rgba(164, 176, 190, 0.15); border: 1px solid #a4b0be; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('HEAVY_ARMOR')">🔩 <span style="color:#a4b0be; font-weight:bold;">중장갑 아머</span><br><span style="font-size:10px; color:#a4b0be;">영구 피격 피해 50% 감쇄</span></button>
                 <button style="background: rgba(46, 134, 222, 0.15); border: 1px solid #2e86de; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('ALLY')">🪖 <span style="color:#2e86de; font-weight:bold;">아군 대원 지원</span><br><span style="font-size:10px; color:#a4b0be;">드론 대원 +1명 즉시 합류</span></button>
                 <button style="background: rgba(255, 82, 82, 0.15); border: 1px solid #ff5252; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('BOMB')">💣 <span style="color:#ff5252; font-weight:bold;">전술 폭탄</span><br><span style="font-size:10px; color:#a4b0be;">화면 전체 적 일괄 폭파</span></button>
-                <button style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; color: #fff; padding: 10px; grid-column: span 2; border-radius: 6px; cursor: pointer; text-align: center; font-size: 13px;" onclick="selectPauseItem('ULTIMATE')">💥 <span style="color:#ff3838; font-weight:bold;">전술 섬멸 필살기 충전 (+1)</span></button>
+                <button style="background: rgba(255, 45, 85, 0.15); border: 1px solid #ff2d55; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('LIFE')">❤️ <span style="color:#ff2d55; font-weight:bold;">목숨 추가</span><br><span style="font-size:10px; color:#a4b0be;">잔여 목숨 +1 보충</span></button>
+                <button style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('ULTIMATE')">💥 <span style="color:#ff3838; font-weight:bold;">필살기 충전</span><br><span style="font-size:10px; color:#a4b0be;">전술 필살기 +1 보충</span></button>
             </div>
 
-            <button style="background: #f1c40f; border: none; color: #141822; width: 100%; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px;" onclick="togglePauseState()">▶️ 전 술 재 개 (Resume)</button>
+            <!-- 일시중지 네비게이션 액션 버튼 바 -->
+            <div style="display: flex; gap: 8px; margin-top: 10px; width: 100%;">
+                <button style="flex: 1; background: linear-gradient(135deg, #10ac84, #1cfc03); border: none; color: #141822; padding: 12px 6px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer;" onclick="togglePauseState()">▶️ 전투 계속하기</button>
+                <button style="flex: 1; background: rgba(44, 62, 80, 0.9); border: 1px solid #00d2d3; color: #00d2d3; padding: 12px 6px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer;" onclick="returnToMainMenu()">🏠 지휘소 메뉴 복귀</button>
+                <button style="flex: 1; background: rgba(255, 56, 56, 0.2); border: 1px solid #ff3838; color: #ff3838; padding: 12px 6px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer;" onclick="restartCurrentGame()">🔄 재작전 시작</button>
+            </div>
         </div>
     </div>
     <div id="infoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 200; justify-content: center; align-items: center;">
@@ -379,7 +385,8 @@
             <div id="infoItemSec" style="display: none;">
                 <div style="font-size: 16px; font-weight: bold; color: #f1c40f; border-bottom: 1px solid #2c3e50; padding-bottom: 8px; text-align: center; margin-bottom: 12px;">🎁 전술 획득 아이템 도감 및 효과</div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; color: #cbd5e1;">
-                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">💚 <span style="color:#1cfc03; font-weight:bold;">메디컬 킷</span><br>HP 25 즉시 회복</div>
+                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">💚 <span style="color:#1cfc03; font-weight:bold;">메디컬 킷</span><br>HP 25 즉시 회복 / 만피시 최대HP 확장</div>
+                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">❤️ <span style="color:#ff2d55; font-weight:bold;">목숨 하트</span><br>잔여 목숨 +1 보충</div>
                     <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">⚡ <span style="color:#00d2d3; font-weight:bold;">플라즈마 레이저</span><br>관통형 고출력 빔</div>
                     <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">🔫 <span style="color:#ffd32c; font-weight:bold;">3연장 개틀링</span><br>3열 고속 속사</div>
                     <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">🚀 <span style="color:#fa8231; font-weight:bold;">헤비 로켓</span><br>광범위 폭발 로켓</div>
@@ -448,7 +455,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v3.1.0";
+        const GAME_VERSION = "v3.3.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 1.0, bossHpMultiplier = 1.0, zombieCountMultiplier = 1.0;
         let healWeight = 30, healAmount = 25, wpnWeight = 40, wpnDurationConfig = 420, buffWeight = 40, buffDurationConfig = 420, currentSplashRange = 40, defWeight = 30, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -476,7 +483,7 @@
         if (localStorage.getItem("rr_supreme_highscore")) highScore = parseInt(localStorage.getItem("rr_supreme_highscore"));
         document.getElementById('menuHighScore').innerText = "🏆 최고 기록 스코어: " + highScore + " PTS";
 
-        const player = { x: 270, y: 590, radius: 17, speed: 0.22, targetX: 270, targetY: 590, allies: [], shootCooldown: 0, shootInterval: 12, hp: 100, maxHp: 100, weaponType: "NORMAL", buffType: "NONE", defenseType: "NONE", weaponTimer: 0, buffTimer: 0, defenseTimer: 0, ultimateStock: 3 };
+        const player = { x: 270, y: 590, radius: 17, speed: 0.22, targetX: 270, targetY: 590, allies: [], shootCooldown: 0, shootInterval: 12, hp: 100, maxHp: 100, lives: 3, weaponType: "NORMAL", buffType: "NONE", defenseType: "NONE", weaponTimer: 0, buffTimer: 0, defenseTimer: 0, ultimateStock: 3 };
         let bullets = [], enemies = [], enemyLasers = [], gates = [], trappedHero = null, particles = [], muzzleFlashes = [], floatingTexts = [], droppedItems = [];
         let activeAnnihilationEffect = null, annihilationCounter = 0;
 
@@ -501,7 +508,7 @@
 
         const itemImages = {};
         const itemFileMap = {
-            "HEAL": "item_heal.png", "LASER": "item_laser.png", "GATLING": "item_gatling.png", "ROCKET": "item_rocket.png",
+            "HEAL": "item_heal.png", "LIFE": "item_life.png", "LASER": "item_laser.png", "GATLING": "item_gatling.png", "ROCKET": "item_rocket.png",
             "MISSILE": "item_missile.png", "DAMAGE_X2": "item_damage_x2.png", "SPLASH_RANGE": "item_splash_range.png",
             "BOMBARD": "item_bombard.png", "NANO_SHIELD": "item_nano_shield.png", "HEAVY_ARMOR": "item_heavy_armor.png",
             "ALLY": "item_ally.png", "BOMB": "item_bomb.png", "ULTIMATE": "item_ultimate.png"
@@ -731,9 +738,23 @@
             }
         }
 
-        function selectPauseItem(itemType) {
-            applyItemEffect({ type: itemType });
+        function returnToMainMenu() {
+            stopBGM();
+            saveHighScore();
+            isPaused = false;
             if (audioCtx) playUpgradeSound();
+            const pauseModal = document.getElementById('pauseItemSelectorModal');
+            if (pauseModal) pauseModal.style.display = 'none';
+            document.getElementById('gameOverOverlay').style.display = 'none';
+            document.getElementById('menuOverlay').style.display = 'flex';
+            gameState = "MENU";
+            updateUIVisibility();
+        }
+
+        function restartCurrentGame() {
+            const pauseModal = document.getElementById('pauseItemSelectorModal');
+            if (pauseModal) pauseModal.style.display = 'none';
+            startGame();
         }
 
         function closeSettingsModal() {
@@ -781,15 +802,27 @@
                 player.targetY = Math.max(145, Math.min(canvas.height - 40, player.targetY));
             }
         }
-        canvas.addEventListener('touchstart', (e) => {
-            if (gameState === "PLAYING" && !audioCtx) initAudio();
-            handleTouchMove(e);
-        }, { passive: false });
-        canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+        canvas.addEventListener('mouseleave', () => {
+            if (gameState === "PLAYING" && !isPaused) {
+                togglePauseState();
+            }
+        });
+        canvas.addEventListener('touchend', (e) => {
+            if (gameState === "PLAYING" && !isPaused) {
+                if (!e.touches || e.touches.length === 0) {
+                    togglePauseState();
+                }
+            }
+        });
+        canvas.addEventListener('touchcancel', (e) => {
+            if (gameState === "PLAYING" && !isPaused) {
+                togglePauseState();
+            }
+        });
 
         function startGame() {
             gameState = "PLAYING"; score = 0; waveCount = 0; spawnTimer = 0; isPaused = false;
-            player.allies = []; player.x = 270; player.targetX = 270; player.y = 590; player.targetY = 590; player.hp = 100; player.ultimateStock = 3;
+            player.allies = []; player.x = 270; player.targetX = 270; player.y = 590; player.targetY = 590; player.maxHp = 100; player.hp = 100; player.lives = 3; player.ultimateStock = 3;
             player.weaponType = "NORMAL"; player.buffType = "NONE"; player.defenseType = "NONE";
             bullets = []; enemies = []; enemyLasers = []; gates = []; trappedHero = null; particles = []; muzzleFlashes = []; floatingTexts = []; droppedItems = []; activeAnnihilationEffect = null;
             updateUltimateUI();
@@ -912,7 +945,10 @@
                     if (player.defenseType !== "NANO_SHIELD") {
                         playHurtSound(); let dmg = laser.isBoss ? 20 : 6; if (player.defenseType === "HEAVY_ARMOR") dmg = Math.floor(dmg * 0.5);
                         player.hp -= Math.floor(dmg * diffMultiplier); addFloatingText(player.x, player.y - 30, `레이저 피격 -${Math.floor(dmg * diffMultiplier)} HP`, '#ff3338');
-                        if (player.hp <= 0) { player.hp = 0; gameOver(); break; }
+                        if (player.hp <= 0) { 
+                            if (player.lives > 1) { player.lives--; player.hp = player.maxHp; player.defenseType = "NANO_SHIELD"; player.defenseTimer = 180; enemyLasers = []; addFloatingText(player.x, player.y - 45, `❤️ 부활! (남은 목숨: ${player.lives}개)`, '#ff3838', 22); }
+                            else { player.lives = 0; gameOver(); break; }
+                        }
                     }
                     enemyLasers.splice(l, 1); continue;
                 }
@@ -922,7 +958,10 @@
                     if (Math.abs(laser.x - ax) < (12 + laser.w / 2) && Math.abs(laser.y - ay) < (12 + laser.h / 2)) {
                         if (player.defenseType !== "NANO_SHIELD") {
                             playHurtSound(); player.allies.splice(j, 1); let ld = laser.isBoss ? 10 : 3; if (player.defenseType === "HEAVY_ARMOR") ld = Math.floor(ld * 0.5);
-                            player.hp -= Math.floor(ld * diffMultiplier); addFloatingText(ax, ay - 10, '대원 전사', '#ff3838'); if (player.hp <= 0) { player.hp = 0; gameOver(); }
+                            player.hp -= Math.floor(ld * diffMultiplier); addFloatingText(ax, ay - 10, '대원 전사', '#ff3838'); if (player.hp <= 0) { 
+                                if (player.lives > 1) { player.lives--; player.hp = player.maxHp; player.defenseType = "NANO_SHIELD"; player.defenseTimer = 180; addFloatingText(player.x, player.y - 45, `❤️ 부활! (남은 목숨: ${player.lives}개)`, '#ff3838', 22); }
+                                else { player.lives = 0; gameOver(); }
+                            }
                         }
                         broken = true; break;
                     }
@@ -1015,7 +1054,10 @@
                     else {
                         playHurtSound(); let loss = enemy.isBoss ? 24 : 10; if (player.defenseType === "HEAVY_ARMOR") loss = Math.floor(loss * 0.5);
                         player.hp -= Math.floor(loss * diffMultiplier); addFloatingText(player.x, player.y - 30, `-${Math.floor(loss * diffMultiplier)} HP`, '#ff2222');
-                        enemies.splice(i, 1); if (player.hp <= 0) { player.hp = 0; gameOver(); break; }
+                        enemies.splice(i, 1); if (player.hp <= 0) { 
+                            if (player.lives > 1) { player.lives--; player.hp = player.maxHp; player.defenseType = "NANO_SHIELD"; player.defenseTimer = 180; addFloatingText(player.x, player.y - 45, `❤️ 부활! (남은 목숨: ${player.lives}개)`, '#ff3838', 22); }
+                            else { player.lives = 0; gameOver(); break; }
+                        }
                     }
                     continue;
                 }
@@ -1027,7 +1069,10 @@
                         else {
                             playHurtSound(); player.allies.splice(j, 1); let loss = enemy.isBoss ? 12 : 4; if (player.defenseType === "HEAVY_ARMOR") loss = Math.floor(loss * 0.5);
                             player.hp -= Math.floor(loss * diffMultiplier); addFloatingText(player.x, player.y - 30, `-${Math.floor(loss * diffMultiplier)} HP`, '#ff5555');
-                            createAdvancedExplosion(enemy.x, enemy.y, '#ff3838', 6, 0.7); enemies.splice(i, 1); if (player.hp <= 0) { player.hp = 0; gameOver(); }
+                            createAdvancedExplosion(enemy.x, enemy.y, '#ff3838', 6, 0.7); enemies.splice(i, 1); if (player.hp <= 0) { 
+                                if (player.lives > 1) { player.lives--; player.hp = player.maxHp; player.defenseType = "NANO_SHIELD"; player.defenseTimer = 180; addFloatingText(player.x, player.y - 45, `❤️ 부활! (남은 목숨: ${player.lives}개)`, '#ff3838', 22); }
+                                else { player.lives = 0; gameOver(); }
+                            }
                         }
                         enemySpliced = true; break;
                     }
@@ -1037,7 +1082,10 @@
                     if (enemy.isBoss) {
                         playHurtSound(); let oldHp = player.hp; player.hp = Math.floor(player.hp / 2); let penalty = oldHp - player.hp;
                         addFloatingText(player.x, player.y - 30, `보스 돌파 허용! 체력 반토막 (-${penalty} HP)`, '#ff0000');
-                        if (player.hp <= 0) { player.hp = 0; gameOver(); break; }
+                        if (player.hp <= 0) { 
+                            if (player.lives > 1) { player.lives--; player.hp = player.maxHp; player.defenseType = "NANO_SHIELD"; player.defenseTimer = 180; addFloatingText(player.x, player.y - 45, `❤️ 부활! (남은 목숨: ${player.lives}개)`, '#ff3838', 22); }
+                            else { player.lives = 0; gameOver(); break; }
+                        }
                     }
                     enemies.splice(i, 1);
                 }
@@ -1086,7 +1134,7 @@
             for (let k = 0; k < defWeight; k++) pool.push("NANO_SHIELD", "HEAVY_ARMOR");
             for (let k = 0; k < allyWeight; k++) pool.push("ALLY");
             for (let k = 0; k < bombWeight; k++) pool.push("BOMB");
-            pool.push("ULTIMATE", "ULTIMATE"); // Emergency Annihilation Ultimate Item Drops!
+            pool.push("LIFE", "ULTIMATE", "ULTIMATE"); // Added LIFE
 
             if (pool.length === 0) pool.push("HEAL");
             
@@ -1109,6 +1157,7 @@
                 else if (chosen === "ALLY") { lbl = "🪖 AL"; color = "#2e86de"; }
                 else if (chosen === "BOMB") { lbl = "💣 BM"; color = "#ff5252"; }
                 else if (chosen === "ULTIMATE") { lbl = "💥 ULT"; color = "#ff3838"; }
+                else if (chosen === "LIFE") { lbl = "❤️ LIFE"; color = "#ff2d55"; }
 
                 const angle = isBoss ? ((d - (dropCount - 1) / 2) / (dropCount - 1)) * (Math.PI * 0.6) - (Math.PI / 2) : 0;
                 const speed = isBoss ? (Math.random() * 2 + 4.5) : (Math.random() * 1.5 + 1);
@@ -1220,6 +1269,14 @@
                     addFloatingText(player.x, player.y - 45, `💚 +${healAmount} HP 회복!`, '#1cfc03', 18);
                 }
             }
+            else if (t === "LIFE") {
+                if (player.lives < 9) {
+                    player.lives++;
+                    addFloatingText(player.x, player.y - 45, `❤️ 목숨 +1 보충! (총 ${player.lives}개)`, '#ff3838', 18);
+                } else {
+                    addFloatingText(player.x, player.y - 45, `⚠️ 목숨 보유 최대치(9개)!`, '#ff9f43', 14);
+                }
+            }
             else if (t === "ULTIMATE") {
                 if (player.ultimateStock < 5) {
                     player.ultimateStock++;
@@ -1231,19 +1288,19 @@
             }
             else if (["LASER", "GATLING", "ROCKET", "MISSILE"].includes(t)) {
                 player.weaponType = t;
-                player.weaponTimer = 9999999; // PERMANENT ITEM DURATION!
+                player.weaponTimer = 9999999;
                 let wName = t === "GATLING" ? "속사 개틀링" : t === "LASER" ? "중차단 레이저" : t === "MISSILE" ? "열압력 미사일" : "전술 고폭로켓";
                 addFloatingText(player.x, player.y - 45, `⚡ 영구 ${wName} 장착!`, '#ffd32c', 16);
             }
             else if (["DAMAGE_X2", "SPLASH_RANGE", "BOMBARD"].includes(t)) {
                 player.buffType = t;
-                player.buffTimer = 9999999; // PERMANENT ITEM DURATION!
+                player.buffTimer = 9999999;
                 let bName = t === "DAMAGE_X2" ? "피해량 2배" : t === "BOMBARD" ? "공중 무차별폭격" : "스플래시 폭발탄";
                 addFloatingText(player.x, player.y - 45, `💥 영구 ${bName} 활성!`, '#ff9f43', 16);
             }
             else if (["NANO_SHIELD", "HEAVY_ARMOR"].includes(t)) {
                 player.defenseType = t;
-                player.defenseTimer = 9999999; // PERMANENT ITEM DURATION!
+                player.defenseTimer = 9999999;
                 let dName = t === "NANO_SHIELD" ? "완전 나노무적" : "중장갑 피해반감";
                 addFloatingText(player.x, player.y - 45, `🛡️ 영구 ${dName} 전개!`, '#10ac84', 16);
             }
@@ -1274,7 +1331,6 @@
             ctx.shadowBlur = 0;
             ctx.fillStyle = '#0a0c10'; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw Annihilation Special Effects
             if (activeAnnihilationEffect) {
                 const eff = activeAnnihilationEffect;
                 eff.life--;
@@ -1301,7 +1357,6 @@
                 if (eff.life <= 0) activeAnnihilationEffect = null;
             }
 
-            // Draw starfield nebula
             stars.forEach(s => {
                 s.y += s.speed;
                 if (s.y > canvas.height) { s.y = 0; s.x = Math.random() * canvas.width; }
@@ -1311,7 +1366,6 @@
             });
             ctx.globalAlpha = 1.0;
 
-            // Player thrust flames
             if (globalAnimTick % 3 === 0) {
                 particles.push({
                     x: player.x + (Math.random() - 0.5) * 6,
@@ -1325,10 +1379,8 @@
                 });
             }
 
-            // Draw Player Jet (assets/hero_ship.png PNG Sprite with Dynamic Zero Black-Box Chromakey)
             ctx.save();
             ctx.shadowBlur = 0;
-            
             const cleanHeroCvs = getCleanTransparentSprite(imgHero);
             if (cleanHeroCvs) {
                 ctx.drawImage(cleanHeroCvs, player.x - 30, player.y - 30, 60, 60);
@@ -1336,32 +1388,19 @@
                 ctx.fillStyle = '#00d2d3'; ctx.beginPath();
                 ctx.moveTo(player.x, player.y - 28); ctx.lineTo(player.x - 24, player.y + 18); ctx.lineTo(player.x - 10, player.y + 10); ctx.lineTo(player.x - 8, player.y + 24); ctx.lineTo(player.x + 8, player.y + 24); ctx.lineTo(player.x + 10, player.y + 10); ctx.lineTo(player.x + 24, player.y + 18); ctx.closePath(); ctx.fill();
             }
-
-            // Player HP Energy Bar (Directly below Hero Jet)
-            const pBarW = 46, pBarH = 6, pBarX = player.x - pBarW / 2, pBarY = player.y + 34;
-            ctx.fillStyle = 'rgba(10, 14, 24, 0.85)';
-            ctx.fillRect(pBarX - 1, pBarY - 1, pBarW + 2, pBarH + 2);
-            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1;
-            ctx.strokeRect(pBarX - 1, pBarY - 1, pBarW + 2, pBarH + 2);
-            const pHpRatio = Math.max(0, Math.min(1.0, player.hp / player.maxHp));
-            ctx.fillStyle = pHpRatio > 0.5 ? '#10ac84' : pHpRatio > 0.25 ? '#f1c40f' : '#ff3838';
-            ctx.fillRect(pBarX, pBarY, pBarW * pHpRatio, pBarH);
             ctx.restore();
 
             player.allies.forEach((ally, idx) => {
                 const offset = getAllyRelativePos(idx);
                 const ax = player.x + offset.xOffset;
                 const ay = player.y + offset.yOffset;
-                
                 if (cleanHeroCvs) {
                     ctx.drawImage(cleanHeroCvs, ax - 14, ay - 14, 28, 28);
                 } else {
-                    ctx.fillStyle = ally.type === 'SNIPER' ? '#10ac84' : ally.type === 'HEAVY_WEAPON' ? '#fa8231' : '#78e08f';
-                    ctx.beginPath(); ctx.moveTo(ax, ay - 8); ctx.lineTo(ax - 7, ay + 5); ctx.lineTo(ax - 2.5, ay + 2); ctx.lineTo(ax - 2.5, ay + 7); ctx.lineTo(ax - 5, ay + 9); ctx.lineTo(ax + 5, ay + 9); ctx.lineTo(ax + 2.5, ay + 7); ctx.lineTo(ax + 2.5, ay + 2); ctx.lineTo(ax + 7, ay + 5); ctx.closePath(); ctx.fill();
+                    ctx.fillStyle = '#78e08f'; ctx.beginPath(); ctx.moveTo(ax, ay - 8); ctx.lineTo(ax - 7, ay + 5); ctx.lineTo(ax + 7, ay + 5); ctx.closePath(); ctx.fill();
                 }
             });
 
-            // Draw Enemies (10 Alien Fighters & 10 Boss Ships with Health Energy Bars)
             enemies.forEach(enemy => {
                 if (enemy.flashTimer > 0) {
                     ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius + 4, 0, Math.PI * 2); ctx.fill();
@@ -1369,135 +1408,42 @@
                     if (enemy.isBoss) {
                         const bImg = imgBossTypes[(enemy.bossType || 0) % 10];
                         const cleanBossCvs = getCleanTransparentSprite(bImg) || getCleanTransparentSprite(imgBoss);
-                        if (cleanBossCvs) {
-                            ctx.drawImage(cleanBossCvs, enemy.x - 52, enemy.y - 52, 104, 104);
-                        } else {
+                        if (cleanBossCvs) { ctx.drawImage(cleanBossCvs, enemy.x - 52, enemy.y - 52, 104, 104); }
+                        else {
                             const pal = BOSS_PALETTES[enemy.bossType || 0];
-                            ctx.save(); ctx.shadowBlur = 0; ctx.fillStyle = pal.body; ctx.beginPath();
-                            ctx.moveTo(enemy.x, enemy.y - 45); ctx.lineTo(enemy.x - 48, enemy.y + 10); ctx.lineTo(enemy.x - 25, enemy.y + 38); ctx.lineTo(enemy.x, enemy.y + 25); ctx.lineTo(enemy.x + 25, enemy.y + 38); ctx.lineTo(enemy.x + 48, enemy.y + 10); ctx.closePath(); ctx.fill();
-                            ctx.fillStyle = pal.glow; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 22, 0, Math.PI * 2); ctx.fill();
-                            const rAngle = globalAnimTick * 0.05; ctx.strokeStyle = pal.core; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 14, rAngle, rAngle + Math.PI * 1.5); ctx.stroke();
-                            ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 7, 0, Math.PI * 2); ctx.fill();
-                            ctx.restore();
-                        }
-
-                        // Boss Mothership Heavy HP Energy Bar & Readout
-                        if (enemy.hp && enemy.maxHp) {
-                            ctx.save(); ctx.shadowBlur = 0;
-                            const bBarW = 84, bBarH = 8, bBarX = enemy.x - bBarW / 2, bBarY = enemy.y - 64;
-                            ctx.fillStyle = 'rgba(10, 14, 24, 0.9)'; ctx.fillRect(bBarX - 2, bBarY - 2, bBarW + 4, bBarH + 4);
-                            ctx.strokeStyle = '#ff3838'; ctx.lineWidth = 1.5; ctx.strokeRect(bBarX - 2, bBarY - 2, bBarW + 4, bBarH + 4);
-                            const bHpRatio = Math.max(0, Math.min(1.0, enemy.hp / enemy.maxHp));
-                            ctx.fillStyle = bHpRatio > 0.5 ? '#ff3838' : bHpRatio > 0.25 ? '#ff9f43' : '#e056fd';
-                            ctx.fillRect(bBarX, bBarY, bBarW * bHpRatio, bBarH);
-                            ctx.font = 'bold 10px Arial'; ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center';
-                            ctx.fillText(`👑 BOSS HP: ${Math.ceil(enemy.hp)} / ${enemy.maxHp}`, enemy.x, bBarY - 4);
-                            ctx.restore();
+                            ctx.fillStyle = pal.body; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 30, 0, Math.PI * 2); ctx.fill();
                         }
                     } else {
                         const aImg = imgAlienTypes[(enemy.alienType || 0) % 10];
                         const cleanAlienCvs = getCleanTransparentSprite(aImg) || getCleanTransparentSprite(imgEnemy);
-                        if (cleanAlienCvs) {
-                            ctx.drawImage(cleanAlienCvs, enemy.x - 24, enemy.y - 24, 48, 48);
-                        } else {
-                            const pal = ALIEN_PALETTES[enemy.alienType || 0];
-                            ctx.save(); ctx.shadowBlur = 0; ctx.fillStyle = pal.main; ctx.beginPath();
-                            ctx.moveTo(enemy.x, enemy.y + 18); ctx.lineTo(enemy.x - 18, enemy.y - 12); ctx.lineTo(enemy.x - 8, enemy.y - 6); ctx.lineTo(enemy.x - 6, enemy.y - 18); ctx.lineTo(enemy.x + 6, enemy.y - 18); ctx.lineTo(enemy.x + 8, enemy.y - 6); ctx.lineTo(enemy.x + 18, enemy.y - 12); ctx.closePath(); ctx.fill();
-                            ctx.fillStyle = pal.glow; ctx.beginPath(); ctx.arc(enemy.x, enemy.y - 2, 5, 0, Math.PI * 2); ctx.fill();
-                            ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 2.5, 0, Math.PI * 2); ctx.fill();
-                            ctx.restore();
-                        }
-
-                        // Alien Enemy HP Energy Bar
-                        if (enemy.hp && enemy.maxHp) {
-                            ctx.save(); ctx.shadowBlur = 0;
-                            const eBarW = 32, eBarH = 4, eBarX = enemy.x - eBarW / 2, eBarY = enemy.y - 30;
-                            ctx.fillStyle = 'rgba(10, 14, 24, 0.85)'; ctx.fillRect(eBarX - 1, eBarY - 1, eBarW + 2, eBarH + 2);
-                            const eHpRatio = Math.max(0, Math.min(1.0, enemy.hp / enemy.maxHp));
-                            ctx.fillStyle = eHpRatio > 0.5 ? '#ff3838' : eHpRatio > 0.25 ? '#fa8231' : '#eb4d4b';
-                            ctx.fillRect(eBarX, eBarY, eBarW * eHpRatio, eBarH);
-                            ctx.restore();
+                        if (cleanAlienCvs) { ctx.drawImage(cleanAlienCvs, enemy.x - 24, enemy.y - 24, 48, 48); }
+                        else {
+                            ctx.fillStyle = '#ff3838'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 18, 0, Math.PI * 2); ctx.fill();
                         }
                     }
                 }
             });
 
-            // Draw Enemy Lasers (High Visibility Sharp Plasma Capsules)
             enemyLasers.forEach(l => {
-                ctx.save();
-                ctx.shadowBlur = 0;
-                
-                // Outer capsule
-                ctx.fillStyle = l.color || (l.isBoss ? '#ff0055' : '#ff3838');
-                ctx.beginPath();
-                if (ctx.roundRect) ctx.roundRect(l.x - l.w / 2, l.y - l.h / 2, l.w, l.h, 4);
-                else ctx.fillRect(l.x - l.w / 2, l.y - l.h / 2, l.w, l.h);
-                ctx.fill();
-                
-                // Inner bright white core for extreme contrast & visibility!
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                if (ctx.roundRect) ctx.roundRect(l.x - l.w / 4, l.y - l.h / 3, l.w / 2, l.h * 0.6, 2);
-                else ctx.fillRect(l.x - l.w / 4, l.y - l.h / 3, l.w / 2, l.h * 0.6);
-                ctx.fill();
-                
-                ctx.restore();
+                ctx.fillStyle = l.color || '#ff3838';
+                ctx.fillRect(l.x - l.w / 2, l.y - l.h / 2, l.w, l.h);
             });
-            // Draw dropped items (13 Transparent PNG Item Icons with High-Contrast Text Labels)
+
             droppedItems.forEach(item => {
                 ctx.save();
-                ctx.shadowBlur = 0;
                 const itemImg = itemImages[item.type];
                 const cleanItemCvs = getCleanTransparentSprite(itemImg);
-                const pulse = Math.sin(globalAnimTick * 0.25) * 2;
-                
-                if (cleanItemCvs) {
-                    ctx.drawImage(cleanItemCvs, item.x - 16 - pulse * 0.5, item.y - 16 - pulse * 0.5, 32 + pulse, 32 + pulse);
-                } else {
-                    ctx.fillStyle = item.color || '#1cfc03'; ctx.beginPath(); ctx.arc(item.x, item.y, 13 + pulse, 0, Math.PI * 2); ctx.fill();
-                    ctx.fillStyle = '#0a200f'; ctx.beginPath(); ctx.arc(item.x, item.y, 9 + pulse * 0.5, 0, Math.PI * 2); ctx.fill();
-                }
-                
-                // Always render high-contrast text badge right below dropped item!
-                const labelText = item.label || item.type;
-                ctx.font = 'bold 10px Arial';
-                ctx.textAlign = 'center';
-                const tw = ctx.measureText(labelText).width;
-                
-                ctx.fillStyle = 'rgba(10, 14, 24, 0.85)';
-                ctx.fillRect(item.x - tw / 2 - 4, item.y + 16, tw + 8, 14);
-                ctx.strokeStyle = item.color || '#1cfc03';
-                ctx.lineWidth = 1;
-                ctx.strokeRect(item.x - tw / 2 - 4, item.y + 16, tw + 8, 14);
-                
-                ctx.fillStyle = '#ffffff';
-                ctx.fillText(labelText, item.x, item.y + 27);
+                if (cleanItemCvs) ctx.drawImage(cleanItemCvs, item.x - 16, item.y - 16, 32, 32);
+                else { ctx.fillStyle = item.color; ctx.beginPath(); ctx.arc(item.x, item.y, 13, 0, Math.PI * 2); ctx.fill(); }
+                ctx.font = 'bold 10px Arial'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffffff'; ctx.fillText(item.label, item.x, item.y + 27);
                 ctx.restore();
             });
 
-            bullets.forEach(b => { ctx.fillStyle = b.bType === 'SNIPER' ? '#eb4d4b' : b.bType === 'HEAVY_WEAPON' ? '#fa8231' : b.bType === "LASER" ? "#00d2d3" : b.bType === "MISSILE" ? "#ff4d4d" : '#ffd32c'; ctx.fillRect(b.x - 1.5, b.y, 3, 10); });
+            bullets.forEach(b => { ctx.fillStyle = '#ffd32c'; ctx.fillRect(b.x - 1.5, b.y, 3, 10); });
             for (let i = particles.length - 1; i >= 0; i--) { ctx.fillStyle = particles[i].color; ctx.globalAlpha = particles[i].alpha; ctx.beginPath(); ctx.arc(particles[i].x, particles[i].y, particles[i].radius, 0, Math.PI * 2); ctx.fill(); }
-            
-            // Draw animated floating texts with zero light-bloom & sharp black stroke outline
+
             for (let i = floatingTexts.length - 1; i >= 0; i--) {
                 let t = floatingTexts[i];
-                t.y += t.vy;
-                t.life--;
-                if (t.scale && t.scale > 1.0) t.scale -= 0.02;
-                if (t.life <= 0) { floatingTexts.splice(i, 1); continue; }
-                
-                ctx.save();
-                ctx.globalAlpha = Math.min(1.0, t.life / 12);
-                const fs = Math.floor((t.fontSize || 12) * (t.scale || 1.0));
-                ctx.font = `bold ${fs}px Segoe UI`;
-                ctx.shadowBlur = 0; // ZERO light-bloom!
-                ctx.textAlign = 'center';
-                
-                const tw = ctx.measureText(t.text).width;
-                ctx.fillStyle = 'rgba(10, 14, 24, 0.85)';
-                ctx.fillRect(t.x - tw / 2 - 6, t.y - fs, tw + 12, fs + 6);
-                
-                ctx.lineWidth = 3;
                 ctx.strokeStyle = '#000000';
                 ctx.strokeText(t.text, t.x, t.y);
                 
