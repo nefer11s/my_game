@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v4.4.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v4.5.0)</title>
     <style>
         body {
             margin: 0;
@@ -255,7 +255,7 @@
 
 <body style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
 
-    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v4.4.0</span></h1>
+    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v4.5.0</span></h1>
 
     <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
         <div id="gameContainer" style="position: relative;">
@@ -264,7 +264,7 @@
             <div id="menuOverlay" style="padding: 30px 20px; box-sizing: border-box; justify-content: space-between;">
                 <div style="margin-top: 30px; display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <div class="menu-title" style="font-size: 32px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.7); margin-bottom: 6px; letter-spacing: 3px;">HY 세라믹 솔라 파이터</div>
-                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v4.4.0)</span></div>
+                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v4.5.0)</span></div>
                     <div id="menuHighScore" style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">🏆 HIGH SCORE: 0 PTS</div>
 
                     <div style="font-size: 13px; color: #a4b0be; margin-bottom: 10px; font-weight: bold;">🎯 작전 난이도 선택 (전체 난이도 10% 하향 조율)</div>
@@ -299,7 +299,7 @@
                 <div style="font-size: 32px; font-weight: 900; color: #1cfc03; text-shadow: 0 0 25px rgba(28, 252, 3, 0.8); margin-bottom: 10px; letter-spacing: 3px;">🎉 MISSION VICTORY!</div>
                 <div style="font-size: 17px; color: #f1c40f; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);">"위기에 빠진 현우 구출 작전 완벽 성공!"</div>
                 <div id="victoryScore" style="font-size: 15px; color: #ffffff; margin-bottom: 25px;">최종 전과 스코어: 0 PTS</div>
-                <button style="font-size: 18px; padding: 14px 42px; border-radius: 30px; background: linear-gradient(135deg, #10ac84, #1cfc03); border: 2px solid #fff; color: #141822; font-weight: 900; cursor: pointer; box-shadow: 0 0 20px rgba(28, 252, 3, 0.5);" onclick="handleRestartClick()">🚀 지휘소 메뉴로 복귀</button>
+                <button style="font-size: 18px; padding: 14px 42px; border-radius: 30px; background: linear-gradient(135deg, #10ac84, #1cfc03); border: 2px solid #fff; color: #141822; font-weight: 900; cursor: pointer; box-shadow: 0 0 20px rgba(28, 252, 3, 0.5);" onclick="returnToMainMenu()">🚀 지휘소 메뉴로 복귀</button>
             </div>
         </div>
 
@@ -462,7 +462,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v4.4.0";
+        const GAME_VERSION = "v4.5.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9, bossHpMultiplier = 0.9, zombieCountMultiplier = 0.9;
         let healWeight = 35, healAmount = 30, wpnWeight = 45, wpnDurationConfig = 420, buffWeight = 45, buffDurationConfig = 420, currentSplashRange = 45, defWeight = 35, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -753,6 +753,7 @@
             const pauseModal = document.getElementById('pauseItemSelectorModal');
             if (pauseModal) pauseModal.style.display = 'none';
             document.getElementById('gameOverOverlay').style.display = 'none';
+            document.getElementById('victoryOverlay').style.display = 'none';
             document.getElementById('menuOverlay').style.display = 'flex';
             gameState = "MENU";
             updateUIVisibility();
@@ -787,7 +788,7 @@
             document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); if (audioCtx) playUpgradeSound();
         }
         function handleStartClick() { initAudio(); startBGM(); playUpgradeSound(); document.getElementById('menuOverlay').style.display = 'none'; startGame(); }
-        function handleRestartClick() { stopBGM(); playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; updateUIVisibility(); }
+        function handleRestartClick() { stopBGM(); playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('victoryOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; updateUIVisibility(); }
 
         canvas.addEventListener('mousemove', (e) => {
             if (gameState !== "PLAYING" || isPaused) return;
