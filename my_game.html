@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로드러너 좀비 슈팅 - 슈프림 갓 모드 (v1.4.0)</title>
+    <title>게임에 빠진 현우를 구출하라! 특명 HY 파이트쉽 (v1.5.0)</title>
     <style>
         body {
             margin: 0;
@@ -239,15 +239,15 @@
 
 <body>
 
-    <h1>ROADRUNNER: SUPREME LASER FORCE <span style="font-size: 14px; color: #00d2d3; font-weight: bold; margin-left: 8px;">v1.4.0</span></h1>
+    <h1>게임에 빠진 현우를 구출하라! <span style="color: #00d2d3;">[특명 HY 파이트쉽]</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v1.5.0</span></h1>
 
     <div id="gameWrapper">
         <div id="gameContainer">
             <canvas id="gameCanvas" width="540" height="820"></canvas>
 
             <div id="menuOverlay">
-                <div class="menu-title">ZOMBIE ROADRUNNER</div>
-                <div class="menu-subtitle">GOD MODE CONTROL MATRIX <span style="color: #00d2d3; font-weight: bold; margin-left: 4px;">(v1.4.0)</span></div>
+                <div class="menu-title" style="font-size: 22px; color: #ff3838; text-shadow: 0 0 15px rgba(255, 56, 56, 0.6); margin-bottom: 5px;">게임에 빠진 현우를 구출하라!</div>
+                <div class="menu-subtitle" style="font-size: 15px; color: #00d2d3; letter-spacing: 1.5px;">특명 HY 파이트쉽 <span style="color: #f1c40f; font-weight: bold; margin-left: 4px;">(v1.5.0)</span></div>
                 <div id="menuHighScore">🏆 최고 기록 스코어: 0 PTS</div>
                 <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 10px; font-weight: bold;">초기 난이도 프리셋 설정
                     (5단계)</div>
@@ -354,7 +354,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v1.4.0";
+        const GAME_VERSION = "v1.5.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 1.0, bossHpMultiplier = 1.0, zombieCountMultiplier = 1.0;
         let healWeight = 30, healAmount = 25, wpnWeight = 40, wpnDurationConfig = 420, buffWeight = 40, buffDurationConfig = 420, currentSplashRange = 40, defWeight = 30, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
