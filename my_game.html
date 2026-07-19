@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로드러너 좀비 슈팅 - 슈프림 갓 모드 완전판</title>
+    <title>로드러너 좀비 슈팅 - 슈프림 갓 모드 (v1.1.0)</title>
     <style>
         body {
             margin: 0;
@@ -239,7 +239,7 @@
 
 <body>
 
-    <h1>ROADRUNNER: SUPREME LASER FORCE</h1>
+    <h1>ROADRUNNER: SUPREME LASER FORCE <span style="font-size: 14px; color: #00d2d3; font-weight: bold; margin-left: 8px;">v1.1.0</span></h1>
 
     <div id="gameWrapper">
         <div id="gameContainer">
@@ -247,7 +247,7 @@
 
             <div id="menuOverlay">
                 <div class="menu-title">ZOMBIE ROADRUNNER</div>
-                <div class="menu-subtitle">GOD MODE CONTROL MATRIX</div>
+                <div class="menu-subtitle">GOD MODE CONTROL MATRIX <span style="color: #00d2d3; font-weight: bold; margin-left: 4px;">(v1.1.0)</span></div>
                 <div id="menuHighScore">🏆 최고 기록 스코어: 0 PTS</div>
                 <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 10px; font-weight: bold;">초기 난이도 프리셋 설정
                     (5단계)</div>
@@ -351,6 +351,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
+        const GAME_VERSION = "v1.1.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 1.0, bossHpMultiplier = 1.0, zombieCountMultiplier = 1.0;
         let healWeight = 30, healAmount = 25, wpnWeight = 40, wpnDurationConfig = 420, buffWeight = 40, buffDurationConfig = 420, currentSplashRange = 40, defWeight = 30, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -1230,7 +1231,7 @@
             }
 
             ctx.fillStyle = 'rgba(12, 14, 18, 0.96)'; ctx.fillRect(0, 0, canvas.width, 130); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, 130); ctx.lineTo(canvas.width, 130); ctx.stroke();
-            ctx.fillStyle = '#ffffff'; ctx.font = 'bold 13px Arial'; ctx.textAlign = 'left'; ctx.fillText(`📊 STAGE: ${stageLevel} [${difficulty.split(" ")[0]}]`, 20, 26);
+            ctx.fillStyle = '#ffffff'; ctx.font = 'bold 13px Arial'; ctx.textAlign = 'left'; ctx.fillText(`📊 STAGE: ${stageLevel} [${difficulty.split(" ")[0]}]  ${GAME_VERSION}`, 20, 26);
             ctx.textAlign = 'center'; ctx.fillStyle = '#ff9f43'; ctx.fillText(`🔥 WAVE: ${waveCount}`, canvas.width / 2, 26);
             ctx.textAlign = 'right'; ctx.fillStyle = '#ffd32c'; ctx.fillText(`SCORE: ${score} (HI: ${highScore})`, canvas.width - 20, 26);
 
