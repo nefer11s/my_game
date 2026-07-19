@@ -597,13 +597,43 @@
         }
         generateSpriteSheets();
 
+        const ALIEN_PALETTES = [
+            { main: '#10ac84', glow: '#55efc4', sub: '#1abc9c', name: 'Viper Scythe' },
+            { main: '#00d2d3', glow: '#48dbfb', sub: '#2e86de', name: 'Plasma Crusher' },
+            { main: '#ff3838', glow: '#ff7675', sub: '#d63031', name: 'Crimson Interceptor' },
+            { main: '#9b59b6', glow: '#e056fd', sub: '#8e44ad', name: 'Void Wraith' },
+            { main: '#f1c40f', glow: '#f39c12', sub: '#e67e22', name: 'Solar Flare' },
+            { main: '#e056fd', glow: '#be2edd', sub: '#ae17e7', name: 'Cyber Drone' },
+            { main: '#718093', glow: '#e1b12c', sub: '#2f3640', name: 'Titan Destroyer' },
+            { main: '#badc58', glow: '#6ab04c', sub: '#44bd32', name: 'Bio Hazard' },
+            { main: '#74b9ff', glow: '#0984e3', sub: '#81ecec', name: 'Crystal Phantom' },
+            { main: '#ff6b6b', glow: '#ee5253', sub: '#ff4757', name: 'Inferno Overlord' }
+        ];
+
+        const BOSS_PALETTES = [
+            { body: '#4834d4', glow: '#ff003c', core: '#ff7675', name: 'Dreadnought Mothership' },
+            { body: '#f1c40f', glow: '#00d2d3', core: '#ffffff', name: 'Hyperion Fortress' },
+            { body: '#118943', glow: '#20bf6b', core: '#ff4757', name: 'Leviathan Kraken' },
+            { body: '#8e44ad', glow: '#e056fd', core: '#be2edd', name: 'Apex Void Reaper' },
+            { body: '#d63031', glow: '#ff9f43', core: '#f1c40f', name: 'Solaris Destroyer' },
+            { body: '#2c3e50', glow: '#00d2d3', core: '#74b9ff', name: 'Cybernetic Behemoth' },
+            { body: '#e84393', glow: '#0984e3', core: '#fd79a8', name: 'Annihilator Flagship' },
+            { body: '#00cec9', glow: '#81ecec', core: '#ffffff', name: 'Neptune Abyss' },
+            { body: '#1e272e', glow: '#ffd32c', core: '#ff9f43', name: 'Eclipse Citadel' },
+            { body: '#d63031', glow: '#ffffff', core: '#ff7675', name: 'Omega Vanguard' }
+        ];
+
         function spawnWave() {
             waveCount++; stageLevel = 1 + Math.floor(waveCount / 3); const laneWidth = canvas.width / 3;
             const zCount = Math.floor((3 + stageLevel * 0.7) * diffMultiplier * zombieCountMultiplier); const hpBase = Math.floor((4 + stageLevel * 2) * diffMultiplier);
             if (waveCount % 3 === 0) {
-                enemies.push({ x: laneWidth * 1.5, y: -80, radius: 34, hp: Math.floor(50 * stageLevel * diffMultiplier * bossHpMultiplier), maxHp: Math.floor(50 * stageLevel * diffMultiplier * bossHpMultiplier), speed: (0.8 + (stageLevel * 0.04)) * (diffMultiplier * 0.85), isBoss: true, flashTimer: 0, animFrame: 0 });
+                const bType = Math.floor(Math.random() * 10);
+                enemies.push({ x: laneWidth * 1.5, y: -90, radius: 40, hp: Math.floor(55 * stageLevel * diffMultiplier * bossHpMultiplier), maxHp: Math.floor(55 * stageLevel * diffMultiplier * bossHpMultiplier), speed: (0.75 + (stageLevel * 0.04)) * (diffMultiplier * 0.85), isBoss: true, bossType: bType, flashTimer: 0, animFrame: 0 });
             } else {
-                for (let i = 0; i < zCount; i++) enemies.push({ x: laneWidth + 30 + Math.random() * (laneWidth - 60), y: -40 - (i * 45), radius: 16, hp: hpBase, maxHp: hpBase, speed: (1.5 + (stageLevel * 0.05)) * (diffMultiplier * 0.9), isBoss: false, flashTimer: 0, animFrame: 0 });
+                for (let i = 0; i < zCount; i++) {
+                    const aType = Math.floor(Math.random() * 10);
+                    enemies.push({ x: laneWidth + 30 + Math.random() * (laneWidth - 60), y: -40 - (i * 45), radius: 18, hp: hpBase, maxHp: hpBase, speed: (1.5 + (stageLevel * 0.05)) * (diffMultiplier * 0.9), isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0 });
+                }
             }
         }
 
@@ -621,12 +651,26 @@
             enemies.forEach(enemy => {
                 if (enemy.flashTimer > 0) enemy.flashTimer--; if (globalAnimTick % 8 === 0) enemy.animFrame = (enemy.animFrame + 1) % 4;
                 enemy.x += (player.x - enemy.x) * (enemy.isBoss ? 0.012 : 0.007);
-                if (!enemy.isBoss && globalAnimTick % 80 === 0 && Math.random() > 0.4) enemyLasers.push({ x: enemy.x, y: enemy.y + 15, w: 3, h: 22, vy: 5, isBoss: false });
-                if (enemy.isBoss && globalAnimTick % 100 === 0) enemyLasers.push({ x: enemy.x, y: enemy.y + 35, w: 22, h: 45, vy: 6.5, isBoss: true });
+                
+                // Enemy Firing Logic - High Visibility Plasma Bullets
+                if (!enemy.isBoss && globalAnimTick % 65 === 0 && Math.random() > 0.35) {
+                    const pal = ALIEN_PALETTES[enemy.alienType || 0];
+                    enemyLasers.push({ x: enemy.x, y: enemy.y + 18, w: 8, h: 22, vy: 5.5, color: pal.glow, isBoss: false, vx: 0 });
+                }
+                if (enemy.isBoss && globalAnimTick % 75 === 0) {
+                    const pal = BOSS_PALETTES[enemy.bossType || 0];
+                    // Triple Spread Shot for Bosses!
+                    enemyLasers.push({ x: enemy.x - 20, y: enemy.y + 35, w: 12, h: 28, vy: 6.5, vx: -1.2, color: pal.glow, isBoss: true });
+                    enemyLasers.push({ x: enemy.x, y: enemy.y + 40, w: 14, h: 32, vy: 7.0, vx: 0, color: '#ff0055', isBoss: true });
+                    enemyLasers.push({ x: enemy.x + 20, y: enemy.y + 35, w: 12, h: 28, vy: 6.5, vx: 1.2, color: pal.glow, isBoss: true });
+                }
             });
 
             for (let l = enemyLasers.length - 1; l >= 0; l--) {
-                let laser = enemyLasers[l]; laser.y += laser.vy; if (laser.y > canvas.height) { enemyLasers.splice(l, 1); continue; }
+                let laser = enemyLasers[l];
+                laser.y += laser.vy;
+                if (laser.vx) laser.x += laser.vx;
+                if (laser.y > canvas.height + 20 || laser.x < -20 || laser.x > canvas.width + 20) { enemyLasers.splice(l, 1); continue; }
                 if (Math.abs(laser.x - player.x) < (player.radius + laser.w / 2) && Math.abs(laser.y - player.y) < (player.radius + laser.h / 2)) {
                     if (player.defenseType !== "NANO_SHIELD") {
                         playHurtSound(); let dmg = laser.isBoss ? 20 : 6; if (player.defenseType === "HEAVY_ARMOR") dmg = Math.floor(dmg * 0.5);
@@ -942,17 +986,40 @@
                 });
             }
 
-            // Draw Hero Ship (AI Sprite)
-            if (imgHero.complete && imgHero.naturalWidth > 0) {
-                ctx.save();
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = '#00d2d3';
-                ctx.drawImage(imgHero, player.x - 30, player.y - 30, 60, 60);
-                ctx.restore();
-            } else {
-                let heroFrame = Math.floor(globalAnimTick / 6) % 4;
-                if (sprites.hero) ctx.drawImage(sprites.hero, heroFrame * 64, 0, 64, 64, player.x - 32, player.y - 32, 64, 64);
-            }
+            // Draw Player Jet (Transparent Vector Canvas Graphics - Zero Black Box)
+            ctx.save();
+            ctx.shadowBlur = 18;
+            ctx.shadowColor = '#00d2d3';
+            
+            ctx.fillStyle = '#00d2d3';
+            ctx.beginPath();
+            ctx.moveTo(player.x, player.y - 28);
+            ctx.lineTo(player.x - 24, player.y + 18);
+            ctx.lineTo(player.x - 10, player.y + 10);
+            ctx.lineTo(player.x - 8, player.y + 24);
+            ctx.lineTo(player.x + 8, player.y + 24);
+            ctx.lineTo(player.x + 10, player.y + 10);
+            ctx.lineTo(player.x + 24, player.y + 18);
+            ctx.closePath();
+            ctx.fill();
+            
+            ctx.fillStyle = '#1e3799';
+            ctx.beginPath();
+            ctx.moveTo(player.x, player.y - 20);
+            ctx.lineTo(player.x - 12, player.y + 12);
+            ctx.lineTo(player.x + 12, player.y + 12);
+            ctx.closePath();
+            ctx.fill();
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(player.x, player.y - 4, 4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#f1c40f';
+            ctx.fillRect(player.x - 22, player.y - 2, 4, 14);
+            ctx.fillRect(player.x + 18, player.y - 2, 4, 14);
+            ctx.restore();
 
             player.allies.forEach((ally, idx) => {
                 const offset = getAllyRelativePos(idx);
@@ -970,34 +1037,110 @@
                 ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(ax, ay - 1.5, 2, 0, Math.PI * 2); ctx.fill();
             });
 
+            // Draw Enemies (10 Alien Fighters & 10 Alien Boss Ships)
             enemies.forEach(enemy => {
-                if (enemy.flashTimer > 0) { ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius + 2, 0, Math.PI * 2); ctx.fill(); }
-                else {
+                if (enemy.flashTimer > 0) {
+                    ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius + 4, 0, Math.PI * 2); ctx.fill();
+                } else {
                     if (enemy.isBoss) {
+                        const pal = BOSS_PALETTES[enemy.bossType || 0];
                         ctx.save();
-                        ctx.shadowBlur = 20;
-                        ctx.shadowColor = '#ff003c';
-                        if (imgBoss.complete && imgBoss.naturalWidth > 0) {
-                            ctx.drawImage(imgBoss, enemy.x - 55, enemy.y - 55, 110, 110);
-                        } else if (sprites.boss) {
-                            ctx.drawImage(sprites.boss, enemy.animFrame * 96, 0, 96, 96, enemy.x - 48, enemy.y - 48, 96, 96);
-                        }
+                        ctx.shadowBlur = 24;
+                        ctx.shadowColor = pal.glow;
+                        
+                        // Boss Main Body Outer Wings
+                        ctx.fillStyle = pal.body;
+                        ctx.beginPath();
+                        ctx.moveTo(enemy.x, enemy.y - 45);
+                        ctx.lineTo(enemy.x - 48, enemy.y + 10);
+                        ctx.lineTo(enemy.x - 25, enemy.y + 38);
+                        ctx.lineTo(enemy.x, enemy.y + 25);
+                        ctx.lineTo(enemy.x + 25, enemy.y + 38);
+                        ctx.lineTo(enemy.x + 48, enemy.y + 10);
+                        ctx.closePath();
+                        ctx.fill();
+                        
+                        // Boss Secondary Shell
+                        ctx.fillStyle = pal.glow;
+                        ctx.beginPath();
+                        ctx.arc(enemy.x, enemy.y, 22, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        // Rotating Energy Core Ring
+                        const rAngle = globalAnimTick * 0.05;
+                        ctx.strokeStyle = pal.core;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(enemy.x, enemy.y, 14, rAngle, rAngle + Math.PI * 1.5);
+                        ctx.stroke();
+                        
+                        // Plasma Eye
+                        ctx.fillStyle = '#ffffff';
+                        ctx.beginPath();
+                        ctx.arc(enemy.x, enemy.y, 7, 0, Math.PI * 2);
+                        ctx.fill();
+                        
                         ctx.restore();
-                        ctx.fillStyle = '#ff3838'; ctx.font = 'bold 12px Segoe UI'; ctx.textAlign = 'center'; ctx.fillText(`${enemy.hp} HP`, enemy.x, enemy.y + 65);
+                        
+                        // Boss HP Bar
+                        ctx.fillStyle = '#ff3838'; ctx.font = 'bold 12px Segoe UI'; ctx.textAlign = 'center'; ctx.fillText(`👑 ${pal.name} [${enemy.hp} HP]`, enemy.x, enemy.y + 55);
                     } else {
+                        const pal = ALIEN_PALETTES[enemy.alienType || 0];
                         ctx.save();
-                        ctx.shadowBlur = 10;
-                        ctx.shadowColor = '#ff4d4d';
-                        if (imgEnemy.complete && imgEnemy.naturalWidth > 0) {
-                            ctx.drawImage(imgEnemy, enemy.x - 22, enemy.y - 22, 44, 44);
-                        } else {
-                            let sheet = stageLevel === 1 ? sprites.zombieTier1 : stageLevel === 2 ? sprites.zombieTier2 : sprites.zombieTier3; if (!sheet) sheet = sprites.zombieTier3;
-                            if (sheet) ctx.drawImage(sheet, enemy.animFrame * 64, 0, 64, 64, enemy.x - 32, enemy.y - 32, 64, 64);
-                        }
+                        ctx.shadowBlur = 14;
+                        ctx.shadowColor = pal.glow;
+                        
+                        // Alien Fighter Geometry (Vector Drawn)
+                        ctx.fillStyle = pal.main;
+                        ctx.beginPath();
+                        ctx.moveTo(enemy.x, enemy.y + 18);           // Nose (pointing down)
+                        ctx.lineTo(enemy.x - 18, enemy.y - 12);     // Left wingtip
+                        ctx.lineTo(enemy.x - 8, enemy.y - 6);       // Left wing inner
+                        ctx.lineTo(enemy.x - 6, enemy.y - 18);      // Left tail
+                        ctx.lineTo(enemy.x + 6, enemy.y - 18);      // Right tail
+                        ctx.lineTo(enemy.x + 8, enemy.y - 6);       // Right wing inner
+                        ctx.lineTo(enemy.x + 18, enemy.y - 12);     // Right wingtip
+                        ctx.closePath();
+                        ctx.fill();
+                        
+                        // Sub Armor & Cockpit Glow
+                        ctx.fillStyle = pal.glow;
+                        ctx.beginPath();
+                        ctx.arc(enemy.x, enemy.y - 2, 5, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        ctx.fillStyle = '#ffffff';
+                        ctx.beginPath();
+                        ctx.arc(enemy.x, enemy.y, 2.5, 0, Math.PI * 2);
+                        ctx.fill();
+                        
                         ctx.restore();
                         ctx.fillStyle = '#ffffff'; ctx.font = 'bold 10px Segoe UI'; ctx.textAlign = 'center'; ctx.fillText(enemy.hp, enemy.x, enemy.y - 22);
                     }
                 }
+            });
+
+            // Draw Enemy Lasers (High Visibility Plasma Capsules)
+            enemyLasers.forEach(l => {
+                ctx.save();
+                ctx.shadowBlur = l.isBoss ? 24 : 16;
+                ctx.shadowColor = l.color || '#ff0055';
+                
+                // Outer glowing capsule
+                ctx.fillStyle = l.color || (l.isBoss ? '#ff0055' : '#ff3838');
+                ctx.beginPath();
+                if (ctx.roundRect) ctx.roundRect(l.x - l.w / 2, l.y - l.h / 2, l.w, l.h, 6);
+                else ctx.fillRect(l.x - l.w / 2, l.y - l.h / 2, l.w, l.h);
+                ctx.fill();
+                
+                // Inner bright white core for extreme contrast & visibility!
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                if (ctx.roundRect) ctx.roundRect(l.x - l.w / 4, l.y - l.h / 3, l.w / 2, l.h * 0.6, 4);
+                else ctx.fillRect(l.x - l.w / 4, l.y - l.h / 3, l.w / 2, l.h * 0.6);
+                ctx.fill();
+                
+                ctx.restore();
             });
             // Draw dropped items
             droppedItems.forEach(item => {
