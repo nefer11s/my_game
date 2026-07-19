@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로드러너 좀비 슈팅 - 슈프림 갓 모드 완전판</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #08090c;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            margin: 0 0 15px 0;
+            font-size: 24px;
+            color: #ff3838;
+            text-shadow: 0 0 15px rgba(255, 56, 56, 0.4);
+            letter-spacing: 2px;
+        }
+
+        #gameWrapper {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 20px;
+            max-width: 100%;
+        }
+
+        #gameContainer {
+            position: relative;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.95);
+            border: 2px solid #2c3e50;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 540px;
+            height: 820px;
+        }
+
+        canvas {
+            display: block;
+            background: #0f1115;
+            width: 100%;
+            height: 100%;
+        }
+
+        #menuOverlay,
+        #gameOverOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(12, 14, 18, 0.96);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            box-sizing: border-box;
+            padding: 20px;
+        }
+
+        .menu-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ff9f43;
+            margin-bottom: 5px;
+        }
+
+        .menu-subtitle {
+            font-size: 14px;
+            color: #a4b0be;
+            margin-bottom: 30px;
+        }
+
+        #menuHighScore {
+            font-size: 18px;
+            color: #ffd32c;
+            font-weight: bold;
+            margin-bottom: 35px;
+        }
+
+        .diff-btn-container {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 35px;
+            width: 100%;
+        }
+
+        .diff-btn {
+            background: #1f242d;
+            border: 1px solid #57606f;
+            color: #fff;
+            padding: 10px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .diff-btn.active {
+            background: #ff3838;
+            border-color: #fff;
+            box-shadow: 0 0 10px rgba(255, 56, 56, 0.5);
+        }
+
+        #startBtn,
+        #restartBtn {
+            background: #10ac84;
+            border: 2px solid #fff;
+            color: #fff;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 12px 50px;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(16, 172, 132, 0.4);
+            letter-spacing: 2px;
+        }
+
+        #sidebarPanel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 320px;
+        }
+
+        #controlDashboard {
+            background-color: #141822;
+            border: 1px solid #2c3e50;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            box-sizing: border-box;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .dashboard-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #00d2d3;
+            border-bottom: 1px dashed #2c3e50;
+            padding-bottom: 5px;
+            text-align: center;
+        }
+
+        .section-divider {
+            font-size: 11px;
+            font-weight: bold;
+            color: #ff9f43;
+            margin-top: 5px;
+            background: #1d2536;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 12px;
+        }
+
+        .control-group label {
+            color: #a4b0be;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            accent-color: #ff9f43;
+            cursor: pointer;
+        }
+
+        .value-disp {
+            font-weight: bold;
+            color: #ff9f43;
+        }
+
+        .hotkey-info {
+            background: #192030;
+            border: 1px solid #2c3e50;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 12px;
+            color: #cbd5e1;
+            line-height: 1.8;
+        }
+
+        .hotkey-badge {
+            background: #3b3f46;
+            color: #fff;
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        #controlDashboard::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #controlDashboard::-webkit-scrollbar-thumb {
+            background: #2c3e50;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 900px) {
+            #gameWrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #sidebarPanel {
+                width: 540px;
+            }
+
+            #controlDashboard {
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>ROADRUNNER: SUPREME LASER FORCE</h1>
+
+    <div id="gameWrapper">
+        <div id="gameContainer">
+            <canvas id="gameCanvas" width="540" height="820"></canvas>
+
+            <div id="menuOverlay">
+                <div class="menu-title">ZOMBIE ROADRUNNER</div>
+                <div class="menu-subtitle">GOD MODE CONTROL MATRIX</div>
+                <div id="menuHighScore">🏆 최고 기록 스코어: 0 PTS</div>
+                <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 10px; font-weight: bold;">초기 난이도 프리셋 설정
+                    (5단계)</div>
+                <div class="diff-btn-container">
+                    <button class="diff-btn" onclick="setSelectDiff('EASY', 0.5, this)">초보 (Lv.1)</button>
+                    <button class="diff-btn active" onclick="setSelectDiff('NORMAL', 1.0, this)">일반 (Lv.2)</button>
+                    <button class="diff-btn" onclick="setSelectDiff('HARD', 1.4, this)">하드 (Lv.3)</button>
+                    <button class="diff-btn" onclick="setSelectDiff('EXPERT', 1.9, this)">정예 (Lv.4)</button>
+                    <button class="diff-btn" onclick="setSelectDiff('NIGHTMARE', 2.5, this)">악몽 (Lv.5)</button>
+                </div>
+                <button id="startBtn" onclick="handleStartClick()">작 전 개 시</button>
+            </div>
+
+            <div id="gameOverOverlay" style="display: none;">
+                <div class="go-title">MISSION OVERRUN</div>
+                <div id="goScore">최종 스코어: 0 PTS</div>
+                <button id="restartBtn" onclick="handleRestartClick()">지휘소로 복귀</button>
+            </div>
+        </div>
+
+        <div id="sidebarPanel">
+            <div id="controlDashboard">
+                <div class="dashboard-title">🎛️ 실시간 전술 수치 제어 매트릭스</div>
+                <div class="section-divider">🧟 좀비 시스템 제어</div>
+                <div class="control-group"><label><span>👑 중간 보스 체력 배율</span> <span class="value-disp"
+                            id="bossVal">1.0x</span></label><input type="range" id="bossSlider" min="0.5" max="3.5"
+                        step="0.1" value="1.0"></div>
+                <div class="control-group"><label><span>💀 좀비 스폰 머릿수 배율</span> <span class="value-disp"
+                            id="zombieVal">1.0x</span></label><input type="range" id="zombieSlider" min="0.4" max="2.5"
+                        step="0.1" value="1.0"></div>
+                <div class="section-divider">💚 메디컬 킷트 (체력 회복) 제어</div>
+                <div class="control-group"><label><span>빈도: 회복킷 스폰 확률</span> <span class="value-disp"
+                            id="healFreqVal">30%</span></label><input type="range" id="healFreqSlider" min="0" max="100"
+                        step="5" value="30"></div>
+                <div class="control-group"><label><span>강도: 체력 회복량</span> <span class="value-disp" id="healVal">25
+                            HP</span></label><input type="range" id="healSlider" min="10" max="60" step="5" value="25">
+                </div>
+                <div class="section-divider">⚔️ 전술 특수 무기류 제어</div>
+                <div class="control-group"><label><span>빈도: 무기류 스폰 가중치</span> <span class="value-disp"
+                            id="wpnFreqVal">40%</span></label><input type="range" id="wpnFreqSlider" min="0" max="100"
+                        step="5" value="40"></div>
+                <div class="control-group"><label><span>강도: 무기 버프 유지 시간</span> <span class="value-disp"
+                            id="wpnDurVal">7초</span></label><input type="range" id="wpnDurSlider" min="3" max="20"
+                        step="1" value="7"></div>
+                <div class="section-divider">💥 버프 및 스플래시 범위 제어</div>
+                <div class="control-group"><label><span>빈도: 버프 스폰 가중치</span> <span class="value-disp"
+                            id="buffFreqVal">40%</span></label><input type="range" id="buffFreqSlider" min="0" max="100"
+                        step="5" value="40"></div>
+                <div class="control-group"><label><span>강도: 버프 유지 시간</span> <span class="value-disp"
+                            id="buffDurVal">7초</span></label><input type="range" id="buffDurSlider" min="3" max="20"
+                        step="1" value="7"></div>
+                <div class="control-group"><label><span>범위: 미사일 & 폭발 반경</span> <span class="value-disp"
+                            id="splashRangeVal">40px</span></label><input type="range" id="splashRangeSlider" min="20"
+                        max="90" step="5" value="40"></div>
+                <div class="section-divider">🛡️ 전술 아머 및 나노 디펜스 제어</div>
+                <div class="control-group"><label><span>빈도: 디펜스 스폰 가중치</span> <span class="value-disp"
+                            id="defFreqVal">30%</span></label><input type="range" id="defFreqSlider" min="0" max="100"
+                        step="5" value="30"></div>
+                <div class="control-group"><label><span>강도: 아머/무적 유지 시간</span> <span class="value-disp"
+                            id="defDurVal">7초</span></label><input type="range" id="defDurSlider" min="3" max="20"
+                        step="1" value="7"></div>
+            </div>
+            <div class="hotkey-info">
+                <div style="font-weight:bold; color:#00d2d3; margin-bottom:5px; text-align:center;">⌨️ 전술 단축키 일람</div>
+                <span class="hotkey-badge">W,A,S,D / 방향키</span> 상하좌우 자유 무빙 기동<br>
+                <span class="hotkey-badge">P</span> 실시간 일시중지 & 전투 재개<br>
+                <span class="hotkey-badge">M</span> 타이틀 지휘소 메뉴로 탈출<br>
+                <span class="hotkey-badge">S</span> 현재 전황 데이터 스냅샷 세이브<br>
+                <span class="hotkey-badge">L</span> 세이브 시점 데이터 즉시 로드
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const bossSlider = document.getElementById('bossSlider'), zombieSlider = document.getElementById('zombieSlider');
+        const healFreqSlider = document.getElementById('healFreqSlider'), healSlider = document.getElementById('healSlider');
+        const wpnFreqSlider = document.getElementById('wpnFreqSlider'), wpnDurSlider = document.getElementById('wpnDurSlider');
+        const buffFreqSlider = document.getElementById('buffFreqSlider'), buffDurSlider = document.getElementById('buffDurSlider');
+        const splashRangeSlider = document.getElementById('splashRangeSlider'), defFreqSlider = document.getElementById('defFreqSlider'), defDurSlider = document.getElementById('defDurSlider');
+
+        const bossVal = document.getElementById('bossVal'), zombieVal = document.getElementById('zombieVal'), healFreqVal = document.getElementById('healFreqVal'), healVal = document.getElementById('healVal');
+        const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
+
+        let stageLevel = 1, waveCount = 0, diffMultiplier = 1.0, bossHpMultiplier = 1.0, zombieCountMultiplier = 1.0;
+        let healWeight = 30, healAmount = 25, wpnWeight = 40, wpnDurationConfig = 420, buffWeight = 40, buffDurationConfig = 420, currentSplashRange = 40, defWeight = 30, defDurationConfig = 420;
+
+        function updateSliders() {
+            bossHpMultiplier = parseFloat(bossSlider.value); bossVal.innerText = bossHpMultiplier.toFixed(1) + 'x';
+            zombieCountMultiplier = parseFloat(zombieSlider.value); zombieVal.innerText = zombieCountMultiplier.toFixed(1) + 'x';
+            healWeight = parseInt(healFreqSlider.value); healFreqVal.innerText = healWeight + '%';
+            healAmount = parseInt(healSlider.value); healVal.innerText = healAmount + ' HP';
+            wpnWeight = parseInt(wpnFreqSlider.value); wpnFreqVal.innerText = wpnWeight + '%';
+            wpnDurationConfig = parseInt(wpnDurSlider.value) * 60; wpnDurVal.innerText = wpnDurSlider.value + '초';
+            buffWeight = parseInt(buffFreqSlider.value); buffFreqVal.innerText = buffWeight + '%';
+            buffDurationConfig = parseInt(buffDurSlider.value) * 60; buffDurVal.innerText = buffDurSlider.value + '초';
+            currentSplashRange = parseInt(splashRangeSlider.value); splashRangeVal.innerText = currentSplashRange + 'px';
+            defWeight = parseInt(defFreqSlider.value); defFreqVal.innerText = defWeight + '%';
+            defDurationConfig = parseInt(defDurSlider.value) * 60; defDurVal.innerText = defDurSlider.value + '초';
+        }
+        [bossSlider, zombieSlider, healFreqSlider, healSlider, wpnFreqSlider, wpnDurSlider, buffFreqSlider, buffDurSlider, splashRangeSlider, defFreqSlider, defDurSlider].forEach(s => s.addEventListener('input', updateSliders));
+        updateSliders();
+
+        let gameState = "MENU", isPaused = false, score = 0, highScore = 0, spawnTimer = 0, constWaveInterval = 190, globalAnimTick = 0, difficulty = "NORMAL (Lv.2)";
+
+        if (localStorage.getItem("rr_supreme_highscore")) highScore = parseInt(localStorage.getItem("rr_supreme_highscore"));
+        document.getElementById('menuHighScore').innerText = "🏆 최고 기록 스코어: " + highScore + " PTS";
+
+        const player = { x: 270, y: 590, radius: 17, speed: 0.22, targetX: 270, targetY: 590, allies: [], shootCooldown: 0, shootInterval: 12, hp: 100, maxHp: 100, weaponType: "NORMAL", buffType: "NONE", defenseType: "NONE", weaponTimer: 0, buffTimer: 0, defenseTimer: 0 };
+        let bullets = [], enemies = [], enemyLasers = [], gates = [], trappedHero = null, particles = [], muzzleFlashes = [], floatingTexts = [];
+
+        let audioCtx = null;
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+
+        function playShootSound() {
+            if (!audioCtx) return;
+            const bufSize = Math.floor(audioCtx.sampleRate * 0.035);
+            const buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+            const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
+            const filter = audioCtx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = 1350;
+            const noiseGain = audioCtx.createGain(); noiseGain.gain.setValueAtTime(0.12, audioCtx.currentTime); noiseGain.gain.linearRampToValueAtTime(0.005, audioCtx.currentTime + 0.035);
+            const subOsc = audioCtx.createOscillator(); const subGain = audioCtx.createGain();
+            subOsc.type = 'triangle'; subOsc.frequency.setValueAtTime(170, audioCtx.currentTime); subOsc.frequency.linearRampToValueAtTime(30, audioCtx.currentTime + 0.04);
+            subGain.gain.setValueAtTime(0.25, audioCtx.currentTime); subGain.gain.linearRampToValueAtTime(0.005, audioCtx.currentTime + 0.04);
+            noise.connect(filter); filter.connect(noiseGain); noiseGain.connect(audioCtx.destination);
+            subOsc.connect(subGain); subGain.connect(audioCtx.destination);
+            noise.start(); subOsc.start(); noise.stop(audioCtx.currentTime + 0.035); subOsc.stop(audioCtx.currentTime + 0.04);
+        }
+
+        function playExplosionSound(isBoss) {
+            if (!audioCtx) return;
+            let osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(isBoss ? 70 : 110, audioCtx.currentTime); osc.frequency.linearRampToValueAtTime(15, audioCtx.currentTime + 0.25);
+            let lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 250;
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0.005, audioCtx.currentTime + 0.25);
+            osc.connect(lp); lp.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+        }
+
+        function playUpgradeSound() {
+            if (!audioCtx) return;
+            let osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+            osc.type = 'sine'; osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08);
+            gain.gain.setValueAtTime(0.12, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.18);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.18);
+        }
+
+        function playHurtSound() {
+            if (!audioCtx) return;
+            let osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+            osc.type = 'triangle'; osc.frequency.setValueAtTime(90, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        function getAllyRelativePos(index) { return { xOffset: ((index % 7) - 3) * 20, yOffset: (Math.floor(index / 7) + 1) * 22 }; }
+
+        window.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase(); const step = 35;
+            if (gameState === "PLAYING" && !isPaused) {
+                if (key === 'arrowup' || key === 'w') player.targetY = Math.max(140, player.targetY - step);
+                if (key === 'arrowdown' || key === 's') player.targetY = Math.min(canvas.height - 40, player.targetY + step);
+                if (key === 'arrowleft' || key === 'a') player.targetX = Math.max(40, player.targetX - step);
+                if (key === 'arrowright' || key === 'd') player.targetX = Math.min(canvas.width - 40, player.targetX + step);
+            }
+            if (key === 'p' && gameState === "PLAYING") { isPaused = !isPaused; playUpgradeSound(); addFloatingText(player.x, player.y - 40, isPaused ? "PAUSED" : "전투 재개", "#feca57"); }
+            if (key === 'm' && (gameState === "PLAYING" || gameState === "GAMEOVER")) { saveHighScore(); isPaused = false; playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; }
+            if (key === 's' && gameState === "PLAYING" && !isPaused) {
+                localStorage.setItem("rr_supreme_save_active", "true"); localStorage.setItem("rr_supreme_save_score", score); localStorage.setItem("rr_supreme_save_hp", player.hp); localStorage.setItem("rr_supreme_save_wave", waveCount);
+                localStorage.setItem("rr_supreme_save_allies", JSON.stringify(player.allies)); localStorage.setItem("rr_supreme_save_weapon", player.weaponType); localStorage.setItem("rr_supreme_save_buff", player.buffType);
+                localStorage.setItem("rr_supreme_save_defense", player.defenseType); localStorage.setItem("rr_supreme_save_diff", difficulty); localStorage.setItem("rr_supreme_save_mult", diffMultiplier);
+                saveHighScore(); playUpgradeSound(); addFloatingText(player.x, player.y - 60, "💾 전황 세이브 완료!", "#1cfc03");
+            }
+            if (key === 'l' && gameState === "PLAYING") {
+                if (localStorage.getItem("rr_supreme_save_active") === "true") {
+                    score = parseInt(localStorage.getItem("rr_supreme_save_score")); player.hp = parseInt(localStorage.getItem("rr_supreme_save_hp")); waveCount = parseInt(localStorage.getItem("rr_supreme_save_wave"));
+                    player.allies = JSON.parse(localStorage.getItem("rr_supreme_save_allies")); player.weaponType = localStorage.getItem("rr_supreme_save_weapon"); player.buffType = localStorage.getItem("rr_supreme_save_buff");
+                    player.defenseType = localStorage.getItem("rr_supreme_save_defense"); difficulty = localStorage.getItem("rr_supreme_save_diff"); diffMultiplier = parseFloat(localStorage.getItem("rr_supreme_save_mult"));
+                    isPaused = false; playUpgradeSound(); addFloatingText(player.x, player.y - 60, "📂 스냅샷 로드 완료!", "#00d2d3");
+                } else { addFloatingText(player.x, player.y - 60, "❌ 저장 시점 없음", "#ff3838"); }
+            }
+        });
+
+        function setSelectDiff(name, mult, btn) {
+            const lvMap = { 0.5: 1, 1.0: 2, 1.4: 3, 1.9: 4, 2.5: 5 }; difficulty = name + ` (Lv.${lvMap[mult] || 2})`; diffMultiplier = mult;
+            document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); if (audioCtx) playUpgradeSound();
+        }
+        function handleStartClick() { initAudio(); playUpgradeSound(); document.getElementById('menuOverlay').style.display = 'none'; startGame(); }
+        function handleRestartClick() { playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; }
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (gameState !== "PLAYING" || isPaused) return;
+            const rect = canvas.getBoundingClientRect();
+            player.targetX = (e.clientX - rect.left) * (canvas.width / rect.width); player.targetY = (e.clientY - rect.top) * (canvas.height / rect.height);
+            player.targetX = Math.max(40, Math.min(canvas.width - 40, player.targetX)); player.targetY = Math.max(145, Math.min(canvas.height - 40, player.targetY));
+        });
+
+        function startGame() {
+            gameState = "PLAYING"; score = 0; waveCount = 0; spawnTimer = 0; isPaused = false;
+            player.allies = []; player.x = 270; player.targetX = 270; player.y = 590; player.targetY = 590; player.hp = 100;
+            player.weaponType = "NORMAL"; player.buffType = "NONE"; player.defenseType = "NONE";
+            bullets = []; enemies = []; enemyLasers = []; gates = []; trappedHero = null; particles = []; muzzleFlashes = []; floatingTexts = [];
+        }
+
+        const sprites = { hero: document.createElement('canvas'), zombieTier1: document.createElement('canvas'), zombieTier2: document.createElement('canvas'), zombieTier3: document.createElement('canvas'), boss: document.createElement('canvas') };
+        function generateSpriteSheets() {
+            const fw = 64, fh = 64; sprites.hero.width = fw * 4; sprites.hero.height = fh; const hCtx = sprites.hero.getContext('2d');
+            for (let f = 0; f < 4; f++) {
+                let cx = f * fw + 32, cy = 37; hCtx.fillStyle = f % 2 === 0 ? '#ff9f43' : '#ff3838'; hCtx.beginPath(); hCtx.moveTo(cx - 6, cy + 10); hCtx.lineTo(cx, cy + 22 + (f * 3)); hCtx.lineTo(cx + 6, cy + 10); hCtx.fill();
+                hCtx.fillStyle = '#57606f'; hCtx.fillRect(cx - 10, cy - 2, 4, 12); hCtx.fillRect(cx + 6, cy - 2, 4, 12); hCtx.fillStyle = '#2e86de'; hCtx.beginPath(); hCtx.arc(cx, cy, 10, 0, Math.PI * 2); hCtx.fill();
+                hCtx.fillStyle = '#1e3799'; hCtx.beginPath(); hCtx.arc(cx, cy - 8, 7, 0, Math.PI * 2); hCtx.fill(); hCtx.fillStyle = '#00d2d3'; hCtx.fillRect(cx - 4, cy - 11, 8, 3);
+            }
+            const renderZombie = (canv, bColor, cColor, eColor, sz) => {
+                canv.width = fw * 4; canv.height = fh; const zCtx = canv.getContext('2d');
+                for (let f = 0; f < 4; f++) {
+                    let cx = f * fw + 32, cy = 32, off = Math.sin((f * Math.PI) / 2) * 5;
+                    zCtx.fillStyle = bColor; zCtx.fillRect(cx - 6, cy + 8 + (f % 2 === 0 ? off : -off), 4, 8); zCtx.fillRect(cx + 2, cy + 8 + (f % 2 === 0 ? -off : off), 4, 8);
+                    zCtx.fillStyle = cColor; zCtx.beginPath(); zCtx.arc(cx, cy, sz, 0, Math.PI * 2); zCtx.fill(); zCtx.strokeStyle = bColor; zCtx.lineWidth = 3.5; zCtx.beginPath(); zCtx.moveTo(cx - 4, cy - 2); zCtx.lineTo(cx - 7, cy + 10 + off); zCtx.moveTo(cx + 4, cy - 2); zCtx.lineTo(cx + 8, cy + 10 - off); zCtx.stroke();
+                    zCtx.fillStyle = eColor; zCtx.beginPath(); zCtx.arc(cx - 3, cy - 3, 2, 0, Math.PI * 2); zCtx.arc(cx + 3, cy - 3, 2, 0, Math.PI * 2); zCtx.fill();
+                }
+            };
+            renderZombie(sprites.zombieTier1, '#a8e6cf', '#ff6b6b', '#ff3838', 11); renderZombie(sprites.zombieTier2, '#ff7675', '#2f3542', '#f1c40f', 12); renderZombie(sprites.zombieTier3, '#badc58', '#6c5ce7', '#ffffff', 13);
+            sprites.boss.width = 96 * 4; sprites.boss.height = 96; const bCtx = sprites.boss.getContext('2d');
+            for (let f = 0; f < 4; f++) {
+                let cx = f * 96 + 48, cy = 48, wk = Math.cos(f * Math.PI) * 6; bCtx.fillStyle = '#4834d4'; bCtx.fillRect(cx - 12, cy + 12 + wk, 8, 16); bCtx.fillRect(cx + 4, cy + 12 - wk, 8, 16);
+                bCtx.fillStyle = '#6c5ce7'; bCtx.beginPath(); bCtx.arc(cx, cy, 24, 0, Math.PI * 2); bCtx.fill(); bCtx.fillStyle = '#4834d4'; bCtx.beginPath(); bCtx.arc(cx - 10, cy + 4, 14, 0, Math.PI * 2); bCtx.arc(cx + 10, cy - 4, 12, 0, Math.PI * 2); bCtx.fill();
+                bCtx.fillStyle = '#f1c40f'; bCtx.beginPath(); bCtx.moveTo(cx - 12, cy - 24); bCtx.lineTo(cx - 18, cy - 38); bCtx.lineTo(cx - 4, cy - 22); bCtx.fill(); bCtx.fillStyle = '#ff3838'; bCtx.beginPath(); bCtx.arc(cx - 8, cy - 6, 4, 0, Math.PI * 2); bCtx.arc(cx + 8, cy - 6, 4, 0, Math.PI * 2); bCtx.fill();
+            }
+        }
+        generateSpriteSheets();
+
+        function spawnWave() {
+            waveCount++; stageLevel = 1 + Math.floor(waveCount / 3); const laneWidth = canvas.width / 3;
+            if (!trappedHero) {
+                let pool = []; for (let k = 0; k < healWeight; k++) pool.push("HEAL"); for (let k = 0; k < wpnWeight; k++) pool.push("LASER", "GATLING", "ROCKET", "MISSILE"); for (let k = 0; k < buffWeight; k++) pool.push("DAMAGE_X2", "SPLASH_RANGE", "BOMBARD"); for (let k = 0; k < defWeight; k++) pool.push("NANO_SHIELD", "HEAVY_ARMOR");
+                if (pool.length === 0) pool.push("GATLING"); const chosen = pool[Math.floor(Math.random() * pool.length)];
+                let lbl = "";
+                if (chosen === "LASER") lbl = "⚡ 관통형 레이저"; if (chosen === "GATLING") lbl = "🔫 속사형 개틀링"; if (chosen === "ROCKET") lbl = "🚀 고폭 전술로켓"; if (chosen === "MISSILE") lbl = "🔥 열압력 미사일"; if (chosen === "DAMAGE_X2") lbl = "💥 데미지 2배증폭"; if (chosen === "SPLASH_RANGE") lbl = "🔮 스플래시 탄환"; if (chosen === "BOMBARD") lbl = "☄️ 공중 무차별폭격"; if (chosen === "NANO_SHIELD") lbl = "🛡️ 완전 나노무적막"; if (chosen === "HEAVY_ARMOR") lbl = "🔩 중장갑 피해감소"; if (chosen === "HEAL") lbl = "💚 긴급 전술회복킷";
+                trappedHero = { x: laneWidth / 2, y: -60, hp: Math.floor((10 + stageLevel * 6) * diffMultiplier), maxHp: Math.floor((10 + stageLevel * 6) * diffMultiplier), type: chosen, label: lbl, status: 'LOCKED', speed: 1.6, baseX: laneWidth / 2, flashTimer: 0 };
+            }
+            const zCount = Math.floor((3 + stageLevel * 0.7) * diffMultiplier * zombieCountMultiplier); const hpBase = Math.floor((4 + stageLevel * 2) * diffMultiplier);
+            if (waveCount % 3 === 0) {
+                enemies.push({ x: laneWidth * 1.5, y: -80, radius: 34, hp: Math.floor(50 * stageLevel * diffMultiplier * bossHpMultiplier), maxHp: Math.floor(50 * stageLevel * diffMultiplier * bossHpMultiplier), speed: (0.8 + (stageLevel * 0.04)) * (diffMultiplier * 0.85), isBoss: true, flashTimer: 0, animFrame: 0 });
+            } else {
+                for (let i = 0; i < zCount; i++) enemies.push({ x: laneWidth + 30 + Math.random() * (laneWidth - 60), y: -40 - (i * 45), radius: 16, hp: hpBase, maxHp: hpBase, speed: (1.5 + (stageLevel * 0.05)) * (diffMultiplier * 0.9), isBoss: false, flashTimer: 0, animFrame: 0 });
+            }
+            const classes = ['RIFLEMAN', 'SNIPER', 'HEAVY_WEAPON']; const cls = classes[Math.floor(Math.random() * classes.length)];
+            const count = cls === 'RIFLEMAN' ? Math.floor(2 + stageLevel * 0.4) : Math.max(1, Math.floor(1 + stageLevel * 0.2));
+            let glbl = cls === 'RIFLEMAN' ? `🪖 돌격병 +${count}` : cls === 'SNIPER' ? `🎯 저격수 +${count}` : `🔥 중화기병 +${count}`;
+            let gclr = cls === 'RIFLEMAN' ? '#10ac84' : cls === 'SNIPER' ? '#20bf6b' : '#fa8231';
+            gates.push({ x: laneWidth * 2.5, y: -50, w: 155, h: 36, type: cls, value: count, lane: 2, color: gclr, label: glbl });
+        }
+
+        function update() {
+            if (gameState !== "PLAYING" || isPaused) return; globalAnimTick++;
+            if (player.weaponTimer > 0) { player.weaponTimer--; if (player.weaponTimer <= 0) player.weaponType = "NORMAL"; }
+            if (player.buffTimer > 0) { player.buffTimer--; if (player.buffTimer <= 0) player.buffType = "NONE"; }
+            if (player.defenseTimer > 0) { player.defenseTimer--; if (player.defenseTimer <= 0) player.defenseType = "NONE"; }
+
+            player.x += (player.targetX - player.x) * player.speed; player.y += (player.targetY - player.y) * player.speed;
+
+            for (let i = floatingTexts.length - 1; i >= 0; i--) { floatingTexts[i].y += floatingTexts[i].vy; floatingTexts[i].life--; if (floatingTexts[i].life <= 0) floatingTexts.splice(i, 1); }
+            for (let i = muzzleFlashes.length - 1; i >= 0; i--) { muzzleFlashes[i].life--; if (muzzleFlashes[i].life <= 0) muzzleFlashes.splice(i, 1); }
+
+            enemies.forEach(enemy => {
+                if (enemy.flashTimer > 0) enemy.flashTimer--; if (globalAnimTick % 8 === 0) enemy.animFrame = (enemy.animFrame + 1) % 4;
+                enemy.x += (player.x - enemy.x) * (enemy.isBoss ? 0.012 : 0.007);
+                if (!enemy.isBoss && globalAnimTick % 80 === 0 && Math.random() > 0.4) enemyLasers.push({ x: enemy.x, y: enemy.y + 15, w: 3, h: 22, vy: 5, isBoss: false });
+                if (enemy.isBoss && globalAnimTick % 100 === 0) enemyLasers.push({ x: enemy.x, y: enemy.y + 35, w: 22, h: 45, vy: 6.5, isBoss: true });
+            });
+
+            for (let l = enemyLasers.length - 1; l >= 0; l--) {
+                let laser = enemyLasers[l]; laser.y += laser.vy; if (laser.y > canvas.height) { enemyLasers.splice(l, 1); continue; }
+                if (Math.abs(laser.x - player.x) < (player.radius + laser.w / 2) && Math.abs(laser.y - player.y) < (player.radius + laser.h / 2)) {
+                    if (player.defenseType !== "NANO_SHIELD") {
+                        playHurtSound(); let dmg = laser.isBoss ? 20 : 6; if (player.defenseType === "HEAVY_ARMOR") dmg = Math.floor(dmg * 0.5);
+                        player.hp -= Math.floor(dmg * diffMultiplier); addFloatingText(player.x, player.y - 30, `레이저 피격 -${Math.floor(dmg * diffMultiplier)} HP`, '#ff3338');
+                        if (player.hp <= 0) { player.hp = 0; gameOver(); break; }
+                    }
+                    enemyLasers.splice(l, 1); continue;
+                }
+                let broken = false;
+                for (let j = player.allies.length - 1; j >= 0; j--) {
+                    const offset = getAllyRelativePos(j); const ax = player.x + offset.xOffset, ay = player.y + offset.yOffset;
+                    if (Math.abs(laser.x - ax) < (12 + laser.w / 2) && Math.abs(laser.y - ay) < (12 + laser.h / 2)) {
+                        if (player.defenseType !== "NANO_SHIELD") {
+                            playHurtSound(); player.allies.splice(j, 1); let ld = laser.isBoss ? 10 : 3; if (player.defenseType === "HEAVY_ARMOR") ld = Math.floor(ld * 0.5);
+                            player.hp -= Math.floor(ld * diffMultiplier); addFloatingText(ax, ay - 10, '대원 전사', '#ff3838'); if (player.hp <= 0) { player.hp = 0; gameOver(); }
+                        }
+                        broken = true; break;
+                    }
+                }
+                if (broken) enemyLasers.splice(l, 1);
+            }
+
+            if (player.buffType === "BOMBARD" && globalAnimTick % 12 === 0) {
+                let bx = Math.random() * canvas.width, by = Math.random() * (canvas.height - 250);
+                createAdvancedExplosion(bx, by, '#ff3838', 12, 1.4); playExplosionSound(false);
+                for (let j = enemies.length - 1; j >= 0; j--) {
+                    let enemy = enemies[j];
+                    if (Math.hypot(enemy.x - bx, enemy.y - by) <= currentSplashRange * 1.5) {
+                        let bd = Math.floor(4 * diffMultiplier); enemy.hp -= bd; enemy.flashTimer = 4; addFloatingText(enemy.x, enemy.y - 12, `-${bd}`, '#ff9f43');
+                        if (enemy.hp <= 0) { playExplosionSound(enemy.isBoss); createAdvancedExplosion(enemy.x, enemy.y, '#ff4d4d', 10, 0.8); score += enemy.maxHp * 15; enemies.splice(j, 1); }
+                    }
+                }
+            }
+
+            let activeInterval = player.weaponType === "GATLING" ? 4 : player.shootInterval; player.shootCooldown++;
+            if (player.shootCooldown >= activeInterval) {
+                player.shootCooldown = 0; let baseDmg = player.buffType === "DAMAGE_X2" ? 2 : 1;
+                bullets.push({ x: player.x, y: player.y - 20, dmg: baseDmg, bType: player.weaponType, isSplash: player.buffType === "SPLASH_RANGE" });
+                muzzleFlashes.push({ x: player.x, y: player.y - 24, life: 3 });
+                player.allies.forEach((ally, idx) => {
+                    const offset = getAllyRelativePos(idx); let fd = ally.type === 'SNIPER' ? baseDmg * 3 : ally.type === 'HEAVY_WEAPON' ? baseDmg * 2 : baseDmg;
+                    bullets.push({ x: player.x + offset.xOffset, y: player.y + offset.yOffset - 14, dmg: fd, bType: ally.type, isSplash: player.buffType === "SPLASH_RANGE" });
+                    muzzleFlashes.push({ x: player.x + offset.xOffset, y: player.y + offset.yOffset - 17, life: 3 });
+                });
+                playShootSound();
+            }
+
+            for (let i = bullets.length - 1; i >= 0; i--) {
+                bullets[i].y -= bullets[i].bType === "LASER" ? 16 : 11; if (bullets[i].y < 0) { bullets.splice(i, 1); continue; }
+                let broken = false;
+                if (trappedHero && trappedHero.status === 'LOCKED') {
+                    if (Math.hypot(trappedHero.x - bullets[i].x, trappedHero.y - bullets[i].y) < 32) {
+                        trappedHero.hp -= bullets[i].dmg; trappedHero.flashTimer = 4; addFloatingText(trappedHero.x + (Math.random() - 0.5) * 15, trappedHero.y - 15, `-${bullets[i].dmg}`, '#00d2d3');
+                        if (trappedHero.hp <= 0) { trappedHero.status = 'RELEASED'; playUpgradeSound(); createAdvancedExplosion(trappedHero.x, trappedHero.y, '#fff', 18, 1.2); }
+                        bullets.splice(i, 1); broken = true;
+                    }
+                }
+                if (broken) continue;
+                for (let j = enemies.length - 1; j >= 0; j--) {
+                    const enemy = enemies[j];
+                    if (Math.hypot(enemy.x - bullets[i].x, enemy.y - bullets[i].y) < enemy.radius + 6) {
+                        if (bullets[i].bType === "ROCKET" || bullets[i].bType === "MISSILE" || bullets[i].isSplash) {
+                            let range = bullets[i].bType === "MISSILE" ? currentSplashRange * 1.6 : currentSplashRange;
+                            let sd = bullets[i].bType === "ROCKET" ? bullets[i].dmg * 3 : bullets[i].bType === "MISSILE" ? bullets[i].dmg * 5 : bullets[i].dmg;
+                            createAdvancedExplosion(bullets[i].x, bullets[i].y, bullets[i].bType === "MISSILE" ? '#ff7675' : '#ff9f43', 14, range / 35); playExplosionSound(bullets[i].bType === "MISSILE");
+                            for (let eIdx = enemies.length - 1; eIdx >= 0; eIdx--) {
+                                let targetZ = enemies[eIdx];
+                                if (Math.hypot(targetZ.x - bullets[i].x, targetZ.y - bullets[i].y) <= range) {
+                                    targetZ.hp -= sd; targetZ.flashTimer = 4; addFloatingText(targetZ.x, targetZ.y - 12, `-${sd}`, '#fa8231');
+                                    if (targetZ.hp <= 0) { playExplosionSound(targetZ.isBoss); createAdvancedExplosion(targetZ.x, targetZ.y, '#a8e6cf', 10, 0.8); score += targetZ.maxHp * 15; enemies.splice(eIdx, 1); if (eIdx <= j) j--; }
+                                }
+                            }
+                        } else {
+                            enemy.hp -= bullets[i].dmg; enemy.flashTimer = 4; addFloatingText(bullets[i].x, enemy.y - 12, `-${bullets[i].dmg}`, '#ff4d4d');
+                            if (enemy.hp <= 0) { playExplosionSound(enemy.isBoss); createAdvancedExplosion(enemy.x, enemy.y, '#a8e6cf', 10, 0.8); score += enemy.maxHp * 15; enemies.splice(j, 1); }
+                        }
+                        if (bullets[i].bType !== "LASER") { bullets.splice(i, 1); broken = true; } break;
+                    }
+                }
+            }
+
+            spawnTimer++; if (spawnTimer >= constWaveInterval) { spawnTimer = 0; spawnWave(); }
+
+            if (trappedHero) {
+                trappedHero.y += trappedHero.speed;
+                if (trappedHero.status === 'RELEASED') {
+                    if (["HEAL", "ROCKET", "MISSILE", "BOMBARD"].includes(trappedHero.type)) trappedHero.x = trappedHero.baseX + Math.sin(globalAnimTick * 0.07) * 45;
+                    if (Math.hypot(trappedHero.x - player.x, trappedHero.y - player.y) < 38) {
+                        playUpgradeSound(); createAdvancedExplosion(trappedHero.x, trappedHero.y, '#1cfc03', 15, 1.0); const t = trappedHero.type;
+                        if (t === "HEAL") { player.hp = Math.min(player.maxHp, player.hp + healAmount); addFloatingText(player.x, player.y - 45, `💚 내수명 +${healAmount} 치료 완료!`, '#1cfc03'); }
+                        else if (["LASER", "GATLING", "ROCKET", "MISSILE"].includes(t)) { player.weaponType = t; player.weaponTimer = wpnDurationConfig; }
+                        else if (["DAMAGE_X2", "SPLASH_RANGE", "BOMBARD"].includes(t)) { player.buffType = t; player.buffTimer = buffDurationConfig; }
+                        else if (["NANO_SHIELD", "HEAVY_ARMOR"].includes(t)) { player.defenseType = t; player.defenseTimer = defDurationConfig; }
+                        trappedHero = null;
+                    }
+                }
+                if (trappedHero && trappedHero.y > canvas.height) trappedHero = null;
+            }
+
+            for (let i = gates.length - 1; i >= 0; i--) {
+                gates[i].y += 3.0; let gate = gates[i];
+                if (gate.y > player.y - 25 && gate.y < player.y + 15 && Math.floor(player.x / (canvas.width / 3)) === gate.lane) {
+                    playUpgradeSound(); createAdvancedExplosion(gate.x, gate.y, gate.color, 14, 1.0);
+                    for (let k = 0; k < gate.value; k++) { if (player.allies.length < 35) { player.allies.push({ type: gate.type }); } else { addFloatingText(player.x, player.y - 60, "⚠️ 진형 최대치 도달!", "#ff9f43"); break; } }
+                    gates.splice(i, 1); break;
+                }
+                if (gates[i] && gates[i].y > canvas.height) gates.splice(i, 1);
+            }
+
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                enemies[i].y += enemies[i].speed; const enemy = enemies[i];
+                if (Math.hypot(enemy.x - player.x, enemy.y - player.y) < enemy.radius + player.radius) {
+                    if (player.defenseType === "NANO_SHIELD") { playExplosionSound(enemy.isBoss); enemies.splice(i, 1); }
+                    else {
+                        playHurtSound(); let loss = enemy.isBoss ? 24 : 10; if (player.defenseType === "HEAVY_ARMOR") loss = Math.floor(loss * 0.5);
+                        player.hp -= Math.floor(loss * diffMultiplier); addFloatingText(player.x, player.y - 30, `-${Math.floor(loss * diffMultiplier)} HP`, '#ff2222');
+                        enemies.splice(i, 1); if (player.hp <= 0) { player.hp = 0; gameOver(); break; }
+                    }
+                    continue;
+                }
+                let enemySpliced = false;
+                for (let j = player.allies.length - 1; j >= 0; j--) {
+                    const offset = getAllyRelativePos(j);
+                    if (Math.hypot(enemy.x - (player.x + offset.xOffset), enemy.y - (player.y + offset.yOffset)) < enemy.radius + 12) {
+                        if (player.defenseType === "NANO_SHIELD") { playExplosionSound(enemy.isBoss); enemies.splice(i, 1); }
+                        else {
+                            playHurtSound(); player.allies.splice(j, 1); let loss = enemy.isBoss ? 12 : 4; if (player.defenseType === "HEAVY_ARMOR") loss = Math.floor(loss * 0.5);
+                            player.hp -= Math.floor(loss * diffMultiplier); addFloatingText(player.x, player.y - 30, `-${Math.floor(loss * diffMultiplier)} HP`, '#ff5555');
+                            createAdvancedExplosion(enemy.x, enemy.y, '#ff3838', 6, 0.7); enemies.splice(i, 1); if (player.hp <= 0) { player.hp = 0; gameOver(); }
+                        }
+                        enemySpliced = true; break;
+                    }
+                }
+                if (enemySpliced) continue;
+                if (enemy && enemy.y > canvas.height) {
+                    if (enemy.isBoss) {
+                        playHurtSound(); let oldHp = player.hp; player.hp = Math.floor(player.hp / 2); let penalty = oldHp - player.hp;
+                        addFloatingText(player.x, player.y - 30, `보스 돌파 허용! 체력 반토막 (-${penalty} HP)`, '#ff0000');
+                        if (player.hp <= 0) { player.hp = 0; gameOver(); break; }
+                    }
+                    enemies.splice(i, 1);
+                }
+            }
+
+            for (let i = particles.length - 1; i >= 0; i--) { particles[i].x += particles[i].vx; particles[i].y += particles[i].vy; particles[i].vy += particles[i].gravity; particles[i].alpha -= 0.035; if (particles[i].alpha <= 0) particles.splice(i, 1); }
+        }
+
+        function createAdvancedExplosion(x, y, color, count, size) {
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2, spd = Math.random() * 5 + 2;
+                particles.push({ x, y, vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd - 1, radius: (Math.random() * 3 + 2) * size, alpha: 1, color, gravity: 0.12 });
+            }
+        }
+
+        function saveHighScore() { if (score > highScore) { highScore = score; localStorage.setItem("rr_supreme_highscore", highScore); } }
+        function gameOver() { gameState = "GAMEOVER"; saveHighScore(); document.getElementById('goScore').innerText = `최종 전과 스코어: ${score} PTS`; document.getElementById('gameOverOverlay').style.display = 'flex'; }
+        function addFloatingText(x, y, text, color) { floatingTexts.push({ x, y, text, color, life: 35, vy: -0.9 }); }
+
+        function draw() {
+            if (gameState === "MENU") return;
+            ctx.fillStyle = '#0f1115'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            const laneWidth = canvas.width / 3;
+            ctx.fillStyle = 'rgba(0, 210, 211, 0.02)'; ctx.fillRect(0, 0, laneWidth, canvas.height);
+            ctx.fillStyle = 'rgba(255, 56, 56, 0.02)'; ctx.fillRect(laneWidth, 0, laneWidth, canvas.height);
+            ctx.fillStyle = 'rgba(16, 172, 132, 0.02)'; ctx.fillRect(laneWidth * 2, 0, laneWidth, canvas.height);
+
+            let heroFrame = Math.floor(globalAnimTick / 6) % 4;
+            if (sprites.hero) ctx.drawImage(sprites.hero, heroFrame * 64, 0, 64, 64, player.x - 32, player.y - 32, 64, 64);
+
+            player.allies.forEach((ally, idx) => {
+                const offset = getAllyRelativePos(idx); ctx.fillStyle = ally.type === 'SNIPER' ? '#10ac84' : ally.type === 'HEAVY_WEAPON' ? '#fa8231' : '#78e08f';
+                ctx.beginPath(); ctx.arc(player.x + offset.xOffset, player.y + offset.yOffset, 7, 0, Math.PI * 2); ctx.fill();
+            });
+
+            enemies.forEach(enemy => {
+                if (enemy.flashTimer > 0) { ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius + 1, 0, Math.PI * 2); ctx.fill(); }
+                else {
+                    if (enemy.isBoss && sprites.boss) { ctx.drawImage(sprites.boss, enemy.animFrame * 96, 0, 96, 96, enemy.x - 48, enemy.y - 48, 96, 96); ctx.fillStyle = '#ffffff'; ctx.font = 'bold 12px Arial'; ctx.textAlign = 'center'; ctx.fillText(`${enemy.hp} HP`, enemy.x, enemy.y + 60); }
+                    else {
+                        let sheet = stageLevel === 1 ? sprites.zombieTier1 : stageLevel === 2 ? sprites.zombieTier2 : sprites.zombieTier3; if (!sheet) sheet = sprites.zombieTier3;
+                        if (sheet) ctx.drawImage(sheet, enemy.animFrame * 64, 0, 64, 64, enemy.x - 32, enemy.y - 32, 64, 64);
+                        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 10px Arial'; ctx.textAlign = 'center'; ctx.fillText(enemy.hp, enemy.x, enemy.y - 20);
+                    }
+                }
+            });
+
+            enemyLasers.forEach(l => { ctx.fillStyle = l.isBoss ? '#ff003c' : '#ff4d4d'; ctx.shadowBlur = l.isBoss ? 20 : 6; ctx.shadowColor = '#ff0000'; ctx.fillRect(l.x - l.w / 2, l.y - l.h / 2, l.w, l.h); ctx.shadowBlur = 0; });
+            gates.forEach(gate => { ctx.fillStyle = gate.color; ctx.fillRect(gate.x - gate.w / 2, gate.y - gate.h / 2, gate.w, gate.h); ctx.fillStyle = '#ffffff'; ctx.font = 'bold 13px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(gate.label, gate.x, gate.y); });
+
+            if (trappedHero) {
+                let blink = ["HEAL", "ROCKET", "MISSILE", "BOMBARD"].includes(trappedHero.type) && trappedHero.status === 'RELEASED';
+                if (blink && Math.floor(globalAnimTick / 8) % 2 === 0) ctx.globalAlpha = 0.25;
+                if (trappedHero.status === 'LOCKED') {
+                    ctx.fillStyle = '#1e272e'; ctx.fillRect(trappedHero.x - 22, trappedHero.y - 25, 44, 50); ctx.strokeStyle = trappedHero.type === "HEAL" ? "#1cfc03" : "#00d2d3"; ctx.lineWidth = 2; ctx.strokeRect(trappedHero.x - 22, trappedHero.y - 25, 44, 50);
+                    ctx.fillStyle = '#ff4757'; ctx.fillRect(trappedHero.x - 25, trappedHero.y - 42, 50, 10); ctx.fillStyle = '#ffffff'; ctx.font = 'bold 8px Arial'; ctx.textAlign = 'center'; ctx.fillText(`${trappedHero.hp} HP`, trappedHero.x, trappedHero.y - 34);
+                    ctx.fillStyle = trappedHero.type === "HEAL" ? "#1cfc03" : "#00d2d3"; ctx.font = '9px Arial'; ctx.fillText(trappedHero.label, trappedHero.x, trappedHero.y + 40);
+                } else { ctx.fillStyle = trappedHero.type === "HEAL" ? "#1cfc03" : "#48dbfb"; ctx.beginPath(); ctx.arc(trappedHero.x, trappedHero.y, 11, 0, Math.PI * 2); ctx.fill(); }
+                ctx.globalAlpha = 1.0;
+            }
+
+            bullets.forEach(b => { ctx.fillStyle = b.bType === 'SNIPER' ? '#eb4d4b' : b.bType === 'HEAVY_WEAPON' ? '#fa8231' : b.bType === "LASER" ? "#00d2d3" : b.bType === "MISSILE" ? "#ff4d4d" : '#ffd32c'; ctx.fillRect(b.x - 1.5, b.y, 3, 10); });
+            for (let i = particles.length - 1; i >= 0; i--) { ctx.fillStyle = particles[i].color; ctx.globalAlpha = particles[i].alpha; ctx.beginPath(); ctx.arc(particles[i].x, particles[i].y, particles[i].radius, 0, Math.PI * 2); ctx.fill(); }
+            ctx.globalAlpha = 1.0; floatingTexts.forEach(t => { ctx.fillStyle = t.color; ctx.font = 'bold 12px Arial'; ctx.textAlign = 'center'; ctx.fillText(t.text, t.x, t.y); });
+
+            ctx.fillStyle = 'rgba(12, 14, 18, 0.96)'; ctx.fillRect(0, 0, canvas.width, 130); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, 130); ctx.lineTo(canvas.width, 130); ctx.stroke();
+            ctx.fillStyle = '#ffffff'; ctx.font = 'bold 13px Arial'; ctx.textAlign = 'left'; ctx.fillText(`📊 STAGE: ${stageLevel} [${difficulty.split(" ")[0]}]`, 20, 26);
+            ctx.textAlign = 'center'; ctx.fillStyle = '#ff9f43'; ctx.fillText(`🔥 WAVE: ${waveCount}`, canvas.width / 2, 26);
+            ctx.textAlign = 'right'; ctx.fillStyle = '#ffd32c'; ctx.fillText(`SCORE: ${score} (HI: ${highScore})`, canvas.width - 20, 26);
+
+            ctx.textAlign = 'left'; ctx.fillStyle = '#ffffff'; ctx.fillText(`❤️ 내 수명 (HP): `, 20, 55); ctx.fillStyle = '#2f3542'; ctx.fillRect(125, 45, 150, 12);
+            ctx.fillStyle = player.hp > 40 ? '#10ac84' : '#ff3838'; ctx.fillRect(125, 45, (player.hp / player.maxHp) * 150, 12); ctx.fillStyle = '#ffffff'; ctx.font = 'bold 11px Arial'; ctx.fillText(player.hp + " / " + player.maxHp, 285, 55);
+            ctx.fillStyle = '#a4b0be'; ctx.fillText(`(7x5 소대: ${player.allies.length} / 35명)`, 355, 55);
+
+            ctx.fillStyle = 'rgba(32, 191, 107, 0.15)'; ctx.fillRect(20, 72, canvas.width - 40, 24); ctx.strokeStyle = 'rgba(32, 191, 107, 0.4)'; ctx.strokeRect(20, 72, canvas.width - 40, 24);
+            ctx.fillStyle = '#1cfc03'; ctx.font = 'bold 11px Arial'; ctx.textAlign = 'left';
+            let wName = player.weaponType === "NORMAL" ? "기본 화기" : player.weaponType === "GATLING" ? "속사 개틀링" : player.weaponType === "LASER" ? "중차단 레이저" : player.weaponType === "MISSILE" ? "열압력 미사일" : "전술 고폭로켓";
+            let bName = player.buffType === "NONE" ? "기본" : player.buffType === "DAMAGE_X2" ? "피해량 2배" : player.buffType === "BOMBARD" ? "공중 무차별폭격" : "스플래시 폭발탄";
+            let dName = player.defenseType === "NONE" ? "기본 아머" : player.defenseType === "NANO_SHIELD" ? "완전 나노무적" : "중장갑 피해반감";
+            ctx.fillText(`🎖️ 활성 장비 ➔  [무기]: ${wName} | [버프]: ${bName} | [방어]: ${dName}`, 28, 88);
+
+            ctx.fillStyle = '#2f3542'; ctx.fillRect(20, 110, 160, 6); ctx.fillStyle = '#ff9f43'; ctx.fillRect(20, 110, (spawnTimer / constWaveInterval) * 160, 6);
+            ctx.textAlign = 'right'; ctx.font = 'bold 12px Arial'; const nb = 3 - (waveCount % 3);
+            if (nb === 3) { ctx.fillStyle = '#9b59b6'; ctx.fillText(`🚨 보스전 비상 교전 가동!`, canvas.width - 20, 116); } else { ctx.fillStyle = '#feca57'; ctx.fillText(`👑 타이틀 보스 출현까지: ${nb}웨이브 남음`, canvas.width - 20, 116); }
+        }
+
+        function loop() { update(); draw(); requestAnimationFrame(loop); }
+        loop();
+    </script>
+</body>
+
+</html>
