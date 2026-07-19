@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v3.0.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v3.1.0)</title>
     <style>
         body {
             margin: 0;
@@ -255,7 +255,7 @@
 
 <body style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
 
-    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v3.0.0</span></h1>
+    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v3.1.0</span></h1>
 
     <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
         <div id="gameContainer" style="position: relative;">
@@ -264,7 +264,7 @@
             <div id="menuOverlay" style="padding: 30px 20px; box-sizing: border-box; justify-content: space-between;">
                 <div style="margin-top: 30px; display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <div class="menu-title" style="font-size: 32px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.7); margin-bottom: 6px; letter-spacing: 3px;">HY 세라믹 솔라 파이터</div>
-                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v3.0.0)</span></div>
+                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v3.1.0)</span></div>
                     <div id="menuHighScore" style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">🏆 HIGH SCORE: 0 PTS</div>
 
                     <!-- 1. 난이도 프리셋 셀렉터 -->
@@ -318,7 +318,31 @@
         </div>
     </div>
 
-    <!-- 전술 정보 및 사운드 설정 팝업 모달 -->
+    <!-- 일시중지(P) 전술 아이템 셀렉터 팝업 모달 -->
+    <div id="pauseItemSelectorModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 300; justify-content: center; align-items: center;">
+        <div style="background: #141822; border: 2px solid #f1c40f; border-radius: 12px; padding: 20px; width: 460px; max-height: 85vh; overflow-y: auto; box-shadow: 0 0 35px rgba(241, 196, 15, 0.5); display: flex; flex-direction: column; gap: 12px; box-sizing: border-box;">
+            <div style="font-size: 17px; font-weight: bold; color: #f1c40f; border-bottom: 1px solid #2c3e50; padding-bottom: 8px; text-align: center;">⏸️ 실시간 일시중지 - 전술 무기 & 아이템 변경 아스날</div>
+            <div style="font-size: 12px; color: #cbd5e1; text-align: center; margin-bottom: 4px;">원하는 아이템을 클릭하면 영구 적용 및 즉시 무장 변경됩니다!</div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <button style="background: rgba(28, 252, 3, 0.15); border: 1px solid #1cfc03; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('HEAL')">💚 <span style="color:#1cfc03; font-weight:bold;">메디컬 킷</span><br><span style="font-size:10px; color:#a4b0be;">HP 회복 / 만피 시 최대 HP 확장</span></button>
+                <button style="background: rgba(0, 210, 211, 0.15); border: 1px solid #00d2d3; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('LASER')">⚡ <span style="color:#00d2d3; font-weight:bold;">플라즈마 레이저</span><br><span style="font-size:10px; color:#a4b0be;">영구 관통 고출력 빔</span></button>
+                <button style="background: rgba(255, 211, 44, 0.15); border: 1px solid #ffd32c; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('GATLING')">🔫 <span style="color:#ffd32c; font-weight:bold;">3연장 개틀링</span><br><span style="font-size:10px; color:#a4b0be;">영구 3열 고속 속사 유탄</span></button>
+                <button style="background: rgba(250, 130, 49, 0.15); border: 1px solid #fa8231; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('ROCKET')">🚀 <span style="color:#fa8231; font-weight:bold;">헤비 로켓</span><br><span style="font-size:10px; color:#a4b0be;">영구 스플래시 중로켓</span></button>
+                <button style="background: rgba(255, 77, 77, 0.15); border: 1px solid #ff4d4d; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('MISSILE')">🔥 <span style="color:#ff4d4d; font-weight:bold;">열압력 미사일</span><br><span style="font-size:10px; color:#a4b0be;">영구 자동 유도 미사일</span></button>
+                <button style="background: rgba(255, 159, 67, 0.15); border: 1px solid #ff9f43; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('DAMAGE_X2')">💥 <span style="color:#ff9f43; font-weight:bold;">2배 화력 버프</span><br><span style="font-size:10px; color:#a4b0be;">영구 공격력 2배 증폭</span></button>
+                <button style="background: rgba(224, 86, 253, 0.15); border: 1px solid #e056fd; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('SPLASH_RANGE')">🔮 <span style="color:#e056fd; font-weight:bold;">스플래시 범주</span><br><span style="font-size:10px; color:#a4b0be;">영구 폭발 범위 확장</span></button>
+                <button style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('BOMBARD')">☄️ <span style="color:#ff3838; font-weight:bold;">전술 폭격 지원</span><br><span style="font-size:10px; color:#a4b0be;">영구 위성 궤도 정밀 폭격</span></button>
+                <button style="background: rgba(16, 172, 132, 0.15); border: 1px solid #10ac84; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('NANO_SHIELD')">🛡️ <span style="color:#10ac84; font-weight:bold;">나노 방어막</span><br><span style="font-size:10px; color:#a4b0be;">영구 나노 무적 방어막</span></button>
+                <button style="background: rgba(164, 176, 190, 0.15); border: 1px solid #a4b0be; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('HEAVY_ARMOR')">🔩 <span style="color:#a4b0be; font-weight:bold;">중장갑 아머</span><br><span style="font-size:10px; color:#a4b0be;">영구 피격 피해 50% 감쇄</span></button>
+                <button style="background: rgba(46, 134, 222, 0.15); border: 1px solid #2e86de; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('ALLY')">🪖 <span style="color:#2e86de; font-weight:bold;">아군 대원 지원</span><br><span style="font-size:10px; color:#a4b0be;">드론 대원 +1명 즉시 합류</span></button>
+                <button style="background: rgba(255, 82, 82, 0.15); border: 1px solid #ff5252; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;" onclick="selectPauseItem('BOMB')">💣 <span style="color:#ff5252; font-weight:bold;">전술 폭탄</span><br><span style="font-size:10px; color:#a4b0be;">화면 전체 적 일괄 폭파</span></button>
+                <button style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; color: #fff; padding: 10px; grid-column: span 2; border-radius: 6px; cursor: pointer; text-align: center; font-size: 13px;" onclick="selectPauseItem('ULTIMATE')">💥 <span style="color:#ff3838; font-weight:bold;">전술 섬멸 필살기 충전 (+1)</span></button>
+            </div>
+
+            <button style="background: #f1c40f; border: none; color: #141822; width: 100%; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px;" onclick="togglePauseState()">▶️ 전 술 재 개 (Resume)</button>
+        </div>
+    </div>
     <div id="infoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 200; justify-content: center; align-items: center;">
         <div style="background: #141822; border: 2px solid #00d2d3; border-radius: 12px; padding: 20px; width: 440px; max-height: 85vh; overflow-y: auto; box-shadow: 0 0 30px rgba(0, 210, 211, 0.5); display: flex; flex-direction: column; gap: 14px; box-sizing: border-box;">
             
@@ -424,7 +448,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v3.0.0";
+        const GAME_VERSION = "v3.1.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 1.0, bossHpMultiplier = 1.0, zombieCountMultiplier = 1.0;
         let healWeight = 30, healAmount = 25, wpnWeight = 40, wpnDurationConfig = 420, buffWeight = 40, buffDurationConfig = 420, currentSplashRange = 40, defWeight = 30, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -674,7 +698,7 @@
                 if (key === 'arrowleft' || key === 'a') player.targetX = Math.max(40, player.targetX - step);
                 if (key === 'arrowright' || key === 'd') player.targetX = Math.min(canvas.width - 40, player.targetX + step);
             }
-            if (key === 'p' && gameState === "PLAYING") { isPaused = !isPaused; if (isPaused) stopBGM(); else startBGM(); playUpgradeSound(); addFloatingText(player.x, player.y - 40, isPaused ? "PAUSED" : "전투 재개", "#feca57"); }
+            if (key === 'p' && gameState === "PLAYING") { togglePauseState(); }
             if (key === 'b' && gameState === "PLAYING") { toggleBGM(); }
             if (key === 'm' && (gameState === "PLAYING" || gameState === "GAMEOVER")) { stopBGM(); saveHighScore(); isPaused = false; playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; updateUIVisibility(); }
             if (key === 's' && gameState === "PLAYING" && !isPaused) {
@@ -693,9 +717,23 @@
             }
         });
 
-        function openSettingsModal() {
+        function togglePauseState() {
+            isPaused = !isPaused;
+            const pauseModal = document.getElementById('pauseItemSelectorModal');
+            if (isPaused) {
+                stopBGM();
+                if (pauseModal) pauseModal.style.display = 'flex';
+                if (audioCtx) playUpgradeSound();
+            } else {
+                if (pauseModal) pauseModal.style.display = 'none';
+                startBGM();
+                if (audioCtx) playUpgradeSound();
+            }
+        }
+
+        function selectPauseItem(itemType) {
+            applyItemEffect({ type: itemType });
             if (audioCtx) playUpgradeSound();
-            document.getElementById('settingsModal').style.display = 'flex';
         }
 
         function closeSettingsModal() {
@@ -1173,8 +1211,14 @@
         function applyItemEffect(item) {
             const t = item.type;
             if (t === "HEAL") {
-                player.hp = Math.min(player.maxHp, player.hp + healAmount);
-                addFloatingText(player.x, player.y - 45, `💚 +${healAmount} HP`, '#1cfc03', 20);
+                if (player.hp >= player.maxHp) {
+                    player.maxHp += healAmount;
+                    player.hp = player.maxHp;
+                    addFloatingText(player.x, player.y - 45, `💚 최대 체력 확장! (${player.maxHp} HP)`, '#1cfc03', 18);
+                } else {
+                    player.hp = Math.min(player.maxHp, player.hp + healAmount);
+                    addFloatingText(player.x, player.y - 45, `💚 +${healAmount} HP 회복!`, '#1cfc03', 18);
+                }
             }
             else if (t === "ULTIMATE") {
                 if (player.ultimateStock < 5) {
@@ -1187,21 +1231,21 @@
             }
             else if (["LASER", "GATLING", "ROCKET", "MISSILE"].includes(t)) {
                 player.weaponType = t;
-                player.weaponTimer = wpnDurationConfig;
+                player.weaponTimer = 9999999; // PERMANENT ITEM DURATION!
                 let wName = t === "GATLING" ? "속사 개틀링" : t === "LASER" ? "중차단 레이저" : t === "MISSILE" ? "열압력 미사일" : "전술 고폭로켓";
-                addFloatingText(player.x, player.y - 45, `⚡ ${wName} 장착!`, '#ffd32c', 14);
+                addFloatingText(player.x, player.y - 45, `⚡ 영구 ${wName} 장착!`, '#ffd32c', 16);
             }
             else if (["DAMAGE_X2", "SPLASH_RANGE", "BOMBARD"].includes(t)) {
                 player.buffType = t;
-                player.buffTimer = buffDurationConfig;
+                player.buffTimer = 9999999; // PERMANENT ITEM DURATION!
                 let bName = t === "DAMAGE_X2" ? "피해량 2배" : t === "BOMBARD" ? "공중 무차별폭격" : "스플래시 폭발탄";
-                addFloatingText(player.x, player.y - 45, `💥 ${bName} 활성!`, '#ff9f43', 14);
+                addFloatingText(player.x, player.y - 45, `💥 영구 ${bName} 활성!`, '#ff9f43', 16);
             }
             else if (["NANO_SHIELD", "HEAVY_ARMOR"].includes(t)) {
                 player.defenseType = t;
-                player.defenseTimer = defDurationConfig;
+                player.defenseTimer = 9999999; // PERMANENT ITEM DURATION!
                 let dName = t === "NANO_SHIELD" ? "완전 나노무적" : "중장갑 피해반감";
-                addFloatingText(player.x, player.y - 45, `🛡️ ${dName} 전개!`, '#10ac84', 14);
+                addFloatingText(player.x, player.y - 45, `🛡️ 영구 ${dName} 전개!`, '#10ac84', 16);
             }
             else if (t === "ALLY") {
                 const classes = ['RIFLEMAN', 'SNIPER', 'HEAVY_WEAPON'];
