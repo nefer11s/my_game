@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v2.6.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v2.7.0)</title>
     <style>
         body {
             margin: 0;
@@ -274,12 +274,32 @@
                 </div>
 
                 <!-- 3. 기본 동작 버튼 & 조작법 안내 카드 -->
-                <div style="background: rgba(44, 62, 80, 0.5); border: 1px solid #34495e; padding: 10px 14px; border-radius: 6px; margin-bottom: 15px; width: 90%; text-align: left; font-size: 12px; color: #cbd5e1; line-height: 1.7; box-sizing: border-box;">
+                <div style="background: rgba(44, 62, 80, 0.5); border: 1px solid #34495e; padding: 8px 12px; border-radius: 6px; margin-bottom: 10px; width: 90%; text-align: left; font-size: 12px; color: #cbd5e1; line-height: 1.6; box-sizing: border-box;">
                     <div style="font-weight: bold; color: #00d2d3; margin-bottom: 4px; text-align: center;">⌨️ 전술 조작법 및 버튼 안내</div>
                     <span class="hotkey-badge">W,A,S,D / 방향키 / 터치</span> 상하좌우 무빙 기동<br>
                     <span class="hotkey-badge">SPACE / X / E</span> 💥 전술 섬멸 필살기 (기본 3개)<br>
                     <span class="hotkey-badge">P</span> 전투 일시중지 | <span class="hotkey-badge">B</span> BGM 토글 | <span class="hotkey-badge">M</span> 지휘소 복귀<br>
                     <span class="hotkey-badge">S</span> 전황 스냅샷 저장 | <span class="hotkey-badge">L</span> 저장 시점 로드
+                </div>
+
+                <!-- 4. 전술 획득 아이템 도감 & 설명 카드 -->
+                <div style="background: rgba(15, 20, 30, 0.75); border: 1px solid #00d2d3; padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; width: 90%; text-align: left; font-size: 11px; max-height: 110px; overflow-y: auto; box-sizing: border-box;">
+                    <div style="font-weight: bold; color: #f1c40f; margin-bottom: 4px; text-align: center;">🎁 전술 획득 아이템 도감 및 효과 안내</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; line-height: 1.5; color: #cbd5e1;">
+                        <div>💚 <span style="color:#1cfc03; font-weight:bold;">메디컬 킷</span>: HP 25 회복</div>
+                        <div>⚡ <span style="color:#00d2d3; font-weight:bold;">플라즈마 레이저</span>: 관통 빔</div>
+                        <div>🔫 <span style="color:#ffd32c; font-weight:bold;">3연장 개틀링</span>: 3열 속사</div>
+                        <div>🚀 <span style="color:#fa8231; font-weight:bold;">헤비 로켓</span>: 폭발 로켓</div>
+                        <div>🔥 <span style="color:#ff4d4d; font-weight:bold;">열압력 미사일</span>: 유도 미사일</div>
+                        <div>💥 <span style="color:#ff9f43; font-weight:bold;">2배 화력</span>: 화력 2배 증폭</div>
+                        <div>🔮 <span style="color:#e056fd; font-weight:bold;">스플래시 범주</span>: 범주 확장</div>
+                        <div>☄️ <span style="color:#ff3838; font-weight:bold;">전술 폭격</span>: 궤도 정밀 폭격</div>
+                        <div>🛡️ <span style="color:#10ac84; font-weight:bold;">나노 방어막</span>: 7초 무적 막</div>
+                        <div>🔩 <span style="color:#a4b0be; font-weight:bold;">중장갑 아머</span>: 피격 50% 감쇄</div>
+                        <div>🪖 <span style="color:#2e86de; font-weight:bold;">아군 지원</span>: 연대 대원 지원</div>
+                        <div>💣 <span style="color:#ff5252; font-weight:bold;">전술 폭탄</span>: 적 전체 일괄 폭파</div>
+                        <div>💥 <span style="color:#ff3838; font-weight:bold;">필살기 충전</span>: 필살기 +1</div>
+                    </div>
                 </div>
 
                 <!-- 4. 메뉴 조작 버튼들 -->
@@ -366,7 +386,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v2.6.0";
+        const GAME_VERSION = "v2.7.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 1.0, bossHpMultiplier = 1.0, zombieCountMultiplier = 1.0;
         let healWeight = 30, healAmount = 25, wpnWeight = 40, wpnDurationConfig = 420, buffWeight = 40, buffDurationConfig = 420, currentSplashRange = 40, defWeight = 30, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -430,7 +450,7 @@
             itemImages[k] = img;
         });
 
-        // Dynamic Runtime Chromakey Black-Box Removal Helper
+        // Dynamic Runtime Chromakey Black-Box Removal Helper (100% Zero Bounding Box)
         const processedCanvasCache = new WeakMap();
         function getCleanTransparentSprite(img) {
             if (!img || !img.complete || img.naturalWidth === 0) return null;
@@ -444,8 +464,9 @@
                 const imgData = cctx.getImageData(0, 0, cvs.width, cvs.height);
                 const d = imgData.data;
                 for (let i = 0; i < d.length; i += 4) {
-                    if (d[i] < 32 && d[i + 1] < 32 && d[i + 2] < 32) {
-                        d[i + 3] = 0; // Force 100% Alpha Transparency on Black Box Pixels!
+                    const r = d[i], g = d[i + 1], b = d[i + 2];
+                    if (r < 75 && g < 75 && b < 75 && Math.abs(r - g) < 25 && Math.abs(g - b) < 25) {
+                        d[i + 3] = 0; // Force 100% Alpha Transparency on any dark gray bounding box!
                     }
                 }
                 cctx.putImageData(imgData, 0, 0);
@@ -1279,34 +1300,42 @@
                 
                 ctx.restore();
             });
-            // Draw dropped items (13 Transparent PNG Item Icons with Fallback & Chromakey)
+            // Draw dropped items (13 Transparent PNG Item Icons with High-Contrast Text Labels)
             droppedItems.forEach(item => {
                 ctx.save();
+                ctx.shadowBlur = 0;
                 const itemImg = itemImages[item.type];
                 const cleanItemCvs = getCleanTransparentSprite(itemImg);
+                const pulse = Math.sin(globalAnimTick * 0.25) * 2;
+                
                 if (cleanItemCvs) {
-                    const pulse = Math.sin(globalAnimTick * 0.25) * 2;
                     ctx.drawImage(cleanItemCvs, item.x - 16 - pulse * 0.5, item.y - 16 - pulse * 0.5, 32 + pulse, 32 + pulse);
                 } else {
-                    if (item.type === "HEAL") {
-                        const pulse = Math.sin(globalAnimTick * 0.25) * 2;
-                        ctx.shadowBlur = 0;
-                        ctx.fillStyle = '#1cfc03'; ctx.beginPath(); ctx.arc(item.x, item.y, 13 + pulse, 0, Math.PI * 2); ctx.fill();
-                        ctx.fillStyle = '#0a200f'; ctx.beginPath(); ctx.arc(item.x, item.y, 9 + pulse * 0.5, 0, Math.PI * 2); ctx.fill();
-                        ctx.fillStyle = '#1cfc03'; ctx.font = 'bold 12px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('💚', item.x, item.y);
-                    } else {
-                        ctx.shadowBlur = 0; ctx.fillStyle = item.color; ctx.beginPath(); ctx.arc(item.x, item.y, 12, 0, Math.PI * 2); ctx.fill();
-                        ctx.fillStyle = '#141822'; ctx.beginPath(); ctx.arc(item.x, item.y, 9, 0, Math.PI * 2); ctx.fill();
-                        ctx.fillStyle = item.color; ctx.font = 'bold 10px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(item.label.split(" ").pop(), item.x, item.y);
-                    }
+                    ctx.fillStyle = item.color || '#1cfc03'; ctx.beginPath(); ctx.arc(item.x, item.y, 13 + pulse, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#0a200f'; ctx.beginPath(); ctx.arc(item.x, item.y, 9 + pulse * 0.5, 0, Math.PI * 2); ctx.fill();
                 }
+                
+                // Always render high-contrast text badge right below dropped item!
+                const labelText = item.label || item.type;
+                ctx.font = 'bold 10px Arial';
+                ctx.textAlign = 'center';
+                const tw = ctx.measureText(labelText).width;
+                
+                ctx.fillStyle = 'rgba(10, 14, 24, 0.85)';
+                ctx.fillRect(item.x - tw / 2 - 4, item.y + 16, tw + 8, 14);
+                ctx.strokeStyle = item.color || '#1cfc03';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(item.x - tw / 2 - 4, item.y + 16, tw + 8, 14);
+                
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(labelText, item.x, item.y + 27);
                 ctx.restore();
             });
 
             bullets.forEach(b => { ctx.fillStyle = b.bType === 'SNIPER' ? '#eb4d4b' : b.bType === 'HEAVY_WEAPON' ? '#fa8231' : b.bType === "LASER" ? "#00d2d3" : b.bType === "MISSILE" ? "#ff4d4d" : '#ffd32c'; ctx.fillRect(b.x - 1.5, b.y, 3, 10); });
             for (let i = particles.length - 1; i >= 0; i--) { ctx.fillStyle = particles[i].color; ctx.globalAlpha = particles[i].alpha; ctx.beginPath(); ctx.arc(particles[i].x, particles[i].y, particles[i].radius, 0, Math.PI * 2); ctx.fill(); }
             
-            // Draw animated floating texts with scaling & fade out
+            // Draw animated floating texts with zero light-bloom & sharp black stroke outline
             for (let i = floatingTexts.length - 1; i >= 0; i--) {
                 let t = floatingTexts[i];
                 t.y += t.vy;
@@ -1318,9 +1347,18 @@
                 ctx.globalAlpha = Math.min(1.0, t.life / 12);
                 const fs = Math.floor((t.fontSize || 12) * (t.scale || 1.0));
                 ctx.font = `bold ${fs}px Segoe UI`;
-                ctx.fillStyle = t.color;
-                ctx.shadowBlur = 0;
+                ctx.shadowBlur = 0; // ZERO light-bloom!
                 ctx.textAlign = 'center';
+                
+                const tw = ctx.measureText(t.text).width;
+                ctx.fillStyle = 'rgba(10, 14, 24, 0.85)';
+                ctx.fillRect(t.x - tw / 2 - 6, t.y - fs, tw + 12, fs + 6);
+                
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = '#000000';
+                ctx.strokeText(t.text, t.x, t.y);
+                
+                ctx.fillStyle = t.color;
                 ctx.fillText(t.text, t.x, t.y);
                 ctx.restore();
             }
