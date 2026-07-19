@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v3.6.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v4.1.0)</title>
     <style>
         body {
             margin: 0;
@@ -255,7 +255,7 @@
 
 <body style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
 
-    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v3.6.0</span></h1>
+    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v4.1.0</span></h1>
 
     <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
         <div id="gameContainer" style="position: relative;">
@@ -264,7 +264,7 @@
             <div id="menuOverlay" style="padding: 30px 20px; box-sizing: border-box; justify-content: space-between;">
                 <div style="margin-top: 30px; display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <div class="menu-title" style="font-size: 32px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.7); margin-bottom: 6px; letter-spacing: 3px;">HY 세라믹 솔라 파이터</div>
-                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v3.6.0)</span></div>
+                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v4.1.0)</span></div>
                     <div id="menuHighScore" style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">🏆 HIGH SCORE: 0 PTS</div>
 
                     <div style="font-size: 13px; color: #a4b0be; margin-bottom: 10px; font-weight: bold;">🎯 작전 난이도 선택 (전체 난이도 10% 하향 조율)</div>
@@ -293,6 +293,13 @@
                 <div class="go-title">MISSION OVERRUN</div>
                 <div id="goScore">최종 스코어: 0 PTS</div>
                 <button id="restartBtn" onclick="handleRestartClick()">지휘소로 복귀</button>
+            </div>
+
+            <div id="victoryOverlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.92); z-index: 250; justify-content: center; align-items: center; flex-direction: column;">
+                <div style="font-size: 32px; font-weight: 900; color: #1cfc03; text-shadow: 0 0 25px rgba(28, 252, 3, 0.8); margin-bottom: 10px; letter-spacing: 3px;">🎉 MISSION VICTORY!</div>
+                <div style="font-size: 17px; color: #f1c40f; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);">"위기에 빠진 현우 구출 작전 완벽 성공!"</div>
+                <div id="victoryScore" style="font-size: 15px; color: #ffffff; margin-bottom: 25px;">최종 전과 스코어: 0 PTS</div>
+                <button style="font-size: 18px; padding: 14px 42px; border-radius: 30px; background: linear-gradient(135deg, #10ac84, #1cfc03); border: 2px solid #fff; color: #141822; font-weight: 900; cursor: pointer; box-shadow: 0 0 20px rgba(28, 252, 3, 0.5);" onclick="handleRestartClick()">🚀 지휘소 메뉴로 복귀</button>
             </div>
         </div>
 
@@ -454,7 +461,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v3.6.0";
+        const GAME_VERSION = "v4.1.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9, bossHpMultiplier = 0.9, zombieCountMultiplier = 0.9;
         let healWeight = 35, healAmount = 30, wpnWeight = 45, wpnDurationConfig = 420, buffWeight = 45, buffDurationConfig = 420, currentSplashRange = 45, defWeight = 35, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -788,10 +795,21 @@
             player.targetX = Math.max(40, Math.min(canvas.width - 40, player.targetX)); player.targetY = Math.max(145, Math.min(canvas.height - 40, player.targetY));
         });
 
-        // Mobile Phone Touch Drag & Tap Controls
-        function handleTouchMove(e) {
-            if (gameState !== "PLAYING" || isPaused) return;
-            if (e.touches && e.touches.length > 0) {
+        // Mobile Multi-Touch Controls (2 Fingers -> Pause & Open Menu)
+        function handleTouch(e) {
+            if (gameState !== "PLAYING") return;
+            
+            // Check if two or more fingers touch the screen -> Trigger Pause & Arsenal Menu
+            if (e.touches && e.touches.length >= 2) {
+                e.preventDefault();
+                if (!isPaused) {
+                    togglePauseState();
+                }
+                return;
+            }
+            
+            // Single finger drag to move hero ship
+            if (!isPaused && e.touches && e.touches.length === 1) {
                 e.preventDefault();
                 const touch = e.touches[0];
                 const rect = canvas.getBoundingClientRect();
@@ -801,19 +819,11 @@
                 player.targetY = Math.max(145, Math.min(canvas.height - 40, player.targetY));
             }
         }
+
+        canvas.addEventListener('touchstart', handleTouch, { passive: false });
+        canvas.addEventListener('touchmove', handleTouch, { passive: false });
+
         canvas.addEventListener('mouseleave', () => {
-            if (gameState === "PLAYING" && !isPaused) {
-                togglePauseState();
-            }
-        });
-        canvas.addEventListener('touchend', (e) => {
-            if (gameState === "PLAYING" && !isPaused) {
-                if (!e.touches || e.touches.length === 0) {
-                    togglePauseState();
-                }
-            }
-        });
-        canvas.addEventListener('touchcancel', (e) => {
             if (gameState === "PLAYING" && !isPaused) {
                 togglePauseState();
             }
@@ -883,15 +893,44 @@
         ];
 
         function spawnWave() {
-            waveCount++; stageLevel = 1 + Math.floor(waveCount / 3); const laneWidth = canvas.width / 3;
-            const zCount = Math.floor((3 + stageLevel * 0.7) * diffMultiplier * zombieCountMultiplier); const hpBase = Math.floor((4 + stageLevel * 2) * diffMultiplier);
-            if (waveCount % 3 === 0) {
+            waveCount++;
+            const stageNum = Math.min(5, Math.floor((waveCount - 1) / 5) + 1);
+            stageLevel = stageNum;
+            const laneWidth = canvas.width / 3;
+            const zCount = Math.floor((3 + stageLevel * 0.7) * diffMultiplier * zombieCountMultiplier);
+            const hpBase = Math.floor((4 + stageLevel * 2) * diffMultiplier);
+
+            const isMidBossWave = [5, 10, 14, 15, 18, 19, 20].includes(waveCount);
+            const isFinalBossWave = (waveCount === 25);
+
+            if (isFinalBossWave) {
+                // 👑 FINAL APEX SUPREME BOSS (최종 마왕 결전 보스)
+                enemies.push({
+                    x: canvas.width / 2, y: -110, radius: 56,
+                    hp: Math.floor(1000 * diffMultiplier * bossHpMultiplier),
+                    maxHp: Math.floor(1000 * diffMultiplier * bossHpMultiplier),
+                    speed: 0.45, isBoss: true, isFinalBoss: true, bossType: 9, flashTimer: 0, animFrame: 0
+                });
+                addFloatingText(canvas.width / 2, 220, "👑 [최종 마왕 결전 보스] 출격!!", "#ff2d55", 22);
+            } else if (isMidBossWave) {
+                // Stage Mid-Bosses (Escalating frequency: 5, 10, 14, 15, 18, 19, 20)
                 const bType = Math.floor(Math.random() * 10);
-                enemies.push({ x: laneWidth * 1.5, y: -90, radius: 40, hp: Math.floor(55 * stageLevel * diffMultiplier * bossHpMultiplier), maxHp: Math.floor(55 * stageLevel * diffMultiplier * bossHpMultiplier), speed: (0.75 + (stageLevel * 0.04)) * (diffMultiplier * 0.85), isBoss: true, bossType: bType, flashTimer: 0, animFrame: 0 });
+                enemies.push({
+                    x: laneWidth * 1.5, y: -90, radius: 40,
+                    hp: Math.floor((40 + stageLevel * 10) * diffMultiplier * bossHpMultiplier),
+                    maxHp: Math.floor((40 + stageLevel * 10) * diffMultiplier * bossHpMultiplier),
+                    speed: (0.7 + (stageLevel * 0.03)) * (diffMultiplier * 0.85),
+                    isBoss: true, isFinalBoss: false, bossType: bType, flashTimer: 0, animFrame: 0
+                });
+                addFloatingText(canvas.width / 2, 220, `⚠️ STAGE ${stageLevel} 중간 보스 출격!`, "#ff9f43", 18);
             } else {
                 for (let i = 0; i < zCount; i++) {
                     const aType = Math.floor(Math.random() * 10);
-                    enemies.push({ x: laneWidth + 30 + Math.random() * (laneWidth - 60), y: -40 - (i * 45), radius: 18, hp: hpBase, maxHp: hpBase, speed: (1.5 + (stageLevel * 0.05)) * (diffMultiplier * 0.9), isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0 });
+                    enemies.push({
+                        x: laneWidth + 30 + Math.random() * (laneWidth - 60), y: -40 - (i * 45), radius: 18,
+                        hp: hpBase, maxHp: hpBase, speed: (1.4 + (stageLevel * 0.04)) * (diffMultiplier * 0.9),
+                        isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0
+                    });
                 }
             }
         }
@@ -1035,12 +1074,26 @@
                                 let targetZ = enemies[eIdx];
                                 if (targetZ && Math.hypot(targetZ.x - bx, targetZ.y - by) <= range) {
                                     targetZ.hp -= sd; targetZ.flashTimer = 4; addFloatingText(targetZ.x, targetZ.y - 12, `-${sd}`, '#fa8231');
-                                    if (targetZ.hp <= 0) { playExplosionSound(targetZ.isBoss); createAdvancedExplosion(targetZ.x, targetZ.y, '#a8e6cf', 10, 0.8); score += targetZ.maxHp * 15; spawnDroppedItem(targetZ.x, targetZ.y, targetZ.isBoss); enemies.splice(eIdx, 1); }
+                                    if (targetZ.hp <= 0) {
+                                        playExplosionSound(targetZ.isBoss);
+                                        createAdvancedExplosion(targetZ.x, targetZ.y, '#a8e6cf', 10, 0.8);
+                                        score += targetZ.maxHp * 15;
+                                        spawnDroppedItem(targetZ.x, targetZ.y, targetZ.isBoss);
+                                        if (targetZ.isFinalBoss) { triggerVictory(); }
+                                        enemies.splice(eIdx, 1);
+                                    }
                                 }
                             }
                         } else {
                             enemy.hp -= bDmg; enemy.flashTimer = 4; addFloatingText(bx, enemy.y - 12, `-${bDmg}`, '#ff4d4d');
-                            if (enemy.hp <= 0) { playExplosionSound(enemy.isBoss); createAdvancedExplosion(enemy.x, enemy.y, '#a8e6cf', 10, 0.8); score += enemy.maxHp * 15; spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss); enemies.splice(j, 1); }
+                            if (enemy.hp <= 0) {
+                                playExplosionSound(enemy.isBoss);
+                                createAdvancedExplosion(enemy.x, enemy.y, '#a8e6cf', 10, 0.8);
+                                score += enemy.maxHp * 15;
+                                spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss);
+                                if (enemy.isFinalBoss) { triggerVictory(); }
+                                enemies.splice(j, 1);
+                            }
                         }
                         if (bType !== "LASER") { bullets.splice(i, 1); } break;
                     }
@@ -1326,6 +1379,16 @@
             }
         }
 
+        function triggerVictory() {
+            gameState = "VICTORY";
+            stopBGM();
+            saveHighScore();
+            if (audioCtx) playUpgradeSound();
+            document.getElementById('victoryScore').innerText = `최종 전과 스코어: ${score} PTS`;
+            document.getElementById('victoryOverlay').style.display = 'flex';
+            updateUIVisibility();
+        }
+
         function saveHighScore() { if (score > highScore) { highScore = score; localStorage.setItem("rr_supreme_highscore", highScore); } }
         function gameOver() { gameState = "GAMEOVER"; stopBGM(); saveHighScore(); document.getElementById('goScore').innerText = `최종 전과 스코어: ${score} PTS`; document.getElementById('gameOverOverlay').style.display = 'flex'; }
         function addFloatingText(x, y, text, color, fontSize = 12) { floatingTexts.push({ x, y, text, color, life: 40, vy: -1.2, fontSize, scale: 1.4 }); }
@@ -1478,9 +1541,21 @@
             let dName = player.defenseType === "NONE" ? "기본 아머" : player.defenseType === "NANO_SHIELD" ? "완전 나노무적" : "중장갑 피해반감";
             ctx.fillText(`🎖️ 활성 ➔ [화기]: ${wName} | [버프]: ${bName} | [필살기]: 💥 ${player.ultimateStock}/5개 (SPACE)`, 28, 88);
 
+            const stageNum = Math.min(5, Math.floor((waveCount - 1) / 5) + 1);
+            const waveInStage = ((waveCount - 1) % 5) + 1;
             ctx.fillStyle = '#2f3542'; ctx.fillRect(20, 110, 160, 6); ctx.fillStyle = '#ff9f43'; ctx.fillRect(20, 110, (spawnTimer / constWaveInterval) * 160, 6);
-            ctx.textAlign = 'right'; ctx.font = 'bold 12px Arial'; const nb = 3 - (waveCount % 3);
-            if (nb === 3) { ctx.fillStyle = '#9b59b6'; ctx.fillText(`🚨 보스전 비상 교전 가동!`, canvas.width - 20, 116); } else { ctx.fillStyle = '#feca57'; ctx.fillText(`👑 타이틀 보스 출현까지: ${nb}웨이브 남음`, canvas.width - 20, 116); }
+            ctx.textAlign = 'right'; ctx.font = 'bold 12px Arial';
+            
+            let nextBossStr = "";
+            if (waveCount < 5) nextBossStr = `👑 중간보스 출현까지: ${5 - waveCount}웨이브`;
+            else if (waveCount < 10) nextBossStr = `👑 중간보스 출현까지: ${10 - waveCount}웨이브`;
+            else if (waveCount < 15) nextBossStr = `⚠️ 연속 보스전 진입중 (Stage 3)`;
+            else if (waveCount < 20) nextBossStr = `⚠️ 연속 보스전 진입중 (Stage 4)`;
+            else if (waveCount < 25) nextBossStr = `🚨 최종 마왕 결전까지: ${25 - waveCount}웨이브`;
+            else nextBossStr = `👑 [최종 마왕 결전 교전중!]`;
+
+            ctx.fillStyle = waveCount >= 20 ? '#ff2d55' : '#feca57';
+            ctx.fillText(`📊 STAGE ${stageNum}-${waveInStage}  |  ${nextBossStr}`, canvas.width - 20, 116);
         }
 
         function loop() {
