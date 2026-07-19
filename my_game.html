@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v3.4.1)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v3.5.0)</title>
     <style>
         body {
             margin: 0;
@@ -255,7 +255,7 @@
 
 <body style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
 
-    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v3.4.1</span></h1>
+    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v3.5.0</span></h1>
 
     <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
         <div id="gameContainer" style="position: relative;">
@@ -264,7 +264,7 @@
             <div id="menuOverlay" style="padding: 30px 20px; box-sizing: border-box; justify-content: space-between;">
                 <div style="margin-top: 30px; display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <div class="menu-title" style="font-size: 32px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.7); margin-bottom: 6px; letter-spacing: 3px;">HY 세라믹 솔라 파이터</div>
-                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v3.4.1)</span></div>
+                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v3.5.0)</span></div>
                     <div id="menuHighScore" style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">🏆 HIGH SCORE: 0 PTS</div>
 
                     <div style="font-size: 13px; color: #a4b0be; margin-bottom: 10px; font-weight: bold;">🎯 작전 난이도 선택 (전체 난이도 10% 하향 조율)</div>
@@ -454,7 +454,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v3.4.1";
+        const GAME_VERSION = "v3.5.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9, bossHpMultiplier = 0.9, zombieCountMultiplier = 0.9;
         let healWeight = 35, healAmount = 30, wpnWeight = 45, wpnDurationConfig = 420, buffWeight = 45, buffDurationConfig = 420, currentSplashRange = 45, defWeight = 35, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -1107,7 +1107,7 @@
 
                 if (Math.hypot(item.x - player.x, item.y - player.y) < player.radius + 16) {
                     playUpgradeSound();
-                    createAdvancedExplosion(item.x, item.y, item.color, 14, 1.1);
+                    createAdvancedExplosion(item.x, item.y, item.color, 4, 0.5);
                     applyItemEffect(item);
                     droppedItems.splice(i, 1);
                     continue;
@@ -1121,9 +1121,10 @@
         }
 
         function createAdvancedExplosion(x, y, color, count, size) {
-            for (let i = 0; i < count; i++) {
-                const angle = Math.random() * Math.PI * 2, spd = Math.random() * 5 + 2;
-                particles.push({ x, y, vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd - 1, radius: (Math.random() * 3 + 2) * size, alpha: 1, color, gravity: 0.12 });
+            const safeCount = Math.max(2, Math.floor(count * 0.35));
+            for (let i = 0; i < safeCount; i++) {
+                const angle = Math.random() * Math.PI * 2, spd = Math.random() * 3 + 1.2;
+                particles.push({ x, y, vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd - 0.5, radius: (Math.random() * 1.2 + 0.8) * Math.min(1.1, size), alpha: 0.85, color, gravity: 0.1 });
             }
         }
 
@@ -1225,7 +1226,7 @@
                 enemy.hp -= dmg;
                 enemy.flashTimer = 12;
                 addFloatingText(enemy.x, enemy.y, `-${dmg}`, color, 15);
-                createAdvancedExplosion(enemy.x, enemy.y, color, 18, 1.5);
+                createAdvancedExplosion(enemy.x, enemy.y, color, 6, 0.7);
                 
                 if (enemy.hp <= 0) {
                     playExplosionSound(enemy.isBoss);
@@ -1240,9 +1241,9 @@
             playExplosionSound(true);
             addFloatingText(player.x, player.y - 65, "💣 전술 폭탄 작동! 전면 소각!", "#ff3338", 16);
             
-            createAdvancedExplosion(canvas.width / 2, canvas.height / 2, "#ff3838", 40, 2.5);
-            createAdvancedExplosion(canvas.width / 2, canvas.height / 3, "#ff9f43", 30, 2.0);
-            createAdvancedExplosion(canvas.width / 2, (canvas.height / 3) * 2, "#ffd32c", 30, 2.0);
+            createAdvancedExplosion(canvas.width / 2, canvas.height / 2, "#ff3838", 12, 1.0);
+            createAdvancedExplosion(canvas.width / 2, canvas.height / 3, "#ff9f43", 10, 0.9);
+            createAdvancedExplosion(canvas.width / 2, (canvas.height / 3) * 2, "#ffd32c", 10, 0.9);
 
             const bombDmg = 150;
             for (let i = enemies.length - 1; i >= 0; i--) {
@@ -1340,22 +1341,23 @@
                 eff.life--;
                 const progress = 1 - (eff.life / eff.maxLife);
                 ctx.save();
+                ctx.globalAlpha = 0.15 * (1 - progress);
                 if (eff.type === 0) {
                     const r = progress * canvas.width * 1.2;
-                    ctx.strokeStyle = '#ff3838'; ctx.lineWidth = 14 * (1 - progress);
+                    ctx.strokeStyle = '#ff3838'; ctx.lineWidth = 4 * (1 - progress);
                     ctx.beginPath(); ctx.arc(canvas.width / 2, canvas.height / 2, r, 0, Math.PI * 2); ctx.stroke();
                 } else if (eff.type === 1) {
-                    ctx.fillStyle = 'rgba(0, 210, 211, 0.35)';
-                    for (let b = 0; b < 6; b++) { ctx.fillRect((canvas.width / 6) * b + 15, 0, 24, canvas.height); }
+                    ctx.fillStyle = '#00d2d3';
+                    for (let b = 0; b < 6; b++) { ctx.fillRect((canvas.width / 6) * b + 15, 0, 12, canvas.height); }
                 } else if (eff.type === 2) {
-                    ctx.fillStyle = 'rgba(155, 89, 182, 0.45)';
-                    const r = Math.sin(progress * Math.PI) * 130;
+                    ctx.fillStyle = '#9b59b6';
+                    const r = Math.sin(progress * Math.PI) * 80;
                     ctx.beginPath(); ctx.arc(canvas.width / 2, canvas.height / 2, r, 0, Math.PI * 2); ctx.fill();
                 } else if (eff.type === 3) {
-                    ctx.strokeStyle = '#1cfc03'; ctx.lineWidth = 3;
-                    for (let l = 0; l < 8; l++) { ctx.beginPath(); ctx.moveTo(Math.random() * canvas.width, 0); ctx.lineTo(Math.random() * canvas.width, canvas.height); ctx.stroke(); }
+                    ctx.strokeStyle = '#1cfc03'; ctx.lineWidth = 2;
+                    for (let l = 0; l < 4; l++) { ctx.beginPath(); ctx.moveTo(Math.random() * canvas.width, 0); ctx.lineTo(Math.random() * canvas.width, canvas.height); ctx.stroke(); }
                 } else if (eff.type === 4) {
-                    ctx.fillStyle = 'rgba(255, 159, 67, 0.3)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = '#ff9f43'; ctx.fillRect(0, 0, canvas.width, canvas.height);
                 }
                 ctx.restore();
                 if (eff.life <= 0) activeAnnihilationEffect = null;
