@@ -4,10 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v2.7.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v2.8.0)</title>
     <style>
         body {
             margin: 0;
+            padding: 0;
             background-color: #08090c;
             color: #fff;
             font-family: 'Segoe UI', sans-serif;
@@ -16,25 +17,32 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            padding: 20px;
+            width: 100vw;
+            overflow-x: hidden;
+            overflow-y: auto;
             box-sizing: border-box;
         }
 
         h1 {
-            margin: 0 0 15px 0;
-            font-size: 24px;
+            margin: 8px 0 8px 0;
+            font-size: 22px;
             color: #ff3838;
             text-shadow: 0 0 15px rgba(255, 56, 56, 0.4);
             letter-spacing: 2px;
+            text-align: center;
+            transition: all 0.3s ease;
         }
 
         #gameWrapper {
             display: flex;
             flex-direction: row;
-            align-items: flex-start;
+            align-items: center;
             justify-content: center;
             gap: 20px;
-            max-width: 100%;
+            width: 100%;
+            max-width: 100vw;
+            box-sizing: border-box;
+            padding: 0 10px;
         }
 
         #gameContainer {
@@ -45,6 +53,12 @@
             overflow: hidden;
             width: 540px;
             height: 820px;
+            max-height: 94vh;
+            max-width: 98vw;
+            aspect-ratio: 540 / 820;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         canvas {
@@ -52,6 +66,8 @@
             background: #0f1115;
             width: 100%;
             height: 100%;
+            object-fit: contain;
+            touch-action: none;
         }
 
         #menuOverlay,
@@ -237,17 +253,17 @@
     </style>
 </head>
 
-<body>
+<body style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
 
-    <h1>HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v2.6.0</span></h1>
+    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v2.8.0</span></h1>
 
-    <div id="gameWrapper">
-        <div id="gameContainer">
+    <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
+        <div id="gameContainer" style="position: relative;">
             <canvas id="gameCanvas" width="540" height="820"></canvas>
 
             <div id="menuOverlay">
                 <div class="menu-title" style="font-size: 26px; color: #00d2d3; text-shadow: 0 0 15px rgba(0, 210, 211, 0.5); margin-bottom: 5px; letter-spacing: 2px;">HY 세라믹 솔라 파이터</div>
-                <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 1.5px; font-weight: bold; margin-bottom: 8px;">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 4px;">(v2.6.0)</span></div>
+                <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 1.5px; font-weight: bold; margin-bottom: 8px;">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 4px;">(v2.8.0)</span></div>
                 <div id="menuHighScore">🏆 최고 기록 스코어: 0 PTS</div>
 
                 <!-- 1. 난이도 프리셋 설정 -->
@@ -386,7 +402,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v2.7.0";
+        const GAME_VERSION = "v2.8.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 1.0, bossHpMultiplier = 1.0, zombieCountMultiplier = 1.0;
         let healWeight = 30, healAmount = 25, wpnWeight = 40, wpnDurationConfig = 420, buffWeight = 40, buffDurationConfig = 420, currentSplashRange = 40, defWeight = 30, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -610,6 +626,18 @@
 
         function getAllyRelativePos(index) { return { xOffset: ((index % 7) - 3) * 20, yOffset: (Math.floor(index / 7) + 1) * 22 }; }
 
+        function updateUIVisibility() {
+            const h1 = document.querySelector('h1');
+            const sidebar = document.getElementById('sidebarPanel');
+            if (gameState === "PLAYING") {
+                if (h1) h1.style.display = 'none';
+                if (sidebar) sidebar.style.display = 'none';
+            } else {
+                if (h1) h1.style.display = 'block';
+                if (sidebar) sidebar.style.display = 'flex';
+            }
+        }
+
         window.addEventListener('keydown', (e) => {
             const key = e.key.toLowerCase(); const step = 35;
             if (e.key === ' ' || key === 'x' || key === 'e') {
@@ -626,7 +654,7 @@
             }
             if (key === 'p' && gameState === "PLAYING") { isPaused = !isPaused; if (isPaused) stopBGM(); else startBGM(); playUpgradeSound(); addFloatingText(player.x, player.y - 40, isPaused ? "PAUSED" : "전투 재개", "#feca57"); }
             if (key === 'b' && gameState === "PLAYING") { toggleBGM(); }
-            if (key === 'm' && (gameState === "PLAYING" || gameState === "GAMEOVER")) { stopBGM(); saveHighScore(); isPaused = false; playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; }
+            if (key === 'm' && (gameState === "PLAYING" || gameState === "GAMEOVER")) { stopBGM(); saveHighScore(); isPaused = false; playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; updateUIVisibility(); }
             if (key === 's' && gameState === "PLAYING" && !isPaused) {
                 localStorage.setItem("rr_supreme_save_active", "true"); localStorage.setItem("rr_supreme_save_score", score); localStorage.setItem("rr_supreme_save_hp", player.hp); localStorage.setItem("rr_supreme_save_wave", waveCount);
                 localStorage.setItem("rr_supreme_save_allies", JSON.stringify(player.allies)); localStorage.setItem("rr_supreme_save_weapon", player.weaponType); localStorage.setItem("rr_supreme_save_buff", player.buffType);
@@ -658,7 +686,7 @@
             document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); if (audioCtx) playUpgradeSound();
         }
         function handleStartClick() { initAudio(); startBGM(); playUpgradeSound(); document.getElementById('menuOverlay').style.display = 'none'; startGame(); }
-        function handleRestartClick() { stopBGM(); playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; }
+        function handleRestartClick() { stopBGM(); playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; updateUIVisibility(); }
 
         canvas.addEventListener('mousemove', (e) => {
             if (gameState !== "PLAYING" || isPaused) return;
@@ -692,6 +720,7 @@
             player.weaponType = "NORMAL"; player.buffType = "NONE"; player.defenseType = "NONE";
             bullets = []; enemies = []; enemyLasers = []; gates = []; trappedHero = null; particles = []; muzzleFlashes = []; floatingTexts = []; droppedItems = []; activeAnnihilationEffect = null;
             updateUltimateUI();
+            updateUIVisibility();
             startBGM();
         }
 
