@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v2.0.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v2.1.0)</title>
     <style>
         body {
             margin: 0;
@@ -239,7 +239,7 @@
 
 <body>
 
-    <h1>HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v2.0.0</span></h1>
+    <h1>HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v2.1.0</span></h1>
 
     <div id="gameWrapper">
         <div id="gameContainer">
@@ -247,7 +247,7 @@
 
             <div id="menuOverlay">
                 <div class="menu-title" style="font-size: 26px; color: #00d2d3; text-shadow: 0 0 15px rgba(0, 210, 211, 0.5); margin-bottom: 5px; letter-spacing: 2px;">HY 세라믹 솔라 파이터</div>
-                <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 1.5px; font-weight: bold;">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 4px;">(v2.0.0)</span></div>
+                <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 1.5px; font-weight: bold;">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 4px;">(v2.1.0)</span></div>
                 <div id="menuHighScore">🏆 최고 기록 스코어: 0 PTS</div>
                 <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 10px; font-weight: bold;">초기 난이도 프리셋 설정
                     (5단계)</div>
@@ -354,7 +354,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v2.0.0";
+        const GAME_VERSION = "v2.1.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 1.0, bossHpMultiplier = 1.0, zombieCountMultiplier = 1.0;
         let healWeight = 30, healAmount = 25, wpnWeight = 40, wpnDurationConfig = 420, buffWeight = 40, buffDurationConfig = 420, currentSplashRange = 40, defWeight = 30, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -1161,54 +1161,81 @@
                 }
             });
 
-            // Draw Enemies (assets/zombie_boss.png & assets/zombie_enemy.png PNG Sprites)
+            // Draw Enemies (assets/zombie_boss.png & assets/zombie_enemy.png PNG Sprites + Vector Fallback)
             enemies.forEach(enemy => {
                 if (enemy.flashTimer > 0) {
                     ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius + 4, 0, Math.PI * 2); ctx.fill();
                 } else {
                     if (enemy.isBoss) {
-                        ctx.beginPath();
-                        ctx.arc(enemy.x, enemy.y, 14, rAngle, rAngle + Math.PI * 1.5);
-                        ctx.stroke();
-                        
-                        // Plasma Eye
-                        ctx.fillStyle = '#ffffff';
-                        ctx.beginPath();
-                        ctx.arc(enemy.x, enemy.y, 7, 0, Math.PI * 2);
-                        ctx.fill();
-                        
-                        ctx.restore();
+                        if (imgBoss.complete && imgBoss.naturalWidth > 0) {
+                            ctx.drawImage(imgBoss, enemy.x - 52, enemy.y - 52, 104, 104);
+                        } else {
+                            const pal = BOSS_PALETTES[enemy.bossType || 0];
+                            ctx.save();
+                            ctx.shadowBlur = 0;
+                            ctx.fillStyle = pal.body;
+                            ctx.beginPath();
+                            ctx.moveTo(enemy.x, enemy.y - 45);
+                            ctx.lineTo(enemy.x - 48, enemy.y + 10);
+                            ctx.lineTo(enemy.x - 25, enemy.y + 38);
+                            ctx.lineTo(enemy.x, enemy.y + 25);
+                            ctx.lineTo(enemy.x + 25, enemy.y + 38);
+                            ctx.lineTo(enemy.x + 48, enemy.y + 10);
+                            ctx.closePath();
+                            ctx.fill();
+                            
+                            ctx.fillStyle = pal.glow;
+                            ctx.beginPath();
+                            ctx.arc(enemy.x, enemy.y, 22, 0, Math.PI * 2);
+                            ctx.fill();
+                            
+                            const rAngle = globalAnimTick * 0.05;
+                            ctx.strokeStyle = pal.core;
+                            ctx.lineWidth = 2.5;
+                            ctx.beginPath();
+                            ctx.arc(enemy.x, enemy.y, 14, rAngle, rAngle + Math.PI * 1.5);
+                            ctx.stroke();
+                            
+                            ctx.fillStyle = '#ffffff';
+                            ctx.beginPath();
+                            ctx.arc(enemy.x, enemy.y, 7, 0, Math.PI * 2);
+                            ctx.fill();
+                            
+                            ctx.restore();
+                        }
                     } else {
-                        const pal = ALIEN_PALETTES[enemy.alienType || 0];
-                        ctx.save();
-                        ctx.shadowBlur = 0;
-                        ctx.shadowColor = pal.glow;
-                        
-                        // Alien Fighter Geometry (Vector Drawn)
-                        ctx.fillStyle = pal.main;
-                        ctx.beginPath();
-                        ctx.moveTo(enemy.x, enemy.y + 18);           // Nose (pointing down)
-                        ctx.lineTo(enemy.x - 18, enemy.y - 12);     // Left wingtip
-                        ctx.lineTo(enemy.x - 8, enemy.y - 6);       // Left wing inner
-                        ctx.lineTo(enemy.x - 6, enemy.y - 18);      // Left tail
-                        ctx.lineTo(enemy.x + 6, enemy.y - 18);      // Right tail
-                        ctx.lineTo(enemy.x + 8, enemy.y - 6);       // Right wing inner
-                        ctx.lineTo(enemy.x + 18, enemy.y - 12);     // Right wingtip
-                        ctx.closePath();
-                        ctx.fill();
-                        
-                        // Sub Armor & Cockpit Glow
-                        ctx.fillStyle = pal.glow;
-                        ctx.beginPath();
-                        ctx.arc(enemy.x, enemy.y - 2, 5, 0, Math.PI * 2);
-                        ctx.fill();
-                        
-                        ctx.fillStyle = '#ffffff';
-                        ctx.beginPath();
-                        ctx.arc(enemy.x, enemy.y, 2.5, 0, Math.PI * 2);
-                        ctx.fill();
-                        
-                        ctx.restore();
+                        if (imgEnemy.complete && imgEnemy.naturalWidth > 0) {
+                            ctx.drawImage(imgEnemy, enemy.x - 24, enemy.y - 24, 48, 48);
+                        } else {
+                            const pal = ALIEN_PALETTES[enemy.alienType || 0];
+                            ctx.save();
+                            ctx.shadowBlur = 0;
+                            ctx.shadowColor = pal.glow;
+                            
+                            ctx.fillStyle = pal.main;
+                            ctx.beginPath();
+                            ctx.moveTo(enemy.x, enemy.y + 18);
+                            ctx.lineTo(enemy.x - 18, enemy.y - 12);
+                            ctx.lineTo(enemy.x - 8, enemy.y - 6);
+                            ctx.lineTo(enemy.x - 6, enemy.y - 18);
+                            ctx.lineTo(enemy.x + 6, enemy.y - 18);
+                            ctx.lineTo(enemy.x + 8, enemy.y - 6);
+                            ctx.lineTo(enemy.x + 18, enemy.y - 12);
+                            ctx.closePath();
+                            ctx.fill();
+                            
+                            ctx.fillStyle = pal.glow;
+                            ctx.beginPath();
+                            ctx.arc(enemy.x, enemy.y - 2, 5, 0, Math.PI * 2);
+                            ctx.fill();
+                            
+                            ctx.fillStyle = '#ffffff';
+                            ctx.beginPath();
+                            ctx.arc(enemy.x, enemy.y, 2.5, 0, Math.PI * 2);
+                            ctx.fill();
+                            
+                            ctx.restore();
+                        }
                     }
                 }
             });
