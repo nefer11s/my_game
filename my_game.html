@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 솔라 세라믹 파이터 - 위기에 빠진 현우를 구출하라! (v1.9.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v2.0.0)</title>
     <style>
         body {
             margin: 0;
@@ -239,15 +239,15 @@
 
 <body>
 
-    <h1>HY 솔라 세라믹 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v1.9.0</span></h1>
+    <h1>HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v2.0.0</span></h1>
 
     <div id="gameWrapper">
         <div id="gameContainer">
             <canvas id="gameCanvas" width="540" height="820"></canvas>
 
             <div id="menuOverlay">
-                <div class="menu-title" style="font-size: 26px; color: #00d2d3; text-shadow: 0 0 15px rgba(0, 210, 211, 0.5); margin-bottom: 5px; letter-spacing: 2px;">HY 솔라 세라믹 파이터</div>
-                <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 1.5px; font-weight: bold;">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 4px;">(v1.9.0)</span></div>
+                <div class="menu-title" style="font-size: 26px; color: #00d2d3; text-shadow: 0 0 15px rgba(0, 210, 211, 0.5); margin-bottom: 5px; letter-spacing: 2px;">HY 세라믹 솔라 파이터</div>
+                <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 1.5px; font-weight: bold;">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 4px;">(v2.0.0)</span></div>
                 <div id="menuHighScore">🏆 최고 기록 스코어: 0 PTS</div>
                 <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 10px; font-weight: bold;">초기 난이도 프리셋 설정
                     (5단계)</div>
@@ -354,7 +354,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v1.9.0";
+        const GAME_VERSION = "v2.0.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 1.0, bossHpMultiplier = 1.0, zombieCountMultiplier = 1.0;
         let healWeight = 30, healAmount = 25, wpnWeight = 40, wpnDurationConfig = 420, buffWeight = 40, buffDurationConfig = 420, currentSplashRange = 40, defWeight = 30, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -1123,89 +1123,50 @@
                 });
             }
 
-            // Draw Player Jet (Clean Crisp Vector Canvas Graphics - Zero Light Bloom)
+            // Draw Player Jet (assets/hero_ship.png PNG Sprite + Vector Fallback)
             ctx.save();
             ctx.shadowBlur = 0;
-            ctx.shadowColor = '#00d2d3';
             
-            ctx.fillStyle = '#00d2d3';
-            ctx.beginPath();
-            ctx.moveTo(player.x, player.y - 28);
-            ctx.lineTo(player.x - 24, player.y + 18);
-            ctx.lineTo(player.x - 10, player.y + 10);
-            ctx.lineTo(player.x - 8, player.y + 24);
-            ctx.lineTo(player.x + 8, player.y + 24);
-            ctx.lineTo(player.x + 10, player.y + 10);
-            ctx.lineTo(player.x + 24, player.y + 18);
-            ctx.closePath();
-            ctx.fill();
-            
-            ctx.fillStyle = '#1e3799';
-            ctx.beginPath();
-            ctx.moveTo(player.x, player.y - 20);
-            ctx.lineTo(player.x - 12, player.y + 12);
-            ctx.lineTo(player.x + 12, player.y + 12);
-            ctx.closePath();
-            ctx.fill();
-            
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.arc(player.x, player.y - 4, 4, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.fillStyle = '#f1c40f';
-            ctx.fillRect(player.x - 22, player.y - 2, 4, 14);
-            ctx.fillRect(player.x + 18, player.y - 2, 4, 14);
+            if (imgHero.complete && imgHero.naturalWidth > 0) {
+                ctx.drawImage(imgHero, player.x - 30, player.y - 30, 60, 60);
+            } else {
+                ctx.fillStyle = '#00d2d3';
+                ctx.beginPath();
+                ctx.moveTo(player.x, player.y - 28);
+                ctx.lineTo(player.x - 24, player.y + 18);
+                ctx.lineTo(player.x - 10, player.y + 10);
+                ctx.lineTo(player.x - 8, player.y + 24);
+                ctx.lineTo(player.x + 8, player.y + 24);
+                ctx.lineTo(player.x + 10, player.y + 10);
+                ctx.lineTo(player.x + 24, player.y + 18);
+                ctx.closePath();
+                ctx.fill();
+            }
             ctx.restore();
 
             player.allies.forEach((ally, idx) => {
                 const offset = getAllyRelativePos(idx);
                 const ax = player.x + offset.xOffset;
                 const ay = player.y + offset.yOffset;
-                ctx.fillStyle = ally.type === 'SNIPER' ? '#10ac84' : ally.type === 'HEAVY_WEAPON' ? '#fa8231' : '#78e08f';
                 
-                // Draw fighter plane shape
-                ctx.beginPath();
-                ctx.moveTo(ax, ay - 8); ctx.lineTo(ax - 7, ay + 5); ctx.lineTo(ax - 2.5, ay + 2);
-                ctx.lineTo(ax - 2.5, ay + 7); ctx.lineTo(ax - 5, ay + 9); ctx.lineTo(ax + 5, ay + 9);
-                ctx.lineTo(ax + 2.5, ay + 7); ctx.lineTo(ax + 2.5, ay + 2); ctx.lineTo(ax + 7, ay + 5);
-                ctx.closePath(); ctx.fill();
-                
-                ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(ax, ay - 1.5, 2, 0, Math.PI * 2); ctx.fill();
+                if (imgHero.complete && imgHero.naturalWidth > 0) {
+                    ctx.drawImage(imgHero, ax - 14, ay - 14, 28, 28);
+                } else {
+                    ctx.fillStyle = ally.type === 'SNIPER' ? '#10ac84' : ally.type === 'HEAVY_WEAPON' ? '#fa8231' : '#78e08f';
+                    ctx.beginPath();
+                    ctx.moveTo(ax, ay - 8); ctx.lineTo(ax - 7, ay + 5); ctx.lineTo(ax - 2.5, ay + 2);
+                    ctx.lineTo(ax - 2.5, ay + 7); ctx.lineTo(ax - 5, ay + 9); ctx.lineTo(ax + 5, ay + 9);
+                    ctx.lineTo(ax + 2.5, ay + 7); ctx.lineTo(ax + 2.5, ay + 2); ctx.lineTo(ax + 7, ay + 5);
+                    ctx.closePath(); ctx.fill();
+                }
             });
 
-            // Draw Enemies (10 Alien Fighters & 10 Alien Boss Ships)
+            // Draw Enemies (assets/zombie_boss.png & assets/zombie_enemy.png PNG Sprites)
             enemies.forEach(enemy => {
                 if (enemy.flashTimer > 0) {
                     ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius + 4, 0, Math.PI * 2); ctx.fill();
                 } else {
                     if (enemy.isBoss) {
-                        const pal = BOSS_PALETTES[enemy.bossType || 0];
-                        ctx.save();
-                        ctx.shadowBlur = 0;
-                        
-                        // Boss Main Body Outer Wings
-                        ctx.fillStyle = pal.body;
-                        ctx.beginPath();
-                        ctx.moveTo(enemy.x, enemy.y - 45);
-                        ctx.lineTo(enemy.x - 48, enemy.y + 10);
-                        ctx.lineTo(enemy.x - 25, enemy.y + 38);
-                        ctx.lineTo(enemy.x, enemy.y + 25);
-                        ctx.lineTo(enemy.x + 25, enemy.y + 38);
-                        ctx.lineTo(enemy.x + 48, enemy.y + 10);
-                        ctx.closePath();
-                        ctx.fill();
-                        
-                        // Boss Secondary Shell
-                        ctx.fillStyle = pal.glow;
-                        ctx.beginPath();
-                        ctx.arc(enemy.x, enemy.y, 22, 0, Math.PI * 2);
-                        ctx.fill();
-                        
-                        // Rotating Energy Core Ring
-                        const rAngle = globalAnimTick * 0.05;
-                        ctx.strokeStyle = pal.core;
-                        ctx.lineWidth = 2.5;
                         ctx.beginPath();
                         ctx.arc(enemy.x, enemy.y, 14, rAngle, rAngle + Math.PI * 1.5);
                         ctx.stroke();
