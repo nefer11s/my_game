@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v2.2.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v2.4.0)</title>
     <style>
         body {
             margin: 0;
@@ -239,7 +239,7 @@
 
 <body>
 
-    <h1>HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v2.2.0</span></h1>
+    <h1>HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v2.4.0</span></h1>
 
     <div id="gameWrapper">
         <div id="gameContainer">
@@ -247,7 +247,7 @@
 
             <div id="menuOverlay">
                 <div class="menu-title" style="font-size: 26px; color: #00d2d3; text-shadow: 0 0 15px rgba(0, 210, 211, 0.5); margin-bottom: 5px; letter-spacing: 2px;">HY 세라믹 솔라 파이터</div>
-                <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 1.5px; font-weight: bold; margin-bottom: 8px;">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 4px;">(v2.2.0)</span></div>
+                <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 1.5px; font-weight: bold; margin-bottom: 8px;">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 4px;">(v2.4.0)</span></div>
                 <div id="menuHighScore">🏆 최고 기록 스코어: 0 PTS</div>
 
                 <!-- 1. 난이도 프리셋 설정 -->
@@ -366,7 +366,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v2.2.0";
+        const GAME_VERSION = "v2.4.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 1.0, bossHpMultiplier = 1.0, zombieCountMultiplier = 1.0;
         let healWeight = 30, healAmount = 25, wpnWeight = 40, wpnDurationConfig = 420, buffWeight = 40, buffDurationConfig = 420, currentSplashRange = 40, defWeight = 30, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -398,10 +398,29 @@
         let bullets = [], enemies = [], enemyLasers = [], gates = [], trappedHero = null, particles = [], muzzleFlashes = [], floatingTexts = [], droppedItems = [];
         let activeAnnihilationEffect = null, annihilationCounter = 0;
 
-        // Sprite Assets
-        const imgHero = new Image(); imgHero.src = 'assets/hero_ship.png';
-        const imgEnemy = new Image(); imgEnemy.src = 'assets/zombie_enemy.png';
-        const imgBoss = new Image(); imgBoss.src = 'assets/zombie_boss.png';
+        // Dynamic Runtime Chromakey Black-Box Removal Helper
+        const processedCanvasCache = new WeakMap();
+        function getCleanTransparentSprite(img) {
+            if (!img || !img.complete || img.naturalWidth === 0) return null;
+            if (processedCanvasCache.has(img)) return processedCanvasCache.get(img);
+            const cvs = document.createElement('canvas');
+            cvs.width = img.naturalWidth;
+            cvs.height = img.naturalHeight;
+            const cctx = cvs.getContext('2d');
+            cctx.drawImage(img, 0, 0);
+            try {
+                const imgData = cctx.getImageData(0, 0, cvs.width, cvs.height);
+                const d = imgData.data;
+                for (let i = 0; i < d.length; i += 4) {
+                    if (d[i] < 32 && d[i + 1] < 32 && d[i + 2] < 32) {
+                        d[i + 3] = 0; // Force 100% Alpha Transparency on Black Box Pixels!
+                    }
+                }
+                cctx.putImageData(imgData, 0, 0);
+            } catch (e) {}
+            processedCanvasCache.set(img, cvs);
+            return cvs;
+        }
 
         // Starfield background
         let stars = [];
@@ -1145,24 +1164,16 @@
                 });
             }
 
-            // Draw Player Jet (assets/hero_ship.png PNG Sprite + Vector Fallback)
+            // Draw Player Jet (assets/hero_ship.png PNG Sprite with Dynamic Zero Black-Box Chromakey)
             ctx.save();
             ctx.shadowBlur = 0;
             
-            if (imgHero.complete && imgHero.naturalWidth > 0) {
-                ctx.drawImage(imgHero, player.x - 30, player.y - 30, 60, 60);
+            const cleanHeroCvs = getCleanTransparentSprite(imgHero);
+            if (cleanHeroCvs) {
+                ctx.drawImage(cleanHeroCvs, player.x - 30, player.y - 30, 60, 60);
             } else {
-                ctx.fillStyle = '#00d2d3';
-                ctx.beginPath();
-                ctx.moveTo(player.x, player.y - 28);
-                ctx.lineTo(player.x - 24, player.y + 18);
-                ctx.lineTo(player.x - 10, player.y + 10);
-                ctx.lineTo(player.x - 8, player.y + 24);
-                ctx.lineTo(player.x + 8, player.y + 24);
-                ctx.lineTo(player.x + 10, player.y + 10);
-                ctx.lineTo(player.x + 24, player.y + 18);
-                ctx.closePath();
-                ctx.fill();
+                ctx.fillStyle = '#00d2d3'; ctx.beginPath();
+                ctx.moveTo(player.x, player.y - 28); ctx.lineTo(player.x - 24, player.y + 18); ctx.lineTo(player.x - 10, player.y + 10); ctx.lineTo(player.x - 8, player.y + 24); ctx.lineTo(player.x + 8, player.y + 24); ctx.lineTo(player.x + 10, player.y + 10); ctx.lineTo(player.x + 24, player.y + 18); ctx.closePath(); ctx.fill();
             }
             ctx.restore();
 
@@ -1171,91 +1182,44 @@
                 const ax = player.x + offset.xOffset;
                 const ay = player.y + offset.yOffset;
                 
-                if (imgHero.complete && imgHero.naturalWidth > 0) {
-                    ctx.drawImage(imgHero, ax - 14, ay - 14, 28, 28);
+                if (cleanHeroCvs) {
+                    ctx.drawImage(cleanHeroCvs, ax - 14, ay - 14, 28, 28);
                 } else {
                     ctx.fillStyle = ally.type === 'SNIPER' ? '#10ac84' : ally.type === 'HEAVY_WEAPON' ? '#fa8231' : '#78e08f';
-                    ctx.beginPath();
-                    ctx.moveTo(ax, ay - 8); ctx.lineTo(ax - 7, ay + 5); ctx.lineTo(ax - 2.5, ay + 2);
-                    ctx.lineTo(ax - 2.5, ay + 7); ctx.lineTo(ax - 5, ay + 9); ctx.lineTo(ax + 5, ay + 9);
-                    ctx.lineTo(ax + 2.5, ay + 7); ctx.lineTo(ax + 2.5, ay + 2); ctx.lineTo(ax + 7, ay + 5);
-                    ctx.closePath(); ctx.fill();
+                    ctx.beginPath(); ctx.moveTo(ax, ay - 8); ctx.lineTo(ax - 7, ay + 5); ctx.lineTo(ax - 2.5, ay + 2); ctx.lineTo(ax - 2.5, ay + 7); ctx.lineTo(ax - 5, ay + 9); ctx.lineTo(ax + 5, ay + 9); ctx.lineTo(ax + 2.5, ay + 7); ctx.lineTo(ax + 2.5, ay + 2); ctx.lineTo(ax + 7, ay + 5); ctx.closePath(); ctx.fill();
                 }
             });
 
-            // Draw Enemies (assets/zombie_boss.png & assets/zombie_enemy.png PNG Sprites + Vector Fallback)
+            // Draw Enemies (10 Alien Fighters & 10 Boss Ships - Transparent PNGs with Zero Black Boxes)
             enemies.forEach(enemy => {
                 if (enemy.flashTimer > 0) {
                     ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius + 4, 0, Math.PI * 2); ctx.fill();
                 } else {
                     if (enemy.isBoss) {
-                        if (imgBoss.complete && imgBoss.naturalWidth > 0) {
-                            ctx.drawImage(imgBoss, enemy.x - 52, enemy.y - 52, 104, 104);
+                        const bImg = imgBossTypes[(enemy.bossType || 0) % 10];
+                        const cleanBossCvs = getCleanTransparentSprite(bImg) || getCleanTransparentSprite(imgBoss);
+                        if (cleanBossCvs) {
+                            ctx.drawImage(cleanBossCvs, enemy.x - 52, enemy.y - 52, 104, 104);
                         } else {
                             const pal = BOSS_PALETTES[enemy.bossType || 0];
-                            ctx.save();
-                            ctx.shadowBlur = 0;
-                            ctx.fillStyle = pal.body;
-                            ctx.beginPath();
-                            ctx.moveTo(enemy.x, enemy.y - 45);
-                            ctx.lineTo(enemy.x - 48, enemy.y + 10);
-                            ctx.lineTo(enemy.x - 25, enemy.y + 38);
-                            ctx.lineTo(enemy.x, enemy.y + 25);
-                            ctx.lineTo(enemy.x + 25, enemy.y + 38);
-                            ctx.lineTo(enemy.x + 48, enemy.y + 10);
-                            ctx.closePath();
-                            ctx.fill();
-                            
-                            ctx.fillStyle = pal.glow;
-                            ctx.beginPath();
-                            ctx.arc(enemy.x, enemy.y, 22, 0, Math.PI * 2);
-                            ctx.fill();
-                            
-                            const rAngle = globalAnimTick * 0.05;
-                            ctx.strokeStyle = pal.core;
-                            ctx.lineWidth = 2.5;
-                            ctx.beginPath();
-                            ctx.arc(enemy.x, enemy.y, 14, rAngle, rAngle + Math.PI * 1.5);
-                            ctx.stroke();
-                            
-                            ctx.fillStyle = '#ffffff';
-                            ctx.beginPath();
-                            ctx.arc(enemy.x, enemy.y, 7, 0, Math.PI * 2);
-                            ctx.fill();
-                            
+                            ctx.save(); ctx.shadowBlur = 0; ctx.fillStyle = pal.body; ctx.beginPath();
+                            ctx.moveTo(enemy.x, enemy.y - 45); ctx.lineTo(enemy.x - 48, enemy.y + 10); ctx.lineTo(enemy.x - 25, enemy.y + 38); ctx.lineTo(enemy.x, enemy.y + 25); ctx.lineTo(enemy.x + 25, enemy.y + 38); ctx.lineTo(enemy.x + 48, enemy.y + 10); ctx.closePath(); ctx.fill();
+                            ctx.fillStyle = pal.glow; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 22, 0, Math.PI * 2); ctx.fill();
+                            const rAngle = globalAnimTick * 0.05; ctx.strokeStyle = pal.core; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 14, rAngle, rAngle + Math.PI * 1.5); ctx.stroke();
+                            ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 7, 0, Math.PI * 2); ctx.fill();
                             ctx.restore();
                         }
                     } else {
-                        if (imgEnemy.complete && imgEnemy.naturalWidth > 0) {
-                            ctx.drawImage(imgEnemy, enemy.x - 24, enemy.y - 24, 48, 48);
+                        const aImg = imgAlienTypes[(enemy.alienType || 0) % 10];
+                        const cleanAlienCvs = getCleanTransparentSprite(aImg) || getCleanTransparentSprite(imgEnemy);
+                        if (cleanAlienCvs) {
+                            ctx.drawImage(cleanAlienCvs, enemy.x - 24, enemy.y - 24, 48, 48);
                         } else {
                             const pal = ALIEN_PALETTES[enemy.alienType || 0];
-                            ctx.save();
-                            ctx.shadowBlur = 0;
-                            ctx.shadowColor = pal.glow;
-                            
-                            ctx.fillStyle = pal.main;
-                            ctx.beginPath();
-                            ctx.moveTo(enemy.x, enemy.y + 18);
-                            ctx.lineTo(enemy.x - 18, enemy.y - 12);
-                            ctx.lineTo(enemy.x - 8, enemy.y - 6);
-                            ctx.lineTo(enemy.x - 6, enemy.y - 18);
-                            ctx.lineTo(enemy.x + 6, enemy.y - 18);
-                            ctx.lineTo(enemy.x + 8, enemy.y - 6);
-                            ctx.lineTo(enemy.x + 18, enemy.y - 12);
-                            ctx.closePath();
-                            ctx.fill();
-                            
-                            ctx.fillStyle = pal.glow;
-                            ctx.beginPath();
-                            ctx.arc(enemy.x, enemy.y - 2, 5, 0, Math.PI * 2);
-                            ctx.fill();
-                            
-                            ctx.fillStyle = '#ffffff';
-                            ctx.beginPath();
-                            ctx.arc(enemy.x, enemy.y, 2.5, 0, Math.PI * 2);
-                            ctx.fill();
-                            
+                            ctx.save(); ctx.shadowBlur = 0; ctx.fillStyle = pal.main; ctx.beginPath();
+                            ctx.moveTo(enemy.x, enemy.y + 18); ctx.lineTo(enemy.x - 18, enemy.y - 12); ctx.lineTo(enemy.x - 8, enemy.y - 6); ctx.lineTo(enemy.x - 6, enemy.y - 18); ctx.lineTo(enemy.x + 6, enemy.y - 18); ctx.lineTo(enemy.x + 8, enemy.y - 6); ctx.lineTo(enemy.x + 18, enemy.y - 12); ctx.closePath(); ctx.fill();
+                            ctx.fillStyle = pal.glow; ctx.beginPath(); ctx.arc(enemy.x, enemy.y - 2, 5, 0, Math.PI * 2); ctx.fill();
+                            ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 2.5, 0, Math.PI * 2); ctx.fill();
                             ctx.restore();
                         }
                     }
@@ -1283,48 +1247,27 @@
                 
                 ctx.restore();
             });
-            // Draw dropped items
+            // Draw dropped items (13 Transparent PNG Item Icons with Fallback & Chromakey)
             droppedItems.forEach(item => {
                 ctx.save();
-                
-                if (item.type === "HEAL") {
+                const itemImg = itemImages[item.type];
+                const cleanItemCvs = getCleanTransparentSprite(itemImg);
+                if (cleanItemCvs) {
                     const pulse = Math.sin(globalAnimTick * 0.25) * 2;
-                    ctx.shadowBlur = 0;
-                    
-                    ctx.fillStyle = '#1cfc03';
-                    ctx.beginPath();
-                    ctx.arc(item.x, item.y, 13 + pulse, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    ctx.fillStyle = '#0a200f';
-                    ctx.beginPath();
-                    ctx.arc(item.x, item.y, 9 + pulse * 0.5, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    ctx.fillStyle = '#1cfc03';
-                    ctx.font = 'bold 12px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText('💚', item.x, item.y);
+                    ctx.drawImage(cleanItemCvs, item.x - 16 - pulse * 0.5, item.y - 16 - pulse * 0.5, 32 + pulse, 32 + pulse);
                 } else {
-                    ctx.shadowBlur = 0;
-                    ctx.fillStyle = item.color;
-                    ctx.beginPath();
-                    ctx.arc(item.x, item.y, 12, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    ctx.fillStyle = '#141822';
-                    ctx.beginPath();
-                    ctx.arc(item.x, item.y, 9, 0, Math.PI * 2);
-                    ctx.fill();
-                    
-                    ctx.fillStyle = item.color;
-                    ctx.font = 'bold 10px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(item.label.split(" ").pop(), item.x, item.y);
+                    if (item.type === "HEAL") {
+                        const pulse = Math.sin(globalAnimTick * 0.25) * 2;
+                        ctx.shadowBlur = 0;
+                        ctx.fillStyle = '#1cfc03'; ctx.beginPath(); ctx.arc(item.x, item.y, 13 + pulse, 0, Math.PI * 2); ctx.fill();
+                        ctx.fillStyle = '#0a200f'; ctx.beginPath(); ctx.arc(item.x, item.y, 9 + pulse * 0.5, 0, Math.PI * 2); ctx.fill();
+                        ctx.fillStyle = '#1cfc03'; ctx.font = 'bold 12px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('💚', item.x, item.y);
+                    } else {
+                        ctx.shadowBlur = 0; ctx.fillStyle = item.color; ctx.beginPath(); ctx.arc(item.x, item.y, 12, 0, Math.PI * 2); ctx.fill();
+                        ctx.fillStyle = '#141822'; ctx.beginPath(); ctx.arc(item.x, item.y, 9, 0, Math.PI * 2); ctx.fill();
+                        ctx.fillStyle = item.color; ctx.font = 'bold 10px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(item.label.split(" ").pop(), item.x, item.y);
+                    }
                 }
-                
                 ctx.restore();
             });
 
