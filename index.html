@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v3.3.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v3.4.1)</title>
     <style>
         body {
             margin: 0;
@@ -255,7 +255,7 @@
 
 <body style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
 
-    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v3.3.0</span></h1>
+    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v3.4.1</span></h1>
 
     <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
         <div id="gameContainer" style="position: relative;">
@@ -264,17 +264,16 @@
             <div id="menuOverlay" style="padding: 30px 20px; box-sizing: border-box; justify-content: space-between;">
                 <div style="margin-top: 30px; display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <div class="menu-title" style="font-size: 32px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.7); margin-bottom: 6px; letter-spacing: 3px;">HY 세라믹 솔라 파이터</div>
-                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v3.3.0)</span></div>
+                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v3.4.1)</span></div>
                     <div id="menuHighScore" style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">🏆 HIGH SCORE: 0 PTS</div>
 
-                    <!-- 1. 난이도 프리셋 셀렉터 -->
-                    <div style="font-size: 13px; color: #a4b0be; margin-bottom: 10px; font-weight: bold;">🎯 작전 난이도 선택</div>
+                    <div style="font-size: 13px; color: #a4b0be; margin-bottom: 10px; font-weight: bold;">🎯 작전 난이도 선택 (전체 난이도 10% 하향 조율)</div>
                     <div class="diff-btn-container" style="margin-bottom: 40px; display: flex; gap: 6px; justify-content: center;">
-                        <button class="diff-btn" onclick="setSelectDiff('EASY', 0.5, this)">초보</button>
-                        <button class="diff-btn active" onclick="setSelectDiff('NORMAL', 1.0, this)">일반</button>
-                        <button class="diff-btn" onclick="setSelectDiff('HARD', 1.4, this)">하드</button>
-                        <button class="diff-btn" onclick="setSelectDiff('EXPERT', 1.9, this)">정예</button>
-                        <button class="diff-btn" onclick="setSelectDiff('NIGHTMARE', 2.5, this)">악몽</button>
+                        <button class="diff-btn" onclick="setSelectDiff('EASY', 0.45, this)">초보</button>
+                        <button class="diff-btn active" onclick="setSelectDiff('NORMAL', 0.9, this)">일반</button>
+                        <button class="diff-btn" onclick="setSelectDiff('HARD', 1.25, this)">하드</button>
+                        <button class="diff-btn" onclick="setSelectDiff('EXPERT', 1.7, this)">정예</button>
+                        <button class="diff-btn" onclick="setSelectDiff('NIGHTMARE', 2.2, this)">악몽</button>
                     </div>
 
                     <!-- 2. 메인 AAA 스타일에 매칭되는 고시성 CTA 버튼 -->
@@ -455,9 +454,9 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v3.3.0";
-        let stageLevel = 1, waveCount = 0, diffMultiplier = 1.0, bossHpMultiplier = 1.0, zombieCountMultiplier = 1.0;
-        let healWeight = 30, healAmount = 25, wpnWeight = 40, wpnDurationConfig = 420, buffWeight = 40, buffDurationConfig = 420, currentSplashRange = 40, defWeight = 30, defDurationConfig = 420;
+        const GAME_VERSION = "v3.4.1";
+        let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9, bossHpMultiplier = 0.9, zombieCountMultiplier = 0.9;
+        let healWeight = 35, healAmount = 30, wpnWeight = 45, wpnDurationConfig = 420, buffWeight = 45, buffDurationConfig = 420, currentSplashRange = 45, defWeight = 35, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
 
         function updateSliders() {
@@ -483,7 +482,7 @@
         if (localStorage.getItem("rr_supreme_highscore")) highScore = parseInt(localStorage.getItem("rr_supreme_highscore"));
         document.getElementById('menuHighScore').innerText = "🏆 최고 기록 스코어: " + highScore + " PTS";
 
-        const player = { x: 270, y: 590, radius: 17, speed: 0.22, targetX: 270, targetY: 590, allies: [], shootCooldown: 0, shootInterval: 12, hp: 100, maxHp: 100, lives: 3, weaponType: "NORMAL", buffType: "NONE", defenseType: "NONE", weaponTimer: 0, buffTimer: 0, defenseTimer: 0, ultimateStock: 3 };
+        const player = { x: 270, y: 590, radius: 17, speed: 0.28, targetX: 270, targetY: 590, allies: [], shootCooldown: 0, shootInterval: 10, hp: 100, maxHp: 100, lives: 3, weaponType: "NORMAL", buffType: "NONE", defenseType: "NONE", weaponTimer: 0, buffTimer: 0, defenseTimer: 0, ultimateStock: 3 };
         let bullets = [], enemies = [], enemyLasers = [], gates = [], trappedHero = null, particles = [], muzzleFlashes = [], floatingTexts = [], droppedItems = [];
         let activeAnnihilationEffect = null, annihilationCounter = 0;
 
@@ -776,7 +775,7 @@
         }
 
         function setSelectDiff(name, mult, btn) {
-            const lvMap = { 0.5: 1, 1.0: 2, 1.4: 3, 1.9: 4, 2.5: 5 }; difficulty = name + ` (Lv.${lvMap[mult] || 2})`; diffMultiplier = mult;
+            const lvMap = { 0.45: 1, 0.9: 2, 1.25: 3, 1.7: 4, 2.2: 5 }; difficulty = name + ` (Lv.${lvMap[mult] || 2})`; diffMultiplier = mult;
             document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); if (audioCtx) playUpgradeSound();
         }
         function handleStartClick() { initAudio(); startBGM(); playUpgradeSound(); document.getElementById('menuOverlay').style.display = 'none'; startGame(); }
@@ -922,17 +921,17 @@
                 if (enemy.flashTimer > 0) enemy.flashTimer--; if (globalAnimTick % 8 === 0) enemy.animFrame = (enemy.animFrame + 1) % 4;
                 enemy.x += (player.x - enemy.x) * (enemy.isBoss ? 0.012 : 0.007);
                 
-                // Enemy Firing Logic - High Visibility Plasma Bullets
-                if (!enemy.isBoss && globalAnimTick % 65 === 0 && Math.random() > 0.35) {
+                // Enemy Firing Logic - High Visibility Plasma Bullets (Tuned Cooldowns for Smooth Evade)
+                if (!enemy.isBoss && globalAnimTick % 85 === 0 && Math.random() > 0.45) {
                     const pal = ALIEN_PALETTES[enemy.alienType || 0];
-                    enemyLasers.push({ x: enemy.x, y: enemy.y + 18, w: 8, h: 22, vy: 5.5, color: pal.glow, isBoss: false, vx: 0 });
+                    enemyLasers.push({ x: enemy.x, y: enemy.y + 18, w: 8, h: 22, vy: 4.8, color: pal.glow, isBoss: false, vx: 0 });
                 }
-                if (enemy.isBoss && globalAnimTick % 75 === 0) {
+                if (enemy.isBoss && globalAnimTick % 95 === 0) {
                     const pal = BOSS_PALETTES[enemy.bossType || 0];
-                    // Triple Spread Shot for Bosses!
-                    enemyLasers.push({ x: enemy.x - 20, y: enemy.y + 35, w: 12, h: 28, vy: 6.5, vx: -1.2, color: pal.glow, isBoss: true });
-                    enemyLasers.push({ x: enemy.x, y: enemy.y + 40, w: 14, h: 32, vy: 7.0, vx: 0, color: '#ff0055', isBoss: true });
-                    enemyLasers.push({ x: enemy.x + 20, y: enemy.y + 35, w: 12, h: 28, vy: 6.5, vx: 1.2, color: pal.glow, isBoss: true });
+                    // Triple Spread Shot for Bosses (Tuned Velocity)
+                    enemyLasers.push({ x: enemy.x - 20, y: enemy.y + 35, w: 10, h: 26, vy: 5.5, vx: -1.0, color: pal.glow, isBoss: true });
+                    enemyLasers.push({ x: enemy.x, y: enemy.y + 40, w: 12, h: 28, vy: 6.0, vx: 0, color: '#ff0055', isBoss: true });
+                    enemyLasers.push({ x: enemy.x + 20, y: enemy.y + 35, w: 10, h: 26, vy: 5.5, vx: 1.0, color: pal.glow, isBoss: true });
                 }
             });
 
@@ -943,7 +942,7 @@
                 if (laser.y > canvas.height + 20 || laser.x < -20 || laser.x > canvas.width + 20) { enemyLasers.splice(l, 1); continue; }
                 if (Math.abs(laser.x - player.x) < (player.radius + laser.w / 2) && Math.abs(laser.y - player.y) < (player.radius + laser.h / 2)) {
                     if (player.defenseType !== "NANO_SHIELD") {
-                        playHurtSound(); let dmg = laser.isBoss ? 20 : 6; if (player.defenseType === "HEAVY_ARMOR") dmg = Math.floor(dmg * 0.5);
+                        playHurtSound(); let dmg = laser.isBoss ? 16 : 5; if (player.defenseType === "HEAVY_ARMOR") dmg = Math.floor(dmg * 0.5);
                         player.hp -= Math.floor(dmg * diffMultiplier); addFloatingText(player.x, player.y - 30, `레이저 피격 -${Math.floor(dmg * diffMultiplier)} HP`, '#ff3338');
                         if (player.hp <= 0) { 
                             if (player.lives > 1) { player.lives--; player.hp = player.maxHp; player.defenseType = "NANO_SHIELD"; player.defenseTimer = 180; enemyLasers = []; addFloatingText(player.x, player.y - 45, `❤️ 부활! (남은 목숨: ${player.lives}개)`, '#ff3838', 22); }
@@ -996,11 +995,15 @@
 
             for (let i = bullets.length - 1; i >= 0; i--) {
                 let b = bullets[i];
-                if (b.bType === "ROCKET" || b.bType === "MISSILE") {
+                if (!b) continue;
+                
+                const bx = b.x, by = b.y, bDmg = b.dmg, bType = b.bType, isSplash = b.isSplash;
+
+                if (bType === "ROCKET" || bType === "MISSILE") {
                     if (globalAnimTick % 2 === 0) {
                         particles.push({
-                            x: b.x + (Math.random() - 0.5) * 4,
-                            y: b.y + 8,
+                            x: bx + (Math.random() - 0.5) * 4,
+                            y: by + 8,
                             vx: (Math.random() - 0.5) * 0.6,
                             vy: Math.random() * 1.5 + 1.0,
                             radius: Math.random() * 3 + 2,
@@ -1010,11 +1013,11 @@
                         });
                     }
                 }
-                b.y -= b.bType === "LASER" ? 16 : 11; if (b.y < 0) { bullets.splice(i, 1); continue; }
+                b.y -= bType === "LASER" ? 16 : 11; if (b.y < 0) { bullets.splice(i, 1); continue; }
                 let broken = false;
                 if (trappedHero && trappedHero.status === 'LOCKED') {
-                    if (Math.hypot(trappedHero.x - bullets[i].x, trappedHero.y - bullets[i].y) < 32) {
-                        trappedHero.hp -= bullets[i].dmg; trappedHero.flashTimer = 4; addFloatingText(trappedHero.x + (Math.random() - 0.5) * 15, trappedHero.y - 15, `-${bullets[i].dmg}`, '#00d2d3');
+                    if (Math.hypot(trappedHero.x - bx, trappedHero.y - by) < 32) {
+                        trappedHero.hp -= bDmg; trappedHero.flashTimer = 4; addFloatingText(trappedHero.x + (Math.random() - 0.5) * 15, trappedHero.y - 15, `-${bDmg}`, '#00d2d3');
                         if (trappedHero.hp <= 0) { trappedHero.status = 'RELEASED'; playUpgradeSound(); createAdvancedExplosion(trappedHero.x, trappedHero.y, '#fff', 18, 1.2); }
                         bullets.splice(i, 1); broken = true;
                     }
@@ -1022,23 +1025,24 @@
                 if (broken) continue;
                 for (let j = enemies.length - 1; j >= 0; j--) {
                     const enemy = enemies[j];
-                    if (Math.hypot(enemy.x - bullets[i].x, enemy.y - bullets[i].y) < enemy.radius + 6) {
-                        if (bullets[i].bType === "ROCKET" || bullets[i].bType === "MISSILE" || bullets[i].isSplash) {
-                            let range = bullets[i].bType === "MISSILE" ? currentSplashRange * 1.6 : currentSplashRange;
-                            let sd = bullets[i].bType === "ROCKET" ? bullets[i].dmg * 3 : bullets[i].bType === "MISSILE" ? bullets[i].dmg * 5 : bullets[i].dmg;
-                            createAdvancedExplosion(bullets[i].x, bullets[i].y, bullets[i].bType === "MISSILE" ? '#ff7675' : '#ff9f43', 14, range / 35); playExplosionSound(bullets[i].bType === "MISSILE");
+                    if (!enemy) continue;
+                    if (Math.hypot(enemy.x - bx, enemy.y - by) < enemy.radius + 6) {
+                        if (bType === "ROCKET" || bType === "MISSILE" || isSplash) {
+                            let range = bType === "MISSILE" ? currentSplashRange * 1.6 : currentSplashRange;
+                            let sd = bType === "ROCKET" ? bDmg * 3 : bType === "MISSILE" ? bDmg * 5 : bDmg;
+                            createAdvancedExplosion(bx, by, bType === "MISSILE" ? '#ff7675' : '#ff9f43', 14, range / 35); playExplosionSound(bType === "MISSILE");
                             for (let eIdx = enemies.length - 1; eIdx >= 0; eIdx--) {
                                 let targetZ = enemies[eIdx];
-                                if (Math.hypot(targetZ.x - bullets[i].x, targetZ.y - bullets[i].y) <= range) {
+                                if (targetZ && Math.hypot(targetZ.x - bx, targetZ.y - by) <= range) {
                                     targetZ.hp -= sd; targetZ.flashTimer = 4; addFloatingText(targetZ.x, targetZ.y - 12, `-${sd}`, '#fa8231');
-                                    if (targetZ.hp <= 0) { playExplosionSound(targetZ.isBoss); createAdvancedExplosion(targetZ.x, targetZ.y, '#a8e6cf', 10, 0.8); score += targetZ.maxHp * 15; spawnDroppedItem(targetZ.x, targetZ.y, targetZ.isBoss); enemies.splice(eIdx, 1); if (eIdx <= j) j--; }
+                                    if (targetZ.hp <= 0) { playExplosionSound(targetZ.isBoss); createAdvancedExplosion(targetZ.x, targetZ.y, '#a8e6cf', 10, 0.8); score += targetZ.maxHp * 15; spawnDroppedItem(targetZ.x, targetZ.y, targetZ.isBoss); enemies.splice(eIdx, 1); }
                                 }
                             }
                         } else {
-                            enemy.hp -= bullets[i].dmg; enemy.flashTimer = 4; addFloatingText(bullets[i].x, enemy.y - 12, `-${bullets[i].dmg}`, '#ff4d4d');
+                            enemy.hp -= bDmg; enemy.flashTimer = 4; addFloatingText(bx, enemy.y - 12, `-${bDmg}`, '#ff4d4d');
                             if (enemy.hp <= 0) { playExplosionSound(enemy.isBoss); createAdvancedExplosion(enemy.x, enemy.y, '#a8e6cf', 10, 0.8); score += enemy.maxHp * 15; spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss); enemies.splice(j, 1); }
                         }
-                        if (bullets[i].bType !== "LASER") { bullets.splice(i, 1); broken = true; } break;
+                        if (bType !== "LASER") { bullets.splice(i, 1); } break;
                     }
                 }
             }
@@ -1444,10 +1448,14 @@
 
             for (let i = floatingTexts.length - 1; i >= 0; i--) {
                 let t = floatingTexts[i];
+                if (!t) continue;
+                ctx.save();
+                ctx.font = 'bold 12px Arial';
+                ctx.textAlign = 'center';
                 ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 3;
                 ctx.strokeText(t.text, t.x, t.y);
-                
-                ctx.fillStyle = t.color;
+                ctx.fillStyle = t.color || '#ffffff';
                 ctx.fillText(t.text, t.x, t.y);
                 ctx.restore();
             }
@@ -1474,7 +1482,15 @@
             if (nb === 3) { ctx.fillStyle = '#9b59b6'; ctx.fillText(`🚨 보스전 비상 교전 가동!`, canvas.width - 20, 116); } else { ctx.fillStyle = '#feca57'; ctx.fillText(`👑 타이틀 보스 출현까지: ${nb}웨이브 남음`, canvas.width - 20, 116); }
         }
 
-        function loop() { update(); draw(); requestAnimationFrame(loop); }
+        function loop() {
+            try {
+                update();
+                draw();
+            } catch (err) {
+                console.error("Game loop safe catch:", err);
+            }
+            requestAnimationFrame(loop);
+        }
         loop();
     </script>
 </body>
