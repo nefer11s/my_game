@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v2.8.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v2.9.0)</title>
     <style>
         body {
             margin: 0;
@@ -255,7 +255,7 @@
 
 <body style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
 
-    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v2.8.0</span></h1>
+    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v2.9.0</span></h1>
 
     <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
         <div id="gameContainer" style="position: relative;">
@@ -263,7 +263,7 @@
 
             <div id="menuOverlay">
                 <div class="menu-title" style="font-size: 26px; color: #00d2d3; text-shadow: 0 0 15px rgba(0, 210, 211, 0.5); margin-bottom: 5px; letter-spacing: 2px;">HY 세라믹 솔라 파이터</div>
-                <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 1.5px; font-weight: bold; margin-bottom: 8px;">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 4px;">(v2.8.0)</span></div>
+                <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 1.5px; font-weight: bold; margin-bottom: 8px;">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 4px;">(v2.9.0)</span></div>
                 <div id="menuHighScore">🏆 최고 기록 스코어: 0 PTS</div>
 
                 <!-- 1. 난이도 프리셋 설정 -->
@@ -402,7 +402,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v2.8.0";
+        const GAME_VERSION = "v2.9.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 1.0, bossHpMultiplier = 1.0, zombieCountMultiplier = 1.0;
         let healWeight = 30, healAmount = 25, wpnWeight = 40, wpnDurationConfig = 420, buffWeight = 40, buffDurationConfig = 420, currentSplashRange = 40, defWeight = 30, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -1257,6 +1257,16 @@
                 ctx.fillStyle = '#00d2d3'; ctx.beginPath();
                 ctx.moveTo(player.x, player.y - 28); ctx.lineTo(player.x - 24, player.y + 18); ctx.lineTo(player.x - 10, player.y + 10); ctx.lineTo(player.x - 8, player.y + 24); ctx.lineTo(player.x + 8, player.y + 24); ctx.lineTo(player.x + 10, player.y + 10); ctx.lineTo(player.x + 24, player.y + 18); ctx.closePath(); ctx.fill();
             }
+
+            // Player HP Energy Bar (Directly below Hero Jet)
+            const pBarW = 46, pBarH = 6, pBarX = player.x - pBarW / 2, pBarY = player.y + 34;
+            ctx.fillStyle = 'rgba(10, 14, 24, 0.85)';
+            ctx.fillRect(pBarX - 1, pBarY - 1, pBarW + 2, pBarH + 2);
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1;
+            ctx.strokeRect(pBarX - 1, pBarY - 1, pBarW + 2, pBarH + 2);
+            const pHpRatio = Math.max(0, Math.min(1.0, player.hp / player.maxHp));
+            ctx.fillStyle = pHpRatio > 0.5 ? '#10ac84' : pHpRatio > 0.25 ? '#f1c40f' : '#ff3838';
+            ctx.fillRect(pBarX, pBarY, pBarW * pHpRatio, pBarH);
             ctx.restore();
 
             player.allies.forEach((ally, idx) => {
@@ -1272,7 +1282,7 @@
                 }
             });
 
-            // Draw Enemies (10 Alien Fighters & 10 Boss Ships - Transparent PNGs with Zero Black Boxes)
+            // Draw Enemies (10 Alien Fighters & 10 Boss Ships with Health Energy Bars)
             enemies.forEach(enemy => {
                 if (enemy.flashTimer > 0) {
                     ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius + 4, 0, Math.PI * 2); ctx.fill();
@@ -1291,6 +1301,20 @@
                             ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 7, 0, Math.PI * 2); ctx.fill();
                             ctx.restore();
                         }
+
+                        // Boss Mothership Heavy HP Energy Bar & Readout
+                        if (enemy.hp && enemy.maxHp) {
+                            ctx.save(); ctx.shadowBlur = 0;
+                            const bBarW = 84, bBarH = 8, bBarX = enemy.x - bBarW / 2, bBarY = enemy.y - 64;
+                            ctx.fillStyle = 'rgba(10, 14, 24, 0.9)'; ctx.fillRect(bBarX - 2, bBarY - 2, bBarW + 4, bBarH + 4);
+                            ctx.strokeStyle = '#ff3838'; ctx.lineWidth = 1.5; ctx.strokeRect(bBarX - 2, bBarY - 2, bBarW + 4, bBarH + 4);
+                            const bHpRatio = Math.max(0, Math.min(1.0, enemy.hp / enemy.maxHp));
+                            ctx.fillStyle = bHpRatio > 0.5 ? '#ff3838' : bHpRatio > 0.25 ? '#ff9f43' : '#e056fd';
+                            ctx.fillRect(bBarX, bBarY, bBarW * bHpRatio, bBarH);
+                            ctx.font = 'bold 10px Arial'; ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center';
+                            ctx.fillText(`👑 BOSS HP: ${Math.ceil(enemy.hp)} / ${enemy.maxHp}`, enemy.x, bBarY - 4);
+                            ctx.restore();
+                        }
                     } else {
                         const aImg = imgAlienTypes[(enemy.alienType || 0) % 10];
                         const cleanAlienCvs = getCleanTransparentSprite(aImg) || getCleanTransparentSprite(imgEnemy);
@@ -1302,6 +1326,17 @@
                             ctx.moveTo(enemy.x, enemy.y + 18); ctx.lineTo(enemy.x - 18, enemy.y - 12); ctx.lineTo(enemy.x - 8, enemy.y - 6); ctx.lineTo(enemy.x - 6, enemy.y - 18); ctx.lineTo(enemy.x + 6, enemy.y - 18); ctx.lineTo(enemy.x + 8, enemy.y - 6); ctx.lineTo(enemy.x + 18, enemy.y - 12); ctx.closePath(); ctx.fill();
                             ctx.fillStyle = pal.glow; ctx.beginPath(); ctx.arc(enemy.x, enemy.y - 2, 5, 0, Math.PI * 2); ctx.fill();
                             ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 2.5, 0, Math.PI * 2); ctx.fill();
+                            ctx.restore();
+                        }
+
+                        // Alien Enemy HP Energy Bar
+                        if (enemy.hp && enemy.maxHp) {
+                            ctx.save(); ctx.shadowBlur = 0;
+                            const eBarW = 32, eBarH = 4, eBarX = enemy.x - eBarW / 2, eBarY = enemy.y - 30;
+                            ctx.fillStyle = 'rgba(10, 14, 24, 0.85)'; ctx.fillRect(eBarX - 1, eBarY - 1, eBarW + 2, eBarH + 2);
+                            const eHpRatio = Math.max(0, Math.min(1.0, enemy.hp / enemy.maxHp));
+                            ctx.fillStyle = eHpRatio > 0.5 ? '#ff3838' : eHpRatio > 0.25 ? '#fa8231' : '#eb4d4b';
+                            ctx.fillRect(eBarX, eBarY, eBarW * eHpRatio, eBarH);
                             ctx.restore();
                         }
                     }
