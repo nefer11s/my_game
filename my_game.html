@@ -986,9 +986,9 @@
                 });
             }
 
-            // Draw Player Jet (Transparent Vector Canvas Graphics - Zero Black Box)
+            // Draw Player Jet (Clean Crisp Vector Canvas Graphics)
             ctx.save();
-            ctx.shadowBlur = 18;
+            ctx.shadowBlur = 4;
             ctx.shadowColor = '#00d2d3';
             
             ctx.fillStyle = '#00d2d3';
@@ -1045,7 +1045,7 @@
                     if (enemy.isBoss) {
                         const pal = BOSS_PALETTES[enemy.bossType || 0];
                         ctx.save();
-                        ctx.shadowBlur = 24;
+                        ctx.shadowBlur = 6;
                         ctx.shadowColor = pal.glow;
                         
                         // Boss Main Body Outer Wings
@@ -1069,7 +1069,7 @@
                         // Rotating Energy Core Ring
                         const rAngle = globalAnimTick * 0.05;
                         ctx.strokeStyle = pal.core;
-                        ctx.lineWidth = 3;
+                        ctx.lineWidth = 2.5;
                         ctx.beginPath();
                         ctx.arc(enemy.x, enemy.y, 14, rAngle, rAngle + Math.PI * 1.5);
                         ctx.stroke();
@@ -1081,13 +1081,10 @@
                         ctx.fill();
                         
                         ctx.restore();
-                        
-                        // Boss HP Bar
-                        ctx.fillStyle = '#ff3838'; ctx.font = 'bold 12px Segoe UI'; ctx.textAlign = 'center'; ctx.fillText(`👑 ${pal.name} [${enemy.hp} HP]`, enemy.x, enemy.y + 55);
                     } else {
                         const pal = ALIEN_PALETTES[enemy.alienType || 0];
                         ctx.save();
-                        ctx.shadowBlur = 14;
+                        ctx.shadowBlur = 3;
                         ctx.shadowColor = pal.glow;
                         
                         // Alien Fighter Geometry (Vector Drawn)
@@ -1115,7 +1112,6 @@
                         ctx.fill();
                         
                         ctx.restore();
-                        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 10px Segoe UI'; ctx.textAlign = 'center'; ctx.fillText(enemy.hp, enemy.x, enemy.y - 22);
                     }
                 }
             });
@@ -1123,7 +1119,7 @@
             // Draw Enemy Lasers (High Visibility Plasma Capsules)
             enemyLasers.forEach(l => {
                 ctx.save();
-                ctx.shadowBlur = l.isBoss ? 24 : 16;
+                ctx.shadowBlur = l.isBoss ? 6 : 4;
                 ctx.shadowColor = l.color || '#ff0055';
                 
                 // Outer glowing capsule
@@ -1151,7 +1147,7 @@
                     const pulse = Math.sin(globalAnimTick * 0.25) * 3;
                     const isFlash = Math.floor(globalAnimTick / 4) % 2 === 0;
                     
-                    ctx.shadowBlur = 18;
+                    ctx.shadowBlur = 5;
                     ctx.shadowColor = isFlash ? '#1cfc03' : '#ffffff';
                     
                     // Outer glowing pulse circle
