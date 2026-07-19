@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v2.9.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v3.0.0)</title>
     <style>
         body {
             margin: 0;
@@ -255,73 +255,38 @@
 
 <body style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
 
-    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v2.9.0</span></h1>
+    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v3.0.0</span></h1>
 
     <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
         <div id="gameContainer" style="position: relative;">
             <canvas id="gameCanvas" width="540" height="820"></canvas>
 
-            <div id="menuOverlay">
-                <div class="menu-title" style="font-size: 26px; color: #00d2d3; text-shadow: 0 0 15px rgba(0, 210, 211, 0.5); margin-bottom: 5px; letter-spacing: 2px;">HY 세라믹 솔라 파이터</div>
-                <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 1.5px; font-weight: bold; margin-bottom: 8px;">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 4px;">(v2.9.0)</span></div>
-                <div id="menuHighScore">🏆 최고 기록 스코어: 0 PTS</div>
+            <div id="menuOverlay" style="padding: 30px 20px; box-sizing: border-box; justify-content: space-between;">
+                <div style="margin-top: 30px; display: flex; flex-direction: column; align-items: center; width: 100%;">
+                    <div class="menu-title" style="font-size: 32px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.7); margin-bottom: 6px; letter-spacing: 3px;">HY 세라믹 솔라 파이터</div>
+                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v3.0.0)</span></div>
+                    <div id="menuHighScore" style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">🏆 HIGH SCORE: 0 PTS</div>
 
-                <!-- 1. 난이도 프리셋 설정 -->
-                <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 6px; font-weight: bold;">🎯 초기 난이도 프리셋 설정 (5단계)</div>
-                <div class="diff-btn-container" style="margin-bottom: 12px;">
-                    <button class="diff-btn" onclick="setSelectDiff('EASY', 0.5, this)">초보 (Lv.1)</button>
-                    <button class="diff-btn active" onclick="setSelectDiff('NORMAL', 1.0, this)">일반 (Lv.2)</button>
-                    <button class="diff-btn" onclick="setSelectDiff('HARD', 1.4, this)">하드 (Lv.3)</button>
-                    <button class="diff-btn" onclick="setSelectDiff('EXPERT', 1.9, this)">정예 (Lv.4)</button>
-                    <button class="diff-btn" onclick="setSelectDiff('NIGHTMARE', 2.5, this)">악몽 (Lv.5)</button>
-                </div>
-
-                <!-- 2. 배경음악 (BGM) 설정 카드 -->
-                <div style="background: rgba(16, 172, 132, 0.15); border: 1px solid #10ac84; padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; width: 90%; text-align: left; font-size: 12px; box-sizing: border-box;">
-                    <div style="font-weight: bold; color: #10ac84; margin-bottom: 6px; text-align: center;">🎵 배경음악 (BGM) 사운드 설정</div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                        <span>BGM 스위치: <span id="bgmStateVal" style="color: #10ac84; font-weight: bold;">ON</span></span>
-                        <button id="bgmToggleBtn" style="background:#10ac84; border:none; color:#fff; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:bold; font-size:11px;" onclick="toggleBGM()">🎵 BGM ON/OFF (단축키: B)</button>
+                    <!-- 1. 난이도 프리셋 셀렉터 -->
+                    <div style="font-size: 13px; color: #a4b0be; margin-bottom: 10px; font-weight: bold;">🎯 작전 난이도 선택</div>
+                    <div class="diff-btn-container" style="margin-bottom: 40px; display: flex; gap: 6px; justify-content: center;">
+                        <button class="diff-btn" onclick="setSelectDiff('EASY', 0.5, this)">초보</button>
+                        <button class="diff-btn active" onclick="setSelectDiff('NORMAL', 1.0, this)">일반</button>
+                        <button class="diff-btn" onclick="setSelectDiff('HARD', 1.4, this)">하드</button>
+                        <button class="diff-btn" onclick="setSelectDiff('EXPERT', 1.9, this)">정예</button>
+                        <button class="diff-btn" onclick="setSelectDiff('NIGHTMARE', 2.5, this)">악몽</button>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span>음량: <span id="bgmVolVal" style="color: #ff9f43; font-weight: bold;">50%</span></span>
-                        <input type="range" id="bgmVolSlider" min="0" max="100" step="5" value="50" style="flex: 1; accent-color: #10ac84;" oninput="updateBGMVolume(this.value)">
-                    </div>
+
+                    <!-- 2. 메인 AAA 스타일에 매칭되는 고시성 CTA 버튼 -->
+                    <button id="startBtn" style="font-size: 22px; padding: 16px 52px; border-radius: 40px; background: linear-gradient(135deg, #ff3838, #ff9f43); box-shadow: 0 0 30px rgba(255, 56, 56, 0.7); border: 2px solid #fff; cursor: pointer; font-weight: 900; letter-spacing: 3px; margin-bottom: 40px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);" onclick="handleStartClick()">🚀 작 전 개 시</button>
                 </div>
 
-                <!-- 3. 기본 동작 버튼 & 조작법 안내 카드 -->
-                <div style="background: rgba(44, 62, 80, 0.5); border: 1px solid #34495e; padding: 8px 12px; border-radius: 6px; margin-bottom: 10px; width: 90%; text-align: left; font-size: 12px; color: #cbd5e1; line-height: 1.6; box-sizing: border-box;">
-                    <div style="font-weight: bold; color: #00d2d3; margin-bottom: 4px; text-align: center;">⌨️ 전술 조작법 및 버튼 안내</div>
-                    <span class="hotkey-badge">W,A,S,D / 방향키 / 터치</span> 상하좌우 무빙 기동<br>
-                    <span class="hotkey-badge">SPACE / X / E</span> 💥 전술 섬멸 필살기 (기본 3개)<br>
-                    <span class="hotkey-badge">P</span> 전투 일시중지 | <span class="hotkey-badge">B</span> BGM 토글 | <span class="hotkey-badge">M</span> 지휘소 복귀<br>
-                    <span class="hotkey-badge">S</span> 전황 스냅샷 저장 | <span class="hotkey-badge">L</span> 저장 시점 로드
-                </div>
-
-                <!-- 4. 전술 획득 아이템 도감 & 설명 카드 -->
-                <div style="background: rgba(15, 20, 30, 0.75); border: 1px solid #00d2d3; padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; width: 90%; text-align: left; font-size: 11px; max-height: 110px; overflow-y: auto; box-sizing: border-box;">
-                    <div style="font-weight: bold; color: #f1c40f; margin-bottom: 4px; text-align: center;">🎁 전술 획득 아이템 도감 및 효과 안내</div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; line-height: 1.5; color: #cbd5e1;">
-                        <div>💚 <span style="color:#1cfc03; font-weight:bold;">메디컬 킷</span>: HP 25 회복</div>
-                        <div>⚡ <span style="color:#00d2d3; font-weight:bold;">플라즈마 레이저</span>: 관통 빔</div>
-                        <div>🔫 <span style="color:#ffd32c; font-weight:bold;">3연장 개틀링</span>: 3열 속사</div>
-                        <div>🚀 <span style="color:#fa8231; font-weight:bold;">헤비 로켓</span>: 폭발 로켓</div>
-                        <div>🔥 <span style="color:#ff4d4d; font-weight:bold;">열압력 미사일</span>: 유도 미사일</div>
-                        <div>💥 <span style="color:#ff9f43; font-weight:bold;">2배 화력</span>: 화력 2배 증폭</div>
-                        <div>🔮 <span style="color:#e056fd; font-weight:bold;">스플래시 범주</span>: 범주 확장</div>
-                        <div>☄️ <span style="color:#ff3838; font-weight:bold;">전술 폭격</span>: 궤도 정밀 폭격</div>
-                        <div>🛡️ <span style="color:#10ac84; font-weight:bold;">나노 방어막</span>: 7초 무적 막</div>
-                        <div>🔩 <span style="color:#a4b0be; font-weight:bold;">중장갑 아머</span>: 피격 50% 감쇄</div>
-                        <div>🪖 <span style="color:#2e86de; font-weight:bold;">아군 지원</span>: 연대 대원 지원</div>
-                        <div>💣 <span style="color:#ff5252; font-weight:bold;">전술 폭탄</span>: 적 전체 일괄 폭파</div>
-                        <div>💥 <span style="color:#ff3838; font-weight:bold;">필살기 충전</span>: 필살기 +1</div>
-                    </div>
-                </div>
-
-                <!-- 4. 메뉴 조작 버튼들 -->
-                <div style="display: flex; gap: 12px; width: 90%; justify-content: center;">
-                    <button style="background: #2c3e50; border: 1px solid #7f8c8d; color: #fff; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;" onclick="openSettingsModal()">⚙️ 전술 관리 설정</button>
-                    <button id="startBtn" onclick="handleStartClick()">🚀 작 전 개 시</button>
+                <!-- 3. 하단 서브 탭 모달 버튼 바 -->
+                <div style="display: flex; gap: 8px; justify-content: center; width: 95%; margin-bottom: 10px;">
+                    <button style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 1px solid #10ac84; color: #10ac84; padding: 10px 4px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px;" onclick="openInfoModal('AUDIO')">🎵 사운드</button>
+                    <button style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 1px solid #00d2d3; color: #00d2d3; padding: 10px 4px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px;" onclick="openInfoModal('CONTROLS')">⌨️ 조작법</button>
+                    <button style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 1px solid #f1c40f; color: #f1c40f; padding: 10px 4px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px;" onclick="openInfoModal('ITEMS')">🎁 아이템도감</button>
+                    <button style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 1px solid #a4b0be; color: #ffffff; padding: 10px 4px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px;" onclick="openSettingsModal()">⚙️ 환경설정</button>
                 </div>
             </div>
 
@@ -350,6 +315,63 @@
                 <span class="hotkey-badge">S</span> 현재 전황 데이터 세이브<br>
                 <span class="hotkey-badge">L</span> 세이브 시점 데이터 로드
             </div>
+        </div>
+    </div>
+
+    <!-- 전술 정보 및 사운드 설정 팝업 모달 -->
+    <div id="infoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 200; justify-content: center; align-items: center;">
+        <div style="background: #141822; border: 2px solid #00d2d3; border-radius: 12px; padding: 20px; width: 440px; max-height: 85vh; overflow-y: auto; box-shadow: 0 0 30px rgba(0, 210, 211, 0.5); display: flex; flex-direction: column; gap: 14px; box-sizing: border-box;">
+            
+            <!-- 사운드 섹션 -->
+            <div id="infoAudioSec" style="display: none;">
+                <div style="font-size: 16px; font-weight: bold; color: #10ac84; border-bottom: 1px solid #2c3e50; padding-bottom: 8px; text-align: center; margin-bottom: 12px;">🎵 사운드 & 배경음악(BGM) 설정</div>
+                <div style="background: rgba(16, 172, 132, 0.15); border: 1px solid #10ac84; padding: 14px; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <span style="font-size: 13px;">BGM 스위치: <span id="bgmStateVal" style="color: #10ac84; font-weight: bold;">ON</span></span>
+                        <button id="bgmToggleBtn" style="background:#10ac84; border:none; color:#fff; padding:6px 12px; border-radius:4px; cursor:pointer; font-weight:bold; font-size:12px;" onclick="toggleBGM()">🎵 BGM ON/OFF (단축키: B)</button>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 13px;">BGM 음량: <span id="bgmVolVal" style="color: #ff9f43; font-weight: bold;">50%</span></span>
+                        <input type="range" id="bgmVolSlider" min="0" max="100" step="5" value="50" style="flex: 1; accent-color: #10ac84;" oninput="updateBGMVolume(this.value)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 조작법 섹션 -->
+            <div id="infoControlSec" style="display: none;">
+                <div style="font-size: 16px; font-weight: bold; color: #00d2d3; border-bottom: 1px solid #2c3e50; padding-bottom: 8px; text-align: center; margin-bottom: 12px;">⌨️ 전술 조작법 및 단축키 안내</div>
+                <div style="background: rgba(44, 62, 80, 0.5); border: 1px solid #34495e; padding: 14px; border-radius: 8px; font-size: 13px; color: #cbd5e1; line-height: 1.8;">
+                    <span class="hotkey-badge">W,A,S,D / 방향키 / 터치</span> 상하좌우 무빙 기동<br>
+                    <span class="hotkey-badge">SPACE / X / E</span> 💥 전술 섬멸 필살기 (기본 3개 제공)<br>
+                    <span class="hotkey-badge">P</span> 전투 일시중지 & 재개<br>
+                    <span class="hotkey-badge">B</span> BGM 배경음악 토글<br>
+                    <span class="hotkey-badge">M</span> 타이틀 지휘소 메뉴 복귀<br>
+                    <span class="hotkey-badge">S</span> 현재 전황 스냅샷 저장<br>
+                    <span class="hotkey-badge">L</span> 세이브 시점 스냅샷 로드
+                </div>
+            </div>
+
+            <!-- 아이템 도감 섹션 -->
+            <div id="infoItemSec" style="display: none;">
+                <div style="font-size: 16px; font-weight: bold; color: #f1c40f; border-bottom: 1px solid #2c3e50; padding-bottom: 8px; text-align: center; margin-bottom: 12px;">🎁 전술 획득 아이템 도감 및 효과</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; color: #cbd5e1;">
+                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">💚 <span style="color:#1cfc03; font-weight:bold;">메디컬 킷</span><br>HP 25 즉시 회복</div>
+                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">⚡ <span style="color:#00d2d3; font-weight:bold;">플라즈마 레이저</span><br>관통형 고출력 빔</div>
+                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">🔫 <span style="color:#ffd32c; font-weight:bold;">3연장 개틀링</span><br>3열 고속 속사</div>
+                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">🚀 <span style="color:#fa8231; font-weight:bold;">헤비 로켓</span><br>광범위 폭발 로켓</div>
+                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">🔥 <span style="color:#ff4d4d; font-weight:bold;">열압력 미사일</span><br>자동 유도 미사일</div>
+                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">💥 <span style="color:#ff9f43; font-weight:bold;">2배 화력</span><br>전 무기 화력 2배 증폭</div>
+                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">🔮 <span style="color:#e056fd; font-weight:bold;">스플래시 범주</span><br>폭발 범위 확장</div>
+                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">☄️ <span style="color:#ff3838; font-weight:bold;">전술 폭격</span><br>위성 궤도 정밀 폭격</div>
+                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">🛡️ <span style="color:#10ac84; font-weight:bold;">나노 방어막</span><br>7초간 완전 무적</div>
+                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">🔩 <span style="color:#a4b0be; font-weight:bold;">중장갑 아머</span><br>피격 피해 50% 감쇄</div>
+                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">🪖 <span style="color:#2e86de; font-weight:bold;">아군 지원</span><br>드론 기동 대원 합류</div>
+                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">💣 <span style="color:#ff5252; font-weight:bold;">전술 폭탄</span><br>화면 전체 적 폭파</div>
+                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">💥 <span style="color:#ff3838; font-weight:bold;">필살기 충전</span><br>전술 필살기 +1 보충</div>
+                </div>
+            </div>
+
+            <button style="background: #00d2d3; border: none; color: #141822; width: 100%; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px;" onclick="closeInfoModal()">닫기</button>
         </div>
     </div>
 
@@ -402,7 +424,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v2.9.0";
+        const GAME_VERSION = "v3.0.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 1.0, bossHpMultiplier = 1.0, zombieCountMultiplier = 1.0;
         let healWeight = 30, healAmount = 25, wpnWeight = 40, wpnDurationConfig = 420, buffWeight = 40, buffDurationConfig = 420, currentSplashRange = 40, defWeight = 30, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -679,6 +701,19 @@
         function closeSettingsModal() {
             if (audioCtx) playUpgradeSound();
             document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        function openInfoModal(section) {
+            if (audioCtx) playUpgradeSound();
+            document.getElementById('infoAudioSec').style.display = section === 'AUDIO' ? 'block' : 'none';
+            document.getElementById('infoControlSec').style.display = section === 'CONTROLS' ? 'block' : 'none';
+            document.getElementById('infoItemSec').style.display = section === 'ITEMS' ? 'block' : 'none';
+            document.getElementById('infoModal').style.display = 'flex';
+        }
+
+        function closeInfoModal() {
+            if (audioCtx) playUpgradeSound();
+            document.getElementById('infoModal').style.display = 'none';
         }
 
         function setSelectDiff(name, mult, btn) {
