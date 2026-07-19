@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v2.1.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우를 구출하라! (v2.2.0)</title>
     <style>
         body {
             margin: 0;
@@ -239,7 +239,7 @@
 
 <body>
 
-    <h1>HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v2.1.0</span></h1>
+    <h1>HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v2.2.0</span></h1>
 
     <div id="gameWrapper">
         <div id="gameContainer">
@@ -247,18 +247,46 @@
 
             <div id="menuOverlay">
                 <div class="menu-title" style="font-size: 26px; color: #00d2d3; text-shadow: 0 0 15px rgba(0, 210, 211, 0.5); margin-bottom: 5px; letter-spacing: 2px;">HY 세라믹 솔라 파이터</div>
-                <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 1.5px; font-weight: bold;">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 4px;">(v2.1.0)</span></div>
+                <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 1.5px; font-weight: bold; margin-bottom: 8px;">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 4px;">(v2.2.0)</span></div>
                 <div id="menuHighScore">🏆 최고 기록 스코어: 0 PTS</div>
-                <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 10px; font-weight: bold;">초기 난이도 프리셋 설정
-                    (5단계)</div>
-                <div class="diff-btn-container">
+
+                <!-- 1. 난이도 프리셋 설정 -->
+                <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 6px; font-weight: bold;">🎯 초기 난이도 프리셋 설정 (5단계)</div>
+                <div class="diff-btn-container" style="margin-bottom: 12px;">
                     <button class="diff-btn" onclick="setSelectDiff('EASY', 0.5, this)">초보 (Lv.1)</button>
                     <button class="diff-btn active" onclick="setSelectDiff('NORMAL', 1.0, this)">일반 (Lv.2)</button>
                     <button class="diff-btn" onclick="setSelectDiff('HARD', 1.4, this)">하드 (Lv.3)</button>
                     <button class="diff-btn" onclick="setSelectDiff('EXPERT', 1.9, this)">정예 (Lv.4)</button>
                     <button class="diff-btn" onclick="setSelectDiff('NIGHTMARE', 2.5, this)">악몽 (Lv.5)</button>
                 </div>
-                <button id="startBtn" onclick="handleStartClick()">작 전 개 시</button>
+
+                <!-- 2. 배경음악 (BGM) 설정 카드 -->
+                <div style="background: rgba(16, 172, 132, 0.15); border: 1px solid #10ac84; padding: 10px 14px; border-radius: 6px; margin-bottom: 12px; width: 90%; text-align: left; font-size: 12px; box-sizing: border-box;">
+                    <div style="font-weight: bold; color: #10ac84; margin-bottom: 6px; text-align: center;">🎵 배경음악 (BGM) 사운드 설정</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span>BGM 스위치: <span id="bgmStateVal" style="color: #10ac84; font-weight: bold;">ON</span></span>
+                        <button id="bgmToggleBtn" style="background:#10ac84; border:none; color:#fff; padding:4px 10px; border-radius:4px; cursor:pointer; font-weight:bold; font-size:11px;" onclick="toggleBGM()">🎵 BGM ON/OFF (단축키: B)</button>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span>음량: <span id="bgmVolVal" style="color: #ff9f43; font-weight: bold;">50%</span></span>
+                        <input type="range" id="bgmVolSlider" min="0" max="100" step="5" value="50" style="flex: 1; accent-color: #10ac84;" oninput="updateBGMVolume(this.value)">
+                    </div>
+                </div>
+
+                <!-- 3. 기본 동작 버튼 & 조작법 안내 카드 -->
+                <div style="background: rgba(44, 62, 80, 0.5); border: 1px solid #34495e; padding: 10px 14px; border-radius: 6px; margin-bottom: 15px; width: 90%; text-align: left; font-size: 12px; color: #cbd5e1; line-height: 1.7; box-sizing: border-box;">
+                    <div style="font-weight: bold; color: #00d2d3; margin-bottom: 4px; text-align: center;">⌨️ 전술 조작법 및 버튼 안내</div>
+                    <span class="hotkey-badge">W,A,S,D / 방향키 / 터치</span> 상하좌우 무빙 기동<br>
+                    <span class="hotkey-badge">SPACE / X / E</span> 💥 전술 섬멸 필살기 (기본 3개)<br>
+                    <span class="hotkey-badge">P</span> 전투 일시중지 | <span class="hotkey-badge">B</span> BGM 토글 | <span class="hotkey-badge">M</span> 지휘소 복귀<br>
+                    <span class="hotkey-badge">S</span> 전황 스냅샷 저장 | <span class="hotkey-badge">L</span> 저장 시점 로드
+                </div>
+
+                <!-- 4. 메뉴 조작 버튼들 -->
+                <div style="display: flex; gap: 12px; width: 90%; justify-content: center;">
+                    <button style="background: #2c3e50; border: 1px solid #7f8c8d; color: #fff; padding: 10px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;" onclick="openSettingsModal()">⚙️ 전술 관리 설정</button>
+                    <button id="startBtn" onclick="handleStartClick()">🚀 작 전 개 시</button>
+                </div>
             </div>
 
             <div id="gameOverOverlay" style="display: none;">
@@ -270,72 +298,56 @@
 
         <div id="sidebarPanel">
             <div id="controlDashboard">
-                <div class="dashboard-title">🎛️ 실시간 전술 수치 제어 매트릭스</div>
-                <div class="section-divider">🧟 좀비 시스템 제어</div>
-                <div class="control-group"><label><span>👑 중간 보스 체력 배율</span> <span class="value-disp"
-                            id="bossVal">1.0x</span></label><input type="range" id="bossSlider" min="0.5" max="3.5"
-                        step="0.1" value="1.0"></div>
-                <div class="control-group"><label><span>💀 좀비 스폰 머릿수 배율</span> <span class="value-disp"
-                            id="zombieVal">1.0x</span></label><input type="range" id="zombieSlider" min="0.4" max="2.5"
-                        step="0.1" value="1.0"></div>
-                <div class="section-divider">💚 메디컬 킷트 (체력 회복) 제어</div>
-                <div class="control-group"><label><span>빈도: 회복킷 스폰 확률</span> <span class="value-disp"
-                            id="healFreqVal">30%</span></label><input type="range" id="healFreqSlider" min="0" max="100"
-                        step="5" value="30"></div>
-                <div class="control-group"><label><span>강도: 체력 회복량</span> <span class="value-disp" id="healVal">25
-                            HP</span></label><input type="range" id="healSlider" min="10" max="60" step="5" value="25">
-                </div>
-                <div class="section-divider">⚔️ 전술 특수 무기류 제어</div>
-                <div class="control-group"><label><span>빈도: 무기류 스폰 가중치</span> <span class="value-disp"
-                            id="wpnFreqVal">40%</span></label><input type="range" id="wpnFreqSlider" min="0" max="100"
-                        step="5" value="40"></div>
-                <div class="control-group"><label><span>강도: 무기 버프 유지 시간</span> <span class="value-disp"
-                            id="wpnDurVal">7초</span></label><input type="range" id="wpnDurSlider" min="3" max="20"
-                        step="1" value="7"></div>
-                <div class="section-divider">💥 버프 및 스플래시 범위 제어</div>
-                <div class="control-group"><label><span>빈도: 버프 스폰 가중치</span> <span class="value-disp"
-                            id="buffFreqVal">40%</span></label><input type="range" id="buffFreqSlider" min="0" max="100"
-                        step="5" value="40"></div>
-                <div class="control-group"><label><span>강도: 버프 유지 시간</span> <span class="value-disp"
-                            id="buffDurVal">7초</span></label><input type="range" id="buffDurSlider" min="3" max="20"
-                        step="1" value="7"></div>
-                <div class="control-group"><label><span>범위: 미사일 & 폭발 반경</span> <span class="value-disp"
-                            id="splashRangeVal">40px</span></label><input type="range" id="splashRangeSlider" min="20"
-                        max="90" step="5" value="40"></div>
-                <div class="section-divider">🛡️ 전술 아머 및 나노 디펜스 제어</div>
-                <div class="control-group"><label><span>빈도: 디펜스 스폰 가중치</span> <span class="value-disp"
-                            id="defFreqVal">30%</span></label><input type="range" id="defFreqSlider" min="0" max="100"
-                        step="5" value="30"></div>
-                <div class="control-group"><label><span>강도: 아머/무적 유지 시간</span> <span class="value-disp"
-                            id="defDurVal">7초</span></label><input type="range" id="defDurSlider" min="3" max="20"
-                        step="1" value="7"></div>
-                <div class="section-divider">🎖️ 아군 지원 및 폭탄 제어</div>
-                <div class="control-group"><label><span>빈도: 아군 지원 스폰 가중치</span> <span class="value-disp"
-                            id="allyFreqVal">30%</span></label><input type="range" id="allyFreqSlider" min="0" max="100"
-                        step="5" value="30"></div>
-                <div class="control-group"><label><span>빈도: 전술 폭탄 스폰 가중치</span> <span class="value-disp"
-                            id="bombFreqVal">20%</span></label><input type="range" id="bombFreqSlider" min="0" max="100"
-                        step="5" value="20"></div>
-                <div class="section-divider">🎵 사운드 & 배경음악(BGM) 제어</div>
-                <div class="control-group"><label><span>배경음악 (BGM) 스위치</span> <span class="value-disp" id="bgmStateVal">ON</span></label>
-                    <button id="bgmToggleBtn" style="background:#10ac84; border:none; color:#fff; padding:6px; border-radius:4px; cursor:pointer; font-weight:bold;" onclick="toggleBGM()">🎵 BGM ON/OFF (단축키: B)</button>
-                </div>
-                <div class="control-group"><label><span>BGM 볼륨 음량</span> <span class="value-disp" id="bgmVolVal">50%</span></label>
-                    <input type="range" id="bgmVolSlider" min="0" max="100" step="5" value="50" oninput="updateBGMVolume(this.value)">
-                <div class="control-group" style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; padding: 8px; border-radius: 6px; margin-top: 8px;">
+                <div class="dashboard-title">🎛️ 빠른 전술 제어 센터</div>
+                <div class="control-group" style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; padding: 8px; border-radius: 6px;">
                     <button id="ultimateBtn" style="background:#ff3838; border:none; color:#fff; padding:8px; width:100%; border-radius:4px; cursor:pointer; font-weight:bold; font-size:13px;" onclick="triggerUltimateAnnihilation()">💥 전술 섬멸 필살기 [SPACE] (잔여: <span id="ultCountDisp">3</span>/5)</button>
                 </div>
+                <button style="background: #2c3e50; border: 1px solid #00d2d3; color: #00d2d3; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;" onclick="openSettingsModal()">⚙️ 전술 관리 수치 변경</button>
             </div>
             <div class="hotkey-info">
                 <div style="font-weight:bold; color:#00d2d3; margin-bottom:5px; text-align:center;">⌨️ 전술 단축키 일람</div>
-                <span class="hotkey-badge">W,A,S,D / 방향키</span> 상하좌우 자유 무빙 기동<br>
-                <span class="hotkey-badge">SPACE</span> 전술 섬멸 필살기 발동 (기본 3개 제공)<br>
+                <span class="hotkey-badge">W,A,S,D / 방향키</span> 상하좌우 무빙 기동<br>
+                <span class="hotkey-badge">SPACE</span> 전술 섬멸 필살기 발동<br>
                 <span class="hotkey-badge">P</span> 실시간 일시중지 & 전투 재개<br>
                 <span class="hotkey-badge">B</span> BGM 배경음악 ON / OFF 토글<br>
                 <span class="hotkey-badge">M</span> 타이틀 지휘소 메뉴로 탈출<br>
-                <span class="hotkey-badge">S</span> 현재 전황 데이터 스냅샷 세이브<br>
-                <span class="hotkey-badge">L</span> 세이브 시점 데이터 즉시 로드
+                <span class="hotkey-badge">S</span> 현재 전황 데이터 세이브<br>
+                <span class="hotkey-badge">L</span> 세이브 시점 데이터 로드
             </div>
+        </div>
+    </div>
+
+    <!-- 전술 관리 설정 팝업 모달 -->
+    <div id="settingsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 200; justify-content: center; align-items: center;">
+        <div style="background: #141822; border: 2px solid #00d2d3; border-radius: 10px; padding: 20px; width: 440px; max-height: 85vh; overflow-y: auto; box-shadow: 0 0 25px rgba(0, 210, 211, 0.4); display: flex; flex-direction: column; gap: 12px; box-sizing: border-box;">
+            <div style="font-size: 16px; font-weight: bold; color: #00d2d3; border-bottom: 1px solid #2c3e50; padding-bottom: 8px; text-align: center;">⚙️ 전술 수치 제어 및 밸런스 관리 설정</div>
+            
+            <div class="section-divider">🧟 좀비 시스템 제어</div>
+            <div class="control-group"><label><span>👑 중간 보스 체력 배율</span> <span class="value-disp" id="bossVal">1.0x</span></label><input type="range" id="bossSlider" min="0.5" max="3.5" step="0.1" value="1.0"></div>
+            <div class="control-group"><label><span>💀 좀비 스폰 머릿수 배율</span> <span class="value-disp" id="zombieVal">1.0x</span></label><input type="range" id="zombieSlider" min="0.4" max="2.5" step="0.1" value="1.0"></div>
+            
+            <div class="section-divider">💚 메디컬 킷트 (체력 회복) 제어</div>
+            <div class="control-group"><label><span>빈도: 회복킷 스폰 확률</span> <span class="value-disp" id="healFreqVal">30%</span></label><input type="range" id="healFreqSlider" min="0" max="100" step="5" value="30"></div>
+            <div class="control-group"><label><span>강도: 체력 회복량</span> <span class="value-disp" id="healVal">25 HP</span></label><input type="range" id="healSlider" min="10" max="60" step="5" value="25"></div>
+            
+            <div class="section-divider">⚔️ 전술 특수 무기류 제어</div>
+            <div class="control-group"><label><span>빈도: 무기류 스폰 가중치</span> <span class="value-disp" id="wpnFreqVal">40%</span></label><input type="range" id="wpnFreqSlider" min="0" max="100" step="5" value="40"></div>
+            <div class="control-group"><label><span>강도: 무기 버프 유지 시간</span> <span class="value-disp" id="wpnDurVal">7초</span></label><input type="range" id="wpnDurSlider" min="3" max="20" step="1" value="7"></div>
+            
+            <div class="section-divider">💥 버프 및 스플래시 범위 제어</div>
+            <div class="control-group"><label><span>빈도: 버프 스폰 가중치</span> <span class="value-disp" id="buffFreqVal">40%</span></label><input type="range" id="buffFreqSlider" min="0" max="100" step="5" value="40"></div>
+            <div class="control-group"><label><span>강도: 버프 유지 시간</span> <span class="value-disp" id="buffDurVal">7초</span></label><input type="range" id="buffDurSlider" min="3" max="20" step="1" value="7"></div>
+            <div class="control-group"><label><span>범위: 미사일 & 폭발 반경</span> <span class="value-disp" id="splashRangeVal">40px</span></label><input type="range" id="splashRangeSlider" min="20" max="90" step="5" value="40"></div>
+            
+            <div class="section-divider">🛡️ 전술 아머 및 나노 디펜스 제어</div>
+            <div class="control-group"><label><span>빈도: 디펜스 스폰 가중치</span> <span class="value-disp" id="defFreqVal">30%</span></label><input type="range" id="defFreqSlider" min="0" max="100" step="5" value="30"></div>
+            <div class="control-group"><label><span>강도: 아머/무적 유지 시간</span> <span class="value-disp" id="defDurVal">7초</span></label><input type="range" id="defDurSlider" min="3" max="20" step="1" value="7"></div>
+            
+            <div class="section-divider">🎖️ 아군 지원 및 폭탄 제어</div>
+            <div class="control-group"><label><span>빈도: 아군 지원 스폰 가중치</span> <span class="value-disp" id="allyFreqVal">30%</span></label><input type="range" id="allyFreqSlider" min="0" max="100" step="5" value="30"></div>
+            <div class="control-group"><label><span>빈도: 전술 폭탄 스폰 가중치</span> <span class="value-disp" id="bombFreqVal">20%</span></label><input type="range" id="bombFreqSlider" min="0" max="100" step="5" value="20"></div>
+
+            <button style="background: #10ac84; border: none; color: #fff; width: 100%; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px;" onclick="closeSettingsModal()">💾 설정 저장 및 닫기</button>
         </div>
     </div>
 
@@ -354,7 +366,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v2.1.0";
+        const GAME_VERSION = "v2.2.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 1.0, bossHpMultiplier = 1.0, zombieCountMultiplier = 1.0;
         let healWeight = 30, healAmount = 25, wpnWeight = 40, wpnDurationConfig = 420, buffWeight = 40, buffDurationConfig = 420, currentSplashRange = 40, defWeight = 30, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -558,6 +570,16 @@
                 } else { addFloatingText(player.x, player.y - 60, "❌ 저장 시점 없음", "#ff3838"); }
             }
         });
+
+        function openSettingsModal() {
+            if (audioCtx) playUpgradeSound();
+            document.getElementById('settingsModal').style.display = 'flex';
+        }
+
+        function closeSettingsModal() {
+            if (audioCtx) playUpgradeSound();
+            document.getElementById('settingsModal').style.display = 'none';
+        }
 
         function setSelectDiff(name, mult, btn) {
             const lvMap = { 0.5: 1, 1.0: 2, 1.4: 3, 1.9: 4, 2.5: 5 }; difficulty = name + ` (Lv.${lvMap[mult] || 2})`; diffMultiplier = mult;
