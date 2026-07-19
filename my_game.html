@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로드러너 좀비 슈팅 - 슈프림 갓 모드 (v1.1.0)</title>
+    <title>로드러너 좀비 슈팅 - 슈프림 갓 모드 (v1.2.0)</title>
     <style>
         body {
             margin: 0;
@@ -239,7 +239,7 @@
 
 <body>
 
-    <h1>ROADRUNNER: SUPREME LASER FORCE <span style="font-size: 14px; color: #00d2d3; font-weight: bold; margin-left: 8px;">v1.1.0</span></h1>
+    <h1>ROADRUNNER: SUPREME LASER FORCE <span style="font-size: 14px; color: #00d2d3; font-weight: bold; margin-left: 8px;">v1.2.0</span></h1>
 
     <div id="gameWrapper">
         <div id="gameContainer">
@@ -247,7 +247,7 @@
 
             <div id="menuOverlay">
                 <div class="menu-title">ZOMBIE ROADRUNNER</div>
-                <div class="menu-subtitle">GOD MODE CONTROL MATRIX <span style="color: #00d2d3; font-weight: bold; margin-left: 4px;">(v1.1.0)</span></div>
+                <div class="menu-subtitle">GOD MODE CONTROL MATRIX <span style="color: #00d2d3; font-weight: bold; margin-left: 4px;">(v1.2.0)</span></div>
                 <div id="menuHighScore">🏆 최고 기록 스코어: 0 PTS</div>
                 <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 10px; font-weight: bold;">초기 난이도 프리셋 설정
                     (5단계)</div>
@@ -351,7 +351,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v1.1.0";
+        const GAME_VERSION = "v1.2.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 1.0, bossHpMultiplier = 1.0, zombieCountMultiplier = 1.0;
         let healWeight = 30, healAmount = 25, wpnWeight = 40, wpnDurationConfig = 420, buffWeight = 40, buffDurationConfig = 420, currentSplashRange = 40, defWeight = 30, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -648,6 +648,16 @@
 
             for (let i = floatingTexts.length - 1; i >= 0; i--) { floatingTexts[i].y += floatingTexts[i].vy; floatingTexts[i].life--; if (floatingTexts[i].life <= 0) floatingTexts.splice(i, 1); }
             for (let i = muzzleFlashes.length - 1; i >= 0; i--) { muzzleFlashes[i].life--; if (muzzleFlashes[i].life <= 0) muzzleFlashes.splice(i, 1); }
+
+            // Update particle lifetime & motion
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx || 0;
+                p.y += p.vy || 0;
+                if (p.gravity) p.vy += p.gravity;
+                p.alpha -= 0.05;
+                if (p.alpha <= 0) { particles.splice(i, 1); }
+            }
 
             enemies.forEach(enemy => {
                 if (enemy.flashTimer > 0) enemy.flashTimer--; if (globalAnimTick % 8 === 0) enemy.animFrame = (enemy.animFrame + 1) % 4;
@@ -961,6 +971,7 @@
 
         function draw() {
             if (gameState === "MENU") return;
+            ctx.shadowBlur = 0;
             ctx.fillStyle = '#0a0c10'; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Draw starfield nebula
@@ -968,28 +979,28 @@
                 s.y += s.speed;
                 if (s.y > canvas.height) { s.y = 0; s.x = Math.random() * canvas.width; }
                 ctx.fillStyle = '#00d2d3';
-                ctx.globalAlpha = s.alpha * (0.6 + Math.sin(globalAnimTick * 0.1 + s.x) * 0.4);
+                ctx.globalAlpha = s.alpha * 0.4;
                 ctx.fillRect(s.x, s.y, s.size, s.size);
             });
             ctx.globalAlpha = 1.0;
 
             // Player thrust flames
-            if (globalAnimTick % 2 === 0) {
+            if (globalAnimTick % 3 === 0) {
                 particles.push({
-                    x: player.x + (Math.random() - 0.5) * 8,
+                    x: player.x + (Math.random() - 0.5) * 6,
                     y: player.y + 20,
-                    vx: (Math.random() - 0.5) * 0.5,
-                    vy: Math.random() * 3 + 2,
-                    radius: Math.random() * 4 + 2,
-                    alpha: 0.9,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: Math.random() * 2 + 1.5,
+                    radius: Math.random() * 2 + 1,
+                    alpha: 0.8,
                     color: Math.random() > 0.4 ? '#ff9f43' : '#ff3838',
                     gravity: 0.05
                 });
             }
 
-            // Draw Player Jet (Clean Crisp Vector Canvas Graphics)
+            // Draw Player Jet (Clean Crisp Vector Canvas Graphics - Zero Light Bloom)
             ctx.save();
-            ctx.shadowBlur = 4;
+            ctx.shadowBlur = 0;
             ctx.shadowColor = '#00d2d3';
             
             ctx.fillStyle = '#00d2d3';
@@ -1046,8 +1057,7 @@
                     if (enemy.isBoss) {
                         const pal = BOSS_PALETTES[enemy.bossType || 0];
                         ctx.save();
-                        ctx.shadowBlur = 6;
-                        ctx.shadowColor = pal.glow;
+                        ctx.shadowBlur = 0;
                         
                         // Boss Main Body Outer Wings
                         ctx.fillStyle = pal.body;
@@ -1085,7 +1095,7 @@
                     } else {
                         const pal = ALIEN_PALETTES[enemy.alienType || 0];
                         ctx.save();
-                        ctx.shadowBlur = 3;
+                        ctx.shadowBlur = 0;
                         ctx.shadowColor = pal.glow;
                         
                         // Alien Fighter Geometry (Vector Drawn)
@@ -1117,23 +1127,22 @@
                 }
             });
 
-            // Draw Enemy Lasers (High Visibility Plasma Capsules)
+            // Draw Enemy Lasers (High Visibility Sharp Plasma Capsules)
             enemyLasers.forEach(l => {
                 ctx.save();
-                ctx.shadowBlur = l.isBoss ? 6 : 4;
-                ctx.shadowColor = l.color || '#ff0055';
+                ctx.shadowBlur = 0;
                 
-                // Outer glowing capsule
+                // Outer capsule
                 ctx.fillStyle = l.color || (l.isBoss ? '#ff0055' : '#ff3838');
                 ctx.beginPath();
-                if (ctx.roundRect) ctx.roundRect(l.x - l.w / 2, l.y - l.h / 2, l.w, l.h, 6);
+                if (ctx.roundRect) ctx.roundRect(l.x - l.w / 2, l.y - l.h / 2, l.w, l.h, 4);
                 else ctx.fillRect(l.x - l.w / 2, l.y - l.h / 2, l.w, l.h);
                 ctx.fill();
                 
                 // Inner bright white core for extreme contrast & visibility!
                 ctx.fillStyle = '#ffffff';
                 ctx.beginPath();
-                if (ctx.roundRect) ctx.roundRect(l.x - l.w / 4, l.y - l.h / 3, l.w / 2, l.h * 0.6, 4);
+                if (ctx.roundRect) ctx.roundRect(l.x - l.w / 4, l.y - l.h / 3, l.w / 2, l.h * 0.6, 2);
                 else ctx.fillRect(l.x - l.w / 4, l.y - l.h / 3, l.w / 2, l.h * 0.6);
                 ctx.fill();
                 
@@ -1144,57 +1153,34 @@
                 ctx.save();
                 
                 if (item.type === "HEAL") {
-                    // Sparkling, pulsating neon green & white animation for health recovery item
-                    const pulse = Math.sin(globalAnimTick * 0.25) * 3;
-                    const isFlash = Math.floor(globalAnimTick / 4) % 2 === 0;
+                    const pulse = Math.sin(globalAnimTick * 0.25) * 2;
+                    ctx.shadowBlur = 0;
                     
-                    ctx.shadowBlur = 5;
-                    ctx.shadowColor = isFlash ? '#1cfc03' : '#ffffff';
-                    
-                    // Outer glowing pulse circle
-                    ctx.fillStyle = isFlash ? '#1cfc03' : '#ffffff';
+                    ctx.fillStyle = '#1cfc03';
                     ctx.beginPath();
-                    ctx.arc(item.x, item.y, 14 + pulse, 0, Math.PI * 2);
+                    ctx.arc(item.x, item.y, 13 + pulse, 0, Math.PI * 2);
                     ctx.fill();
                     
-                    // Inner dark core
                     ctx.fillStyle = '#0a200f';
                     ctx.beginPath();
-                    ctx.arc(item.x, item.y, 10 + pulse * 0.5, 0, Math.PI * 2);
+                    ctx.arc(item.x, item.y, 9 + pulse * 0.5, 0, Math.PI * 2);
                     ctx.fill();
                     
-                    // Heart icon / text
                     ctx.fillStyle = '#1cfc03';
                     ctx.font = 'bold 12px Arial';
                     ctx.textAlign = 'center';
                     ctx.textBaseline = 'middle';
                     ctx.fillText('💚', item.x, item.y);
-                    
-                    // Sparkle particles
-                    if (globalAnimTick % 6 === 0) {
-                        particles.push({
-                            x: item.x + (Math.random() - 0.5) * 16,
-                            y: item.y + (Math.random() - 0.5) * 16,
-                            vx: (Math.random() - 0.5) * 0.8,
-                            vy: (Math.random() - 0.5) * 0.8,
-                            radius: Math.random() * 2 + 1,
-                            alpha: 1,
-                            color: '#1cfc03',
-                            gravity: 0
-                        });
-                    }
                 } else {
-                    ctx.shadowBlur = 10;
-                    ctx.shadowColor = item.color;
-                    
+                    ctx.shadowBlur = 0;
                     ctx.fillStyle = item.color;
                     ctx.beginPath();
-                    ctx.arc(item.x, item.y, 13, 0, Math.PI * 2);
+                    ctx.arc(item.x, item.y, 12, 0, Math.PI * 2);
                     ctx.fill();
                     
                     ctx.fillStyle = '#141822';
                     ctx.beginPath();
-                    ctx.arc(item.x, item.y, 10, 0, Math.PI * 2);
+                    ctx.arc(item.x, item.y, 9, 0, Math.PI * 2);
                     ctx.fill();
                     
                     ctx.fillStyle = item.color;
@@ -1223,8 +1209,7 @@
                 const fs = Math.floor((t.fontSize || 12) * (t.scale || 1.0));
                 ctx.font = `bold ${fs}px Segoe UI`;
                 ctx.fillStyle = t.color;
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = t.color;
+                ctx.shadowBlur = 0;
                 ctx.textAlign = 'center';
                 ctx.fillText(t.text, t.x, t.y);
                 ctx.restore();
