@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v9.8.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v9.9.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 <span onclick="previewVictoryScreen()" style="cursor: pointer; text-decoration: underline; color: #f1c40f;" title="🏆 승리 축하 화면 미리보기">현우엄마</span>를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v9.8.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v9.9.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -773,7 +773,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v9.8.0";
+        const GAME_VERSION = "v9.9.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -2608,14 +2608,8 @@
             // ROW 1 (y: 12 ~ 42): Core Primary Info (HP, Stage, Score)
             // -------------------------------------------------------------
 
-            // 1-A. LEFT: Player HP Bar (Prominent & Clear)
-            ctx.fillStyle = '#ff4757';
-            ctx.font = '900 13px sans-serif';
-            ctx.textAlign = 'left';
-            ctx.fillText('❤️ HP', 16, 28);
-
-            // HP Bar Background & Fill
-            const hpBarX = 62, hpBarY = 16, hpBarW = 140, hpBarH = 15;
+            // 1-A. LEFT: Player HP Bar & Lives Badge (Stacked neatly)
+            const hpBarX = 14, hpBarY = 12, hpBarW = 95, hpBarH = 14;
             ctx.fillStyle = '#1e272e';
             ctx.fillRect(hpBarX, hpBarY, hpBarW, hpBarH);
             ctx.strokeStyle = '#353b48';
@@ -2628,16 +2622,16 @@
 
             // HP Text Inside Bar
             ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 11px sans-serif';
+            ctx.font = 'bold 10px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText(`${player.hp}/${player.maxHp}`, hpBarX + hpBarW / 2, hpBarY + 11);
 
-            // Lives Badge
+            // Lives Badge Stacked Below HP Bar (x: 14, y: 38)
             if (player.lives > 1) {
                 ctx.fillStyle = '#ff2d55';
                 ctx.font = 'bold 11px sans-serif';
                 ctx.textAlign = 'left';
-                ctx.fillText(`❤️x${player.lives}`, hpBarX + hpBarW + 6, 28);
+                ctx.fillText(`❤️x${player.lives} (목숨)`, 14, 38);
             }
 
             // 1-B. CENTER: STAGE & WAVE Badge
