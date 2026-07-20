@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v7.8.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v7.9.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v7.8.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v7.9.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -724,7 +724,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v7.8.0";
+        const GAME_VERSION = "v7.9.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1678,6 +1678,7 @@
                     enemy.y += enemy.speed;
                 }
 
+                if (!enemy || enemy.isDying) continue;
                 if (Math.hypot(enemy.x - player.x, enemy.y - player.y) < enemy.radius + player.radius) {
                     if (player.defenseType === "NANO_SHIELD") {
                         if (!enemy.isFinalBoss) {
@@ -1835,7 +1836,8 @@
         }
 
         function triggerUltimateAnnihilation() {
-            if (gameState !== "PLAYING" || isPaused) return;
+            if (gameState !== "PLAYING" || isPaused || isFadingToVictory) return;
+            if (enemies.some(e => e.isFinalBoss && e.isDying)) return;
 
             if (player.ultimateStock <= 0) {
                 addFloatingText(player.x, player.y - 50, "⚠️ 필살기 수량 부족! (0/5)", "#ff3838", 15);
@@ -1890,6 +1892,9 @@
         }
 
         function triggerTacticalBomb() {
+            if (gameState !== "PLAYING" || isPaused || isFadingToVictory) return;
+            if (enemies.some(e => e.isFinalBoss && e.isDying)) return;
+
             playExplosionSound(true);
             addFloatingText(player.x, player.y - 65, "💣 전술 폭탄 작동! 전면 소각!", "#ff3338", 16);
 
@@ -1900,6 +1905,7 @@
             const bombDmg = 150;
             for (let i = enemies.length - 1; i >= 0; i--) {
                 let enemy = enemies[i];
+                if (!enemy || enemy.isDying) continue;
                 enemy.hp -= bombDmg;
                 enemy.flashTimer = 8;
                 addFloatingText(enemy.x, enemy.y, `-${bombDmg}`, '#ff3338', 14);
