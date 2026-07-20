@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v6.4.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v6.5.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v6.4.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v6.5.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -724,7 +724,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v6.4.0";
+        const GAME_VERSION = "v6.5.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9, bossHpMultiplier = 0.9, zombieCountMultiplier = 0.9;
         let healWeight = 35, healAmount = 30, wpnWeight = 45, wpnDurationConfig = 420, buffWeight = 45, buffDurationConfig = 420, currentSplashRange = 45, defWeight = 35, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -2057,45 +2057,75 @@
                 ctx.fillRect(l.x - l.w / 2, l.y - l.h / 2, l.w, l.h);
             });
 
+            // Crisp, Sharp Item Rendering without ANY Blur/Glow Effects for 100% Instant Identification!
             droppedItems.forEach(item => {
                 ctx.save();
+                ctx.shadowBlur = 0;
+                ctx.filter = 'none';
+
+                // Solid background badge with crisp border
+                ctx.fillStyle = item.color || '#f1c40f';
+                ctx.beginPath();
+                ctx.arc(item.x, item.y, 16, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
                 const itemImg = itemImages[item.type];
                 const cleanItemCvs = getCleanTransparentSprite(itemImg);
-                if (cleanItemCvs) ctx.drawImage(cleanItemCvs, item.x - 16, item.y - 16, 32, 32);
-                else { ctx.fillStyle = item.color; ctx.beginPath(); ctx.arc(item.x, item.y, 13, 0, Math.PI * 2); ctx.fill(); }
-                ctx.font = 'bold 10px Arial'; ctx.textAlign = 'center'; ctx.fillStyle = '#ffffff'; ctx.fillText(item.label, item.x, item.y + 27);
+                if (cleanItemCvs) {
+                    ctx.drawImage(cleanItemCvs, item.x - 14, item.y - 14, 28, 28);
+                }
+
+                // Sharp high-contrast text badge below item
+                ctx.font = 'bold 12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.strokeStyle = '#000000';
+                ctx.lineWidth = 4;
+                ctx.strokeText(item.label, item.x, item.y + 32);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(item.label, item.x, item.y + 32);
                 ctx.restore();
             });
 
             bullets.forEach(b => { ctx.fillStyle = '#ffd32c'; ctx.fillRect(b.x - 1.5, b.y, 3, 10); });
             for (let i = particles.length - 1; i >= 0; i--) { ctx.fillStyle = particles[i].color; ctx.globalAlpha = particles[i].alpha; ctx.beginPath(); ctx.arc(particles[i].x, particles[i].y, particles[i].radius, 0, Math.PI * 2); ctx.fill(); }
 
+            // Crisp, Sharp Floating Combat Text without ANY Blur/Glow Effects
             for (let i = floatingTexts.length - 1; i >= 0; i--) {
                 let t = floatingTexts[i];
                 if (!t) continue;
                 ctx.save();
-                ctx.font = 'bold 12px Arial';
+                ctx.shadowBlur = 0;
+                ctx.filter = 'none';
+                const fSize = t.fontSize || 13;
+                ctx.font = `bold ${fSize}px sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.strokeStyle = '#000000';
-                ctx.lineWidth = 3;
+                ctx.lineWidth = 4;
                 ctx.strokeText(t.text, t.x, t.y);
                 ctx.fillStyle = t.color || '#ffffff';
                 ctx.fillText(t.text, t.x, t.y);
                 ctx.restore();
             }
 
+            // Crisp HUD Header Rendering
+            ctx.save();
+            ctx.shadowBlur = 0;
+            ctx.filter = 'none';
             ctx.fillStyle = 'rgba(12, 14, 18, 0.96)'; ctx.fillRect(0, 0, canvas.width, 130); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, 130); ctx.lineTo(canvas.width, 130); ctx.stroke();
-            ctx.fillStyle = '#ffffff'; ctx.font = 'bold 13px Arial'; ctx.textAlign = 'left'; ctx.fillText(`📊 STAGE: ${stageLevel} [${difficulty.split(" ")[0]}]  ${GAME_VERSION}`, 20, 26);
+            ctx.fillStyle = '#ffffff'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'left'; ctx.fillText(`📊 STAGE: ${stageLevel} [${difficulty.split(" ")[0]}]  ${GAME_VERSION}`, 20, 26);
             ctx.textAlign = 'center'; ctx.fillStyle = '#ff9f43'; ctx.fillText(`🔥 WAVE: ${waveCount}`, canvas.width / 2 - 50, 26);
-            ctx.fillStyle = '#ff3838'; ctx.font = 'bold 13px Arial'; ctx.fillText(`💥 필살기: ${player.ultimateStock}/5`, canvas.width / 2 + 55, 26);
+            ctx.fillStyle = '#ff3838'; ctx.font = 'bold 13px sans-serif'; ctx.fillText(`💥 필살기: ${player.ultimateStock}/5`, canvas.width / 2 + 55, 26);
             ctx.textAlign = 'right'; ctx.fillStyle = '#ffd32c'; ctx.fillText(`SCORE: ${score} (HI: ${highScore})`, canvas.width - 20, 26);
 
             ctx.textAlign = 'left'; ctx.fillStyle = '#ffffff'; ctx.fillText(`❤️ 내 수명 (HP): `, 20, 55); ctx.fillStyle = '#2f3542'; ctx.fillRect(125, 45, 150, 12);
-            ctx.fillStyle = player.hp > 40 ? '#10ac84' : '#ff3838'; ctx.fillRect(125, 45, (player.hp / player.maxHp) * 150, 12); ctx.fillStyle = '#ffffff'; ctx.font = 'bold 11px Arial'; ctx.fillText(player.hp + " / " + player.maxHp, 285, 55);
+            ctx.fillStyle = player.hp > 40 ? '#10ac84' : '#ff3838'; ctx.fillRect(125, 45, (player.hp / player.maxHp) * 150, 12); ctx.fillStyle = '#ffffff'; ctx.font = 'bold 11px sans-serif'; ctx.fillText(player.hp + " / " + player.maxHp, 285, 55);
             ctx.fillStyle = '#a4b0be'; ctx.fillText(`(7x3 소대: ${player.allies.length} / 21명)`, 355, 55);
 
             ctx.fillStyle = 'rgba(32, 191, 107, 0.15)'; ctx.fillRect(20, 72, canvas.width - 40, 24); ctx.strokeStyle = 'rgba(32, 191, 107, 0.4)'; ctx.strokeRect(20, 72, canvas.width - 40, 24);
-            ctx.fillStyle = '#1cfc03'; ctx.font = 'bold 11px Arial'; ctx.textAlign = 'left';
+            ctx.fillStyle = '#1cfc03'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'left';
             let wName = player.weaponType === "NORMAL" ? "기본 화기" : player.weaponType === "GATLING" ? "속사 개틀링" : player.weaponType === "LASER" ? "중차단 레이저" : player.weaponType === "MISSILE" ? "열압력 미사일" : "전술 고폭로켓";
             let bName = player.buffType === "NONE" ? "기본" : player.buffType === "DAMAGE_X2" ? "피해량 2배" : player.buffType === "BOMBARD" ? "공중 무차별폭격" : "스플래시 폭발탄";
             let dName = player.defenseType === "NONE" ? "기본 아머" : player.defenseType === "NANO_SHIELD" ? "완전 나노무적" : "중장갑 피해반감";
@@ -2104,7 +2134,7 @@
             const stageNum = Math.min(5, Math.floor((waveCount - 1) / 5) + 1);
             const waveInStage = ((waveCount - 1) % 5) + 1;
             ctx.fillStyle = '#2f3542'; ctx.fillRect(20, 110, 160, 6); ctx.fillStyle = '#ff9f43'; ctx.fillRect(20, 110, (spawnTimer / constWaveInterval) * 160, 6);
-            ctx.textAlign = 'right'; ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'right'; ctx.font = 'bold 12px sans-serif';
 
             let nextBossStr = "";
             if (waveCount < 5) nextBossStr = `👑 중간보스 출현까지: ${5 - waveCount}웨이브`;
@@ -2116,6 +2146,7 @@
 
             ctx.fillStyle = waveCount >= 20 ? '#ff2d55' : '#feca57';
             ctx.fillText(`📊 STAGE ${stageNum}-${waveInStage}  |  ${nextBossStr}`, canvas.width - 20, 116);
+            ctx.restore();
         }
 
         function loop() {
