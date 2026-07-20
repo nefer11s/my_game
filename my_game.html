@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v10.1.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v10.2.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 <span onclick="previewVictoryScreen()" style="cursor: pointer; text-decoration: underline; color: #f1c40f;" title="🏆 승리 축하 화면 미리보기">현우엄마</span>를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v10.1.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v10.2.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -773,7 +773,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v10.1.0";
+        const GAME_VERSION = "v10.2.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1360,15 +1360,15 @@
             const stageNum = Math.min(5, Math.floor((waveCount - 1) / 5) + 1);
             stageLevel = stageNum;
             const laneWidth = canvas.width / 3;
-            const zCount = Math.max(2, Math.floor((3 + stageLevel * 0.7) * diffMultiplier));
-            const hpBase = Math.floor((4 + stageLevel * 2) * diffMultiplier);
+            const zCount = Math.max(3, Math.floor((3 + stageLevel * 0.8) * diffMultiplier));
+            const hpBase = Math.floor((15 + stageLevel * 15) * diffMultiplier * (minionHpMultiplier || 1.0));
 
             const isMidBossWave = [5, 10, 14, 15, 18, 19, 20, 21, 22, 23, 24].includes(waveCount);
             const isFinalBossWave = (waveCount === 25);
 
             if (isFinalBossWave) {
-                // 👑 3-PHASE EPIC SUPREME BOSS (v10.1.0, Base HP: 15000 - Normal: ~13,500 HP)
-                const bossHp = Math.floor(15000 * diffMultiplier * (finalBossHpMultiplier || 1.0));
+                // 👑 3-PHASE EPIC SUPREME BOSS (v10.2.0, Base HP: 60000 - Normal: ~54,000 HP for 3~4 min battle!)
+                const bossHp = Math.floor(60000 * diffMultiplier * (finalBossHpMultiplier || 1.0));
                 enemies.push({
                     x: canvas.width / 2, y: -80, radius: 88,
                     hp: bossHp,
@@ -1379,11 +1379,11 @@
                     spawnShieldTimer: 180 // 3.0-second 100% Spawn Invulnerability Shield!
                 });
                 canvasShakeTimer = 35;
-                addFloatingText(canvas.width / 2, 220, "👑 [초대형 최종 마왕 결전 보스 (13,500 HP)] 강림!!", "#ff2d55", 26);
+                addFloatingText(canvas.width / 2, 220, `👑 [초대형 최종 마왕 결전 보스 (${bossHp.toLocaleString()} HP)] 강림!!`, "#ff2d55", 26);
             } else if (isMidBossWave) {
                 // Stage Mid-Bosses (Stage 5-1~4 all spawn boss_9 guard captain bosses!)
                 const bType = (stageLevel === 5) ? 9 : Math.floor(Math.random() * 10);
-                const midBossHp = Math.floor((50 + stageLevel * 15) * diffMultiplier * (midBossHpMultiplier || 1.0));
+                const midBossHp = Math.floor((350 + stageLevel * 450) * diffMultiplier * (midBossHpMultiplier || 1.0));
                 enemies.push({
                     x: laneWidth * 1.5, y: -90, radius: 44,
                     hp: midBossHp,
@@ -1391,7 +1391,7 @@
                     speed: (0.7 + (stageLevel * 0.03)) * (diffMultiplier * 0.85),
                     isBoss: true, isFinalBoss: false, bossType: bType, flashTimer: 0, animFrame: 0
                 });
-                const bossMsg = (stageLevel === 5) ? `⚠️ STAGE 5 마왕 호위보스(boss_9) 출격!` : `⚠️ STAGE ${stageLevel} 중간 보스 출격!`;
+                const bossMsg = (stageLevel === 5) ? `⚠️ STAGE 5 마왕 호위보스 (${midBossHp.toLocaleString()} HP) 출격!` : `⚠️ STAGE ${stageLevel} 중간 보스 (${midBossHp.toLocaleString()} HP) 출격!`;
                 addFloatingText(canvas.width / 2, 220, bossMsg, "#ff9f43", 18);
             } else {
                 for (let i = 0; i < zCount; i++) {
@@ -1929,24 +1929,52 @@
 
         function handleEnemyDamageHit(enemy, hitWp, bDmg, bx, by, isSplashHit = false) {
             if (!enemy || enemy.isDying) return;
-            if (enemy.isFinalBoss && enemy.spawnShieldTimer > 0) {
+            if (enemy.isFinalBoss && (enemy.spawnShieldTimer > 0 || enemy.phaseGateTimer > 0)) {
                 // 3.0-Second Spawn Invulnerability Shield Active! 100% Bounce off all projectiles!
                 createAdvancedExplosion(bx, by, '#f1c40f', 3, 0.4);
                 addFloatingText(bx, by - 10, "🛡️ SHIELD", '#f1c40f', 10, 16, -1.0);
                 return;
             }
+            if (enemy.isFinalBoss && isSplashHit) {
+                // Prevent multi-hit splash explosions from dealing 10x damage in 1 frame
+                if (enemy.lastSplashTick === globalAnimTick) return;
+                enemy.lastSplashTick = globalAnimTick;
+            }
+
             const hitX = hitWp ? hitWp.x : bx;
             const hitY = hitWp ? hitWp.y : by;
             const hitR = hitWp ? hitWp.radius : enemy.radius;
 
-            enemy.hp -= bDmg;
+            // Final Boss Heavy Armor 60% Damage Reduction + Single-Hit Cap (Max 80 HP per hit)
+            let calcDmg = enemy.isFinalBoss ? Math.min(80, Math.max(1, Math.floor(bDmg * 0.40))) : bDmg;
+
+            enemy.hp -= calcDmg;
             enemy.flashTimer = 4;
+
+            if (enemy.isFinalBoss) {
+                // Phase 1 -> Phase 2 Transition (at 66% HP)
+                if (enemy.phase === 1 && enemy.hp <= enemy.maxHp * 0.66) {
+                    enemy.phase = 2;
+                    enemy.phaseGateTimer = 90; // 1.5s Invulnerable phase gate transition!
+                    canvasShakeTimer = 30;
+                    addFloatingText(enemy.x, enemy.y - 70, "⚡ [PHASE 2 OVERDRIVE] 외곽 장갑 소각! 2단계 광역 레이저 전개!", "#00d2d3", 22, 90);
+                    createAdvancedExplosion(enemy.x, enemy.y, '#00d2d3', 40, 2.5);
+                }
+                // Phase 2 -> Phase 3 Transition (at 33% HP)
+                else if (enemy.phase === 2 && enemy.hp <= enemy.maxHp * 0.33) {
+                    enemy.phase = 3;
+                    enemy.phaseGateTimer = 90; // 1.5s Invulnerable phase gate transition!
+                    canvasShakeTimer = 35;
+                    addFloatingText(enemy.x, enemy.y - 70, "🔥 [FINAL PHASE 3] 폭주 오버드라이브! 전면 결전 사격!", "#ff2d55", 24, 90);
+                    createAdvancedExplosion(enemy.x, enemy.y, '#ff2d55', 50, 3.0);
+                }
+            }
 
             if (!enemy.hitFlashes) enemy.hitFlashes = [];
             enemy.hitFlashes.push({ x: hitX, y: hitY, radius: hitR, life: 8 });
 
             createAdvancedExplosion(hitX, hitY, enemy.isFinalBoss ? '#ff2d55' : '#ff9f43', 5, 0.7);
-            addFloatingText(hitX, hitY - 12, `-${bDmg}`, enemy.isFinalBoss ? '#ff2d55' : '#ff4d4d', 12, 24, -1.0);
+            addFloatingText(hitX, hitY - 12, `-${calcDmg}`, enemy.isFinalBoss ? '#ff2d55' : '#ff4d4d', 12, 24, -1.0);
 
             if (enemy.hp <= (enemy.isFinalBoss ? 3 : 0)) {
                 eliminateEnemy(enemy);
@@ -2070,8 +2098,8 @@
             for (let i = enemies.length - 1; i >= 0; i--) {
                 let enemy = enemies[i];
                 if (!enemy || enemy.isDying) continue;
-                if (enemy.isFinalBoss && enemy.spawnShieldTimer > 0) continue;
-                let actualDmg = enemy.isFinalBoss ? Math.max(1500, Math.floor(enemy.maxHp * 0.12)) : dmg;
+                if (enemy.isFinalBoss && (enemy.spawnShieldTimer > 0 || enemy.phaseGateTimer > 0)) continue;
+                let actualDmg = enemy.isFinalBoss ? Math.max(2500, Math.floor(enemy.maxHp * 0.08)) : dmg;
                 enemy.hp -= actualDmg;
                 enemy.flashTimer = 14;
                 addFloatingText(enemy.x, enemy.y, `-${actualDmg} CRITICAL!`, color, 16);
