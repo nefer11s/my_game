@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v6.9.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v7.0.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v6.9.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v7.0.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -432,7 +432,7 @@
             </div>
         </div>
 
-        <div id="sidebarPanel">
+        <div id="sidebarPanel" style="display: none;">
             <div id="controlDashboard">
                 <div class="dashboard-title">🎛️ 빠른 전술 제어 센터</div>
                 <div class="control-group"
@@ -724,7 +724,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v6.9.0";
+        const GAME_VERSION = "v7.0.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -954,14 +954,12 @@
         function getAllyRelativePos(index) { return { xOffset: ((index % 7) - 3) * 20, yOffset: (Math.floor(index / 7) + 1) * 22 }; }
 
         function updateUIVisibility() {
-            const h1 = document.querySelector('h1');
             const sidebar = document.getElementById('sidebarPanel');
-            if (gameState === "PLAYING") {
-                if (h1) h1.style.display = 'none';
-                if (sidebar) sidebar.style.display = 'none';
+            if (!sidebar) return;
+            if (gameState === "PLAYING" && window.innerWidth > 768) {
+                sidebar.style.display = 'flex';
             } else {
-                if (h1) h1.style.display = 'block';
-                if (sidebar) sidebar.style.display = 'flex';
+                sidebar.style.display = 'none';
             }
         }
 
