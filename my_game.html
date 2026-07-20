@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v10.4.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v10.5.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 <span onclick="previewVictoryScreen()" style="cursor: pointer; text-decoration: underline; color: #f1c40f;" title="🏆 승리 축하 화면 미리보기">현우엄마</span>를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v10.4.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v10.5.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -774,7 +774,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v10.4.0";
+        const GAME_VERSION = "v10.5.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1409,13 +1409,59 @@
                 const bossMsg = (stageLevel === 5) ? `⚠️ STAGE 5 마왕 호위보스 (${midBossHp.toLocaleString()} HP) 출격!` : `⚠️ STAGE ${stageLevel} 중간 보스 (${midBossHp.toLocaleString()} HP) 출격!`;
                 addFloatingText(canvas.width / 2, 220, bossMsg, "#ff9f43", 18);
             } else {
-                for (let i = 0; i < zCount; i++) {
-                    const aType = Math.floor(Math.random() * 10);
-                    enemies.push({
-                        x: laneWidth + 30 + Math.random() * (laneWidth - 60), y: -40 - (i * 45), radius: 18,
-                        hp: hpBase, maxHp: hpBase, speed: (1.4 + (stageLevel * 0.04)) * (diffMultiplier * 0.9),
-                        isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0
-                    });
+                // 🛸 DYNAMIC MINION FORMATION & TRAJECTORY SYSTEM (v10.5.0)
+                // Randomly select 1 of 3 Dynamic Spawn & Movement Patterns per Wave!
+                const patternType = Math.random();
+
+                if (patternType < 0.35) {
+                    // Pattern A: CLUSTER_SWARM (뭉쳐서 출격하는 3x2/V자형 밀집 편대)
+                    const clusterCenterX = 70 + Math.random() * (canvas.width - 140);
+                    for (let i = 0; i < zCount; i++) {
+                        const aType = Math.floor(Math.random() * 10);
+                        const colOffset = (i % 3 - 1) * 38;
+                        const rowOffset = Math.floor(i / 3) * 34;
+                        enemies.push({
+                            x: Math.max(30, Math.min(canvas.width - 30, clusterCenterX + colOffset)),
+                            y: -40 - rowOffset, radius: 18,
+                            hp: hpBase, maxHp: hpBase,
+                            speed: (1.4 + (stageLevel * 0.04)) * (diffMultiplier * 0.9),
+                            isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0,
+                            movePattern: 'CLUSTER', vx: (Math.random() - 0.5) * 0.8
+                        });
+                    }
+                } else if (patternType < 0.70) {
+                    // Pattern B: SINE_WAVE & ZIGZAG WEAVE (개별적으로 좌우 곡선/지그재그 비행)
+                    for (let i = 0; i < zCount; i++) {
+                        const aType = Math.floor(Math.random() * 10);
+                        const moveMode = i % 2 === 0 ? 'SINE' : 'ZIGZAG';
+                        enemies.push({
+                            x: 40 + Math.random() * (canvas.width - 80),
+                            y: -40 - (i * 42), radius: 18,
+                            hp: hpBase, maxHp: hpBase,
+                            speed: (1.3 + (stageLevel * 0.04)) * (diffMultiplier * 0.9),
+                            isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0,
+                            movePattern: moveMode,
+                            sineOffset: Math.random() * Math.PI * 2,
+                            sineAmp: 1.8 + Math.random() * 1.2,
+                            vx: (Math.random() > 0.5 ? 1 : -1) * (1.3 + Math.random() * 0.7)
+                        });
+                    }
+                } else {
+                    // Pattern C: SPREAD_SCATTER (전면 넓게 분산 출격)
+                    for (let i = 0; i < zCount; i++) {
+                        const aType = Math.floor(Math.random() * 10);
+                        enemies.push({
+                            x: 35 + (i * (canvas.width - 70) / Math.max(1, zCount - 1)),
+                            y: -40 - (Math.random() * 50), radius: 18,
+                            hp: hpBase, maxHp: hpBase,
+                            speed: (1.5 + (stageLevel * 0.04)) * (diffMultiplier * 0.9),
+                            isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0,
+                            movePattern: 'SINE',
+                            sineOffset: i * 0.9,
+                            sineAmp: 1.6,
+                            vx: 0
+                        });
+                    }
                 }
             }
         }
@@ -1818,7 +1864,22 @@
                         if (enemy.x < 90) enemy.hoverDir = 1;
                     }
                 } else {
+                    // Minion Alien Dynamic Movement Logic (v10.5.0)
                     enemy.y += enemy.speed;
+                    if (enemy.movePattern === 'SINE') {
+                        enemy.x += Math.sin(globalAnimTick * 0.06 + (enemy.sineOffset || 0)) * (enemy.sineAmp || 1.8);
+                        enemy.x = Math.max(25, Math.min(canvas.width - 25, enemy.x));
+                    } else if (enemy.movePattern === 'ZIGZAG') {
+                        enemy.x += enemy.vx || 1.5;
+                        if (enemy.x < 25 || enemy.x > canvas.width - 25) {
+                            enemy.vx = -(enemy.vx || 1.5);
+                        }
+                    } else if (enemy.movePattern === 'CLUSTER') {
+                        enemy.x += enemy.vx || 0;
+                        if (enemy.x < 25 || enemy.x > canvas.width - 25) {
+                            enemy.vx = -(enemy.vx || 0.5);
+                        }
+                    }
                 }
 
                 if (!enemy || enemy.isDying) continue;
