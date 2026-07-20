@@ -1940,7 +1940,7 @@
                 if (Math.hypot(enemy.x - player.x, enemy.y - player.y) < enemy.radius + player.radius) {
                     if (player.defenseType === "NANO_SHIELD") {
                         if (!enemy.isBoss && !enemy.isFinalBoss) {
-                            playExplosionSound(enemy.isBoss); spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss); enemies.splice(i, 1);
+                            playExplosionSound(enemy.isBoss); spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss, enemy.hasItem); enemies.splice(i, 1);
                         } else {
                             if (enemy.spawnShieldTimer > 0 || enemy.phaseGateTimer > 0) continue;
                             if (!enemy.lastBodyCollideTick || (globalAnimTick - enemy.lastBodyCollideTick >= 30)) {
@@ -1973,7 +1973,7 @@
                     const offset = getAllyRelativePos(j);
                     if (Math.hypot(enemy.x - (player.x + offset.xOffset), enemy.y - (player.y + offset.yOffset)) < enemy.radius + 12) {
                         if (player.defenseType === "NANO_SHIELD") {
-                            if (!enemy.isBoss && !enemy.isFinalBoss) { playExplosionSound(enemy.isBoss); spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss); enemies.splice(i, 1); enemySpliced = true; }
+                            if (!enemy.isBoss && !enemy.isFinalBoss) { playExplosionSound(enemy.isBoss); spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss, enemy.hasItem); enemies.splice(i, 1); enemySpliced = true; }
                         } else {
                             playHurtSound(); player.allies.splice(j, 1); let loss = enemy.isBoss ? 12 : 4; if (player.defenseType === "HEAVY_ARMOR") loss = Math.floor(loss * 0.5);
                             player.hp -= Math.floor(loss * diffMultiplier); addFloatingText(player.x, player.y - 30, `-${Math.floor(loss * diffMultiplier)} HP`, '#ff5555');
@@ -2145,7 +2145,7 @@
             playExplosionSound(enemy.isBoss);
             createAdvancedExplosion(enemy.x, enemy.y, '#a8e6cf', 10, 0.8);
             score += enemy.maxHp * 15;
-            spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss);
+            spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss, enemy.hasItem);
             
             // CRITICAL FIX (v11.3.0): Always find exact object index to prevent splice(undefined) from deleting index 0 (Boss)!
             const realIdx = enemies.indexOf(enemy);
@@ -2154,8 +2154,8 @@
             }
         }
 
-        function spawnDroppedItem(x, y, isBoss) {
-            const dropChance = isBoss ? 0.65 : itemDropChanceNormal;
+        function spawnDroppedItem(x, y, isBoss = false, hasItem = false) {
+            const dropChance = hasItem ? 1.0 : (isBoss ? 0.85 : itemDropChanceNormal);
             if (Math.random() > dropChance) return;
 
             const preset = DIFFICULTY_PRESETS[currentDifficulty] || DIFFICULTY_PRESETS.NORMAL;
