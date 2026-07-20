@@ -1333,6 +1333,7 @@ if (document.readyState === 'loading') {
 
         canvas.addEventListener('mousemove', (e) => {
             if (gameState !== "PLAYING" || isPaused) return;
+            if (enemies.some(enemy => (enemy.isBoss || enemy.isFinalBoss) && enemy.isDying)) return;
             const rect = canvas.getBoundingClientRect();
             player.targetX = (e.clientX - rect.left) * (canvas.width / rect.width); player.targetY = (e.clientY - rect.top) * (canvas.height / rect.height);
             player.targetX = Math.max(40, Math.min(canvas.width - 40, player.targetX)); player.targetY = Math.max(145, Math.min(canvas.height - 40, player.targetY));
@@ -1340,12 +1341,9 @@ if (document.readyState === 'loading') {
 
         let lastTouchX = 0, lastTouchY = 0;
 
-        // Mobile Multi-Touch Controls:
-        // - Single Finger Drag: Relative move ship (no finger coverage)
-        // - Two-Finger Touch Tap: Fires Ultimate Skill (💥 필살기 발동)
-        // - Three-Finger Touch Tap: Trigger Pause & Arsenal Menu (일시정지 및 메뉴)
         function handleTouch(e) {
             if (gameState !== "PLAYING") return;
+            if (enemies.some(enemy => (enemy.isBoss || enemy.isFinalBoss) && enemy.isDying)) return;
 
             // Check if three or more fingers touch the screen -> Trigger Pause
             if (e.touches && e.touches.length >= 3) {
@@ -1946,21 +1944,41 @@ if (document.readyState === 'loading') {
 
             for (let i = enemies.length - 1; i >= 0; i--) {
                 const enemy = enemies[i];
-                if (enemy.isFinalBoss && enemy.isDying) {
+                if ((enemy.isFinalBoss || enemy.isBoss) && enemy.isDying) {
                     enemy.deathTimer--;
-                    canvasShakeTimer = Math.max(canvasShakeTimer || 0, 6);
+                    canvasShakeTimer = Math.max(canvasShakeTimer || 0, 7);
 
-                    // 1. Continuous random fire explosions & flying hull shrapnel debris across the 180px boss body every 4 frames
-                    if (globalAnimTick % 4 === 0) {
-                        const ox = (Math.random() - 0.5) * 160;
-                        const oy = (Math.random() - 0.5) * 160;
-                        const fireColors = ['#ff3838', '#ff9f43', '#ffd32c', '#ee5253', '#ff6b6b', '#feca57', '#ffffff'];
+                    // Hero Fly-by Booster Pass-Through Animation (Hero passes over exploding boss into upper screen)
+                    player.invulnerableTimer = 20;
+                    player.targetY -= 6.0; // Fast upward thrust
+                    player.targetX += (enemy.x - player.targetX) * 0.05; // Smoothly align with boss center while passing through
+
+                    // Powerful Hero Booster Trail Particles
+                    if (globalAnimTick % 2 === 0 && player.y > -120) {
+                        particles.push({
+                            x: player.x + (Math.random() - 0.5) * 16,
+                            y: player.y + 24,
+                            vx: (Math.random() - 0.5) * 2.0,
+                            vy: Math.random() * 5 + 7,
+                            radius: Math.random() * 5 + 2,
+                            alpha: 1.0,
+                            color: Math.random() > 0.5 ? '#00d2d3' : '#ff9f43',
+                            gravity: 0
+                        });
+                    }
+
+                    // 1. Continuous 3x Extended Fireworks Explosions (450 frames / 7.5 seconds)
+                    if (globalAnimTick % 3 === 0) {
+                        const explosionRadius = enemy.isFinalBoss ? 180 : 110;
+                        const ox = (Math.random() - 0.5) * explosionRadius;
+                        const oy = (Math.random() - 0.5) * explosionRadius;
+                        const fireColors = ['#ff3838', '#ff9f43', '#ffd32c', '#ee5253', '#ff6b6b', '#feca57', '#ffffff', '#00d2d3', '#1dd1a1'];
                         const col = fireColors[Math.floor(Math.random() * fireColors.length)];
-                        createAdvancedExplosion(enemy.x + ox, enemy.y + oy, col, 16, 1.6);
+                        createAdvancedExplosion(enemy.x + ox, enemy.y + oy, col, 18, 1.8);
 
-                        // Flying hull shrapnel debris shooting out in 360 degrees!
-                        for (let k = 0; k < 4; k++) {
-                            const pAngle = Math.random() * Math.PI * 2, spd = Math.random() * 6 + 2;
+                        // Flying hull shrapnel debris shooting out in 360 degrees
+                        for (let k = 0; k < 5; k++) {
+                            const pAngle = Math.random() * Math.PI * 2, spd = Math.random() * 7 + 2.5;
                             particles.push({
                                 x: enemy.x + ox, y: enemy.y + oy,
                                 vx: Math.cos(pAngle) * spd, vy: Math.sin(pAngle) * spd,
@@ -1969,28 +1987,29 @@ if (document.readyState === 'loading') {
                         }
                     }
 
-                    if (globalAnimTick % 8 === 0) {
-                        playExplosionSound(true);
+                    if (globalAnimTick % 6 === 0) {
+                        playExplosionSound(enemy.isBoss);
                     }
 
-                    // 2. Frame 60: Grand Climax Fireworks Dismantling Blast! Shrapnel flies in all 360 degrees!
+                    // 2. Frame 60: Grand Climax Fireworks Dismantling Blast!
                     if (enemy.deathTimer === 60) {
-                        for (let k = 0; k < 60; k++) {
+                        const count = enemy.isFinalBoss ? 90 : 50;
+                        for (let k = 0; k < count; k++) {
                             const angle = Math.random() * Math.PI * 2;
-                            const spd = Math.random() * 10 + 3;
+                            const spd = Math.random() * 12 + 3;
                             particles.push({
                                 x: enemy.x, y: enemy.y,
                                 vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd,
-                                radius: Math.random() * 6 + 2.5, alpha: 1.0,
-                                color: ['#ff3838', '#ffd32c', '#00d2d3', '#ffffff', '#ff9f43'][k % 5],
+                                radius: Math.random() * 7 + 3, alpha: 1.0,
+                                color: ['#ff3838', '#ffd32c', '#00d2d3', '#ffffff', '#ff9f43', '#1dd1a1'][k % 6],
                                 gravity: 0.05
                             });
                         }
-                        createAdvancedExplosion(enemy.x, enemy.y, '#ffffff', 50, 3.5);
+                        createAdvancedExplosion(enemy.x, enemy.y, '#ffffff', 60, 4.0);
                         playExplosionSound(true);
                     }
 
-                    // 3. Frame 0: Final Boss is completely gone! Start smooth Fade-Out to Black -> Fade-In transition!
+                    // 3. Frame 0: Boss is completely destroyed! Transition to victory!
                     if (enemy.deathTimer <= 0) {
                         score += enemy.maxHp * 25;
                         spawnDroppedItem(enemy.x, enemy.y, true);
@@ -2240,10 +2259,10 @@ if (document.readyState === 'loading') {
             enemy.isDying = true;
             enemy.hp = 0;
 
-            if (enemy.isFinalBoss) {
-                enemy.deathTimer = 150; // 2.5 Seconds (150 frames) of dramatic fireworks explosion sequence!
+            if (enemy.isFinalBoss || enemy.isBoss) {
+                enemy.deathTimer = 450; // 3x Extended 7.5 seconds (450 frames) dramatic fireworks explosion sequence!
                 enemyLasers = []; // Clear enemy lasers on boss defeat
-                addFloatingText(enemy.x, enemy.y - 70, "💥 [최종 마왕 궤멸 파괴 중! 2.5초간 화염 소각]", "#ff2d55", 22);
+                addFloatingText(enemy.x, enemy.y - 70, "💥 [마왕 격파! 히어로 돌파 및 7.5초 화염 대폭발]", "#ff2d55", 22);
                 playExplosionSound(true);
                 return;
             }
