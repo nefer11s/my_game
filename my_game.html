@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v9.9.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v10.1.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 <span onclick="previewVictoryScreen()" style="cursor: pointer; text-decoration: underline; color: #f1c40f;" title="🏆 승리 축하 화면 미리보기">현우엄마</span>를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v9.9.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v10.1.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -773,7 +773,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v9.9.0";
+        const GAME_VERSION = "v10.1.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1367,17 +1367,19 @@
             const isFinalBossWave = (waveCount === 25);
 
             if (isFinalBossWave) {
-                // 👑 FINAL APEX SUPREME BOSS (초대형 180px 최종 마왕 결전 보스 - zombie_boss.png)
-                const bossHp = Math.floor(2500 * diffMultiplier * (finalBossHpMultiplier || 1.0));
+                // 👑 3-PHASE EPIC SUPREME BOSS (v10.1.0, Base HP: 15000 - Normal: ~13,500 HP)
+                const bossHp = Math.floor(15000 * diffMultiplier * (finalBossHpMultiplier || 1.0));
                 enemies.push({
                     x: canvas.width / 2, y: -80, radius: 88,
                     hp: bossHp,
                     maxHp: bossHp,
+                    phase: 1,
+                    phaseGateTimer: 0,
                     speed: 3.5, isBoss: true, isFinalBoss: true, bossType: 9, flashTimer: 0, animFrame: 0,
                     spawnShieldTimer: 180 // 3.0-second 100% Spawn Invulnerability Shield!
                 });
                 canvasShakeTimer = 35;
-                addFloatingText(canvas.width / 2, 220, "👑 [초대형 최종 마왕 결전 보스] 강림!!", "#ff2d55", 26);
+                addFloatingText(canvas.width / 2, 220, "👑 [초대형 최종 마왕 결전 보스 (13,500 HP)] 강림!!", "#ff2d55", 26);
             } else if (isMidBossWave) {
                 // Stage Mid-Bosses (Stage 5-1~4 all spawn boss_9 guard captain bosses!)
                 const bType = (stageLevel === 5) ? 9 : Math.floor(Math.random() * 10);
@@ -1783,7 +1785,10 @@
                 }
                 if (enemy.isFinalBoss) {
                     if (enemy.spawnShieldTimer > 0) enemy.spawnShieldTimer--;
-                    // Final Boss fast dramatic entrance down to altitude y = 150 (1.2s), then hovers horizontally!
+                    if (enemy.phaseGateTimer > 0) enemy.phaseGateTimer--;
+
+                    // Phase 3 attack speed & motion boost!
+                    const moveSpd = enemy.phase === 3 ? 2.8 : enemy.phase === 2 ? 2.2 : 1.6;
                     if (enemy.y < 150) {
                         enemy.y += 3.5;
                         if (enemy.y >= 150) {
@@ -1792,7 +1797,7 @@
                         }
                     } else {
                         if (!enemy.hoverDir) enemy.hoverDir = 1;
-                        enemy.x += enemy.hoverDir * 1.6 * (diffMultiplier * 0.9);
+                        enemy.x += enemy.hoverDir * moveSpd * (diffMultiplier * 0.9);
                         if (enemy.x > canvas.width - 90) enemy.hoverDir = -1;
                         if (enemy.x < 90) enemy.hoverDir = 1;
                     }
@@ -2066,7 +2071,7 @@
                 let enemy = enemies[i];
                 if (!enemy || enemy.isDying) continue;
                 if (enemy.isFinalBoss && enemy.spawnShieldTimer > 0) continue;
-                let actualDmg = enemy.isFinalBoss ? Math.max(520, Math.floor(enemy.maxHp * 0.25)) : dmg;
+                let actualDmg = enemy.isFinalBoss ? Math.max(1500, Math.floor(enemy.maxHp * 0.12)) : dmg;
                 enemy.hp -= actualDmg;
                 enemy.flashTimer = 14;
                 addFloatingText(enemy.x, enemy.y, `-${actualDmg} CRITICAL!`, color, 16);
@@ -2632,6 +2637,43 @@
                 ctx.font = 'bold 11px sans-serif';
                 ctx.textAlign = 'left';
                 ctx.fillText(`❤️x${player.lives} (목숨)`, 14, 38);
+            }
+
+            // Dedicated Top Canvas Final Boss Health Bar with 3-Phase Color-Coded Segments!
+            const boss = enemies.find(e => e.isFinalBoss);
+            if (boss) {
+                ctx.save();
+                const bBarW = Math.min(340, canvas.width - 40);
+                const bBarX = (canvas.width - bBarW) / 2;
+                const bBarY = 46;
+                const bBarH = 14;
+
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+                ctx.fillRect(bBarX, bBarY, bBarW, bBarH);
+                ctx.strokeStyle = '#ff2d55';
+                ctx.lineWidth = 1.5;
+                ctx.strokeRect(bBarX, bBarY, bBarW, bBarH);
+
+                const bRatio = Math.max(0, Math.min(1, boss.hp / boss.maxHp));
+                const bCol = boss.phase === 3 ? '#ff3838' : boss.phase === 2 ? '#ff9f43' : '#00d2d3';
+                ctx.fillStyle = bCol;
+                ctx.fillRect(bBarX, bBarY, bBarW * bRatio, bBarH);
+
+                // Phase Gate Markers (66% and 33%)
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(bBarX + bBarW * 0.33, bBarY); ctx.lineTo(bBarX + bBarW * 0.33, bBarY + bBarH);
+                ctx.moveTo(bBarX + bBarW * 0.66, bBarY); ctx.lineTo(bBarX + bBarW * 0.66, bBarY + bBarH);
+                ctx.stroke();
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '900 11px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.shadowColor = '#000';
+                ctx.shadowBlur = 4;
+                ctx.fillText(`👑 FINAL BOSS (PHASE ${boss.phase || 1}/3) [${boss.hp.toLocaleString()}/${boss.maxHp.toLocaleString()} HP]`, canvas.width / 2, bBarY + 11);
+                ctx.restore();
             }
 
             // 1-B. CENTER: STAGE & WAVE Badge
