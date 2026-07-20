@@ -12,7 +12,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.4.6)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.4.7)</title>
     <style>
         body {
             margin: 0;
@@ -335,7 +335,7 @@
                         HY세라믹 솔라윙스</div>
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
-                        "외계인에 잡혀간 현우엄마를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">v11.4.6</span> <span style="color: #636e72; font-size: 11px; margin-left: 4px;">배포 2026-07-21 04:08</span></div>
+                        "외계인에 잡혀간 현우엄마를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">v11.4.7</span> <span style="color: #636e72; font-size: 11px; margin-left: 4px;">배포 2026-07-21 04:13</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -838,7 +838,7 @@ if (document.readyState === 'loading') {
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v11.4.6";
+        const GAME_VERSION = "v11.4.7";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -2104,7 +2104,8 @@ if (document.readyState === 'loading') {
                 if (Math.hypot(enemy.x - player.x, enemy.y - player.y) < enemy.radius + player.radius) {
                     if (player.defenseType === "NANO_SHIELD") {
                         if (!enemy.isBoss && !enemy.isFinalBoss) {
-                            playExplosionSound(enemy.isBoss); spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss, enemy.hasItem); enemies.splice(i, 1);
+                            // isDying 플래그로 처리 - 루프 종료 후 일괄 삭제
+                            playExplosionSound(enemy.isBoss); spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss, enemy.hasItem); enemy.isDying = true; continue;
                         } else {
                             if (enemy.spawnShieldTimer > 0 || enemy.phaseGateTimer > 0) continue;
                             if (!enemy.lastBodyCollideTick || (globalAnimTick - enemy.lastBodyCollideTick >= 30)) {
@@ -2123,7 +2124,8 @@ if (document.readyState === 'loading') {
                                 if (enemy.hp <= (enemy.isFinalBoss ? 3 : 0)) eliminateEnemy(enemy, i);
                             }
                         } else {
-                            enemies.splice(i, 1);
+                            // isDying 플래그로 처리 - 루프 종료 후 일괄 삭제
+                            enemy.isDying = true;
                         }
                         if (player.hp <= 0) {
                             if (player.lives > 1) { player.lives--; player.hp = player.maxHp; player.defenseType = "NANO_SHIELD"; player.defenseTimer = 180; addFloatingText(player.x, player.y - 45, `❤️ 부활! (남은 목숨: ${player.lives}개)`, '#ff3838', 22); }
@@ -2283,6 +2285,7 @@ if (document.readyState === 'loading') {
             addFloatingText(hitX, hitY - 12, `-${calcDmg}`, enemy.isFinalBoss ? '#ff2d55' : '#ff4d4d', 12, 24, -1.0);
 
             if (enemy.hp <= (enemy.isFinalBoss ? 3 : 0.05)) {
+                // eliminateEnemy를 인덱스 없이 호출 - isDying/isEliminated 플래그로 안전 처리
                 eliminateEnemy(enemy);
             }
         }
