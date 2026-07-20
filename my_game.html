@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.0.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.1.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 <span onclick="previewVictoryScreen()" style="cursor: pointer; text-decoration: underline; color: #f1c40f;" title="🏆 승리 축하 화면 미리보기">현우엄마</span>를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v11.0.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v11.1.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -774,7 +774,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v11.0.0";
+        const GAME_VERSION = "v11.1.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1863,6 +1863,17 @@
                         if (enemy.x > canvas.width - 90) enemy.hoverDir = -1;
                         if (enemy.x < 90) enemy.hoverDir = 1;
                     }
+                } else if (enemy.isBoss) {
+                    // Stage Mid-Boss Hover & Battle Movement Logic (v11.1.0 - Never flies offscreen!)
+                    if (enemy.y < 120) {
+                        enemy.y += 2.5;
+                        if (enemy.y >= 120) enemy.y = 120;
+                    } else {
+                        if (!enemy.hoverDir) enemy.hoverDir = Math.random() > 0.5 ? 1 : -1;
+                        enemy.x += enemy.hoverDir * 1.8 * (diffMultiplier * 0.9);
+                        if (enemy.x > canvas.width - 65) enemy.hoverDir = -1;
+                        if (enemy.x < 65) enemy.hoverDir = 1;
+                    }
                 } else {
                     // Minion Alien Dynamic Movement Logic (v10.5.0)
                     enemy.y += enemy.speed;
@@ -1923,15 +1934,7 @@
                     }
                 }
                 if (enemySpliced) continue;
-                if (enemy && !enemy.isFinalBoss && enemy.y > canvas.height) {
-                    if (enemy.isBoss) {
-                        playHurtSound(); let oldHp = player.hp; player.hp = Math.floor(player.hp / 2); let penalty = oldHp - player.hp;
-                        addFloatingText(player.x, player.y - 30, `보스 돌파 허용! 체력 반토막 (-${penalty} HP)`, '#ff0000');
-                        if (player.hp <= 0) {
-                            if (player.lives > 1) { player.lives--; player.hp = player.maxHp; player.defenseType = "NANO_SHIELD"; player.defenseTimer = 180; addFloatingText(player.x, player.y - 45, `❤️ 부활! (남은 목숨: ${player.lives}개)`, '#ff3838', 22); }
-                            else { player.lives = 0; gameOver(); break; }
-                        }
-                    }
+                if (enemy && !enemy.isBoss && !enemy.isFinalBoss && enemy.y > canvas.height) {
                     enemies.splice(i, 1);
                 }
             }
