@@ -18,10 +18,10 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            height: 100vh;
+            height: 100dvh;
             width: 100vw;
-            overflow-x: hidden;
-            overflow-y: auto;
+            overflow: hidden;
             box-sizing: border-box;
         }
 
@@ -30,24 +30,25 @@
             flex-direction: row;
             align-items: center;
             justify-content: center;
-            gap: 20px;
-            width: 100%;
-            max-width: 100vw;
+            gap: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
             box-sizing: border-box;
-            padding: 0 10px;
+            padding: 0;
         }
 
         #gameContainer {
             position: relative;
             box-shadow: 0 0 50px rgba(0, 0, 0, 0.95);
-            border: 2px solid #2c3e50;
-            border-radius: 8px;
+            border: none;
+            border-radius: 0;
             overflow: hidden;
-            width: 540px;
-            height: 820px;
-            max-height: 94vh;
-            max-width: 98vw;
-            aspect-ratio: 540 / 820;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            max-height: 100dvh;
+            max-width: 100vw;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -292,17 +293,6 @@
 
     <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
         <div id="gameContainer" style="position: relative;">
-            <!-- Initial Page Load Instant Fullscreen Launcher Overlay -->
-            <div id="initialFsLauncher" onclick="dismissInitialFsLauncher()"
-                style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(8, 9, 12, 0.95); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; text-align: center; padding: 20px; box-sizing: border-box;">
-                <div style="font-size: 48px; margin-bottom: 20px;">🚀</div>
-                <div style="font-size: 26px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.8); margin-bottom: 8px; letter-spacing: 2px;">HY세라믹 솔라윙스</div>
-                <div style="font-size: 14px; color: #ff3838; font-weight: bold; margin-bottom: 30px;">"외계인에 잡혀간 현우엄마를 구출하라!"</div>
-                <div style="font-size: 17px; color: #ffd32c; font-weight: 900; background: rgba(0,0,0,0.7); padding: 14px 28px; border-radius: 40px; border: 2px solid #ffd32c; box-shadow: 0 0 25px rgba(255,211,44,0.6); letter-spacing: 1px;">
-                    👆 화면 어디든 터치하여 전체화면 시작
-                </div>
-            </div>
-
             <canvas id="gameCanvas" width="540" height="820"></canvas>
 
             <div id="menuOverlay" style="padding: 30px 20px; box-sizing: border-box; justify-content: space-between;">
@@ -1183,12 +1173,6 @@
             if (btn) btn.classList.add('active');
             if (audioCtx) playUpgradeSound();
         }
-        function dismissInitialFsLauncher() {
-            requestNativeFullscreenOnly();
-            const launcher = document.getElementById('initialFsLauncher');
-            if (launcher) launcher.style.display = 'none';
-        }
-
         function requestNativeFullscreenOnly() {
             try {
                 const elem = document.documentElement;
@@ -1222,7 +1206,13 @@
             } catch (e) { }
         }
 
-        // Auto request fullscreen on first user touch/click anywhere on the screen!
+        // Default Fullscreen Enforcer: Auto request fullscreen on any user interaction anywhere on the screen!
+        ['click', 'touchstart', 'touchmove', 'keydown', 'pointerdown'].forEach(evtType => {
+            window.addEventListener(evtType, () => {
+                requestNativeFullscreenOnly();
+            }, { passive: true });
+        });
+        window.addEventListener('load', () => { requestNativeFullscreenOnly(); });
         document.addEventListener('click', function initAutoFS() {
             requestNativeFullscreenOnly();
             document.removeEventListener('click', initAutoFS);
