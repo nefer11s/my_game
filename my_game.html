@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v9.2.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v9.3.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 <span onclick="previewVictoryScreen()" style="cursor: pointer; text-decoration: underline; color: #f1c40f;" title="🏆 승리 축하 화면 미리보기">현우엄마</span>를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v9.2.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v9.3.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -732,7 +732,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v9.2.0";
+        const GAME_VERSION = "v9.3.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1330,18 +1330,18 @@
 
             if (isFinalBossWave) {
                 // 👑 FINAL APEX SUPREME BOSS (초대형 180px 최종 마왕 결전 보스 - zombie_boss.png)
-                const bossHp = Math.floor(650 * diffMultiplier);
+                const bossHp = Math.floor(650 * diffMultiplier * (finalBossHpMultiplier || 1.0));
                 enemies.push({
                     x: canvas.width / 2, y: -130, radius: 88,
                     hp: bossHp,
                     maxHp: bossHp,
                     speed: 0.38, isBoss: true, isFinalBoss: true, bossType: 9, flashTimer: 0, animFrame: 0
                 });
-                addFloatingText(canvas.width / 2, 220, "👑 [초대형 최종 마왕 결전 보스] 강림!!", "#ff2d55", 24);
+                addFloatingText(canvas.width / 2, 220, "👑 [초대형 최종 마왕 결전 보스] 강림!!", "#ff2d55", 26);
             } else if (isMidBossWave) {
                 // Stage Mid-Bosses (Stage 5-1~4 all spawn boss_9 guard captain bosses!)
                 const bType = (stageLevel === 5) ? 9 : Math.floor(Math.random() * 10);
-                const midBossHp = Math.floor((50 + stageLevel * 15) * diffMultiplier);
+                const midBossHp = Math.floor((50 + stageLevel * 15) * diffMultiplier * (midBossHpMultiplier || 1.0));
                 enemies.push({
                     x: laneWidth * 1.5, y: -90, radius: 44,
                     hp: midBossHp,
@@ -1668,7 +1668,20 @@
                 }
             }
 
-            if (waveCount < 25) { spawnTimer++; if (spawnTimer >= constWaveInterval) { spawnTimer = 0; spawnWave(); } }
+            // Dynamic Wave Spawning: Spawn next wave when current wave enemies are cleared or buffer timer elapses!
+            if (waveCount < 25) {
+                if (enemies.length === 0) {
+                    spawnTimer++;
+                    if (spawnTimer >= 45) { // Smooth 0.75-second wave clearance buffer
+                        spawnTimer = 0;
+                        spawnWave();
+                    }
+                } else if (globalAnimTick % 300 === 0 && !enemies.some(e => e.isBoss)) {
+                    // Fallback timer for minion waves if minions linger offscreen
+                    spawnTimer = 0;
+                    spawnWave();
+                }
+            }
 
 
 
