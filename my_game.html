@@ -1107,6 +1107,7 @@
             NIGHTMARE: { name: "악몽", diffMult: 2.20, minionHp: 2.3, midBossHp: 2.5, finalBossHp: 2.5, dropChance: 0.02, bossDropCount: 1, healAmt: 10, wpnDur: 3,  buffDur: 3,  splashRange: 25, defDur: 3,  ultStock: 4, ultDropWeight: 1 }
         };
 
+        let selectedDifficultyKey = "NORMAL";
         let minionHpMultiplier = 1.0;
         let midBossHpMultiplier = 1.0;
         let finalBossHpMultiplier = 1.0;
@@ -1148,7 +1149,8 @@
         }
 
         function setSelectDiff(nameKey, mult, btn) {
-            const preset = DIFFICULTY_PRESETS[nameKey] || DIFFICULTY_PRESETS.NORMAL;
+            selectedDifficultyKey = nameKey || "NORMAL";
+            const preset = DIFFICULTY_PRESETS[selectedDifficultyKey] || DIFFICULTY_PRESETS.NORMAL;
             difficulty = preset.name + ` (Lv.${nameKey === 'EASY' ? 1 : nameKey === 'NORMAL' ? 2 : nameKey === 'HARD' ? 3 : nameKey === 'EXPERT' ? 4 : 5})`;
             diffMultiplier = preset.diffMult;
             minionHpMultiplier = preset.minionHp;
@@ -1307,7 +1309,8 @@
 
         function startGame() {
             gameState = "PLAYING"; score = 0; waveCount = 0; spawnTimer = 0; isPaused = false;
-            const preset = DIFFICULTY_PRESETS[currentDifficulty] || DIFFICULTY_PRESETS.NORMAL;
+            const presetKey = (typeof selectedDifficultyKey !== 'undefined' && selectedDifficultyKey) ? selectedDifficultyKey : "NORMAL";
+            const preset = DIFFICULTY_PRESETS[presetKey] || DIFFICULTY_PRESETS.NORMAL;
             player.allies = []; player.x = 270; player.targetX = 270; player.y = 590; player.targetY = 590; player.maxHp = 100; player.hp = 100; player.lives = 3; player.ultimateStock = preset.ultStock || 6;
             player.weaponType = "NORMAL"; player.buffType = "NONE"; player.defenseType = "NONE";
             bullets = []; enemies = []; enemyLasers = []; gates = []; trappedHero = null; particles = []; muzzleFlashes = []; floatingTexts = []; droppedItems = []; activeAnnihilationEffect = null;
