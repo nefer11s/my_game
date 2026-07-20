@@ -1381,9 +1381,9 @@
             const isFinalBossWave = (waveCount === 25);
 
             if (isFinalBossWave) {
-                // 👑 3-PHASE APEX LEVIATHAN BOSS (v11.0.0, 100x Scale: 351,000 HP in Normal mode!)
-                const maxMidBossHp = Math.max(15000, Math.floor((3500 + 5 * 4500) * diffMultiplier * (midBossHpMultiplier || 1.0)));
-                const bossHp = Math.max(250000, Math.floor(maxMidBossHp * (finalBossHpRatio || 15) * (finalBossHpMultiplier || 1.0)));
+                // 👑 3-PHASE APEX LEVIATHAN BOSS (v11.4.0, Rebalanced: ~350x Minion HP = 3,500 HP in Normal mode!)
+                const maxMidBossHp = Math.max(200, Math.floor((100 + 5 * 25) * diffMultiplier * (midBossHpMultiplier || 1.0)));
+                const bossHp = Math.max(3500, Math.floor(maxMidBossHp * (finalBossHpRatio || 17.5) * (finalBossHpMultiplier || 1.0)));
                 enemies.push({
                     x: canvas.width / 2, y: -80, radius: 88,
                     hp: bossHp,
@@ -1394,11 +1394,11 @@
                     spawnShieldTimer: 300 // 5.0-second 100% Absolute Entrance Invulnerability Shield!
                 });
                 canvasShakeTimer = 45;
-                addFloatingText(canvas.width / 2, 220, `👑 [최종 마왕 100배 스케일 강림] (${bossHp.toLocaleString()} HP) 5초 무적 결계!`, "#ff2d55", 24, 160);
+                addFloatingText(canvas.width / 2, 220, `👑 [최종 마왕 강림] (${bossHp.toLocaleString()} HP) 5초 무적 결계!`, "#ff2d55", 24, 160);
             } else if (isMidBossWave) {
-                // Stage Mid-Bosses (v11.0.0, 10x Scale: Stage 1 = 7,200 HP, Stage 5 = 23,400 HP!)
+                // Stage Mid-Bosses (v11.4.0, Rebalanced: ~15x Minion HP = 110~220 HP)
                 const bType = (stageLevel === 5) ? 9 : Math.floor(Math.random() * 10);
-                const midBossHp = Math.floor((3500 + stageLevel * 4500) * diffMultiplier * (midBossHpMultiplier || 1.0));
+                const midBossHp = Math.floor((100 + stageLevel * 25) * diffMultiplier * (midBossHpMultiplier || 1.0));
                 enemies.push({
                     x: laneWidth * 1.5, y: -90, radius: 44,
                     hp: midBossHp,
@@ -1406,7 +1406,7 @@
                     speed: (0.7 + (stageLevel * 0.03)) * (diffMultiplier * 0.85),
                     isBoss: true, isFinalBoss: false, bossType: bType, flashTimer: 0, animFrame: 0
                 });
-                const bossMsg = (stageLevel === 5) ? `⚠️ STAGE 5 마왕 호위보스 10배 강화 (${midBossHp.toLocaleString()} HP) 출격!` : `⚠️ STAGE ${stageLevel} 중간 보스 10배 강화 (${midBossHp.toLocaleString()} HP) 출격!`;
+                const bossMsg = (stageLevel === 5) ? `⚠️ STAGE 5 마왕 호위보스 (${midBossHp.toLocaleString()} HP) 출격!` : `⚠️ STAGE ${stageLevel} 중간 보스 (${midBossHp.toLocaleString()} HP) 출격!`;
                 addFloatingText(canvas.width / 2, 220, bossMsg, "#ff9f43", 18);
             } else {
                 // 🛸 DYNAMIC MINION FORMATION & TRAJECTORY SYSTEM (v10.5.0)
@@ -1757,9 +1757,10 @@
                             let range = bType === "MISSILE" ? currentSplashRange * 1.6 : currentSplashRange;
                             let sd = bType === "ROCKET" ? bDmg * 3 : bType === "MISSILE" ? bDmg * 5 : bDmg;
                             createAdvancedExplosion(bx, by, bType === "MISSILE" ? '#ff7675' : '#ff9f43', 14, range / 35); playExplosionSound(bType === "MISSILE");
+                            handleEnemyDamageHit(enemy, hitWp, sd, bx, by, false);
                             for (let eIdx = enemies.length - 1; eIdx >= 0; eIdx--) {
                                 let targetZ = enemies[eIdx];
-                                if (targetZ && !targetZ.isDying && Math.hypot(targetZ.x - bx, targetZ.y - by) <= range) {
+                                if (targetZ && targetZ !== enemy && !targetZ.isDying && Math.hypot(targetZ.x - bx, targetZ.y - by) <= range) {
                                     const zWp = getBossWeakPointHit(targetZ, bx, by) || { x: targetZ.x, y: targetZ.y, radius: targetZ.radius };
                                     handleEnemyDamageHit(targetZ, zWp, sd, bx, by, true);
                                 }
@@ -1900,15 +1901,21 @@
                             playExplosionSound(enemy.isBoss); spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss); enemies.splice(i, 1);
                         } else {
                             if (enemy.spawnShieldTimer > 0 || enemy.phaseGateTimer > 0) continue;
-                            enemy.hp -= 30; enemy.flashTimer = 6; addFloatingText(enemy.x, enemy.y - 20, "-30 HP", '#1cfc03');
-                            if (enemy.hp <= (enemy.isFinalBoss ? 3 : 0)) eliminateEnemy(enemy, i);
+                            if (!enemy.lastBodyCollideTick || (globalAnimTick - enemy.lastBodyCollideTick >= 30)) {
+                                enemy.lastBodyCollideTick = globalAnimTick;
+                                enemy.hp -= 30; enemy.flashTimer = 6; addFloatingText(enemy.x, enemy.y - 20, "-30 HP", '#1cfc03');
+                                if (enemy.hp <= (enemy.isFinalBoss ? 3 : 0)) eliminateEnemy(enemy, i);
+                            }
                         }
                     } else {
                         playHurtSound(); let loss = enemy.isBoss ? 24 : 10; if (player.defenseType === "HEAVY_ARMOR") loss = Math.floor(loss * 0.5);
                         player.hp -= Math.floor(loss * diffMultiplier); addFloatingText(player.x, player.y - 30, `-${Math.floor(loss * diffMultiplier)} HP`, '#ff2222');
                         if (enemy.isBoss || enemy.isFinalBoss) {
-                            enemy.hp -= 20; enemy.flashTimer = 6; addFloatingText(enemy.x, enemy.y - 20, "-20 HP", '#ff9f43');
-                            if (enemy.hp <= (enemy.isFinalBoss ? 3 : 0)) eliminateEnemy(enemy, i);
+                            if (!enemy.lastBodyCollideTick || (globalAnimTick - enemy.lastBodyCollideTick >= 30)) {
+                                enemy.lastBodyCollideTick = globalAnimTick;
+                                enemy.hp -= 20; enemy.flashTimer = 6; addFloatingText(enemy.x, enemy.y - 20, "-20 HP", '#ff9f43');
+                                if (enemy.hp <= (enemy.isFinalBoss ? 3 : 0)) eliminateEnemy(enemy, i);
+                            }
                         } else {
                             enemies.splice(i, 1);
                         }
@@ -1930,8 +1937,11 @@
                             player.hp -= Math.floor(loss * diffMultiplier); addFloatingText(player.x, player.y - 30, `-${Math.floor(loss * diffMultiplier)} HP`, '#ff5555');
                             createAdvancedExplosion(enemy.x, enemy.y, '#ff3838', 6, 0.7);
                             if (enemy.isBoss || enemy.isFinalBoss) {
-                                enemy.hp -= 25; enemy.flashTimer = 6; addFloatingText(enemy.x, enemy.y - 20, "-25 HP", '#ff9f43');
-                                if (enemy.hp <= (enemy.isFinalBoss ? 3 : 0)) eliminateEnemy(enemy, i);
+                                if (!enemy.lastBodyCollideTick || (globalAnimTick - enemy.lastBodyCollideTick >= 30)) {
+                                    enemy.lastBodyCollideTick = globalAnimTick;
+                                    enemy.hp -= 25; enemy.flashTimer = 6; addFloatingText(enemy.x, enemy.y - 20, "-25 HP", '#ff9f43');
+                                    if (enemy.hp <= (enemy.isFinalBoss ? 3 : 0)) eliminateEnemy(enemy, i);
+                                }
                             } else {
                                 enemies.splice(i, 1); enemySpliced = true;
                             }
@@ -2026,10 +2036,15 @@
                 addFloatingText(bx, by - 10, "🛡️ SHIELD", '#f1c40f', 10, 16, -1.0);
                 return;
             }
-            if (enemy.isFinalBoss && isSplashHit) {
+            if ((enemy.isBoss || enemy.isFinalBoss) && isSplashHit) {
                 // Prevent multi-hit splash explosions from dealing 10x damage in 1 frame
                 if (enemy.lastSplashTick === globalAnimTick) return;
                 enemy.lastSplashTick = globalAnimTick;
+            }
+            if (enemy.isBoss || enemy.isFinalBoss) {
+                // 0.08-Second Hit Cooldown (5 frames) to form Damage Cap against extreme laser/minion spam
+                if (enemy.lastHitTick && (globalAnimTick - enemy.lastHitTick < 5)) return;
+                enemy.lastHitTick = globalAnimTick;
             }
 
             const hitX = hitWp ? hitWp.x : bx;
@@ -2264,21 +2279,21 @@
             }
             else if (["LASER", "GATLING", "ROCKET", "MISSILE"].includes(t)) {
                 player.weaponType = t;
-                player.weaponTimer = 9999999;
+                player.weaponTimer = 1200;
                 let wName = t === "GATLING" ? "속사 개틀링" : t === "LASER" ? "중차단 레이저" : t === "MISSILE" ? "열압력 미사일" : "전술 고폭로켓";
-                addFloatingText(player.x, player.y - 45, `⚡ 영구 ${wName} 장착!`, '#ffd32c', 16);
+                addFloatingText(player.x, player.y - 45, `⚡ 20초 ${wName} 장착!`, '#ffd32c', 16);
             }
             else if (["DAMAGE_X2", "SPLASH_RANGE", "BOMBARD"].includes(t)) {
                 player.buffType = t;
-                player.buffTimer = 9999999;
+                player.buffTimer = 1200;
                 let bName = t === "DAMAGE_X2" ? "피해량 2배" : t === "BOMBARD" ? "공중 무차별폭격" : "스플래시 폭발탄";
-                addFloatingText(player.x, player.y - 45, `💥 영구 ${bName} 활성!`, '#ff9f43', 16);
+                addFloatingText(player.x, player.y - 45, `💥 20초 ${bName} 활성!`, '#ff9f43', 16);
             }
             else if (["NANO_SHIELD", "HEAVY_ARMOR"].includes(t)) {
                 player.defenseType = t;
-                player.defenseTimer = 9999999;
+                player.defenseTimer = 1200;
                 let dName = t === "NANO_SHIELD" ? "완전 나노무적" : "중장갑 피해반감";
-                addFloatingText(player.x, player.y - 45, `🛡️ 영구 ${dName} 전개!`, '#10ac84', 16);
+                addFloatingText(player.x, player.y - 45, `🛡️ 20초 ${dName} 전개!`, '#10ac84', 16);
             }
             else if (t === "ALLY") {
                 const classes = ['RIFLEMAN', 'SNIPER', 'HEAVY_WEAPON'];
