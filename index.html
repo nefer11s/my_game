@@ -2165,7 +2165,7 @@
         }
 
         function spawnDroppedItem(x, y, isBoss = false, hasItem = false) {
-            const dropChance = hasItem ? 1.0 : (isBoss ? 0.85 : itemDropChanceNormal);
+            const dropChance = hasItem ? 1.0 : (isBoss ? 0.85 : 0.0);
             if (Math.random() > dropChance) return;
 
             const presetKey = (typeof selectedDifficultyKey !== 'undefined' && selectedDifficultyKey) ? selectedDifficultyKey : "NORMAL";
