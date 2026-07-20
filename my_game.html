@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v8.7.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v8.8.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v8.7.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v8.8.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -727,41 +727,40 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        const bossSlider = document.getElementById('bossSlider'), zombieSlider = document.getElementById('zombieSlider');
         const healFreqSlider = document.getElementById('healFreqSlider'), healSlider = document.getElementById('healSlider');
         const wpnFreqSlider = document.getElementById('wpnFreqSlider'), wpnDurSlider = document.getElementById('wpnDurSlider');
         const buffFreqSlider = document.getElementById('buffFreqSlider'), buffDurSlider = document.getElementById('buffDurSlider');
         const splashRangeSlider = document.getElementById('splashRangeSlider'), defFreqSlider = document.getElementById('defFreqSlider'), defDurSlider = document.getElementById('defDurSlider');
         const allyFreqSlider = document.getElementById('allyFreqSlider'), bombFreqSlider = document.getElementById('bombFreqSlider');
 
-        const bossVal = document.getElementById('bossVal'), zombieVal = document.getElementById('zombieVal'), healFreqVal = document.getElementById('healFreqVal'), healVal = document.getElementById('healVal');
+        const healFreqVal = document.getElementById('healFreqVal'), healVal = document.getElementById('healVal');
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v8.7.0";
+        const GAME_VERSION = "v8.8.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
-        let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9, bossHpMultiplier = 0.9, zombieCountMultiplier = 0.9;
-        let healWeight = 35, healAmount = 30, wpnWeight = 45, wpnDurationConfig = 420, buffWeight = 45, buffDurationConfig = 420, currentSplashRange = 45, defWeight = 35, defDurationConfig = 420;
+        let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9;
+        let healWeight = 35, healAmount = 25, wpnWeight = 45, wpnDurationConfig = 480, buffWeight = 45, buffDurationConfig = 480, currentSplashRange = 40, defWeight = 35, defDurationConfig = 480;
         let allyWeight = 30, bombWeight = 20;
 
         function updateSliders() {
-            bossHpMultiplier = parseFloat(bossSlider.value); bossVal.innerText = bossHpMultiplier.toFixed(1) + 'x';
-            zombieCountMultiplier = parseFloat(zombieSlider.value); zombieVal.innerText = zombieCountMultiplier.toFixed(1) + 'x';
-            healWeight = parseInt(healFreqSlider.value); healFreqVal.innerText = healWeight + '%';
-            healAmount = parseInt(healSlider.value); healVal.innerText = healAmount + ' HP';
-            wpnWeight = parseInt(wpnFreqSlider.value); wpnFreqVal.innerText = wpnWeight + '%';
-            wpnDurationConfig = parseInt(wpnDurSlider.value) * 60; wpnDurVal.innerText = wpnDurSlider.value + '초';
-            buffWeight = parseInt(buffFreqSlider.value); buffFreqVal.innerText = buffWeight + '%';
-            buffDurationConfig = parseInt(buffDurSlider.value) * 60; buffDurVal.innerText = buffDurSlider.value + '초';
-            currentSplashRange = parseInt(splashRangeSlider.value); splashRangeVal.innerText = currentSplashRange + 'px';
-            defWeight = parseInt(defFreqSlider.value); defFreqVal.innerText = defWeight + '%';
-            defDurationConfig = parseInt(defDurSlider.value) * 60; defDurVal.innerText = defDurSlider.value + '초';
-            allyWeight = parseInt(allyFreqSlider.value); allyFreqVal.innerText = allyWeight + '%';
-            bombWeight = parseInt(bombFreqSlider.value); bombFreqVal.innerText = bombWeight + '%';
+            if (healFreqSlider && healFreqVal) { healWeight = parseInt(healFreqSlider.value); healFreqVal.innerText = healWeight + '%'; }
+            if (healSlider && healVal) { healAmount = parseInt(healSlider.value); healVal.innerText = healAmount + ' HP'; }
+            if (wpnFreqSlider && wpnFreqVal) { wpnWeight = parseInt(wpnFreqSlider.value); wpnFreqVal.innerText = wpnWeight + '%'; }
+            if (wpnDurSlider && wpnDurVal) { wpnDurationConfig = parseInt(wpnDurSlider.value) * 60; wpnDurVal.innerText = wpnDurSlider.value + '초'; }
+            if (buffFreqSlider && buffFreqVal) { buffWeight = parseInt(buffFreqSlider.value); buffFreqVal.innerText = buffWeight + '%'; }
+            if (buffDurSlider && buffDurVal) { buffDurationConfig = parseInt(buffDurSlider.value) * 60; buffDurVal.innerText = Math.round(buffDurationConfig / 60) + '초'; }
+            if (splashRangeSlider && splashRangeVal) { currentSplashRange = parseInt(splashRangeSlider.value); splashRangeVal.innerText = currentSplashRange + 'px'; }
+            if (defFreqSlider && defFreqVal) { defWeight = parseInt(defFreqSlider.value); defFreqVal.innerText = defWeight + '%'; }
+            if (defDurSlider && defDurVal) { defDurationConfig = parseInt(defDurSlider.value) * 60; defDurVal.innerText = Math.round(defDurationConfig / 60) + '초'; }
+            if (allyFreqSlider && allyFreqVal) { allyWeight = parseInt(allyFreqSlider.value); allyFreqVal.innerText = allyWeight + '%'; }
+            if (bombFreqSlider && bombFreqVal) { bombWeight = parseInt(bombFreqSlider.value); bombFreqVal.innerText = bombWeight + '%'; }
         }
-        [bossSlider, zombieSlider, healFreqSlider, healSlider, wpnFreqSlider, wpnDurSlider, buffFreqSlider, buffDurSlider, splashRangeSlider, defFreqSlider, defDurSlider, allyFreqSlider, bombFreqSlider].forEach(s => s.addEventListener('input', updateSliders));
+        [healFreqSlider, healSlider, wpnFreqSlider, wpnDurSlider, buffFreqSlider, buffDurSlider, splashRangeSlider, defFreqSlider, defDurSlider, allyFreqSlider, bombFreqSlider].forEach(s => {
+            if (s) s.addEventListener('input', updateSliders);
+        });
         updateSliders();
 
         let gameState = "MENU", isPaused = false, score = 0, highScore = 0, spawnTimer = 0, constWaveInterval = 190, globalAnimTick = 0, difficulty = "NORMAL (Lv.2)";
