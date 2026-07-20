@@ -1016,57 +1016,70 @@ if (document.readyState === 'loading') {
 
         function playShootSound() {
             if (!audioCtx) return;
-            const now = audioCtx.currentTime;
-            let type = player.weaponType;
-            let pitch = type === "GATLING" ? 1800 : type === "LASER" ? 2200 : type === "MISSILE" ? 1100 : type === "ROCKET" ? 600 : 1350;
+            try {
+                const now = audioCtx.currentTime;
+                let type = player.weaponType;
+                let pitch = type === "GATLING" ? 1800 : type === "LASER" ? 2200 : type === "MISSILE" ? 1100 : type === "ROCKET" ? 600 : 1350;
 
-            const bufSize = Math.floor(audioCtx.sampleRate * (type === "GATLING" ? 0.02 : 0.04));
-            const buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
-            const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
-            const filter = audioCtx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = pitch;
-            const noiseGain = audioCtx.createGain(); noiseGain.gain.setValueAtTime(0.14, now); noiseGain.gain.linearRampToValueAtTime(0.005, now + 0.04);
-            const subOsc = audioCtx.createOscillator(); const subGain = audioCtx.createGain();
-            subOsc.type = type === "LASER" ? 'sawtooth' : 'triangle';
-            subOsc.frequency.setValueAtTime(pitch * 0.2, now); subOsc.frequency.linearRampToValueAtTime(40, now + 0.04);
-            subGain.gain.setValueAtTime(0.25, now); subGain.gain.linearRampToValueAtTime(0.005, now + 0.04);
-            noise.connect(filter); filter.connect(noiseGain); noiseGain.connect(audioCtx.destination);
-            subOsc.connect(subGain); subGain.connect(audioCtx.destination);
-            noise.start(now); subOsc.start(now); noise.stop(now + 0.04); subOsc.stop(now + 0.04);
+                const bufSize = Math.floor(audioCtx.sampleRate * (type === "GATLING" ? 0.02 : 0.04));
+                const buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+                const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
+                const filter = audioCtx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = pitch;
+                const noiseGain = audioCtx.createGain(); noiseGain.gain.setValueAtTime(0.14, now); noiseGain.gain.linearRampToValueAtTime(0.005, now + 0.04);
+                const subOsc = audioCtx.createOscillator(); const subGain = audioCtx.createGain();
+                subOsc.type = type === "LASER" ? 'sawtooth' : 'triangle';
+                subOsc.frequency.setValueAtTime(pitch * 0.2, now); subOsc.frequency.linearRampToValueAtTime(40, now + 0.04);
+                subGain.gain.setValueAtTime(0.25, now); subGain.gain.linearRampToValueAtTime(0.005, now + 0.04);
+                noise.connect(filter); filter.connect(noiseGain); noiseGain.connect(audioCtx.destination);
+                subOsc.connect(subGain); subGain.connect(audioCtx.destination);
+                noise.onended = () => { try { noise.disconnect(); filter.disconnect(); noiseGain.disconnect(); } catch(e){} };
+                subOsc.onended = () => { try { subOsc.disconnect(); subGain.disconnect(); } catch(e){} };
+                noise.start(now); subOsc.start(now); noise.stop(now + 0.04); subOsc.stop(now + 0.04);
+            } catch(e){}
         }
 
         function playExplosionSound(isBoss) {
             if (!audioCtx) return;
-            const now = audioCtx.currentTime;
-            let osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(isBoss ? 80 : 130, now); osc.frequency.linearRampToValueAtTime(10, now + (isBoss ? 0.45 : 0.25));
-            let lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = isBoss ? 350 : 250;
-            gain.gain.setValueAtTime(isBoss ? 0.5 : 0.3, now); gain.gain.linearRampToValueAtTime(0.005, now + (isBoss ? 0.45 : 0.25));
-            osc.connect(lp); lp.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(now); osc.stop(now + (isBoss ? 0.45 : 0.25));
+            try {
+                const now = audioCtx.currentTime;
+                let osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(isBoss ? 80 : 130, now); osc.frequency.linearRampToValueAtTime(10, now + (isBoss ? 0.45 : 0.25));
+                let lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = isBoss ? 350 : 250;
+                gain.gain.setValueAtTime(isBoss ? 0.5 : 0.3, now); gain.gain.linearRampToValueAtTime(0.005, now + (isBoss ? 0.45 : 0.25));
+                osc.connect(lp); lp.connect(gain); gain.connect(audioCtx.destination);
+                osc.onended = () => { try { osc.disconnect(); lp.disconnect(); gain.disconnect(); } catch(e){} };
+                osc.start(now); osc.stop(now + (isBoss ? 0.45 : 0.25));
+            } catch(e){}
         }
 
         function playUpgradeSound() {
             if (!audioCtx) return;
-            const now = audioCtx.currentTime;
-            [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
-                let osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-                osc.type = 'sine'; osc.frequency.setValueAtTime(freq, now + idx * 0.04);
-                gain.gain.setValueAtTime(0.12, now + idx * 0.04); gain.gain.linearRampToValueAtTime(0.001, now + idx * 0.04 + 0.12);
-                osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.start(now + idx * 0.04); osc.stop(now + idx * 0.04 + 0.12);
-            });
+            try {
+                const now = audioCtx.currentTime;
+                [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                    let osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+                    gain.gain.setValueAtTime(0.12, now + idx * 0.04); gain.gain.linearRampToValueAtTime(0.001, now + idx * 0.04 + 0.12);
+                    osc.connect(gain); gain.connect(audioCtx.destination);
+                    osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch(e){} };
+                    osc.start(now + idx * 0.04); osc.stop(now + idx * 0.04 + 0.12);
+                });
+            } catch(e){}
         }
 
         function playHurtSound() {
             if (!audioCtx) return;
-            const now = audioCtx.currentTime;
-            let osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-            osc.type = 'sawtooth'; osc.frequency.setValueAtTime(120, now); osc.frequency.linearRampToValueAtTime(30, now + 0.15);
-            gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(now); osc.stop(now + 0.15);
+            try {
+                const now = audioCtx.currentTime;
+                let osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(120, now); osc.frequency.linearRampToValueAtTime(30, now + 0.15);
+                gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch(e){} };
+                osc.start(now); osc.stop(now + 0.15);
+            } catch(e){}
         }
 
         function getAllyRelativePos(index) { return { xOffset: ((index % 7) - 3) * 20, yOffset: (Math.floor(index / 7) + 1) * 22 }; }
@@ -1618,6 +1631,7 @@ if (document.readyState === 'loading') {
 
         function update() {
             if (isFadingToVictory) {
+                globalAnimTick++;
                 fadeTimer++;
                 // Hero Ship Autonomous Victory Fly-Through Thrust Upwards!
                 player.y -= 12;
@@ -1667,7 +1681,12 @@ if (document.readyState === 'loading') {
             if (player.buffTimer > 0) { player.buffTimer--; if (player.buffTimer <= 0) player.buffType = "NONE"; }
             if (player.defenseTimer > 0) { player.defenseTimer--; if (player.defenseTimer <= 0) player.defenseType = "NONE"; }
 
-            player.x += (player.targetX - player.x) * player.speed; player.y += (player.targetY - player.y) * player.speed;
+            if (isNaN(player.targetX)) player.targetX = canvas.width / 2;
+            if (isNaN(player.targetY)) player.targetY = canvas.height / 2;
+            player.x += (player.targetX - player.x) * player.speed; 
+            player.y += (player.targetY - player.y) * player.speed;
+            if (isNaN(player.x)) player.x = player.targetX;
+            if (isNaN(player.y)) player.y = player.targetY;
 
             for (let i = floatingTexts.length - 1; i >= 0; i--) { floatingTexts[i].y += floatingTexts[i].vy; floatingTexts[i].life--; if (floatingTexts[i].life <= 0) floatingTexts.splice(i, 1); }
             for (let i = muzzleFlashes.length - 1; i >= 0; i--) { muzzleFlashes[i].life--; if (muzzleFlashes[i].life <= 0) muzzleFlashes.splice(i, 1); }
@@ -1683,9 +1702,11 @@ if (document.readyState === 'loading') {
                 if (isNaN(p.alpha) || p.alpha <= 0) { particles.splice(i, 1); }
             }
             if (particles.length > 200) particles.splice(0, particles.length - 200);
+            if (bullets.length > 300) bullets.splice(0, bullets.length - 300);
+            if (enemyLasers.length > 200) enemyLasers.splice(0, enemyLasers.length - 200);
 
             // Boss Minion Support Spawner (Spawns random minion aliens every 3.5 seconds during boss battles)
-            if (globalAnimTick % 210 === 0 && enemies.some(e => e.isBoss && !e.isDying)) {
+            if (globalAnimTick % 210 === 0 && enemies.some(e => e.isBoss && !e.isDying) && enemies.length < 80) {
                 const laneWidth = canvas.width / 3;
                 const zCount = Math.max(1, Math.floor((2 + stageLevel * 0.4) * diffMultiplier));
                 for (let k = 0; k < zCount; k++) {
@@ -1704,6 +1725,8 @@ if (document.readyState === 'loading') {
 
             enemies.forEach(enemy => {
                 if (enemy.flashTimer > 0) enemy.flashTimer--; if (globalAnimTick % 8 === 0) enemy.animFrame = (enemy.animFrame + 1) % 4;
+                if (enemy.isDying) return;
+                if (isNaN(player.x) || isNaN(enemy.x)) return;
                 enemy.x += (player.x - enemy.x) * (enemy.isBoss ? 0.012 : 0.007);
 
                 // Enemy Firing Logic - High Visibility Plasma Bullets (Tuned Cooldowns for Smooth Evade)
@@ -1927,14 +1950,14 @@ if (document.readyState === 'loading') {
 
             // Dynamic Wave Spawning: Spawn next wave when current wave enemies are cleared or buffer timer elapses!
             if (waveCount < 25) {
-                if (enemies.length === 0) {
+                const activeLiveEnemies = enemies.filter(e => !e.isDying);
+                if (activeLiveEnemies.length === 0 && !enemies.some(e => e.isDying)) {
                     spawnTimer++;
-                    if (spawnTimer >= 45) { // Smooth 0.75-second wave clearance buffer
+                    if (spawnTimer >= 45) {
                         spawnTimer = 0;
                         spawnWave();
                     }
-                } else if (globalAnimTick % 300 === 0 && !enemies.some(e => e.isBoss)) {
-                    // Fallback timer for minion waves if minions linger offscreen
+                } else if (globalAnimTick % 300 === 0 && !enemies.some(e => (e.isBoss || e.isFinalBoss) && !e.isDying)) {
                     spawnTimer = 0;
                     spawnWave();
                 }
