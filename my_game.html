@@ -979,35 +979,40 @@ if (document.readyState === 'loading') {
         const bassScale = [110, 110, 130.81, 98.00], leadNotes = [220, 261.63, 329.63, 440, 392, 329.63, 261.63, 246.94];
         function playBGMStep() {
             if (!audioCtx || !bgmEnabled || gameState !== "PLAYING" || isPaused) return;
-            const now = audioCtx.currentTime;
-            if (bgmStep % 2 === 0) {
-                const bassFreq = bassScale[Math.floor((bgmStep % 16) / 4)];
-                const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(), filter = audioCtx.createBiquadFilter();
-                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(bassFreq, now);
-                filter.type = 'lowpass'; filter.frequency.setValueAtTime(350, now); filter.frequency.exponentialRampToValueAtTime(100, now + 0.18);
-                gain.gain.setValueAtTime(0.35, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-                osc.connect(filter); filter.connect(gain); gain.connect(bgmMasterGain);
-                osc.start(now); osc.stop(now + 0.2);
-            }
-            const noteFreq = leadNotes[bgmStep % leadNotes.length];
-            const leadOsc = audioCtx.createOscillator(), leadGain = audioCtx.createGain();
-            leadOsc.type = 'square'; leadOsc.frequency.setValueAtTime(noteFreq * 2, now);
-            leadGain.gain.setValueAtTime(0.1, now); leadGain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
-            leadOsc.connect(leadGain); leadGain.connect(bgmMasterGain);
-            leadOsc.start(now); leadOsc.stop(now + 0.1);
+            try {
+                const now = audioCtx.currentTime;
+                if (bgmStep % 2 === 0) {
+                    const bassFreq = bassScale[Math.floor((bgmStep % 16) / 4)];
+                    const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(), filter = audioCtx.createBiquadFilter();
+                    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(bassFreq, now);
+                    filter.type = 'lowpass'; filter.frequency.setValueAtTime(350, now); filter.frequency.exponentialRampToValueAtTime(100, now + 0.18);
+                    gain.gain.setValueAtTime(0.35, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                    osc.connect(filter); filter.connect(gain); gain.connect(bgmMasterGain);
+                    osc.onended = () => { try { osc.disconnect(); filter.disconnect(); gain.disconnect(); } catch(e){} };
+                    osc.start(now); osc.stop(now + 0.2);
+                }
+                const noteFreq = leadNotes[bgmStep % leadNotes.length];
+                const leadOsc = audioCtx.createOscillator(), leadGain = audioCtx.createGain();
+                leadOsc.type = 'square'; leadOsc.frequency.setValueAtTime(noteFreq * 2, now);
+                leadGain.gain.setValueAtTime(0.1, now); leadGain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+                leadOsc.connect(leadGain); leadGain.connect(bgmMasterGain);
+                leadOsc.onended = () => { try { leadOsc.disconnect(); leadGain.disconnect(); } catch(e){} };
+                leadOsc.start(now); leadOsc.stop(now + 0.1);
 
-            if (bgmStep % 4 === 2) {
-                const bufSize = Math.floor(audioCtx.sampleRate * 0.02);
-                const buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
-                const data = buffer.getChannelData(0);
-                for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
-                const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
-                const filter = audioCtx.createBiquadFilter(); filter.type = 'highpass'; filter.frequency.value = 7000;
-                const noiseGain = audioCtx.createGain(); noiseGain.gain.setValueAtTime(0.12, now); noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
-                noise.connect(filter); filter.connect(noiseGain); noiseGain.connect(bgmMasterGain);
-                noise.start(now); noise.stop(now + 0.02);
-            }
-            bgmStep++;
+                if (bgmStep % 4 === 2) {
+                    const bufSize = Math.floor(audioCtx.sampleRate * 0.02);
+                    const buffer = audioCtx.createBuffer(1, bufSize, audioCtx.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+                    const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
+                    const filter = audioCtx.createBiquadFilter(); filter.type = 'highpass'; filter.frequency.value = 7000;
+                    const noiseGain = audioCtx.createGain(); noiseGain.gain.setValueAtTime(0.12, now); noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+                    noise.connect(filter); filter.connect(noiseGain); noiseGain.connect(bgmMasterGain);
+                    noise.onended = () => { try { noise.disconnect(); filter.disconnect(); noiseGain.disconnect(); } catch(e){} };
+                    noise.start(now); noise.stop(now + 0.02);
+                }
+                bgmStep++;
+            } catch(e){}
         }
 
         function playShootSound() {
