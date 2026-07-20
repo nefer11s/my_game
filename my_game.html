@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v7.3.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v7.4.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v7.3.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v7.4.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -724,7 +724,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v7.3.0";
+        const GAME_VERSION = "v7.4.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -2247,42 +2247,137 @@
                 ctx.restore();
             }
 
-            // Crisp HUD Header Rendering
+            // Premium Clean HUD Header Background (Height: 112px)
             ctx.save();
             ctx.shadowBlur = 0;
             ctx.filter = 'none';
-            ctx.fillStyle = 'rgba(12, 14, 18, 0.96)'; ctx.fillRect(0, 0, canvas.width, 130); ctx.strokeStyle = '#2c3e50'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, 130); ctx.lineTo(canvas.width, 130); ctx.stroke();
-            ctx.fillStyle = '#ffffff'; ctx.font = 'bold 13px sans-serif'; ctx.textAlign = 'left'; ctx.fillText(`📊 STAGE: ${stageLevel} [${difficulty.split(" ")[0]}]  ${GAME_VERSION}`, 20, 26);
-            ctx.textAlign = 'center'; ctx.fillStyle = '#ff9f43'; ctx.fillText(`🔥 WAVE: ${waveCount}`, canvas.width / 2 - 50, 26);
-            ctx.fillStyle = '#ff3838'; ctx.font = 'bold 13px sans-serif'; ctx.fillText(`💥 필살기: ${player.ultimateStock}/5`, canvas.width / 2 + 55, 26);
-            ctx.textAlign = 'right'; ctx.fillStyle = '#ffd32c'; ctx.fillText(`SCORE: ${score} (HI: ${highScore})`, canvas.width - 20, 26);
 
-            ctx.textAlign = 'left'; ctx.fillStyle = '#ffffff'; ctx.fillText(`❤️ 내 수명 (HP): `, 20, 55); ctx.fillStyle = '#2f3542'; ctx.fillRect(125, 45, 150, 12);
-            ctx.fillStyle = player.hp > 40 ? '#10ac84' : '#ff3838'; ctx.fillRect(125, 45, (player.hp / player.maxHp) * 150, 12); ctx.fillStyle = '#ffffff'; ctx.font = 'bold 11px sans-serif'; ctx.fillText(player.hp + " / " + player.maxHp, 285, 55);
-            ctx.fillStyle = '#a4b0be'; ctx.fillText(`(7x3 소대: ${player.allies.length} / 21명)`, 355, 55);
+            // Glassmorphic Header Background
+            ctx.fillStyle = 'rgba(10, 12, 18, 0.94)';
+            ctx.fillRect(0, 0, canvas.width, 112);
+            ctx.strokeStyle = 'rgba(44, 62, 80, 0.8)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath(); ctx.moveTo(0, 112); ctx.lineTo(canvas.width, 112); ctx.stroke();
 
-            ctx.fillStyle = 'rgba(32, 191, 107, 0.15)'; ctx.fillRect(20, 72, canvas.width - 40, 24); ctx.strokeStyle = 'rgba(32, 191, 107, 0.4)'; ctx.strokeRect(20, 72, canvas.width - 40, 24);
-            ctx.fillStyle = '#1cfc03'; ctx.font = 'bold 11px sans-serif'; ctx.textAlign = 'left';
-            let wName = player.weaponType === "NORMAL" ? "기본 화기" : player.weaponType === "GATLING" ? "속사 개틀링" : player.weaponType === "LASER" ? "중차단 레이저" : player.weaponType === "MISSILE" ? "열압력 미사일" : "전술 고폭로켓";
-            let bName = player.buffType === "NONE" ? "기본" : player.buffType === "DAMAGE_X2" ? "피해량 2배" : player.buffType === "BOMBARD" ? "공중 무차별폭격" : "스플래시 폭발탄";
-            let dName = player.defenseType === "NONE" ? "기본 아머" : player.defenseType === "NANO_SHIELD" ? "완전 나노무적" : "중장갑 피해반감";
-            ctx.fillText(`🎖️ 활성 ➔ [화기]: ${wName} | [버프]: ${bName} | [필살기]: 💥 ${player.ultimateStock}/5개 (SPACE)`, 28, 88);
+            // -------------------------------------------------------------
+            // ROW 1 (y: 12 ~ 42): Core Primary Info (HP, Stage, Score)
+            // -------------------------------------------------------------
 
+            // 1-A. LEFT: Player HP Bar (Prominent & Clear)
+            ctx.fillStyle = '#ff4757';
+            ctx.font = '900 13px sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('❤️ HP', 16, 28);
+
+            // HP Bar Background & Fill
+            const hpBarX = 62, hpBarY = 16, hpBarW = 140, hpBarH = 15;
+            ctx.fillStyle = '#1e272e';
+            ctx.fillRect(hpBarX, hpBarY, hpBarW, hpBarH);
+            ctx.strokeStyle = '#353b48';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(hpBarX, hpBarY, hpBarW, hpBarH);
+
+            const hpRatio = Math.max(0, Math.min(1, player.hp / player.maxHp));
+            ctx.fillStyle = hpRatio > 0.3 ? '#10ac84' : '#ff3838';
+            ctx.fillRect(hpBarX, hpBarY, hpBarW * hpRatio, hpBarH);
+
+            // HP Text Inside Bar
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${player.hp}/${player.maxHp}`, hpBarX + hpBarW / 2, hpBarY + 11);
+
+            // Lives Badge
+            if (player.lives > 1) {
+                ctx.fillStyle = '#ff2d55';
+                ctx.font = 'bold 11px sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText(`❤️x${player.lives}`, hpBarX + hpBarW + 6, 28);
+            }
+
+            // 1-B. CENTER: STAGE & WAVE Badge
             const stageNum = Math.min(5, Math.floor((waveCount - 1) / 5) + 1);
             const waveInStage = ((waveCount - 1) % 5) + 1;
-            ctx.fillStyle = '#2f3542'; ctx.fillRect(20, 110, 160, 6); ctx.fillStyle = '#ff9f43'; ctx.fillRect(20, 110, (spawnTimer / constWaveInterval) * 160, 6);
-            ctx.textAlign = 'right'; ctx.font = 'bold 12px sans-serif';
+            ctx.fillStyle = 'rgba(0, 210, 211, 0.15)';
+            ctx.beginPath();
+            if (ctx.roundRect) ctx.roundRect(canvas.width / 2 - 52, 12, 104, 24, 6); else ctx.rect(canvas.width / 2 - 52, 12, 104, 24);
+            ctx.fill();
+            ctx.strokeStyle = '#00d2d3';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            ctx.fillStyle = '#00d2d3';
+            ctx.font = '900 13px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`STAGE ${stageNum}-${waveInStage}`, canvas.width / 2, 28);
+
+            // 1-C. RIGHT: Score (Large & Prominent)
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#ffd32c';
+            ctx.font = '900 16px sans-serif';
+            ctx.fillText(`${score.toLocaleString()} PTS`, canvas.width - 16, 26);
+
+            ctx.fillStyle = '#7f8c8d';
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillText(`HI: ${highScore.toLocaleString()}`, canvas.width - 16, 38);
+
+            // -------------------------------------------------------------
+            // ROW 2 (y: 48 ~ 78): Active Equipment & Tactical Ultimate Status
+            // -------------------------------------------------------------
+            let wName = player.weaponType === "NORMAL" ? "기본화기" : player.weaponType === "GATLING" ? "개틀링" : player.weaponType === "LASER" ? "레이저" : player.weaponType === "MISSILE" ? "미사일" : "고폭로켓";
+            let bName = player.buffType === "NONE" ? "기본" : player.buffType === "DAMAGE_X2" ? "피해2배" : player.buffType === "BOMBARD" ? "융단폭격" : "스플래시";
+            let dName = player.defenseType === "NONE" ? "일반" : player.defenseType === "NANO_SHIELD" ? "나노무적" : "중장갑";
+
+            ctx.textAlign = 'left';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillStyle = '#2e86de';
+            ctx.fillText(`🔫 ${wName}`, 16, 64);
+            ctx.fillStyle = '#e056fd';
+            ctx.fillText(`💥 ${bName}`, 105, 64);
+            ctx.fillStyle = '#10ac84';
+            ctx.fillText(`🛡️ ${dName}`, 190, 64);
+            ctx.fillStyle = '#a4b0be';
+            ctx.fillText(`🪖 드론 ${player.allies.length}기`, 265, 64);
+
+            // Ultimate Skill Stock Badge (Right Aligned, Bold Red)
+            ctx.textAlign = 'right';
+            ctx.fillStyle = player.ultimateStock > 0 ? '#ff3838' : '#7f8c8d';
+            ctx.font = '900 12px sans-serif';
+            ctx.fillText(`💥 필살기: ${player.ultimateStock}/5 [SPACE]`, canvas.width - 16, 64);
+
+            // -------------------------------------------------------------
+            // ROW 3 (y: 82 ~ 108): Stage Progress Bar & Next Boss Reference Text
+            // -------------------------------------------------------------
+            // Wave Progress Bar
+            ctx.fillStyle = '#1e272e';
+            ctx.fillRect(16, 78, canvas.width - 32, 4);
+            if (waveCount < 25) {
+                ctx.fillStyle = '#ff9f43';
+                ctx.fillRect(16, 78, ((spawnTimer / constWaveInterval) * (canvas.width - 32)), 4);
+            } else {
+                ctx.fillStyle = '#ff2d55';
+                ctx.fillRect(16, 78, canvas.width - 32, 4);
+            }
+
+            // Reference Info (Small, Subdued)
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#57606f';
+            ctx.font = 'bold 10px sans-serif';
+            ctx.fillText(`${difficulty.split(" ")[0]} ${GAME_VERSION}`, 16, 98);
 
             let nextBossStr = "";
-            if (waveCount < 5) nextBossStr = `👑 중간보스 출현까지: ${5 - waveCount}웨이브`;
-            else if (waveCount < 10) nextBossStr = `👑 중간보스 출현까지: ${10 - waveCount}웨이브`;
-            else if (waveCount < 15) nextBossStr = `⚠️ 연속 보스전 진입중 (Stage 3)`;
-            else if (waveCount < 20) nextBossStr = `⚠️ 연속 보스전 진입중 (Stage 4)`;
-            else if (waveCount < 25) nextBossStr = `🚨 최종 마왕 결전까지: ${25 - waveCount}웨이브`;
-            else nextBossStr = `👑 [최종 마왕 결전 교전중!]`;
+            if (waveCount < 5) nextBossStr = `중간보스까지: ${5 - waveCount}W`;
+            else if (waveCount < 10) nextBossStr = `중간보스까지: ${10 - waveCount}W`;
+            else if (waveCount < 15) nextBossStr = `보스 연전중 (Stage 3)`;
+            else if (waveCount < 20) nextBossStr = `보스 연전중 (Stage 4)`;
+            else if (waveCount < 25) nextBossStr = `최종 마왕 결전까지: ${25 - waveCount}W`;
+            else nextBossStr = `🚨 [최종 마왕 결전 교전 중!]`;
 
-            ctx.fillStyle = waveCount >= 20 ? '#ff2d55' : '#feca57';
-            ctx.fillText(`📊 STAGE ${stageNum}-${waveInStage}  |  ${nextBossStr}`, canvas.width - 20, 116);
+            ctx.textAlign = 'right';
+            ctx.fillStyle = waveCount >= 20 ? '#ff4757' : '#f1c40f';
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillText(`🔥 WAVE ${waveCount}  |  ${nextBossStr}`, canvas.width - 16, 98);
+
             ctx.restore();
 
             // Render Cinematic Screen Fade Overlay (Fade-Out to Black -> Fade-In to Victory)
