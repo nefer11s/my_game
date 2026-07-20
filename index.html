@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 외계인에 잡혀간 현우엄마를 구출하라! (v5.3.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 외계인에 잡혀간 현우엄마를 구출하라! (v5.4.0)</title>
     <style>
         body {
             margin: 0;
@@ -256,7 +256,7 @@
 <body
     style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
 
-    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"외계인에 잡혀간 현우엄마를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v5.3.0</span></h1>
+    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"외계인에 잡혀간 현우엄마를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v5.4.0</span></h1>
 
     <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
         <div id="gameContainer" style="position: relative;">
@@ -265,7 +265,7 @@
             <div id="menuOverlay" style="padding: 30px 20px; box-sizing: border-box; justify-content: space-between;">
                 <div style="margin-top: 30px; display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <div class="menu-title" style="font-size: 32px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.7); margin-bottom: 6px; letter-spacing: 3px;">HY 세라믹 솔라 파이터</div>
-                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"외계인에 잡혀간 현우엄마를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v5.3.0)</span></div>
+                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"외계인에 잡혀간 현우엄마를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v5.4.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -626,7 +626,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v5.3.0";
+        const GAME_VERSION = "v5.4.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9, bossHpMultiplier = 0.9, zombieCountMultiplier = 0.9;
         let healWeight = 35, healAmount = 30, wpnWeight = 45, wpnDurationConfig = 420, buffWeight = 45, buffDurationConfig = 420, currentSplashRange = 45, defWeight = 35, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -1160,7 +1160,14 @@
                     const pal = ALIEN_PALETTES[enemy.alienType || 0];
                     enemyLasers.push({ x: enemy.x, y: enemy.y + 18, w: 8, h: 22, vy: 4.8, color: pal.glow, isBoss: false, vx: 0 });
                 }
-                if (enemy.isBoss && globalAnimTick % 95 === 0) {
+                if (enemy.isFinalBoss && globalAnimTick % 65 === 0) {
+                    // 5-way Annihilation Barrage for Final Boss!
+                    enemyLasers.push({ x: enemy.x - 40, y: enemy.y + 45, w: 10, h: 26, vy: 5.2, vx: -1.8, color: '#ff2d55', isBoss: true });
+                    enemyLasers.push({ x: enemy.x - 20, y: enemy.y + 50, w: 12, h: 28, vy: 5.8, vx: -0.9, color: '#ff3838', isBoss: true });
+                    enemyLasers.push({ x: enemy.x, y: enemy.y + 55, w: 14, h: 32, vy: 6.5, vx: 0, color: '#1cfc03', isBoss: true });
+                    enemyLasers.push({ x: enemy.x + 20, y: enemy.y + 50, w: 12, h: 28, vy: 5.8, vx: 0.9, color: '#ff3838', isBoss: true });
+                    enemyLasers.push({ x: enemy.x + 40, y: enemy.y + 45, w: 10, h: 26, vy: 5.2, vx: 1.8, color: '#ff2d55', isBoss: true });
+                } else if (!enemy.isFinalBoss && enemy.isBoss && globalAnimTick % 95 === 0) {
                     const pal = BOSS_PALETTES[enemy.bossType || 0];
                     // Triple Spread Shot for Bosses (Tuned Velocity)
                     enemyLasers.push({ x: enemy.x - 20, y: enemy.y + 35, w: 10, h: 26, vy: 5.5, vx: -1.0, color: pal.glow, isBoss: true });
@@ -1300,13 +1307,34 @@
 
 
             for (let i = enemies.length - 1; i >= 0; i--) {
-                enemies[i].y += enemies[i].speed; const enemy = enemies[i];
+                const enemy = enemies[i];
+                if (enemy.isFinalBoss) {
+                    // Final Boss stays on screen hovering at altitude y = 150 until destroyed!
+                    if (enemy.y < 150) {
+                        enemy.y += enemy.speed;
+                    } else {
+                        if (!enemy.hoverDir) enemy.hoverDir = 1;
+                        enemy.x += enemy.hoverDir * 1.6 * (diffMultiplier * 0.9);
+                        if (enemy.x > canvas.width - 90) enemy.hoverDir = -1;
+                        if (enemy.x < 90) enemy.hoverDir = 1;
+                    }
+                } else {
+                    enemy.y += enemy.speed;
+                }
+
                 if (Math.hypot(enemy.x - player.x, enemy.y - player.y) < enemy.radius + player.radius) {
-                    if (player.defenseType === "NANO_SHIELD") { playExplosionSound(enemy.isBoss); spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss); enemies.splice(i, 1); }
-                    else {
+                    if (player.defenseType === "NANO_SHIELD") {
+                        if (!enemy.isFinalBoss) {
+                            playExplosionSound(enemy.isBoss); spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss); enemies.splice(i, 1);
+                        } else {
+                            enemy.hp -= 20; enemy.flashTimer = 6; addFloatingText(enemy.x, enemy.y - 20, "-20 HP", '#1cfc03');
+                            if (enemy.hp <= 0) eliminateEnemy(enemy, i);
+                        }
+                    } else {
                         playHurtSound(); let loss = enemy.isBoss ? 24 : 10; if (player.defenseType === "HEAVY_ARMOR") loss = Math.floor(loss * 0.5);
                         player.hp -= Math.floor(loss * diffMultiplier); addFloatingText(player.x, player.y - 30, `-${Math.floor(loss * diffMultiplier)} HP`, '#ff2222');
-                        enemies.splice(i, 1); if (player.hp <= 0) {
+                        if (!enemy.isFinalBoss) { enemies.splice(i, 1); }
+                        if (player.hp <= 0) {
                             if (player.lives > 1) { player.lives--; player.hp = player.maxHp; player.defenseType = "NANO_SHIELD"; player.defenseTimer = 180; addFloatingText(player.x, player.y - 45, `❤️ 부활! (남은 목숨: ${player.lives}개)`, '#ff3838', 22); }
                             else { player.lives = 0; gameOver(); break; }
                         }
@@ -1317,29 +1345,29 @@
                 for (let j = player.allies.length - 1; j >= 0; j--) {
                     const offset = getAllyRelativePos(j);
                     if (Math.hypot(enemy.x - (player.x + offset.xOffset), enemy.y - (player.y + offset.yOffset)) < enemy.radius + 12) {
-                        if (player.defenseType === "NANO_SHIELD") { playExplosionSound(enemy.isBoss); spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss); enemies.splice(i, 1); }
-                        else {
+                        if (player.defenseType === "NANO_SHIELD") {
+                            if (!enemy.isFinalBoss) { playExplosionSound(enemy.isBoss); spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss); enemies.splice(i, 1); enemySpliced = true; }
+                        } else {
                             playHurtSound(); player.allies.splice(j, 1); let loss = enemy.isBoss ? 12 : 4; if (player.defenseType === "HEAVY_ARMOR") loss = Math.floor(loss * 0.5);
                             player.hp -= Math.floor(loss * diffMultiplier); addFloatingText(player.x, player.y - 30, `-${Math.floor(loss * diffMultiplier)} HP`, '#ff5555');
-                            createAdvancedExplosion(enemy.x, enemy.y, '#ff3838', 6, 0.7); enemies.splice(i, 1); if (player.hp <= 0) {
+                            createAdvancedExplosion(enemy.x, enemy.y, '#ff3838', 6, 0.7);
+                            if (!enemy.isFinalBoss) { enemies.splice(i, 1); enemySpliced = true; }
+                            if (player.hp <= 0) {
                                 if (player.lives > 1) { player.lives--; player.hp = player.maxHp; player.defenseType = "NANO_SHIELD"; player.defenseTimer = 180; addFloatingText(player.x, player.y - 45, `❤️ 부활! (남은 목숨: ${player.lives}개)`, '#ff3838', 22); }
                                 else { player.lives = 0; gameOver(); }
                             }
                         }
-                        enemySpliced = true; break;
+                        break;
                     }
                 }
                 if (enemySpliced) continue;
-                if (enemy && enemy.y > canvas.height) {
+                if (enemy && !enemy.isFinalBoss && enemy.y > canvas.height) {
                     if (enemy.isBoss) {
                         playHurtSound(); let oldHp = player.hp; player.hp = Math.floor(player.hp / 2); let penalty = oldHp - player.hp;
                         addFloatingText(player.x, player.y - 30, `보스 돌파 허용! 체력 반토막 (-${penalty} HP)`, '#ff0000');
                         if (player.hp <= 0) {
                             if (player.lives > 1) { player.lives--; player.hp = player.maxHp; player.defenseType = "NANO_SHIELD"; player.defenseTimer = 180; addFloatingText(player.x, player.y - 45, `❤️ 부활! (남은 목숨: ${player.lives}개)`, '#ff3838', 22); }
                             else { player.lives = 0; gameOver(); break; }
-                        }
-                        if (enemy.isFinalBoss) {
-                            triggerVictory();
                         }
                     }
                     enemies.splice(i, 1);
