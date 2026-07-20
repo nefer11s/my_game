@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v9.5.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v9.6.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 <span onclick="previewVictoryScreen()" style="cursor: pointer; text-decoration: underline; color: #f1c40f;" title="🏆 승리 축하 화면 미리보기">현우엄마</span>를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v9.5.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v9.6.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -419,8 +419,49 @@
                         <p><b>📱 스마트폰 터치:</b><br>- 1손가락 드래그: 상대 무빙 기동<br>- 2손가락 터치: 💥 필살기 즉시 발동<br>- 3손가락 터치: ⏸️ 일시정지 / 메뉴<br><br><b>💻 PC 키보드:</b><br>- W,A,S,D / 마우스: 무빙 기동<br>- SPACE / X / E: 필살기 발동<br>- P: 일시정지</p>
                     </div>
                     <div id="infoItemSec" style="display: none;">
-                        <h3 style="color: #f1c40f; margin-top:0;">🎁 전술 드롭 아이템 도감</h3>
-                        <p>💚 <b>HEAL</b>: 체력 회복 / 풀피 시 최대체력 확장<br>⚡ <b>LASER</b>: 중차단 레이저 빔<br>🔫 <b>GATLING</b>: 초고속 무차별 개틀링<br>🚀 <b>ROCKET</b>: 전술 고폭 로켓 탄두<br>🎯 <b>MISSILE</b>: 광역 열압력 유도 미사일<br>💥 <b>DAMAGE_X2</b>: 주력 무기 피해량 2배 버프<br>💣 <b>BOMBARD</b>: 공중 융단 폭격<br>🛡️ <b>NANO_SHIELD</b>: 완전 충돌 무적 보호막<br>✈️ <b>ALLY</b>: 호위 드론 대원 출격<br>💣 <b>BOMB</b>: 화면 전체 소각 전술 폭탄<br>💥 <b>ULTIMATE</b>: 태양 핵융합 소각 필살기 1개 충전</p>
+                        <h3 style="color: #f1c40f; margin-top:0; border-bottom: 1px solid rgba(241, 196, 15, 0.3); padding-bottom: 8px; font-size: 17px;">🎁 전술 드롭 아이템 분류 도감</h3>
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 10px; max-height: 380px; overflow-y: auto; padding-right: 4px; text-align: left;">
+                            
+                            <!-- 1. 주력 무기 계열 -->
+                            <div style="background: rgba(0, 210, 211, 0.08); border: 1px solid rgba(0, 210, 211, 0.3); border-radius: 8px; padding: 10px;">
+                                <div style="color: #00d2d3; font-weight: bold; font-size: 13px; margin-bottom: 6px;">⚔️ 주력 무기 계열 (Weapon Systems)</div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 12px;">
+                                    <div style="background: rgba(0,0,0,0.3); padding: 6px; border-radius: 4px;">⚡ <b style="color:#00d2d3;">LASER</b><br><span style="color:#a4b0be; font-size:11px;">관통 레이저 빔</span></div>
+                                    <div style="background: rgba(0,0,0,0.3); padding: 6px; border-radius: 4px;">🔫 <b style="color:#00d2d3;">GATLING</b><br><span style="color:#a4b0be; font-size:11px;">초고속 개틀링 포</span></div>
+                                    <div style="background: rgba(0,0,0,0.3); padding: 6px; border-radius: 4px;">🚀 <b style="color:#ff9f43;">ROCKET</b><br><span style="color:#a4b0be; font-size:11px;">광역 고폭 로켓</span></div>
+                                    <div style="background: rgba(0,0,0,0.3); padding: 6px; border-radius: 4px;">🎯 <b style="color:#ff7675;">MISSILE</b><br><span style="color:#a4b0be; font-size:11px;">열압력 유도 미사일</span></div>
+                                </div>
+                            </div>
+
+                            <!-- 2. 생존 및 회복 계열 -->
+                            <div style="background: rgba(46, 213, 115, 0.08); border: 1px solid rgba(46, 213, 115, 0.3); border-radius: 8px; padding: 10px;">
+                                <div style="color: #2ed573; font-weight: bold; font-size: 13px; margin-bottom: 6px;">🛡️ 방어 및 생존 계열 (Defense & Repair)</div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 12px;">
+                                    <div style="background: rgba(0,0,0,0.3); padding: 6px; border-radius: 4px;">💚 <b style="color:#2ed573;">HEAL</b><br><span style="color:#a4b0be; font-size:11px;">체력 회복 & 최대체력 확장</span></div>
+                                    <div style="background: rgba(0,0,0,0.3); padding: 6px; border-radius: 4px;">🛡️ <b style="color:#1cfc03;">NANO_SHIELD</b><br><span style="color:#a4b0be; font-size:11px;">충돌 완전 무적 쉴드</span></div>
+                                </div>
+                            </div>
+
+                            <!-- 3. 화력 버프 계열 -->
+                            <div style="background: rgba(255, 159, 67, 0.08); border: 1px solid rgba(255, 159, 67, 0.3); border-radius: 8px; padding: 10px;">
+                                <div style="color: #ff9f43; font-weight: bold; font-size: 13px; margin-bottom: 6px;">💥 전술 버프 계열 (Combat Buffs)</div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 12px;">
+                                    <div style="background: rgba(0,0,0,0.3); padding: 6px; border-radius: 4px;">💥 <b style="color:#f1c40f;">DAMAGE_X2</b><br><span style="color:#a4b0be; font-size:11px;">주력 화력 200% 증가</span></div>
+                                    <div style="background: rgba(0,0,0,0.3); padding: 6px; border-radius: 4px;">💣 <b style="color:#ff6b6b;">BOMBARD</b><br><span style="color:#a4b0be; font-size:11px;">공중 융단 폭격 지원</span></div>
+                                </div>
+                            </div>
+
+                            <!-- 4. 아군 지원 & 필살기 계열 -->
+                            <div style="background: rgba(255, 56, 56, 0.08); border: 1px solid rgba(255, 56, 56, 0.3); border-radius: 8px; padding: 10px;">
+                                <div style="color: #ff3838; font-weight: bold; font-size: 13px; margin-bottom: 6px;">🤖 지원 드론 & 필살기 (Support & Ultimate)</div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; font-size: 11px;">
+                                    <div style="background: rgba(0,0,0,0.3); padding: 6px; border-radius: 4px;">✈️ <b style="color:#54a0ff;">ALLY</b><br><span style="color:#a4b0be; font-size:10px;">호위 드론 출격</span></div>
+                                    <div style="background: rgba(0,0,0,0.3); padding: 6px; border-radius: 4px;">💣 <b style="color:#ff3838;">BOMB</b><br><span style="color:#a4b0be; font-size:10px;">전면 소각 폭탄</span></div>
+                                    <div style="background: rgba(0,0,0,0.3); padding: 6px; border-radius: 4px;">💥 <b style="color:#ff3838;">ULTIMATE</b><br><span style="color:#a4b0be; font-size:10px;">태양 필살기 +1</span></div>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
                 <button style="background: #00d2d3; border: none; color: #141822; width: 100%; max-width: 420px; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px;" onclick="closeInfoModal()">닫기</button>
@@ -732,7 +773,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v9.5.0";
+        const GAME_VERSION = "v9.6.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
