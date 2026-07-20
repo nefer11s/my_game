@@ -12,7 +12,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.4.1)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.4.2)</title>
     <style>
         body {
             margin: 0;
@@ -335,7 +335,7 @@
                         HY세라믹 솔라윙스</div>
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
-                        "외계인에 잡혀간 현우엄마를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">v11.4.1</span> <span style="color: #636e72; font-size: 11px; margin-left: 4px;">배포 2026-07-21 03:52</span></div>
+                        "외계인에 잡혀간 현우엄마를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">v11.4.2</span> <span style="color: #636e72; font-size: 11px; margin-left: 4px;">배포 2026-07-21 03:57</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -838,7 +838,7 @@ if (document.readyState === 'loading') {
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v11.4.1";
+        const GAME_VERSION = "v11.4.2";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1745,8 +1745,8 @@ if (document.readyState === 'loading') {
 
                 // Enemy Firing Logic - High Visibility Plasma Bullets (Tuned Cooldowns for Smooth Evade)
                 if (!enemy.isBoss && globalAnimTick % 85 === 0 && Math.random() > 0.45) {
-                    const pal = ALIEN_PALETTES[enemy.alienType || 0];
-                    enemyLasers.push({ x: enemy.x, y: enemy.y + 18, w: 8, h: 22, vy: 4.8, color: pal.glow, isBoss: false, vx: 0 });
+                    const pal = ALIEN_PALETTES[(enemy.alienType || 0) % ALIEN_PALETTES.length] || ALIEN_PALETTES[0];
+                    enemyLasers.push({ x: enemy.x, y: enemy.y + 18, w: 8, h: 22, vy: 4.8, color: pal.glow || '#55efc4', isBoss: false, vx: 0 });
                 }
                 if (!enemy.isDying && enemy.isFinalBoss && globalAnimTick % 65 === 0) {
                     // 5-way Annihilation Barrage for Final Boss!
@@ -1756,11 +1756,12 @@ if (document.readyState === 'loading') {
                     enemyLasers.push({ x: enemy.x + 20, y: enemy.y + 50, w: 12, h: 28, vy: 5.8, vx: 0.9, color: '#ff3838', isBoss: true });
                     enemyLasers.push({ x: enemy.x + 40, y: enemy.y + 45, w: 10, h: 26, vy: 5.2, vx: 1.8, color: '#ff2d55', isBoss: true });
                 } else if (!enemy.isDying && !enemy.isFinalBoss && enemy.isBoss && globalAnimTick % 95 === 0) {
-                    const pal = BOSS_PALETTES[enemy.bossType || 0];
+                    const pal = BOSS_PALETTES[(enemy.bossType || 0) % BOSS_PALETTES.length] || BOSS_PALETTES[0];
+                    const glowColor = pal.glow || '#ff0055';
                     // Triple Spread Shot for Bosses (Tuned Velocity)
-                    enemyLasers.push({ x: enemy.x - 20, y: enemy.y + 35, w: 10, h: 26, vy: 5.5, vx: -1.0, color: pal.glow, isBoss: true });
+                    enemyLasers.push({ x: enemy.x - 20, y: enemy.y + 35, w: 10, h: 26, vy: 5.5, vx: -1.0, color: glowColor, isBoss: true });
                     enemyLasers.push({ x: enemy.x, y: enemy.y + 40, w: 12, h: 28, vy: 6.0, vx: 0, color: '#ff0055', isBoss: true });
-                    enemyLasers.push({ x: enemy.x + 20, y: enemy.y + 35, w: 10, h: 26, vy: 5.5, vx: 1.0, color: pal.glow, isBoss: true });
+                    enemyLasers.push({ x: enemy.x + 20, y: enemy.y + 35, w: 10, h: 26, vy: 5.5, vx: 1.0, color: glowColor, isBoss: true });
                 }
             });
 
@@ -2758,14 +2759,14 @@ if (document.readyState === 'loading') {
                     ctx.beginPath();
                     ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
                     ctx.clip(); // 100% physically clips away any square bounding box corners!
-                    const bImg = enemy.isFinalBoss ? imgBoss : imgBossTypes[(enemy.bossType || 0) % 10];
+                    const bImg = enemy.isFinalBoss ? imgBoss : (imgBossTypes.length > 0 ? imgBossTypes[(enemy.bossType || 0) % imgBossTypes.length] : null);
                     const cleanBossCvs = getCleanTransparentSprite(bImg) || getCleanTransparentSprite(imgBoss);
                     const bSize = enemy.isFinalBoss ? 180 : 104;
                     if (cleanBossCvs) {
                         ctx.drawImage(cleanBossCvs, enemy.x - bSize / 2, enemy.y - bSize / 2, bSize, bSize);
                     } else {
-                        const pal = BOSS_PALETTES[enemy.bossType || 0];
-                        ctx.fillStyle = pal.body; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2); ctx.fill();
+                        const pal = BOSS_PALETTES[(enemy.bossType || 0) % BOSS_PALETTES.length] || BOSS_PALETTES[0];
+                        ctx.fillStyle = pal.body || '#4834d4'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2); ctx.fill();
                     }
                     if (enemy.isFinalBoss && enemy.spawnShieldTimer > 0) {
                         ctx.save();
@@ -2840,7 +2841,7 @@ if (document.readyState === 'loading') {
                         ctx.stroke();
                         ctx.restore();
                     }
-                    const aImg = imgAlienTypes[(enemy.alienType || 0) % 10];
+                    const aImg = imgAlienTypes.length > 0 ? imgAlienTypes[(enemy.alienType || 0) % imgAlienTypes.length] : null;
                     const cleanAlienCvs = getCleanTransparentSprite(aImg) || getCleanTransparentSprite(imgEnemy);
                     if (cleanAlienCvs) { ctx.drawImage(cleanAlienCvs, enemy.x - 24, enemy.y - 24, 48, 48); }
                     else {
