@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v10.2.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v10.3.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 <span onclick="previewVictoryScreen()" style="cursor: pointer; text-decoration: underline; color: #f1c40f;" title="🏆 승리 축하 화면 미리보기">현우엄마</span>를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v10.2.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v10.3.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -692,9 +692,10 @@
                 ⚙️ 전술 수치 제어 및 밸런스 관리 설정</div>
 
             <div class="section-divider">🎯 난이도별 적군 체력 세부 커스텀</div>
-            <div class="control-group"><label><span>👾 일반 외계인 체력 배율</span> <span class="value-disp" id="minionHpVal">1.0x</span></label><input type="range" id="minionHpSlider" min="0.3" max="3.0" step="0.1" value="1.0" oninput="minionHpMultiplier=parseFloat(this.value); document.getElementById('minionHpVal').innerText=minionHpMultiplier.toFixed(1)+'x'"></div>
-            <div class="control-group"><label><span>⚠️ 중간 보스 체력 배율</span> <span class="value-disp" id="midBossHpVal">1.0x</span></label><input type="range" id="midBossHpSlider" min="0.3" max="4.0" step="0.1" value="1.0" oninput="midBossHpMultiplier=parseFloat(this.value); document.getElementById('midBossHpVal').innerText=midBossHpMultiplier.toFixed(1)+'x'"></div>
-            <div class="control-group"><label><span>👑 최종 마왕 체력 배율</span> <span class="value-disp" id="finalBossHpVal">1.0x</span></label><input type="range" id="finalBossHpSlider" min="0.3" max="5.0" step="0.1" value="1.0" oninput="finalBossHpMultiplier=parseFloat(this.value); document.getElementById('finalBossHpVal').innerText=finalBossHpMultiplier.toFixed(1)+'x'"></div>
+            <div class="control-group"><label><span>👾 일반 외계인 체력 배율</span> <span class="value-disp" id="minionHpVal">1.0x</span></label><input type="range" id="minionHpSlider" min="0.3" max="3.0" step="0.1" value="1.0" oninput="minionHpMultiplier=parseFloat(this.value); document.getElementById('minionHpVal').innerText=minionHpMultiplier.toFixed(1)+'x'; updateFinalBossHpRatioDisp();"></div>
+            <div class="control-group"><label><span>⚠️ 중간 보스 체력 배율</span> <span class="value-disp" id="midBossHpVal">1.0x</span></label><input type="range" id="midBossHpSlider" min="0.3" max="4.0" step="0.1" value="1.0" oninput="midBossHpMultiplier=parseFloat(this.value); document.getElementById('midBossHpVal').innerText=midBossHpMultiplier.toFixed(1)+'x'; updateFinalBossHpRatioDisp();"></div>
+            <div class="control-group"><label><span>👑 최종 마왕 체력 (최강 중간보스 대비)</span> <span class="value-disp" id="finalBossHpRatioVal">15배 (35,100 HP)</span></label><input type="range" id="finalBossHpRatioSlider" min="3" max="30" step="1" value="15" oninput="finalBossHpRatio=parseInt(this.value); updateFinalBossHpRatioDisp();"></div>
+            <div class="control-group"><label><span>👑 최종 마왕 체력 추가 배율</span> <span class="value-disp" id="finalBossHpVal">1.0x</span></label><input type="range" id="finalBossHpSlider" min="0.3" max="5.0" step="0.1" value="1.0" oninput="finalBossHpMultiplier=parseFloat(this.value); document.getElementById('finalBossHpVal').innerText=finalBossHpMultiplier.toFixed(1)+'x'; updateFinalBossHpRatioDisp();"></div>
 
             <div class="section-divider">🎁 난이도별 아이템 드롭 & 빈도 제어</div>
             <div class="control-group"><label><span>🎁 일반적 아이템 드롭 확률</span> <span class="value-disp" id="itemDropChanceVal">9%</span></label><input type="range" id="itemDropChanceSlider" min="1" max="50" step="1" value="9" oninput="itemDropChanceNormal=parseFloat(this.value)/100; document.getElementById('itemDropChanceVal').innerText=Math.round(itemDropChanceNormal*100)+'%'"></div>
@@ -773,7 +774,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v10.2.0";
+        const GAME_VERSION = "v10.3.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1109,8 +1110,20 @@
         let minionHpMultiplier = 1.0;
         let midBossHpMultiplier = 1.0;
         let finalBossHpMultiplier = 1.0;
+        let finalBossHpRatio = 15; // Default: 15x of Stage 5 Strongest Mid-Boss HP
         let itemDropChanceNormal = 0.09;
         let bossDropCountConfig = 2;
+
+        function updateFinalBossHpRatioDisp() {
+            const ratioSlider = document.getElementById('finalBossHpRatioSlider');
+            const ratioDisp = document.getElementById('finalBossHpRatioVal');
+            if (ratioSlider && ratioDisp) {
+                ratioSlider.value = finalBossHpRatio;
+                const maxMidBossHp = Math.floor((350 + 5 * 450) * diffMultiplier * (midBossHpMultiplier || 1.0));
+                const estBossHp = Math.floor(maxMidBossHp * finalBossHpRatio * (finalBossHpMultiplier || 1.0));
+                ratioDisp.innerText = `${finalBossHpRatio}배 (${estBossHp.toLocaleString()} HP)`;
+            }
+        }
 
         function updateSettingsUIFromVariables() {
             const mHpS = document.getElementById('minionHpSlider'), mHpV = document.getElementById('minionHpVal');
@@ -1124,6 +1137,7 @@
             if (fbHpS && fbHpV) { fbHpS.value = finalBossHpMultiplier; fbHpV.innerText = finalBossHpMultiplier.toFixed(1) + 'x'; }
             if (dropS && dropV) { dropS.value = Math.round(itemDropChanceNormal * 100); dropV.innerText = Math.round(itemDropChanceNormal * 100) + '%'; }
             if (bDropSel) { bDropSel.value = bossDropCountConfig; }
+            updateFinalBossHpRatioDisp();
 
             // Sync item intensity sliders!
             if (healSlider && healVal) { healSlider.value = healAmount; healVal.innerText = healAmount + ' HP'; }
@@ -1367,8 +1381,9 @@
             const isFinalBossWave = (waveCount === 25);
 
             if (isFinalBossWave) {
-                // 👑 3-PHASE EPIC SUPREME BOSS (v10.2.0, Base HP: 60000 - Normal: ~54,000 HP for 3~4 min battle!)
-                const bossHp = Math.floor(60000 * diffMultiplier * (finalBossHpMultiplier || 1.0));
+                // 👑 3-PHASE EPIC SUPREME BOSS (v10.3.0, HP: Exactly finalBossHpRatio (15x default) of Stage 5 Strongest Mid-Boss)
+                const maxMidBossHp = Math.floor((350 + 5 * 450) * diffMultiplier * (midBossHpMultiplier || 1.0));
+                const bossHp = Math.floor(maxMidBossHp * (finalBossHpRatio || 15) * (finalBossHpMultiplier || 1.0));
                 enemies.push({
                     x: canvas.width / 2, y: -80, radius: 88,
                     hp: bossHp,
@@ -1379,7 +1394,7 @@
                     spawnShieldTimer: 180 // 3.0-second 100% Spawn Invulnerability Shield!
                 });
                 canvasShakeTimer = 35;
-                addFloatingText(canvas.width / 2, 220, `👑 [초대형 최종 마왕 결전 보스 (${bossHp.toLocaleString()} HP)] 강림!!`, "#ff2d55", 26);
+                addFloatingText(canvas.width / 2, 220, `👑 [초대형 최종 마왕 결전 보스 (${finalBossHpRatio || 15}배: ${bossHp.toLocaleString()} HP)] 강림!!`, "#ff2d55", 26);
             } else if (isMidBossWave) {
                 // Stage Mid-Bosses (Stage 5-1~4 all spawn boss_9 guard captain bosses!)
                 const bType = (stageLevel === 5) ? 9 : Math.floor(Math.random() * 10);
