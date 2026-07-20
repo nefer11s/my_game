@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v5.9.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v6.0.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v5.9.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v6.0.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -670,7 +670,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v5.9.0";
+        const GAME_VERSION = "v6.0.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9, bossHpMultiplier = 0.9, zombieCountMultiplier = 0.9;
         let healWeight = 35, healAmount = 30, wpnWeight = 45, wpnDurationConfig = 420, buffWeight = 45, buffDurationConfig = 420, currentSplashRange = 45, defWeight = 35, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -1205,7 +1205,46 @@
             }
         }
 
+        function spawnVictoryFireworks() {
+            if (globalAnimTick % 8 === 0) {
+                const fx = Math.random() * canvas.width;
+                const fy = Math.random() * (canvas.height * 0.75);
+                const colors = ['#ffd32c', '#00d2d3', '#ff3838', '#1cfc03', '#ffffff', '#a55eea', '#ff9f43', '#feca57'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+
+                createAdvancedExplosion(fx, fy, color, 22, 1.8);
+
+                for (let k = 0; k < 10; k++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const spd = Math.random() * 3.5 + 1.2;
+                    particles.push({
+                        x: fx, y: fy,
+                        vx: Math.cos(angle) * spd,
+                        vy: Math.sin(angle) * spd - 0.6,
+                        radius: Math.random() * 3 + 1.5,
+                        alpha: 1.0,
+                        color: color,
+                        sparkle: true,
+                        gravity: 0.035
+                    });
+                }
+            }
+        }
+
         function update() {
+            if (gameState === "VICTORY") {
+                globalAnimTick++;
+                spawnVictoryFireworks();
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    let p = particles[i];
+                    p.x += p.vx || 0;
+                    p.y += p.vy || 0;
+                    if (p.gravity) p.vy += p.gravity;
+                    p.alpha -= p.sparkle ? 0.012 : 0.035;
+                    if (p.alpha <= 0) { particles.splice(i, 1); }
+                }
+                return;
+            }
             if (gameState !== "PLAYING" || isPaused) return; globalAnimTick++;
             if (player.weaponTimer > 0) { player.weaponTimer--; if (player.weaponTimer <= 0) player.weaponType = "NORMAL"; }
             if (player.buffTimer > 0) { player.buffTimer--; if (player.buffTimer <= 0) player.buffType = "NONE"; }
@@ -1740,6 +1779,26 @@
             if (gameState === "MENU") return;
             ctx.shadowBlur = 0;
             ctx.fillStyle = '#0a0c10'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (gameState === "VICTORY") {
+                stars.forEach(s => {
+                    s.y += s.speed;
+                    if (s.y > canvas.height) { s.y = 0; s.x = Math.random() * canvas.width; }
+                    ctx.fillStyle = '#00d2d3';
+                    ctx.globalAlpha = s.alpha * 0.4;
+                    ctx.fillRect(s.x, s.y, s.size, s.size);
+                });
+                ctx.globalAlpha = 1.0;
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    ctx.fillStyle = particles[i].color;
+                    ctx.globalAlpha = particles[i].alpha;
+                    ctx.beginPath();
+                    ctx.arc(particles[i].x, particles[i].y, particles[i].radius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1.0;
+                return;
+            }
 
             if (activeAnnihilationEffect) {
                 const eff = activeAnnihilationEffect;
