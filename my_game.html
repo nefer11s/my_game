@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v6.7.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v6.8.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v6.7.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v6.8.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -724,7 +724,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v6.7.0";
+        const GAME_VERSION = "v6.8.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1290,6 +1290,44 @@
         }
 
         function spawnVictoryFireworks() {
+            // 1. Victory Background Final Boss Continuous Destruction Explosion Loop!
+            const bx = canvas.width / 2;
+            const by = 160;
+
+            if (globalAnimTick % 4 === 0) {
+                const ox = (Math.random() - 0.5) * 160;
+                const oy = (Math.random() - 0.5) * 160;
+                const fireColors = ['#ff3838', '#ff9f43', '#ffd32c', '#ee5253', '#ff6b6b', '#feca57', '#ffffff'];
+                const col = fireColors[Math.floor(Math.random() * fireColors.length)];
+                createAdvancedExplosion(bx + ox, by + oy, col, 16, 1.6);
+
+                // Flying 360-degree hull shrapnel debris
+                for (let k = 0; k < 4; k++) {
+                    const pAngle = Math.random() * Math.PI * 2, spd = Math.random() * 6 + 2;
+                    particles.push({
+                        x: bx + ox, y: by + oy,
+                        vx: Math.cos(pAngle) * spd, vy: Math.sin(pAngle) * spd,
+                        radius: Math.random() * 5 + 2, alpha: 1.0, color: Math.random() > 0.5 ? '#57606f' : col, gravity: 0.08
+                    });
+                }
+            }
+
+            if (globalAnimTick % 20 === 0) {
+                for (let k = 0; k < 40; k++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const spd = Math.random() * 8 + 2;
+                    particles.push({
+                        x: bx, y: by,
+                        vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd,
+                        radius: Math.random() * 5 + 2, alpha: 1.0,
+                        color: ['#ff3838', '#ffd32c', '#00d2d3', '#ffffff', '#ff9f43'][k % 5],
+                        sparkle: true,
+                        gravity: 0.04
+                    });
+                }
+            }
+
+            // 2. Surrounding Fireworks & Sparkling Glitter Stars
             if (globalAnimTick % 6 === 0) {
                 const fx = Math.random() * (canvas.width - 60) + 30;
                 const fy = Math.random() * (canvas.height * 0.7) + 50;
@@ -1937,6 +1975,21 @@
                     ctx.fillRect(s.x, s.y, s.size, s.size);
                 });
                 ctx.globalAlpha = 1.0;
+
+                // Render Final Boss Disintegrating Sprite in Background Loop
+                const cleanBossCvs = getCleanTransparentSprite(imgBoss);
+                const bx = canvas.width / 2, by = 160;
+                ctx.save();
+                if (globalAnimTick % 4 < 2) {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath(); ctx.arc(bx, by, 90, 0, Math.PI * 2); ctx.fill();
+                } else if (cleanBossCvs) {
+                    ctx.globalAlpha = 0.85;
+                    ctx.drawImage(cleanBossCvs, bx - 90, by - 90, 180, 180);
+                }
+                ctx.restore();
+
+                // Render all fireballs, 360-degree shrapnel, fireworks, and sparkling stars
                 for (let i = particles.length - 1; i >= 0; i--) {
                     ctx.fillStyle = particles[i].color;
                     ctx.globalAlpha = particles[i].alpha;
