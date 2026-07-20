@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에 잡혀간 현우엄마를 구출하라! (v5.7.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v5.8.0)</title>
     <style>
         body {
             margin: 0;
@@ -22,16 +22,6 @@
             overflow-x: hidden;
             overflow-y: auto;
             box-sizing: border-box;
-        }
-
-        h1 {
-            margin: 8px 0 8px 0;
-            font-size: 22px;
-            color: #ff3838;
-            text-shadow: 0 0 15px rgba(255, 56, 56, 0.4);
-            letter-spacing: 2px;
-            text-align: center;
-            transition: all 0.3s ease;
         }
 
         #gameWrapper {
@@ -299,8 +289,6 @@
 <body
     style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
 
-    <h1 id="gameHeader">HY세라믹 솔라윙스 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"외계인에 잡혀간 현우엄마를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v5.7.0</span></h1>
-
     <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
         <div id="gameContainer" style="position: relative;">
             <canvas id="gameCanvas" width="540" height="820"></canvas>
@@ -313,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v5.7.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v5.8.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -333,8 +321,10 @@
                     <button id="startBtn"
                         style="font-size: 22px; padding: 16px 52px; border-radius: 40px; background: linear-gradient(135deg, #ff3838, #ff9f43); box-shadow: 0 0 30px rgba(255, 56, 56, 0.7); border: 2px solid #fff; cursor: pointer; font-weight: 900; letter-spacing: 3px; margin-bottom: 12px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"
                         onclick="handleStartClick()">🚀 작 전 개 시</button>
-                    
-                    <button style="background: rgba(0, 210, 211, 0.15); border: 1px solid #00d2d3; color: #00d2d3; padding: 7px 20px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; margin-bottom: 30px; box-shadow: 0 0 10px rgba(0, 210, 211, 0.3);" onclick="toggleNativeFullscreen()">🖥️ 전체화면 (Fullscreen) 전환</button>
+
+                    <button
+                        style="background: rgba(0, 210, 211, 0.15); border: 1px solid #00d2d3; color: #00d2d3; padding: 7px 20px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; margin-bottom: 30px; box-shadow: 0 0 10px rgba(0, 210, 211, 0.3);"
+                        onclick="toggleNativeFullscreen()">🖥️ 전체화면 (Fullscreen) 전환</button>
                 </div>
 
                 <!-- 3. 하단 서브 탭 모달 버튼 바 -->
@@ -680,7 +670,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v5.7.0";
+        const GAME_VERSION = "v5.8.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9, bossHpMultiplier = 0.9, zombieCountMultiplier = 0.9;
         let healWeight = 35, healAmount = 30, wpnWeight = 45, wpnDurationConfig = 420, buffWeight = 45, buffDurationConfig = 420, currentSplashRange = 45, defWeight = 35, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -1012,7 +1002,7 @@
                 if (!document.fullscreenElement && !document.webkitFullscreenElement) {
                     const elem = document.documentElement;
                     if (elem.requestFullscreen) {
-                        elem.requestFullscreen().catch(() => {});
+                        elem.requestFullscreen().catch(() => { });
                     } else if (elem.webkitRequestFullscreen) {
                         elem.webkitRequestFullscreen();
                     } else if (elem.msRequestFullscreen) {
@@ -1020,12 +1010,12 @@
                     }
                 } else {
                     if (document.exitFullscreen) {
-                        document.exitFullscreen().catch(() => {});
+                        document.exitFullscreen().catch(() => { });
                     } else if (document.webkitExitFullscreen) {
                         document.webkitExitFullscreen();
                     }
                 }
-            } catch (e) {}
+            } catch (e) { }
         }
 
         // Auto request fullscreen on first user touch/click anywhere on the screen!
