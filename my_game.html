@@ -3,6 +3,12 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="x5-orientation" content="portrait">
+    <meta name="full-screen" content="yes">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="browsermode" content="application">
+    <meta name="x5-page-mode" content="app">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -284,6 +290,18 @@
 
             #sidebarPanel {
                 display: none !important;
+            }
+        }
+
+        /* KakaoTalk In-App Browser & Smartphone Landscape Force Rotation to Portrait */
+        @media screen and (orientation: landscape) and (max-width: 900px) {
+            #gameContainer {
+                transform: rotate(-90deg) !important;
+                transform-origin: center center !important;
+                width: 100vh !important;
+                height: 100vw !important;
+                max-width: 100vh !important;
+                max-height: 100vw !important;
             }
         }
     </style>
