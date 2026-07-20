@@ -2100,6 +2100,7 @@
             let calcDmg = enemy.isFinalBoss ? Math.min(80, Math.max(1, Math.floor(bDmg * 0.40))) : bDmg;
 
             enemy.hp -= calcDmg;
+            enemy.hp = Math.max(0, Math.round(enemy.hp * 100) / 100);
             enemy.flashTimer = 4;
 
             if (enemy.isFinalBoss) {
@@ -2127,22 +2128,20 @@
             createAdvancedExplosion(hitX, hitY, enemy.isFinalBoss ? '#ff2d55' : '#ff9f43', 5, 0.7);
             addFloatingText(hitX, hitY - 12, `-${calcDmg}`, enemy.isFinalBoss ? '#ff2d55' : '#ff4d4d', 12, 24, -1.0);
 
-            if (enemy.hp <= (enemy.isFinalBoss ? 3 : 0)) {
+            if (enemy.hp <= (enemy.isFinalBoss ? 3 : 0.05)) {
                 eliminateEnemy(enemy);
             }
         }
 
         function eliminateEnemy(enemy, index) {
-            if (!enemy) return;
+            if (!enemy || enemy.isDying) return;
+            enemy.isDying = true;
+            enemy.hp = 0;
             if (enemy.isFinalBoss) {
-                if (!enemy.isDying) {
-                    enemy.isDying = true;
-                    enemy.deathTimer = 150; // 2.5 Seconds (150 frames) of dramatic fireworks explosion sequence!
-                    enemy.hp = 0;
-                    enemyLasers = []; // Clear enemy lasers on boss defeat
-                    addFloatingText(enemy.x, enemy.y - 70, "💥 [최종 마왕 궤멸 파괴 중! 2.5초간 화염 소각]", "#ff2d55", 22);
-                    playExplosionSound(true);
-                }
+                enemy.deathTimer = 150; // 2.5 Seconds (150 frames) of dramatic fireworks explosion sequence!
+                enemyLasers = []; // Clear enemy lasers on boss defeat
+                addFloatingText(enemy.x, enemy.y - 70, "💥 [최종 마왕 궤멸 파괴 중! 2.5초간 화염 소각]", "#ff2d55", 22);
+                playExplosionSound(true);
                 return;
             }
             playExplosionSound(enemy.isBoss);
