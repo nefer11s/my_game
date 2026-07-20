@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v6.0.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v6.1.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v6.0.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v6.1.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -670,7 +670,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v6.0.0";
+        const GAME_VERSION = "v6.1.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9, bossHpMultiplier = 0.9, zombieCountMultiplier = 0.9;
         let healWeight = 35, healAmount = 30, wpnWeight = 45, wpnDurationConfig = 420, buffWeight = 45, buffDurationConfig = 420, currentSplashRange = 45, defWeight = 35, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -1859,6 +1859,56 @@
                 ctx.moveTo(player.x, player.y - 28); ctx.lineTo(player.x - 24, player.y + 18); ctx.lineTo(player.x - 10, player.y + 10); ctx.lineTo(player.x - 8, player.y + 24); ctx.lineTo(player.x + 8, player.y + 24); ctx.lineTo(player.x + 10, player.y + 10); ctx.lineTo(player.x + 24, player.y + 18); ctx.closePath(); ctx.fill();
             }
             ctx.restore();
+
+            // Render Visible Defense Forcefield Shields around Player Hero Ship!
+            if (player.defenseType === "NANO_SHIELD") {
+                ctx.save();
+                ctx.shadowColor = '#00d2d3';
+                ctx.shadowBlur = 22;
+                ctx.strokeStyle = '#00d2d3';
+                ctx.lineWidth = 3;
+
+                // Glowing Cyan Forcefield Bubble
+                ctx.fillStyle = 'rgba(0, 210, 211, 0.22)';
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, 40, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                // Dual Orbiting Nano Energy Rings
+                const rot = (globalAnimTick * 0.08) % (Math.PI * 2);
+                ctx.strokeStyle = '#1cfc03';
+                ctx.lineWidth = 3.5;
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, 45, rot, rot + Math.PI * 0.7);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, 45, rot + Math.PI, rot + Math.PI * 1.7);
+                ctx.stroke();
+                ctx.restore();
+            } else if (player.defenseType === "HEAVY_ARMOR") {
+                ctx.save();
+                ctx.shadowColor = '#f1c40f';
+                ctx.shadowBlur = 20;
+                ctx.strokeStyle = '#f1c40f';
+                ctx.lineWidth = 3;
+
+                // Gold Energy Barrier Dome
+                ctx.fillStyle = 'rgba(241, 196, 15, 0.22)';
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, 38, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                // Heavy Frontal Energy Deflector Crest
+                ctx.strokeStyle = '#ff9f43';
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.arc(player.x, player.y - 4, 43, -Math.PI * 0.75, -Math.PI * 0.25);
+                ctx.stroke();
+                ctx.restore();
+            }
 
             player.allies.forEach((ally, idx) => {
                 const offset = getAllyRelativePos(idx);
