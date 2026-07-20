@@ -2544,8 +2544,11 @@ if (document.readyState === 'loading') {
 
         function draw() {
             if (gameState === "MENU") return;
+            ctx.globalAlpha = 1.0;
+            ctx.filter = 'none';
             ctx.shadowBlur = 0;
-            ctx.fillStyle = '#0a0c10'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0a0c10';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             if (gameState === "VICTORY") {
                 stars.forEach(s => {
@@ -2608,6 +2611,13 @@ if (document.readyState === 'loading') {
                 ctx.restore();
                 if (eff.life <= 0) activeAnnihilationEffect = null;
             }
+
+            // Enforce Strict Gameplay Area Clipping (y: 112px ~ canvas.height)
+            // Prevents any enemy ship, projectile, overhead HP bar, or particle from bleeding into the top HUD status bar!
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(0, 112, canvas.width, canvas.height - 112);
+            ctx.clip();
 
             stars.forEach(s => {
                 s.y += s.speed;
@@ -2970,6 +2980,9 @@ if (document.readyState === 'loading') {
                 ctx.fillText(t.text, t.x, t.y);
                 ctx.restore();
             }
+
+            // Restore Canvas State to End Gameplay Area Clipping before rendering Top Standalone HUD Header!
+            ctx.restore();
 
             // Premium Clean & High-Contrast HUD Header Background (Height: 112px)
             ctx.save();
