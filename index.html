@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.2.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.3.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 <span onclick="previewVictoryScreen()" style="cursor: pointer; text-decoration: underline; color: #f1c40f;" title="🏆 승리 축하 화면 미리보기">현우엄마</span>를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v11.2.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v11.3.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -774,7 +774,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v11.2.0";
+        const GAME_VERSION = "v11.3.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -2089,7 +2089,12 @@
             createAdvancedExplosion(enemy.x, enemy.y, '#a8e6cf', 10, 0.8);
             score += enemy.maxHp * 15;
             spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss);
-            enemies.splice(index, 1);
+            
+            // CRITICAL FIX (v11.3.0): Always find exact object index to prevent splice(undefined) from deleting index 0 (Boss)!
+            const realIdx = enemies.indexOf(enemy);
+            if (realIdx !== -1) {
+                enemies.splice(realIdx, 1);
+            }
         }
 
         function spawnDroppedItem(x, y, isBoss) {
