@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v7.0.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v7.1.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v7.0.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v7.1.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -724,7 +724,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v7.0.0";
+        const GAME_VERSION = "v7.1.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1505,6 +1505,7 @@
                 createAdvancedExplosion(bx, by, '#ff3838', 12, 1.4); playExplosionSound(false);
                 for (let j = enemies.length - 1; j >= 0; j--) {
                     let enemy = enemies[j];
+                    if (!enemy || enemy.isDying) continue;
                     if (Math.hypot(enemy.x - bx, enemy.y - by) <= currentSplashRange * 1.5) {
                         let bd = Math.floor(4 * diffMultiplier); enemy.hp -= bd; enemy.flashTimer = 4; addFloatingText(enemy.x, enemy.y - 12, `-${bd}`, '#ff9f43');
                         if (enemy.hp <= 0) { eliminateEnemy(enemy, j); }
@@ -1557,7 +1558,7 @@
                 if (broken) continue;
                 for (let j = enemies.length - 1; j >= 0; j--) {
                     const enemy = enemies[j];
-                    if (!enemy) continue;
+                    if (!enemy || enemy.isDying) continue;
                     if (Math.hypot(enemy.x - bx, enemy.y - by) < enemy.radius + 6) {
                         if (bType === "ROCKET" || bType === "MISSILE" || isSplash) {
                             let range = bType === "MISSILE" ? currentSplashRange * 1.6 : currentSplashRange;
@@ -1565,7 +1566,7 @@
                             createAdvancedExplosion(bx, by, bType === "MISSILE" ? '#ff7675' : '#ff9f43', 14, range / 35); playExplosionSound(bType === "MISSILE");
                             for (let eIdx = enemies.length - 1; eIdx >= 0; eIdx--) {
                                 let targetZ = enemies[eIdx];
-                                if (targetZ && Math.hypot(targetZ.x - bx, targetZ.y - by) <= range) {
+                                if (targetZ && !targetZ.isDying && Math.hypot(targetZ.x - bx, targetZ.y - by) <= range) {
                                     targetZ.hp -= sd; targetZ.flashTimer = 4; addFloatingText(targetZ.x, targetZ.y - 12, `-${sd}`, '#fa8231');
                                     if (targetZ.hp <= 0) {
                                         eliminateEnemy(targetZ, eIdx);
@@ -1856,6 +1857,7 @@
             const dmg = 350;
             for (let i = enemies.length - 1; i >= 0; i--) {
                 let enemy = enemies[i];
+                if (!enemy || enemy.isDying) continue;
                 enemy.hp -= dmg;
                 enemy.flashTimer = 12;
                 addFloatingText(enemy.x, enemy.y, `-${dmg}`, color, 15);
