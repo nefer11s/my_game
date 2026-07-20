@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v7.4.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v7.6.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v7.4.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v7.6.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -724,7 +724,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v7.4.0";
+        const GAME_VERSION = "v7.6.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1526,7 +1526,7 @@
                     let enemy = enemies[j];
                     if (!enemy || enemy.isDying) continue;
                     if (Math.hypot(enemy.x - bx, enemy.y - by) <= currentSplashRange * 1.5) {
-                        let bd = Math.floor(4 * diffMultiplier); enemy.hp -= bd; enemy.flashTimer = 4; addFloatingText(enemy.x, enemy.y - 12, `-${bd}`, '#ff9f43');
+                        let bd = Math.floor(4 * diffMultiplier); enemy.hp -= bd; enemy.flashTimer = 4; addFloatingText(enemy.x, enemy.y - 12, `-${bd}`, '#ff9f43', 11, 22, -1.0);
                         if (enemy.hp <= 0) { eliminateEnemy(enemy, j); }
                     }
                 }
@@ -1586,14 +1586,14 @@
                             for (let eIdx = enemies.length - 1; eIdx >= 0; eIdx--) {
                                 let targetZ = enemies[eIdx];
                                 if (targetZ && !targetZ.isDying && Math.hypot(targetZ.x - bx, targetZ.y - by) <= range) {
-                                    targetZ.hp -= sd; targetZ.flashTimer = 4; addFloatingText(targetZ.x, targetZ.y - 12, `-${sd}`, '#fa8231');
+                                    targetZ.hp -= sd; targetZ.flashTimer = 4; addFloatingText(targetZ.x, targetZ.y - 12, `-${sd}`, '#fa8231', 11, 22, -1.0);
                                     if (targetZ.hp <= 0) {
                                         eliminateEnemy(targetZ, eIdx);
                                     }
                                 }
                             }
                         } else {
-                            enemy.hp -= bDmg; enemy.flashTimer = 4; addFloatingText(bx, enemy.y - 12, `-${bDmg}`, '#ff4d4d');
+                            enemy.hp -= bDmg; enemy.flashTimer = 4; addFloatingText(bx, enemy.y - 12, `-${bDmg}`, '#ff4d4d', 11, 22, -1.0);
                             if (enemy.hp <= 0) {
                                 eliminateEnemy(enemy, j);
                             }
@@ -1986,7 +1986,7 @@
 
         function saveHighScore() { if (score > highScore) { highScore = score; localStorage.setItem("rr_supreme_highscore", highScore); } }
         function gameOver() { gameState = "GAMEOVER"; stopBGM(); saveHighScore(); document.getElementById('goScore').innerText = `최종 전과 스코어: ${score} PTS`; document.getElementById('gameOverOverlay').style.display = 'flex'; }
-        function addFloatingText(x, y, text, color, fontSize = 12) { floatingTexts.push({ x, y, text, color, life: 110, vy: -0.4, fontSize, scale: 1.4 }); }
+        function addFloatingText(x, y, text, color, fontSize = 12, life = 110, vy = -0.4) { floatingTexts.push({ x, y, text, color, life, vy, fontSize, scale: 1.4 }); }
 
         function draw() {
             if (gameState === "MENU") return;
@@ -2138,6 +2138,30 @@
                 ctx.restore();
             }
 
+            // Render Real-time Overhead HP Bar above Player Hero Ship!
+            ctx.save();
+            ctx.shadowBlur = 0;
+            ctx.filter = 'none';
+            const pHpW = 54, pHpH = 6, pHpX = player.x - pHpW / 2, pHpY = player.y - 45;
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(pHpX, pHpY, pHpW, pHpH);
+            ctx.strokeStyle = '#353b48';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(pHpX, pHpY, pHpW, pHpH);
+
+            const pRatio = Math.max(0, Math.min(1, player.hp / player.maxHp));
+            ctx.fillStyle = pRatio > 0.35 ? '#10ac84' : '#ff3838';
+            ctx.fillRect(pHpX, pHpY, pHpW * pRatio, pHpH);
+
+            ctx.font = 'bold 9px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 3;
+            ctx.strokeText(`${player.hp}/${player.maxHp}`, player.x, pHpY - 3);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText(`${player.hp}/${player.maxHp}`, player.x, pHpY - 3);
+            ctx.restore();
+
             player.allies.forEach((ally, idx) => {
                 const offset = getAllyRelativePos(idx);
                 const ax = player.x + offset.xOffset;
@@ -2184,6 +2208,42 @@
                             ctx.fillStyle = '#ff3838'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 18, 0, Math.PI * 2); ctx.fill();
                         }
                     }
+                }
+
+                // Real-time Overhead HP Bar for Mid-Bosses & Final Boss!
+                if (enemy.isBoss && !enemy.isDying) {
+                    ctx.save();
+                    ctx.shadowBlur = 0;
+                    ctx.filter = 'none';
+
+                    const isFinal = enemy.isFinalBoss;
+                    const bBarW = isFinal ? 140 : 76;
+                    const bBarH = isFinal ? 9 : 6;
+                    const bBarX = enemy.x - bBarW / 2;
+                    const bBarY = enemy.y - enemy.radius - (isFinal ? 22 : 14);
+
+                    // Dark Background Badge & Border
+                    ctx.fillStyle = 'rgba(10, 12, 18, 0.85)';
+                    ctx.fillRect(bBarX - 2, bBarY - 14, bBarW + 4, bBarH + 18);
+                    ctx.strokeStyle = isFinal ? '#ff2d55' : '#f1c40f';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(bBarX - 2, bBarY - 14, bBarW + 4, bBarH + 18);
+
+                    // HP Fill Bar
+                    const bRatio = Math.max(0, Math.min(1, enemy.hp / enemy.maxHp));
+                    ctx.fillStyle = isFinal ? '#ff2d55' : '#ff9f43';
+                    ctx.fillRect(bBarX, bBarY, bBarW * bRatio, bBarH);
+
+                    // HP Ratio Text
+                    const label = isFinal ? `👑 FINAL BOSS (${enemy.hp}/${enemy.maxHp})` : `BOSS HP (${enemy.hp}/${enemy.maxHp})`;
+                    ctx.font = isFinal ? 'bold 11px sans-serif' : 'bold 9px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.strokeStyle = '#000000';
+                    ctx.lineWidth = 3;
+                    ctx.strokeText(label, enemy.x, bBarY - 3);
+                    ctx.fillStyle = isFinal ? '#ffd32c' : '#ffffff';
+                    ctx.fillText(label, enemy.x, bBarY - 3);
+                    ctx.restore();
                 }
             });
 
