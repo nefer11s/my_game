@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v6.5.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v6.6.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v6.5.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v6.6.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -724,7 +724,10 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v6.5.0";
+        const GAME_VERSION = "v6.6.0";
+        let screenFadeAlpha = 0;
+        let isFadingToVictory = false;
+        let fadeTimer = 0;
         let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9, bossHpMultiplier = 0.9, zombieCountMultiplier = 0.9;
         let healWeight = 35, healAmount = 30, wpnWeight = 45, wpnDurationConfig = 420, buffWeight = 45, buffDurationConfig = 420, currentSplashRange = 45, defWeight = 35, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -1330,6 +1333,20 @@
         }
 
         function update() {
+            if (isFadingToVictory) {
+                fadeTimer++;
+                if (fadeTimer <= 60) {
+                    screenFadeAlpha = fadeTimer / 60; // Smooth 1-second Fade-Out to Black
+                } else if (fadeTimer === 61) {
+                    triggerVictory();
+                } else if (fadeTimer <= 120) {
+                    screenFadeAlpha = 1 - ((fadeTimer - 60) / 60); // Smooth 1-second Fade-In to Victory Screen
+                } else {
+                    isFadingToVictory = false;
+                    screenFadeAlpha = 0;
+                }
+            }
+
             if (gameState === "VICTORY") {
                 globalAnimTick++;
                 spawnVictoryFireworks();
@@ -1513,22 +1530,23 @@
                 if (enemy.isFinalBoss && enemy.isDying) {
                     enemy.deathTimer--;
                     enemy.flashTimer = 4;
+                    canvasShakeTimer = Math.max(canvasShakeTimer || 0, 6);
 
-                    // Multi-stage random fire and flame explosions across the giant 180px boss body every 4 frames!
+                    // 1. Continuous random fire explosions & flying hull shrapnel debris across the 180px boss body every 4 frames
                     if (globalAnimTick % 4 === 0) {
-                        const ox = (Math.random() - 0.5) * 150;
-                        const oy = (Math.random() - 0.5) * 150;
+                        const ox = (Math.random() - 0.5) * 160;
+                        const oy = (Math.random() - 0.5) * 160;
                         const fireColors = ['#ff3838', '#ff9f43', '#ffd32c', '#ee5253', '#ff6b6b', '#feca57', '#ffffff'];
                         const col = fireColors[Math.floor(Math.random() * fireColors.length)];
                         createAdvancedExplosion(enemy.x + ox, enemy.y + oy, col, 16, 1.6);
 
-                        // Rising flame & smoke trail particles
+                        // Flying hull shrapnel debris shooting out in 360 degrees!
                         for (let k = 0; k < 4; k++) {
-                            const pAngle = Math.random() * Math.PI * 2, spd = Math.random() * 4 + 1.5;
+                            const pAngle = Math.random() * Math.PI * 2, spd = Math.random() * 6 + 2;
                             particles.push({
                                 x: enemy.x + ox, y: enemy.y + oy,
-                                vx: Math.cos(pAngle) * spd, vy: Math.sin(pAngle) * spd - 1.2,
-                                radius: Math.random() * 4 + 2, alpha: 0.9, color: col, gravity: -0.05
+                                vx: Math.cos(pAngle) * spd, vy: Math.sin(pAngle) * spd,
+                                radius: Math.random() * 5 + 2, alpha: 1.0, color: Math.random() > 0.5 ? '#57606f' : col, gravity: 0.08
                             });
                         }
                     }
@@ -1537,16 +1555,30 @@
                         playExplosionSound(true);
                     }
 
-                    // 5 Full Seconds (300 frames) complete! Climax Fire & Nova Blast before Victory!
-                    if (enemy.deathTimer <= 0) {
-                        createAdvancedExplosion(enemy.x, enemy.y, '#ffffff', 40, 3.0);
-                        createAdvancedExplosion(enemy.x, enemy.y, '#ff3838', 35, 2.5);
-                        createAdvancedExplosion(enemy.x, enemy.y, '#ff9f43', 30, 2.2);
+                    // 2. Frame 60: Grand Climax Fireworks Dismantling Blast! Shrapnel flies in all 360 degrees!
+                    if (enemy.deathTimer === 60) {
+                        for (let k = 0; k < 60; k++) {
+                            const angle = Math.random() * Math.PI * 2;
+                            const spd = Math.random() * 10 + 3;
+                            particles.push({
+                                x: enemy.x, y: enemy.y,
+                                vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd,
+                                radius: Math.random() * 6 + 2.5, alpha: 1.0,
+                                color: ['#ff3838', '#ffd32c', '#00d2d3', '#ffffff', '#ff9f43'][k % 5],
+                                gravity: 0.05
+                            });
+                        }
+                        createAdvancedExplosion(enemy.x, enemy.y, '#ffffff', 50, 3.5);
                         playExplosionSound(true);
+                    }
+
+                    // 3. Frame 0: Final Boss is completely gone! Start smooth Fade-Out to Black -> Fade-In transition!
+                    if (enemy.deathTimer <= 0) {
                         score += enemy.maxHp * 25;
                         spawnDroppedItem(enemy.x, enemy.y, true);
                         enemies.splice(i, 1);
-                        triggerVictory();
+                        isFadingToVictory = true;
+                        fadeTimer = 0;
                     }
                     continue;
                 }
@@ -2147,6 +2179,15 @@
             ctx.fillStyle = waveCount >= 20 ? '#ff2d55' : '#feca57';
             ctx.fillText(`📊 STAGE ${stageNum}-${waveInStage}  |  ${nextBossStr}`, canvas.width - 20, 116);
             ctx.restore();
+
+            // Render Cinematic Screen Fade Overlay (Fade-Out to Black -> Fade-In to Victory)
+            if (screenFadeAlpha > 0) {
+                ctx.save();
+                ctx.globalAlpha = Math.min(1.0, Math.max(0.0, screenFadeAlpha));
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.restore();
+            }
         }
 
         function loop() {
