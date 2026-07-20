@@ -1726,22 +1726,8 @@
                 let b = bullets[i];
                 if (!b) continue;
 
-                const bx = b.x, by = b.y, bDmg = b.dmg, bType = b.bType, isSplash = b.isSplash;
+                const bDmg = b.dmg, bType = b.bType, isSplash = b.isSplash;
 
-                if (bType === "ROCKET" || bType === "MISSILE") {
-                    if (globalAnimTick % 2 === 0) {
-                        particles.push({
-                            x: bx + (Math.random() - 0.5) * 4,
-                            y: by + 8,
-                            vx: (Math.random() - 0.5) * 0.6,
-                            vy: Math.random() * 1.5 + 1.0,
-                            radius: Math.random() * 3 + 2,
-                            alpha: 0.7,
-                            color: '#57606f',
-                            gravity: 0
-                        });
-                    }
-                }
                 if (bType === "HOMING") {
                     let nearest = null, minDist = 99999;
                     enemies.forEach(e => {
@@ -1757,9 +1743,26 @@
                     }
                 }
 
-                if (b.vx) b.x += b.vx;
+                if (b.vx !== undefined && b.vx !== 0) b.x += b.vx;
                 b.y += b.vy !== undefined ? b.vy : (bType === "LASER" ? -16 : -11);
-                if (b.y < -20 || b.y > canvas.height + 20 || b.x < -20 || b.x > canvas.width + 20) { bullets.splice(i, 1); continue; }
+
+                const bx = b.x, by = b.y; // Correct live position after position update!
+
+                if (bType === "ROCKET" || bType === "MISSILE") {
+                    if (globalAnimTick % 2 === 0) {
+                        particles.push({
+                            x: bx, y: by + 8,
+                            vx: (Math.random() - 0.5) * 0.6,
+                            vy: Math.random() * 1.5 + 1.0,
+                            radius: Math.random() * 3 + 2,
+                            alpha: 0.7,
+                            color: '#57606f',
+                            gravity: 0
+                        });
+                    }
+                }
+
+                if (by < -20 || by > canvas.height + 20 || bx < -20 || bx > canvas.width + 20) { bullets.splice(i, 1); continue; }
                 let broken = false;
                 if (trappedHero && trappedHero.status === 'LOCKED') {
                     if (Math.hypot(trappedHero.x - bx, trappedHero.y - by) < 32) {
