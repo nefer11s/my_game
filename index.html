@@ -916,6 +916,7 @@ if (document.readyState === 'loading') {
             cvs.height = img.naturalHeight;
             const cctx = cvs.getContext('2d');
             cctx.drawImage(img, 0, 0);
+            processedCanvasCache.set(img, cvs); // 캐싱을 즉시 등록하여 getImageData 무한 재연산 및 스레드 멈춤 방지
             try {
                 const imgData = cctx.getImageData(0, 0, cvs.width, cvs.height);
                 const d = imgData.data;
@@ -928,7 +929,6 @@ if (document.readyState === 'loading') {
                 }
                 cctx.putImageData(imgData, 0, 0);
             } catch (e) { }
-            processedCanvasCache.set(img, cvs);
             return cvs;
         }
 
@@ -2599,9 +2599,10 @@ if (document.readyState === 'loading') {
             // Enforce Strict Gameplay Area Clipping (y: 112px ~ canvas.height)
             // Prevents any enemy ship, projectile, overhead HP bar, or particle from bleeding into the top HUD status bar!
             ctx.save();
-            ctx.beginPath();
-            ctx.rect(0, 112, canvas.width, canvas.height - 112);
-            ctx.clip();
+            try {
+                ctx.beginPath();
+                ctx.rect(0, 112, canvas.width, canvas.height - 112);
+                ctx.clip();
 
             stars.forEach(s => {
                 s.y += s.speed;
@@ -2964,9 +2965,10 @@ if (document.readyState === 'loading') {
                 ctx.fillText(t.text, t.x, t.y);
                 ctx.restore();
             }
-
-            // Restore Canvas State to End Gameplay Area Clipping before rendering Top Standalone HUD Header!
-            ctx.restore();
+            } finally {
+                // Restore Canvas State to End Gameplay Area Clipping before rendering Top Standalone HUD Header!
+                ctx.restore();
+            }
 
             // Premium Clean & High-Contrast HUD Header Background (Height: 112px)
             ctx.save();
