@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v5.8.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v5.9.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v5.8.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v5.9.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -670,7 +670,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v5.8.0";
+        const GAME_VERSION = "v5.9.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9, bossHpMultiplier = 0.9, zombieCountMultiplier = 0.9;
         let healWeight = 35, healAmount = 30, wpnWeight = 45, wpnDurationConfig = 420, buffWeight = 45, buffDurationConfig = 420, currentSplashRange = 45, defWeight = 35, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -1376,19 +1376,37 @@
                 if (enemy.isFinalBoss && enemy.isDying) {
                     enemy.deathTimer--;
                     enemy.flashTimer = 4;
-                    if (globalAnimTick % 6 === 0) {
-                        const ox = (Math.random() - 0.5) * 140;
-                        const oy = (Math.random() - 0.5) * 140;
-                        const colors = ['#ff2d55', '#ff9f43', '#ffd32c', '#00d2d3', '#ffffff'];
-                        const col = colors[Math.floor(Math.random() * colors.length)];
-                        createAdvancedExplosion(enemy.x + ox, enemy.y + oy, col, 14, 1.4);
+
+                    // Multi-stage random fire and flame explosions across the giant 180px boss body every 4 frames!
+                    if (globalAnimTick % 4 === 0) {
+                        const ox = (Math.random() - 0.5) * 150;
+                        const oy = (Math.random() - 0.5) * 150;
+                        const fireColors = ['#ff3838', '#ff9f43', '#ffd32c', '#ee5253', '#ff6b6b', '#feca57', '#ffffff'];
+                        const col = fireColors[Math.floor(Math.random() * fireColors.length)];
+                        createAdvancedExplosion(enemy.x + ox, enemy.y + oy, col, 16, 1.6);
+
+                        // Rising flame & smoke trail particles
+                        for (let k = 0; k < 4; k++) {
+                            const pAngle = Math.random() * Math.PI * 2, spd = Math.random() * 4 + 1.5;
+                            particles.push({
+                                x: enemy.x + ox, y: enemy.y + oy,
+                                vx: Math.cos(pAngle) * spd, vy: Math.sin(pAngle) * spd - 1.2,
+                                radius: Math.random() * 4 + 2, alpha: 0.9, color: col, gravity: -0.05
+                            });
+                        }
+                    }
+
+                    if (globalAnimTick % 8 === 0) {
                         playExplosionSound(true);
                     }
+
+                    // 5 Full Seconds (300 frames) complete! Climax Fire & Nova Blast before Victory!
                     if (enemy.deathTimer <= 0) {
-                        createAdvancedExplosion(enemy.x, enemy.y, '#ffffff', 30, 2.5);
-                        createAdvancedExplosion(enemy.x, enemy.y, '#ff2d55', 25, 2.0);
+                        createAdvancedExplosion(enemy.x, enemy.y, '#ffffff', 40, 3.0);
+                        createAdvancedExplosion(enemy.x, enemy.y, '#ff3838', 35, 2.5);
+                        createAdvancedExplosion(enemy.x, enemy.y, '#ff9f43', 30, 2.2);
                         playExplosionSound(true);
-                        score += enemy.maxHp * 20;
+                        score += enemy.maxHp * 25;
                         spawnDroppedItem(enemy.x, enemy.y, true);
                         enemies.splice(i, 1);
                         triggerVictory();
@@ -1498,9 +1516,9 @@
             if (enemy.isFinalBoss) {
                 if (!enemy.isDying) {
                     enemy.isDying = true;
-                    enemy.deathTimer = 180; // 3 Seconds (180 frames) of multi-stage explosion sequence!
+                    enemy.deathTimer = 300; // 5 Seconds (300 frames) of intense fire explosion sequence!
                     enemy.hp = 0;
-                    addFloatingText(enemy.x, enemy.y - 60, "💥 [최종 마왕 궤멸 파괴 중!]", "#ff2d55", 22);
+                    addFloatingText(enemy.x, enemy.y - 70, "💥 [최종 마왕 궤멸 파괴 중! 5초간 화염 소각]", "#ff2d55", 22);
                     playExplosionSound(true);
                 }
                 return;
