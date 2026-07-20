@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v9.1.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v9.2.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 <span onclick="previewVictoryScreen()" style="cursor: pointer; text-decoration: underline; color: #f1c40f;" title="🏆 승리 축하 화면 미리보기">현우엄마</span>를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v9.1.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v9.2.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -732,7 +732,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v9.1.0";
+        const GAME_VERSION = "v9.2.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1647,7 +1647,8 @@
                 for (let j = enemies.length - 1; j >= 0; j--) {
                     const enemy = enemies[j];
                     if (!enemy || enemy.isDying) continue;
-                    if (Math.hypot(enemy.x - bx, enemy.y - by) < enemy.radius + 6) {
+                    const hitWp = getBossWeakPointHit(enemy, bx, by);
+                    if (hitWp) {
                         if (bType === "ROCKET" || bType === "MISSILE" || isSplash) {
                             let range = bType === "MISSILE" ? currentSplashRange * 1.6 : currentSplashRange;
                             let sd = bType === "ROCKET" ? bDmg * 3 : bType === "MISSILE" ? bDmg * 5 : bDmg;
@@ -1655,17 +1656,12 @@
                             for (let eIdx = enemies.length - 1; eIdx >= 0; eIdx--) {
                                 let targetZ = enemies[eIdx];
                                 if (targetZ && !targetZ.isDying && Math.hypot(targetZ.x - bx, targetZ.y - by) <= range) {
-                                    targetZ.hp -= sd; targetZ.flashTimer = 4; addFloatingText(targetZ.x, targetZ.y - 12, `-${sd}`, '#fa8231', 11, 22, -1.0);
-                                    if (targetZ.hp <= 0) {
-                                        eliminateEnemy(targetZ, eIdx);
-                                    }
+                                    const zWp = getBossWeakPointHit(targetZ, bx, by) || { x: targetZ.x, y: targetZ.y, radius: targetZ.radius };
+                                    handleEnemyDamageHit(targetZ, zWp, sd, bx, by, true);
                                 }
                             }
                         } else {
-                            enemy.hp -= bDmg; enemy.flashTimer = 4; addFloatingText(bx, enemy.y - 12, `-${bDmg}`, '#ff4d4d', 11, 22, -1.0);
-                            if (enemy.hp <= (enemy.isFinalBoss ? 3 : 0)) {
-                                eliminateEnemy(enemy, j);
-                            }
+                            handleEnemyDamageHit(enemy, hitWp, bDmg, bx, by, false);
                         }
                         if (bType !== "LASER") { bullets.splice(i, 1); } break;
                     }
@@ -1837,6 +1833,54 @@
             for (let i = 0; i < safeCount; i++) {
                 const angle = Math.random() * Math.PI * 2, spd = Math.random() * 3 + 1.2;
                 particles.push({ x, y, vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd - 0.5, radius: (Math.random() * 1.2 + 0.8) * Math.min(1.1, size), alpha: 0.85, color, gravity: 0.1 });
+            }
+        }
+
+        function getBossWeakPointHit(enemy, bx, by) {
+            if (!enemy) return null;
+            if (enemy.isFinalBoss) {
+                // Final Boss 4 Weak Points:
+                // 1. Nose / Front Head: (0, -65), r = 24
+                // 2. Left Core Port: (-38, +10), r = 22
+                // 3. Center Core Port: (0, +22), r = 24
+                // 4. Right Core Port: (+38, +10), r = 22
+                const weakPoints = [
+                    { name: 'HEAD', x: enemy.x, y: enemy.y - 65, radius: 24, label: '🎯 헤드 피격!' },
+                    { name: 'LEFT_CORE', x: enemy.x - 38, y: enemy.y + 10, radius: 22, label: '💥 좌측 코어 피격!' },
+                    { name: 'CENTER_CORE', x: enemy.x, y: enemy.y + 22, radius: 24, label: '🔥 핵심 코어 피격!' },
+                    { name: 'RIGHT_CORE', x: enemy.x + 38, y: enemy.y + 10, radius: 22, label: '💥 우측 코어 피격!' }
+                ];
+                for (let wp of weakPoints) {
+                    if (Math.hypot(wp.x - bx, wp.y - by) < wp.radius + 6) {
+                        return wp;
+                    }
+                }
+                return null;
+            } else {
+                if (Math.hypot(enemy.x - bx, enemy.y - by) < enemy.radius + 6) {
+                    return { name: 'BODY', x: enemy.x, y: enemy.y, radius: enemy.radius, label: '' };
+                }
+                return null;
+            }
+        }
+
+        function handleEnemyDamageHit(enemy, hitWp, bDmg, bx, by, isSplashHit = false) {
+            if (!enemy || enemy.isDying) return;
+            const hitX = hitWp ? hitWp.x : bx;
+            const hitY = hitWp ? hitWp.y : by;
+            const hitR = hitWp ? hitWp.radius : enemy.radius;
+
+            enemy.hp -= bDmg;
+            enemy.flashTimer = 4;
+
+            if (!enemy.hitFlashes) enemy.hitFlashes = [];
+            enemy.hitFlashes.push({ x: hitX, y: hitY, radius: hitR, life: 8 });
+
+            createAdvancedExplosion(hitX, hitY, enemy.isFinalBoss ? '#ff2d55' : '#ff9f43', 5, 0.7);
+            addFloatingText(hitX, hitY - 12, `-${bDmg}`, enemy.isFinalBoss ? '#ff2d55' : '#ff4d4d', 12, 24, -1.0);
+
+            if (enemy.hp <= (enemy.isFinalBoss ? 3 : 0)) {
+                eliminateEnemy(enemy);
             }
         }
 
@@ -2292,6 +2336,45 @@
                         ctx.beginPath();
                         ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
                         ctx.fill();
+                    }
+                    if (enemy.isFinalBoss && !enemy.isDying) {
+                        const wpList = [
+                            { x: enemy.x, y: enemy.y - 65, r: 24 },
+                            { x: enemy.x - 38, y: enemy.y + 10, r: 20 },
+                            { x: enemy.x, y: enemy.y + 22, r: 24 },
+                            { x: enemy.x + 38, y: enemy.y + 10, r: 20 }
+                        ];
+                        ctx.save();
+                        ctx.shadowColor = '#ff2d55';
+                        ctx.shadowBlur = 12;
+                        ctx.strokeStyle = 'rgba(255, 45, 85, 0.7)';
+                        ctx.lineWidth = 1.5;
+                        const pulseR = Math.sin(globalAnimTick * 0.15) * 2;
+                        wpList.forEach(wp => {
+                            ctx.beginPath();
+                            ctx.arc(wp.x, wp.y, wp.r + pulseR, 0, Math.PI * 2);
+                            ctx.stroke();
+                        });
+                        ctx.restore();
+                    }
+
+                    if (enemy.hitFlashes && enemy.hitFlashes.length > 0) {
+                        for (let h = enemy.hitFlashes.length - 1; h >= 0; h--) {
+                            const hf = enemy.hitFlashes[h];
+                            hf.life--;
+                            ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+                            ctx.beginPath();
+                            ctx.arc(hf.x, hf.y, hf.radius * 0.9, 0, Math.PI * 2);
+                            ctx.fill();
+
+                            ctx.strokeStyle = '#ff2d55';
+                            ctx.lineWidth = 3;
+                            ctx.beginPath();
+                            ctx.arc(hf.x, hf.y, hf.radius * (1.2 + (8 - hf.life) * 0.1), 0, Math.PI * 2);
+                            ctx.stroke();
+
+                            if (hf.life <= 0) enemy.hitFlashes.splice(h, 1);
+                        }
                     }
                     ctx.restore();
                 } else {
