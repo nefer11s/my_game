@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v8.2.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v8.3.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v8.2.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v8.3.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -727,7 +727,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v8.2.0";
+        const GAME_VERSION = "v8.3.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -756,7 +756,7 @@
         let gameState = "MENU", isPaused = false, score = 0, highScore = 0, spawnTimer = 0, constWaveInterval = 190, globalAnimTick = 0, difficulty = "NORMAL (Lv.2)";
 
         if (localStorage.getItem("rr_supreme_highscore")) highScore = parseInt(localStorage.getItem("rr_supreme_highscore"));
-        document.getElementById('menuHighScore').innerText = "🏆 최고 기록 스코어: " + highScore + " PTS";
+        document.getElementById('menuHighScore').innerText = "🏆 최고 기록 스코어: " + highScore.toLocaleString() + " PTS";
 
         const player = { x: 270, y: 590, radius: 17, speed: 0.28, targetX: 270, targetY: 590, allies: [], shootCooldown: 0, shootInterval: 10, hp: 100, maxHp: 100, lives: 3, weaponType: "NORMAL", buffType: "NONE", defenseType: "NONE", weaponTimer: 0, buffTimer: 0, defenseTimer: 0, ultimateStock: 3 };
         let bullets = [], enemies = [], enemyLasers = [], gates = [], trappedHero = null, particles = [], muzzleFlashes = [], floatingTexts = [], droppedItems = [];
@@ -1991,13 +1991,19 @@
             stopBGM();
             saveHighScore();
             if (audioCtx) playUpgradeSound();
-            document.getElementById('victoryScore').innerText = `최종 전과 스코어: ${score} PTS`;
+            document.getElementById('victoryScore').innerText = `최종 전과 스코어: ${score.toLocaleString()} PTS`;
             document.getElementById('victoryOverlay').style.display = 'flex';
             updateUIVisibility();
         }
 
-        function saveHighScore() { if (score > highScore) { highScore = score; localStorage.setItem("rr_supreme_highscore", highScore); } }
-        function gameOver() { gameState = "GAMEOVER"; stopBGM(); saveHighScore(); document.getElementById('goScore').innerText = `최종 전과 스코어: ${score} PTS`; document.getElementById('gameOverOverlay').style.display = 'flex'; }
+        function saveHighScore() {
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem("rr_supreme_highscore", highScore);
+            }
+            document.getElementById('menuHighScore').innerText = "🏆 최고 기록 스코어: " + highScore.toLocaleString() + " PTS";
+        }
+        function gameOver() { gameState = "GAMEOVER"; stopBGM(); saveHighScore(); document.getElementById('goScore').innerText = `최종 전과 스코어: ${score.toLocaleString()} PTS`; document.getElementById('gameOverOverlay').style.display = 'flex'; }
         function addFloatingText(x, y, text, color, fontSize = 12, life = 110, vy = -0.4) { floatingTexts.push({ x, y, text, color, life, vy, fontSize, scale: 1.4 }); }
 
         function draw() {
