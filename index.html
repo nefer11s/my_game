@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v10.6.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.0.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 <span onclick="previewVictoryScreen()" style="cursor: pointer; text-decoration: underline; color: #f1c40f;" title="🏆 승리 축하 화면 미리보기">현우엄마</span>를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v10.6.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v11.0.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -774,7 +774,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v10.6.0";
+        const GAME_VERSION = "v11.0.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1119,7 +1119,7 @@
             const ratioDisp = document.getElementById('finalBossHpRatioVal');
             if (ratioSlider && ratioDisp) {
                 ratioSlider.value = finalBossHpRatio;
-                const maxMidBossHp = Math.floor((350 + 5 * 450) * diffMultiplier * (midBossHpMultiplier || 1.0));
+                const maxMidBossHp = Math.floor((3500 + 5 * 4500) * diffMultiplier * (midBossHpMultiplier || 1.0));
                 const estBossHp = Math.floor(maxMidBossHp * finalBossHpRatio * (finalBossHpMultiplier || 1.0));
                 ratioDisp.innerText = `${finalBossHpRatio}배 (${estBossHp.toLocaleString()} HP)`;
             }
@@ -1381,9 +1381,9 @@
             const isFinalBossWave = (waveCount === 25);
 
             if (isFinalBossWave) {
-                // 👑 3-PHASE EPIC SUPREME BOSS (v10.4.0, Minimum 45,000 HP floor + 5-second Absolute Entrance Invulnerability Shield)
-                const maxMidBossHp = Math.max(3000, Math.floor((350 + 5 * 450) * diffMultiplier * (midBossHpMultiplier || 1.0)));
-                const bossHp = Math.max(30000, Math.floor(maxMidBossHp * (finalBossHpRatio || 15) * (finalBossHpMultiplier || 1.0)));
+                // 👑 3-PHASE APEX LEVIATHAN BOSS (v11.0.0, 100x Scale: 351,000 HP in Normal mode!)
+                const maxMidBossHp = Math.max(15000, Math.floor((3500 + 5 * 4500) * diffMultiplier * (midBossHpMultiplier || 1.0)));
+                const bossHp = Math.max(250000, Math.floor(maxMidBossHp * (finalBossHpRatio || 15) * (finalBossHpMultiplier || 1.0)));
                 enemies.push({
                     x: canvas.width / 2, y: -80, radius: 88,
                     hp: bossHp,
@@ -1393,12 +1393,12 @@
                     speed: 3.5, isBoss: true, isFinalBoss: true, bossType: 9, flashTimer: 0, animFrame: 0,
                     spawnShieldTimer: 300 // 5.0-second 100% Absolute Entrance Invulnerability Shield!
                 });
-                canvasShakeTimer = 40;
-                addFloatingText(canvas.width / 2, 220, `👑 [최종 마왕 강림] 5초간 전면 무적 결계 작동! (${bossHp.toLocaleString()} HP)`, "#ff2d55", 24, 150);
+                canvasShakeTimer = 45;
+                addFloatingText(canvas.width / 2, 220, `👑 [최종 마왕 100배 스케일 강림] (${bossHp.toLocaleString()} HP) 5초 무적 결계!`, "#ff2d55", 24, 160);
             } else if (isMidBossWave) {
-                // Stage Mid-Bosses (Stage 5-1~4 all spawn boss_9 guard captain bosses!)
+                // Stage Mid-Bosses (v11.0.0, 10x Scale: Stage 1 = 7,200 HP, Stage 5 = 23,400 HP!)
                 const bType = (stageLevel === 5) ? 9 : Math.floor(Math.random() * 10);
-                const midBossHp = Math.floor((350 + stageLevel * 450) * diffMultiplier * (midBossHpMultiplier || 1.0));
+                const midBossHp = Math.floor((3500 + stageLevel * 4500) * diffMultiplier * (midBossHpMultiplier || 1.0));
                 enemies.push({
                     x: laneWidth * 1.5, y: -90, radius: 44,
                     hp: midBossHp,
@@ -1406,7 +1406,7 @@
                     speed: (0.7 + (stageLevel * 0.03)) * (diffMultiplier * 0.85),
                     isBoss: true, isFinalBoss: false, bossType: bType, flashTimer: 0, animFrame: 0
                 });
-                const bossMsg = (stageLevel === 5) ? `⚠️ STAGE 5 마왕 호위보스 (${midBossHp.toLocaleString()} HP) 출격!` : `⚠️ STAGE ${stageLevel} 중간 보스 (${midBossHp.toLocaleString()} HP) 출격!`;
+                const bossMsg = (stageLevel === 5) ? `⚠️ STAGE 5 마왕 호위보스 10배 강화 (${midBossHp.toLocaleString()} HP) 출격!` : `⚠️ STAGE ${stageLevel} 중간 보스 10배 강화 (${midBossHp.toLocaleString()} HP) 출격!`;
                 addFloatingText(canvas.width / 2, 220, bossMsg, "#ff9f43", 18);
             } else {
                 // 🛸 DYNAMIC MINION FORMATION & TRAJECTORY SYSTEM (v10.5.0)
