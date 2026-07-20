@@ -2166,7 +2166,8 @@
             const dropChance = hasItem ? 1.0 : (isBoss ? 0.85 : itemDropChanceNormal);
             if (Math.random() > dropChance) return;
 
-            const preset = DIFFICULTY_PRESETS[currentDifficulty] || DIFFICULTY_PRESETS.NORMAL;
+            const presetKey = (typeof selectedDifficultyKey !== 'undefined' && selectedDifficultyKey) ? selectedDifficultyKey : "NORMAL";
+            const preset = DIFFICULTY_PRESETS[presetKey] || DIFFICULTY_PRESETS.NORMAL;
             const ultWeight = preset.ultDropWeight || 4;
 
             let pool = [];
