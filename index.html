@@ -2134,9 +2134,11 @@
         }
 
         function eliminateEnemy(enemy, index) {
-            if (!enemy || enemy.isDying) return;
+            if (!enemy || enemy.isEliminated) return;
+            enemy.isEliminated = true;
             enemy.isDying = true;
             enemy.hp = 0;
+
             if (enemy.isFinalBoss) {
                 enemy.deathTimer = 150; // 2.5 Seconds (150 frames) of dramatic fireworks explosion sequence!
                 enemyLasers = []; // Clear enemy lasers on boss defeat
@@ -2144,6 +2146,7 @@
                 playExplosionSound(true);
                 return;
             }
+
             playExplosionSound(enemy.isBoss);
             createAdvancedExplosion(enemy.x, enemy.y, enemy.hasItem ? '#ffd32c' : '#a8e6cf', 14, 1.0);
             score += enemy.maxHp * 15;
@@ -2152,7 +2155,7 @@
             }
             spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss, enemy.hasItem);
             
-            // CRITICAL FIX (v11.3.0): Always find exact object index to prevent splice(undefined) from deleting index 0 (Boss)!
+            // CRITICAL FIX: Instantly delete eliminated enemy from array!
             const realIdx = enemies.indexOf(enemy);
             if (realIdx !== -1) {
                 enemies.splice(realIdx, 1);
@@ -2579,6 +2582,7 @@
             });
 
             enemies.forEach(enemy => {
+                if (!enemy || (enemy.isDying && !enemy.isFinalBoss) || enemy.isEliminated) return;
                 if (enemy.isBoss) {
                     ctx.save();
                     ctx.beginPath();
