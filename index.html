@@ -304,6 +304,7 @@
                 max-height: 100vw !important;
             }
         }
+    </style>
     <script>
     const userAgent = navigator.userAgent.toLowerCase();
     </script>
@@ -798,8 +799,9 @@
     <script>
 // KakaoTalk in-app browser redirect
 function redirectToExternalBrowser() {
+  const ua = (navigator.userAgent || '').toLowerCase();
   const url = window.location.href;
-  if (userAgent.includes('android')) {
+  if (ua.includes('android')) {
     const intent = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(url) + ';end;';
     window.location.href = intent;
   } else {
@@ -808,17 +810,24 @@ function redirectToExternalBrowser() {
 }
 
 // Show notice for KakaoTalk in-app browser (mobile only)
-const isKakao = userAgent.includes('kakaotalk') || userAgent.includes('talk');
-const isMobileOS = /android|iphone|ipad|ipod/.test(userAgent);
-const noticeEl = document.getElementById('kakaoNotice');
-const gameWrapper = document.getElementById('gameWrapper');
+function checkKakaoNotice() {
+  const ua = (navigator.userAgent || '').toLowerCase();
+  const isKakao = ua.includes('kakaotalk') || ua.includes('talk');
+  const isMobileOS = /android|iphone|ipad|ipod/.test(ua);
+  const noticeEl = document.getElementById('kakaoNotice');
+  const gameWrapper = document.getElementById('gameWrapper');
 
-if (isKakao && isMobileOS) {
-  if (noticeEl) noticeEl.style.display = 'flex';
-  if (gameWrapper) gameWrapper.style.display = 'none';
-} else {
-  if (noticeEl) noticeEl.style.display = 'none';
-  if (gameWrapper) gameWrapper.style.display = '';
+  if (isKakao && isMobileOS) {
+    if (noticeEl) noticeEl.style.display = 'flex';
+    if (gameWrapper) gameWrapper.style.display = 'none';
+  } else {
+    if (noticeEl) noticeEl.style.display = 'none';
+    if (gameWrapper) gameWrapper.style.display = '';
+  }
+}
+checkKakaoNotice();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', checkKakaoNotice);
 }
 
         const canvas = document.getElementById('gameCanvas');
