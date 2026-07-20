@@ -2,6 +2,7 @@
 <html lang="ko">
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1173,16 +1174,20 @@
         }
         function requestNativeFullscreenOnly() {
             try {
+                const elem = document.documentElement;
                 if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                    const elem = document.documentElement;
                     if (elem.requestFullscreen) {
-                        elem.requestFullscreen().catch(() => { });
+                        elem.requestFullscreen({ navigationUI: "hide" }).catch(() => { });
                     } else if (elem.webkitRequestFullscreen) {
                         elem.webkitRequestFullscreen();
+                    } else if (elem.webkitEnterFullscreen) {
+                        elem.webkitEnterFullscreen();
                     } else if (elem.msRequestFullscreen) {
                         elem.msRequestFullscreen();
                     }
                 }
+                // Mobile Safari & Chrome address bar auto-hide fallback
+                window.scrollTo(0, 1);
             } catch (e) { }
         }
 
@@ -1307,7 +1312,15 @@
         canvas.addEventListener('touchstart', handleTouch, { passive: false });
         canvas.addEventListener('touchmove', handleTouch, { passive: false });
 
+        // Page-wide first click/touch auto-fullscreen promotion
+        function autoEnableFullscreenOnFirstGesture() {
+            requestNativeFullscreenOnly();
+        }
+        window.addEventListener('click', autoEnableFullscreenOnFirstGesture, { once: true });
+        window.addEventListener('touchstart', autoEnableFullscreenOnFirstGesture, { once: true });
+
         function startGame() {
+            requestNativeFullscreenOnly(); // Instant Fullscreen transition on Game Start!
             gameState = "PLAYING"; score = 0; waveCount = 0; spawnTimer = 0; isPaused = false;
             const presetKey = (typeof selectedDifficultyKey !== 'undefined' && selectedDifficultyKey) ? selectedDifficultyKey : "NORMAL";
             const preset = DIFFICULTY_PRESETS[presetKey] || DIFFICULTY_PRESETS.NORMAL;
