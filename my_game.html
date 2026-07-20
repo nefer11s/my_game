@@ -48,7 +48,8 @@
             height: 100vh;
             height: 100dvh;
             max-height: 100dvh;
-            max-width: 100vw;
+            max-width: calc(100vh * (540 / 820));
+            aspect-ratio: 540 / 820;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -1173,8 +1174,21 @@
             if (btn) btn.classList.add('active');
             if (audioCtx) playUpgradeSound();
         }
+        function lockPortraitOrientation() {
+            try {
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('portrait-primary').catch(() => {
+                        if (screen.orientation.lock) {
+                            screen.orientation.lock('portrait').catch(() => { });
+                        }
+                    });
+                }
+            } catch (e) { }
+        }
+
         function requestNativeFullscreenOnly() {
             try {
+                lockPortraitOrientation(); // KakaoTalk In-App Browser & Smartphone Portrait Lock!
                 const elem = document.documentElement;
                 if (!document.fullscreenElement && !document.webkitFullscreenElement) {
                     if (elem.requestFullscreen) {
