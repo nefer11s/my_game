@@ -782,25 +782,26 @@
     </div>
 
     <script>
-  // KakaoTalk in-app browser redirect
-  (function redirectToExternalBrowser() {
-    const userAgent = navigator.userAgent.toLowerCase();
-    const targetUrl = window.location.href; // 이동할 목적지 URL
-    // 카카오톡 인앱 브라우저(talkk) 감지
-    if (userAgent.includes('kakaotalk')) {
-      // 1. 안드로이드 (Chrome으로 강제 열기)
-      if (userAgent.includes('android')) {
-        const intentUrl = 'intent://' + targetUrl.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end;';
-        window.location.href = intentUrl;
-      }
-      // 2. iOS (Safari 전용 프로토콜 이용 또는 외부 브라우저 호출 안내)
-      else if (userAgent.includes('iphone') || userAgent.includes('ipad') || userAgent.includes('ipod')) {
-        // iOS는 정책상 스크립트만으로 사파리를 100% 자동 분기하기 어렵습니다.
-        // ftp://, googlechrome:// 등의 스키마를 던지거나 사파리 우회 주소(ftp/intent/samsungpass 등)를 활용합니다.
-        window.location.href = 'x-web-search://?' + targetUrl;
-      }
-    }
-  })();
+// KakaoTalk in-app browser redirect (enhanced)
+function redirectToExternalBrowser() {
+  const ua = navigator.userAgent.toLowerCase();
+  const url = window.location.href;
+  if (!ua.includes('kakaotalk') && !ua.includes('talk')) return;
+  if (ua.includes('android')) {
+    const intent = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end;';
+    window.location.href = intent;
+  } else if (ua.includes('iphone') || ua.includes('ipad') || ua.includes('ipod')) {
+    // iOS: open the URL directly (may open Safari)
+    window.location.href = url;
+  } else {
+    window.location.href = url;
+  }
+}
+if (document.readyState === 'complete') {
+  redirectToExternalBrowser();
+} else {
+  window.addEventListener('load', redirectToExternalBrowser);
+}
 </script>
 <script>
         const canvas = document.getElementById('gameCanvas');
