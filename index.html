@@ -1100,11 +1100,11 @@
         }
 
         const DIFFICULTY_PRESETS = {
-            EASY:      { name: "초보", diffMult: 0.45, minionHp: 0.5, midBossHp: 0.5, finalBossHp: 0.5, dropChance: 0.25, bossDropCount: 4, healAmt: 40, wpnDur: 12, buffDur: 12, splashRange: 55, defDur: 12 },
-            NORMAL:    { name: "일반", diffMult: 0.90, minionHp: 1.0, midBossHp: 1.0, finalBossHp: 1.0, dropChance: 0.09, bossDropCount: 2, healAmt: 25, wpnDur: 8,  buffDur: 8,  splashRange: 40, defDur: 8  },
-            HARD:      { name: "하드", diffMult: 1.25, minionHp: 1.4, midBossHp: 1.4, finalBossHp: 1.4, dropChance: 0.06, bossDropCount: 2, healAmt: 20, wpnDur: 6,  buffDur: 6,  splashRange: 35, defDur: 6  },
-            EXPERT:    { name: "정예", diffMult: 1.70, minionHp: 1.8, midBossHp: 1.8, finalBossHp: 1.8, dropChance: 0.04, bossDropCount: 1, healAmt: 15, wpnDur: 4,  buffDur: 4,  splashRange: 30, defDur: 4  },
-            NIGHTMARE: { name: "악몽", diffMult: 2.20, minionHp: 2.3, midBossHp: 2.5, finalBossHp: 2.5, dropChance: 0.02, bossDropCount: 1, healAmt: 10, wpnDur: 3,  buffDur: 3,  splashRange: 25, defDur: 3  }
+            EASY:      { name: "초보", diffMult: 0.45, minionHp: 0.5, midBossHp: 0.5, finalBossHp: 0.5, dropChance: 0.25, bossDropCount: 4, healAmt: 40, wpnDur: 12, buffDur: 12, splashRange: 55, defDur: 12, ultStock: 7, ultDropWeight: 6 },
+            NORMAL:    { name: "일반", diffMult: 0.90, minionHp: 1.0, midBossHp: 1.0, finalBossHp: 1.0, dropChance: 0.09, bossDropCount: 2, healAmt: 25, wpnDur: 8,  buffDur: 8,  splashRange: 40, defDur: 8,  ultStock: 6, ultDropWeight: 4 },
+            HARD:      { name: "하드", diffMult: 1.25, minionHp: 1.4, midBossHp: 1.4, finalBossHp: 1.4, dropChance: 0.06, bossDropCount: 2, healAmt: 20, wpnDur: 6,  buffDur: 6,  splashRange: 35, defDur: 6,  ultStock: 5, ultDropWeight: 3 },
+            EXPERT:    { name: "정예", diffMult: 1.70, minionHp: 1.8, midBossHp: 1.8, finalBossHp: 1.8, dropChance: 0.04, bossDropCount: 1, healAmt: 15, wpnDur: 4,  buffDur: 4,  splashRange: 30, defDur: 4,  ultStock: 4, ultDropWeight: 2 },
+            NIGHTMARE: { name: "악몽", diffMult: 2.20, minionHp: 2.3, midBossHp: 2.5, finalBossHp: 2.5, dropChance: 0.02, bossDropCount: 1, healAmt: 10, wpnDur: 3,  buffDur: 3,  splashRange: 25, defDur: 3,  ultStock: 4, ultDropWeight: 1 }
         };
 
         let minionHpMultiplier = 1.0;
@@ -1307,7 +1307,8 @@
 
         function startGame() {
             gameState = "PLAYING"; score = 0; waveCount = 0; spawnTimer = 0; isPaused = false;
-            player.allies = []; player.x = 270; player.targetX = 270; player.y = 590; player.targetY = 590; player.maxHp = 100; player.hp = 100; player.lives = 3; player.ultimateStock = 3;
+            const preset = DIFFICULTY_PRESETS[currentDifficulty] || DIFFICULTY_PRESETS.NORMAL;
+            player.allies = []; player.x = 270; player.targetX = 270; player.y = 590; player.targetY = 590; player.maxHp = 100; player.hp = 100; player.lives = 3; player.ultimateStock = preset.ultStock || 6;
             player.weaponType = "NORMAL"; player.buffType = "NONE"; player.defenseType = "NONE";
             bullets = []; enemies = []; enemyLasers = []; gates = []; trappedHero = null; particles = []; muzzleFlashes = []; floatingTexts = []; droppedItems = []; activeAnnihilationEffect = null;
             updateUltimateUI();
@@ -1426,7 +1427,8 @@
                             hp: hpBase, maxHp: hpBase,
                             speed: (1.4 + (stageLevel * 0.04)) * (diffMultiplier * 0.9),
                             isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0,
-                            movePattern: 'CLUSTER', vx: (Math.random() - 0.5) * 0.8
+                            movePattern: 'CLUSTER', vx: (Math.random() - 0.5) * 0.8,
+                            hasItem: (i === 0 || Math.random() < 0.35)
                         });
                     }
                 } else if (patternType < 0.70) {
@@ -1443,7 +1445,8 @@
                             movePattern: moveMode,
                             sineOffset: Math.random() * Math.PI * 2,
                             sineAmp: 1.8 + Math.random() * 1.2,
-                            vx: (Math.random() > 0.5 ? 1 : -1) * (1.3 + Math.random() * 0.7)
+                            vx: (Math.random() > 0.5 ? 1 : -1) * (1.3 + Math.random() * 0.7),
+                            hasItem: (i === 0 || Math.random() < 0.35)
                         });
                     }
                 } else {
@@ -1459,7 +1462,8 @@
                             movePattern: 'SINE',
                             sineOffset: i * 0.9,
                             sineAmp: 1.6,
-                            vx: 0
+                            vx: 0,
+                            hasItem: (i === 0 || Math.random() < 0.35)
                         });
                     }
                 }
@@ -1738,7 +1742,24 @@
                         });
                     }
                 }
-                b.y -= bType === "LASER" ? 16 : 11; if (b.y < 0) { bullets.splice(i, 1); continue; }
+                if (bType === "HOMING") {
+                    let nearest = null, minDist = 99999;
+                    enemies.forEach(e => {
+                        if (!e.isDying) {
+                            let dist = Math.hypot(e.x - b.x, e.y - b.y);
+                            if (dist < minDist) { minDist = dist; nearest = e; }
+                        }
+                    });
+                    if (nearest) {
+                        let angle = Math.atan2(nearest.y - b.y, nearest.x - b.x);
+                        b.vx = (b.vx || 0) * 0.75 + Math.cos(angle) * 3.5;
+                        b.vy = (b.vy || -7) * 0.75 + Math.sin(angle) * 3.5;
+                    }
+                }
+
+                if (b.vx) b.x += b.vx;
+                b.y += b.vy !== undefined ? b.vy : (bType === "LASER" ? -16 : -11);
+                if (b.y < -20 || b.y > canvas.height + 20 || b.x < -20 || b.x > canvas.width + 20) { bullets.splice(i, 1); continue; }
                 let broken = false;
                 if (trappedHero && trappedHero.status === 'LOCKED') {
                     if (Math.hypot(trappedHero.x - bx, trappedHero.y - by) < 32) {
@@ -1755,14 +1776,35 @@
                     if (hitWp) {
                         if (bType === "ROCKET" || bType === "MISSILE" || isSplash) {
                             let range = bType === "MISSILE" ? currentSplashRange * 1.6 : currentSplashRange;
-                            let sd = bType === "ROCKET" ? bDmg * 3 : bType === "MISSILE" ? bDmg * 5 : bDmg;
+                            let sd = bType === "ROCKET" ? bDmg * 3 : bType === "MISSILE" ? bDmg : bDmg;
                             createAdvancedExplosion(bx, by, bType === "MISSILE" ? '#ff7675' : '#ff9f43', 14, range / 35); playExplosionSound(bType === "MISSILE");
                             handleEnemyDamageHit(enemy, hitWp, sd, bx, by, false);
-                            for (let eIdx = enemies.length - 1; eIdx >= 0; eIdx--) {
-                                let targetZ = enemies[eIdx];
-                                if (targetZ && targetZ !== enemy && !targetZ.isDying && Math.hypot(targetZ.x - bx, targetZ.y - by) <= range) {
-                                    const zWp = getBossWeakPointHit(targetZ, bx, by) || { x: targetZ.x, y: targetZ.y, radius: targetZ.radius };
-                                    handleEnemyDamageHit(targetZ, zWp, sd, bx, by, true);
+
+                            if (bType === "MISSILE") {
+                                // 360도 8개 화염 파편(Shrapnel) 비산 연출
+                                for (let k = 0; k < 8; k++) {
+                                    const pAngle = Math.random() * Math.PI * 2, spd = Math.random() * 5 + 2;
+                                    particles.push({
+                                        x: bx, y: by,
+                                        vx: Math.cos(pAngle) * spd, vy: Math.sin(pAngle) * spd,
+                                        radius: Math.random() * 3.5 + 1.5, alpha: 1.0, color: ['#ff3838', '#ff9f43', '#ffd32c'][k % 3], sparkle: true
+                                    });
+                                }
+                                // 파편 2차 스플래시 피해 (주변 45px 내 적들에게 2.5 Dmg 추가 피해)
+                                for (let eIdx = enemies.length - 1; eIdx >= 0; eIdx--) {
+                                    let targetZ = enemies[eIdx];
+                                    if (targetZ && targetZ !== enemy && !targetZ.isDying && Math.hypot(targetZ.x - bx, targetZ.y - by) <= 45) {
+                                        const zWp = getBossWeakPointHit(targetZ, bx, by) || { x: targetZ.x, y: targetZ.y, radius: targetZ.radius };
+                                        handleEnemyDamageHit(targetZ, zWp, 2.5, bx, by, true);
+                                    }
+                                }
+                            } else {
+                                for (let eIdx = enemies.length - 1; eIdx >= 0; eIdx--) {
+                                    let targetZ = enemies[eIdx];
+                                    if (targetZ && targetZ !== enemy && !targetZ.isDying && Math.hypot(targetZ.x - bx, targetZ.y - by) <= range) {
+                                        const zWp = getBossWeakPointHit(targetZ, bx, by) || { x: targetZ.x, y: targetZ.y, radius: targetZ.radius };
+                                        handleEnemyDamageHit(targetZ, zWp, sd, bx, by, true);
+                                    }
                                 }
                             }
                         } else {
@@ -2116,14 +2158,18 @@
             const dropChance = isBoss ? 0.65 : itemDropChanceNormal;
             if (Math.random() > dropChance) return;
 
+            const preset = DIFFICULTY_PRESETS[currentDifficulty] || DIFFICULTY_PRESETS.NORMAL;
+            const ultWeight = preset.ultDropWeight || 4;
+
             let pool = [];
             for (let k = 0; k < healWeight; k++) pool.push("HEAL");
-            for (let k = 0; k < wpnWeight; k++) pool.push("LASER", "GATLING", "ROCKET", "MISSILE");
+            for (let k = 0; k < wpnWeight; k++) pool.push("DOUBLE", "TRIPLE", "HOMING", "MISSILE", "LASER");
             for (let k = 0; k < buffWeight; k++) pool.push("DAMAGE_X2", "SPLASH_RANGE", "BOMBARD");
             for (let k = 0; k < defWeight; k++) pool.push("NANO_SHIELD", "HEAVY_ARMOR");
             for (let k = 0; k < allyWeight; k++) pool.push("ALLY");
             for (let k = 0; k < bombWeight; k++) pool.push("BOMB");
-            pool.push("LIFE", "ULTIMATE", "ULTIMATE"); // Added LIFE
+            for (let k = 0; k < ultWeight; k++) pool.push("ULTIMATE");
+            pool.push("LIFE");
 
             if (pool.length === 0) pool.push("HEAL");
 
@@ -2133,10 +2179,11 @@
                 const chosen = pool[Math.floor(Math.random() * pool.length)];
                 let lbl = "";
                 let color = "#ffffff";
-                if (chosen === "LASER") { lbl = "⚡ L"; color = "#00d2d3"; }
-                else if (chosen === "GATLING") { lbl = "🔫 G"; color = "#ffd32c"; }
-                else if (chosen === "ROCKET") { lbl = "🚀 R"; color = "#fa8231"; }
-                else if (chosen === "MISSILE") { lbl = "🔥 M"; color = "#ff4d4d"; }
+                if (chosen === "DOUBLE") { lbl = "⚡ 2줄"; color = "#ffd32c"; }
+                else if (chosen === "TRIPLE") { lbl = "⚡ 3줄"; color = "#ff9f43"; }
+                else if (chosen === "HOMING") { lbl = "🎯 유도"; color = "#00d2d3"; }
+                else if (chosen === "MISSILE") { lbl = "🚀 미사일"; color = "#ff3838"; }
+                else if (chosen === "LASER") { lbl = "⚡ 레이저"; color = "#00d2d3"; }
                 else if (chosen === "DAMAGE_X2") { lbl = "💥 2X"; color = "#ff9f43"; }
                 else if (chosen === "SPLASH_RANGE") { lbl = "🔮 SP"; color = "#e056fd"; }
                 else if (chosen === "BOMBARD") { lbl = "☄️ BB"; color = "#ff3838"; }
@@ -2277,10 +2324,10 @@
                     addFloatingText(player.x, player.y - 45, `⚠️ 필살기 최대 보유(5개)!`, '#ff9f43', 14);
                 }
             }
-            else if (["LASER", "GATLING", "ROCKET", "MISSILE"].includes(t)) {
+            else if (["DOUBLE", "TRIPLE", "HOMING", "MISSILE", "LASER", "GATLING", "ROCKET"].includes(t)) {
                 player.weaponType = t;
                 player.weaponTimer = 1200;
-                let wName = t === "GATLING" ? "속사 개틀링" : t === "LASER" ? "중차단 레이저" : t === "MISSILE" ? "열압력 미사일" : "전술 고폭로켓";
+                let wName = t === "DOUBLE" ? "2줄 직진탄" : t === "TRIPLE" ? "3줄 확산탄" : t === "HOMING" ? "적 추적 유도탄" : t === "MISSILE" ? "10배 중장갑 미사일(파편)" : t === "LASER" ? "20배 고출력 관통레이저" : t === "GATLING" ? "속사 개틀링" : "전술 로켓";
                 addFloatingText(player.x, player.y - 45, `⚡ 20초 ${wName} 장착!`, '#ffd32c', 16);
             }
             else if (["DAMAGE_X2", "SPLASH_RANGE", "BOMBARD"].includes(t)) {
@@ -2601,6 +2648,19 @@
                     }
                     ctx.restore();
                 } else {
+                    if (enemy.hasItem && !enemy.isDying) {
+                        ctx.save();
+                        ctx.shadowColor = '#ffd32c';
+                        ctx.shadowBlur = 12;
+                        ctx.strokeStyle = '#ffd32c';
+                        ctx.lineWidth = 2.5;
+                        ctx.setLineDash([8, 5]);
+                        ctx.lineDashOffset = -globalAnimTick * 0.6;
+                        ctx.beginPath();
+                        ctx.arc(enemy.x, enemy.y, enemy.radius + 7 + Math.sin(globalAnimTick * 0.12) * 2, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.restore();
+                    }
                     const aImg = imgAlienTypes[(enemy.alienType || 0) % 10];
                     const cleanAlienCvs = getCleanTransparentSprite(aImg) || getCleanTransparentSprite(imgEnemy);
                     if (cleanAlienCvs) { ctx.drawImage(cleanAlienCvs, enemy.x - 24, enemy.y - 24, 48, 48); }
