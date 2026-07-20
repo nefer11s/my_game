@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우 키를 구출하라! (v4.8.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우 키를 구출하라! (v4.9.0)</title>
     <style>
         body {
             margin: 0;
@@ -256,7 +256,7 @@
 <body
     style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
 
-    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v4.8.0</span></h1>
+    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v4.9.0</span></h1>
 
     <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
         <div id="gameContainer" style="position: relative;">
@@ -265,7 +265,7 @@
             <div id="menuOverlay" style="padding: 30px 20px; box-sizing: border-box; justify-content: space-between;">
                 <div style="margin-top: 30px; display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <div class="menu-title" style="font-size: 32px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.7); margin-bottom: 6px; letter-spacing: 3px;">HY 세라믹 솔라 파이터</div>
-                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v4.8.0)</span></div>
+                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v4.9.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -626,7 +626,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v4.8.0";
+        const GAME_VERSION = "v4.9.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9, bossHpMultiplier = 0.9, zombieCountMultiplier = 0.9;
         let healWeight = 35, healAmount = 30, wpnWeight = 45, wpnDurationConfig = 420, buffWeight = 45, buffDurationConfig = 420, currentSplashRange = 45, defWeight = 35, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -1092,20 +1092,20 @@
             const zCount = Math.floor((3 + stageLevel * 0.7) * diffMultiplier * zombieCountMultiplier);
             const hpBase = Math.floor((4 + stageLevel * 2) * diffMultiplier);
 
-            const isMidBossWave = [5, 10, 14, 15, 18, 19, 20].includes(waveCount);
+            const isMidBossWave = [5, 10, 14, 15, 18, 19, 20, 22, 24].includes(waveCount);
             const isFinalBossWave = (waveCount === 25);
 
             if (isFinalBossWave) {
-                // 👑 FINAL APEX SUPREME BOSS (최종 마왕 결전 보스)
+                // 👑 FINAL APEX SUPREME BOSS (초대형 180px 최종 마왕 결전 보스)
                 enemies.push({
-                    x: canvas.width / 2, y: -110, radius: 56,
+                    x: canvas.width / 2, y: -130, radius: 72,
                     hp: Math.floor(1000 * diffMultiplier * bossHpMultiplier),
                     maxHp: Math.floor(1000 * diffMultiplier * bossHpMultiplier),
-                    speed: 0.45, isBoss: true, isFinalBoss: true, bossType: 9, flashTimer: 0, animFrame: 0
+                    speed: 0.38, isBoss: true, isFinalBoss: true, bossType: 9, flashTimer: 0, animFrame: 0
                 });
-                addFloatingText(canvas.width / 2, 220, "👑 [최종 마왕 결전 보스] 출격!!", "#ff2d55", 22);
+                addFloatingText(canvas.width / 2, 220, "👑 [초대형 최종 마왕 결전 보스] 강림!!", "#ff2d55", 24);
             } else if (isMidBossWave) {
-                // Stage Mid-Bosses (Escalating frequency: 5, 10, 14, 15, 18, 19, 20)
+                // Stage Mid-Bosses (Escalating frequency: 5, 10, 14, 15, 18, 19, 20, 22, 24)
                 const bType = Math.floor(Math.random() * 10);
                 enemies.push({
                     x: laneWidth * 1.5, y: -90, radius: 40,
@@ -1114,7 +1114,7 @@
                     speed: (0.7 + (stageLevel * 0.03)) * (diffMultiplier * 0.85),
                     isBoss: true, isFinalBoss: false, bossType: bType, flashTimer: 0, animFrame: 0
                 });
-                addFloatingText(canvas.width / 2, 220, `⚠️ STAGE ${stageLevel} 중간 보스 출격!`, "#ff9f43", 18);
+                addFloatingText(canvas.width / 2, 220, `⚠️ STAGE ${stageLevel} 마왕 호위보스 출격!`, "#ff9f43", 18);
             } else {
                 for (let i = 0; i < zCount; i++) {
                     const aType = Math.floor(Math.random() * 10);
@@ -1666,12 +1666,14 @@
                     ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius + 4, 0, Math.PI * 2); ctx.fill();
                 } else {
                     if (enemy.isBoss) {
-                        const bImg = imgBossTypes[(enemy.bossType || 0) % 10];
+                        const bImg = enemy.isFinalBoss ? imgBoss : imgBossTypes[(enemy.bossType || 0) % 10];
                         const cleanBossCvs = getCleanTransparentSprite(bImg) || getCleanTransparentSprite(imgBoss);
-                        if (cleanBossCvs) { ctx.drawImage(cleanBossCvs, enemy.x - 52, enemy.y - 52, 104, 104); }
-                        else {
+                        if (cleanBossCvs) {
+                            const bSize = enemy.isFinalBoss ? 180 : 104;
+                            ctx.drawImage(cleanBossCvs, enemy.x - bSize / 2, enemy.y - bSize / 2, bSize, bSize);
+                        } else {
                             const pal = BOSS_PALETTES[enemy.bossType || 0];
-                            ctx.fillStyle = pal.body; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 30, 0, Math.PI * 2); ctx.fill();
+                            ctx.fillStyle = pal.body; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2); ctx.fill();
                         }
                     } else {
                         const aImg = imgAlienTypes[(enemy.alienType || 0) % 10];
