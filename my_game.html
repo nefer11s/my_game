@@ -12,7 +12,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.4.7)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.4.8)</title>
     <style>
         body {
             margin: 0;
@@ -335,7 +335,7 @@
                         HY세라믹 솔라윙스</div>
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
-                        "외계인에 잡혀간 현우엄마를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">v11.4.7</span> <span style="color: #636e72; font-size: 11px; margin-left: 4px;">배포 2026-07-21 04:13</span></div>
+                        "외계인에 잡혀간 현우엄마를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">v11.4.8</span> <span style="color: #636e72; font-size: 11px; margin-left: 4px;">배포 2026-07-21 04:19</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -838,7 +838,7 @@ if (document.readyState === 'loading') {
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v11.4.7";
+        const GAME_VERSION = "v11.4.8";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1639,6 +1639,16 @@ if (document.readyState === 'loading') {
         }
 
         function update() {
+            // Null / Undefined / NaN 데이터 오염 100% 방지 자동 정화
+            if (enemies) enemies = enemies.filter(e => e && typeof e === 'object');
+            if (bullets) bullets = bullets.filter(b => b && typeof b === 'object');
+            if (enemyLasers) enemyLasers = enemyLasers.filter(l => l && typeof l === 'object');
+            if (floatingTexts) floatingTexts = floatingTexts.filter(f => f && typeof f === 'object');
+            if (muzzleFlashes) muzzleFlashes = muzzleFlashes.filter(m => m && typeof m === 'object');
+            if (droppedItems) droppedItems = droppedItems.filter(d => d && typeof d === 'object');
+            if (particles) particles = particles.filter(p => p && typeof p === 'object');
+            if (player && player.allies) player.allies = player.allies.filter(a => a && typeof a === 'object');
+
             if (isFadingToVictory) {
                 globalAnimTick++; // isFadingToVictory 중에도 파티클/이펙트 업데이트 유지
                 fadeTimer++;
@@ -1697,10 +1707,21 @@ if (document.readyState === 'loading') {
             if (isNaN(player.x)) player.x = player.targetX;
             if (isNaN(player.y)) player.y = player.targetY;
 
-            for (let i = floatingTexts.length - 1; i >= 0; i--) { floatingTexts[i].y += floatingTexts[i].vy; floatingTexts[i].life--; if (floatingTexts[i].life <= 0) floatingTexts.splice(i, 1); }
-            // floatingTexts 최대 100개 제한 (대량 피격 텍스트 누수 방지)
+            for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                let ft = floatingTexts[i];
+                if (!ft) { floatingTexts.splice(i, 1); continue; }
+                ft.y += (ft.vy || -1);
+                ft.life--;
+                if (ft.life <= 0) floatingTexts.splice(i, 1);
+            }
             if (floatingTexts.length > 100) floatingTexts.splice(0, floatingTexts.length - 100);
-            for (let i = muzzleFlashes.length - 1; i >= 0; i--) { muzzleFlashes[i].life--; if (muzzleFlashes[i].life <= 0) muzzleFlashes.splice(i, 1); }
+
+            for (let i = muzzleFlashes.length - 1; i >= 0; i--) {
+                let mf = muzzleFlashes[i];
+                if (!mf) { muzzleFlashes.splice(i, 1); continue; }
+                mf.life--;
+                if (mf.life <= 0) muzzleFlashes.splice(i, 1);
+            }
 
             // Update particle lifetime & motion
             for (let i = particles.length - 1; i >= 0; i--) {
