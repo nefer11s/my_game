@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우 키를 구출하라! (v5.2.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 외계인에 잡혀간 현우엄마를 구출하라! (v5.3.0)</title>
     <style>
         body {
             margin: 0;
@@ -256,7 +256,7 @@
 <body
     style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
 
-    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v5.2.0</span></h1>
+    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"외계인에 잡혀간 현우엄마를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v5.3.0</span></h1>
 
     <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
         <div id="gameContainer" style="position: relative;">
@@ -265,7 +265,7 @@
             <div id="menuOverlay" style="padding: 30px 20px; box-sizing: border-box; justify-content: space-between;">
                 <div style="margin-top: 30px; display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <div class="menu-title" style="font-size: 32px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.7); margin-bottom: 6px; letter-spacing: 3px;">HY 세라믹 솔라 파이터</div>
-                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v5.2.0)</span></div>
+                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"외계인에 잡혀간 현우엄마를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v5.3.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -317,7 +317,7 @@
                     🎉 MISSION VICTORY!</div>
                 <div
                     style="font-size: 17px; color: #f1c40f; font-weight: bold; margin-bottom: 12px; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);">
-                    "위기에 빠진 현우 구출 작전 완벽 성공!"</div>
+                    "외계인에게 잡혀간 현우엄마 구출 작전 완벽 성공!"</div>
 
                 <div
                     style="border: 3px solid #1cfc03; border-radius: 12px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 0 20px rgba(28, 252, 3, 0.4); max-width: 240px; display: flex; align-items: center; justify-content: center; background: #000;">
@@ -327,7 +327,7 @@
 
                 <div
                     style="background: rgba(28, 252, 3, 0.12); border: 1px solid #1cfc03; border-radius: 8px; padding: 10px 18px; color: #1cfc03; font-weight: bold; font-size: 13px; margin-bottom: 15px; max-width: 380px; line-height: 1.5; text-shadow: 0 0 5px rgba(28,252,3,0.3);">
-                    💬 "현우 지휘관님과 승리의 기쁨을 나눕니다. 은하연합 세라믹 함대의 임무가 성공적으로 완료되었습니다!"
+                    💬 "현우엄마를 무사히 구출해 은하계에 다시 평화가 찾아왔습니다! 현우 지휘관님과 승리의 기쁨을 나눕니다."
                 </div>
 
                 <div id="victoryScore" style="font-size: 15px; color: #ffffff; margin-bottom: 20px;">최종 전과 스코어: 0 PTS
@@ -626,7 +626,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v5.2.0";
+        const GAME_VERSION = "v5.3.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9, bossHpMultiplier = 0.9, zombieCountMultiplier = 0.9;
         let healWeight = 35, healAmount = 30, wpnWeight = 45, wpnDurationConfig = 420, buffWeight = 45, buffDurationConfig = 420, currentSplashRange = 45, defWeight = 35, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
