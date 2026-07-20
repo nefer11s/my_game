@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우 키를 구출하라! (v5.0.0)</title>
+    <title>HY 세라믹 솔라 파이터 - 위기에 빠진 현우 키를 구출하라! (v5.1.0)</title>
     <style>
         body {
             margin: 0;
@@ -256,7 +256,7 @@
 <body
     style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
 
-    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v5.0.0</span></h1>
+    <h1 id="gameHeader">HY 세라믹 솔라 파이터 <span style="font-size: 16px; color: #ff3838; margin-left: 10px;">"위기에 빠진 현우를 구출하라!"</span> <span style="font-size: 14px; color: #f1c40f; font-weight: bold; margin-left: 8px;">v5.1.0</span></h1>
 
     <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
         <div id="gameContainer" style="position: relative;">
@@ -265,7 +265,7 @@
             <div id="menuOverlay" style="padding: 30px 20px; box-sizing: border-box; justify-content: space-between;">
                 <div style="margin-top: 30px; display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <div class="menu-title" style="font-size: 32px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.7); margin-bottom: 6px; letter-spacing: 3px;">HY 세라믹 솔라 파이터</div>
-                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v5.0.0)</span></div>
+                    <div class="menu-subtitle" style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">"위기에 빠진 현우를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v5.1.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -626,7 +626,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v5.0.0";
+        const GAME_VERSION = "v5.1.0";
         let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9, bossHpMultiplier = 0.9, zombieCountMultiplier = 0.9;
         let healWeight = 35, healAmount = 30, wpnWeight = 45, wpnDurationConfig = 420, buffWeight = 45, buffDurationConfig = 420, currentSplashRange = 45, defWeight = 35, defDurationConfig = 420;
         let allyWeight = 30, bombWeight = 20;
@@ -662,6 +662,7 @@
         const imgHero = new Image(); imgHero.src = 'assets/hero_ship.png';
         const imgEnemy = new Image(); imgEnemy.src = 'assets/zombie_enemy.png';
         const imgBoss = new Image(); imgBoss.src = 'assets/zombie_boss.png';
+        const imgAllyDrone = new Image(); imgAllyDrone.src = 'assets/support_drone_gold.png';
 
         const imgAlienTypes = [];
         for (let i = 0; i < 10; i++) {
@@ -705,8 +706,9 @@
                 const d = imgData.data;
                 for (let i = 0; i < d.length; i += 4) {
                     const r = d[i], g = d[i + 1], b = d[i + 2];
-                    if (r < 75 && g < 75 && b < 75 && Math.abs(r - g) < 25 && Math.abs(g - b) < 25) {
-                        d[i + 3] = 0; // Force 100% Alpha Transparency on any dark gray bounding box!
+                    if ((r < 75 && g < 75 && b < 75 && Math.abs(r - g) < 25 && Math.abs(g - b) < 25) ||
+                        (r > 230 && g > 230 && b > 230)) {
+                        d[i + 3] = 0; // Force 100% Alpha Transparency on dark gray or pure white background!
                     }
                 }
                 cctx.putImageData(imgData, 0, 0);
@@ -1655,7 +1657,10 @@
                 const offset = getAllyRelativePos(idx);
                 const ax = player.x + offset.xOffset;
                 const ay = player.y + offset.yOffset;
-                if (cleanHeroCvs) {
+                const cleanDroneCvs = getCleanTransparentSprite(imgAllyDrone);
+                if (cleanDroneCvs) {
+                    ctx.drawImage(cleanDroneCvs, ax - 16, ay - 16, 32, 32);
+                } else if (cleanHeroCvs) {
                     ctx.drawImage(cleanHeroCvs, ax - 14, ay - 14, 28, 28);
                 } else {
                     ctx.fillStyle = '#78e08f'; ctx.beginPath(); ctx.moveTo(ax, ay - 8); ctx.lineTo(ax - 7, ay + 5); ctx.lineTo(ax + 7, ay + 5); ctx.closePath(); ctx.fill();
