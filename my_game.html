@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v8.4.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v8.5.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v8.4.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v8.5.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -727,7 +727,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v8.4.0";
+        const GAME_VERSION = "v8.5.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1274,7 +1274,7 @@
                 // 👑 FINAL APEX SUPREME BOSS (초대형 180px 최종 마왕 결전 보스 - zombie_boss.png)
                 const bossHp = Math.floor(650 * diffMultiplier);
                 enemies.push({
-                    x: canvas.width / 2, y: -130, radius: 75,
+                    x: canvas.width / 2, y: -130, radius: 88,
                     hp: bossHp,
                     maxHp: bossHp,
                     speed: 0.38, isBoss: true, isFinalBoss: true, bossType: 9, flashTimer: 0, animFrame: 0
@@ -1620,7 +1620,6 @@
                 const enemy = enemies[i];
                 if (enemy.isFinalBoss && enemy.isDying) {
                     enemy.deathTimer--;
-                    enemy.flashTimer = 4;
                     canvasShakeTimer = Math.max(canvasShakeTimer || 0, 6);
 
                     // 1. Continuous random fire explosions & flying hull shrapnel debris across the 180px boss body every 4 frames
@@ -2204,31 +2203,39 @@
             });
 
             enemies.forEach(enemy => {
-                if (enemy.flashTimer > 0) {
-                    ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius + 4, 0, Math.PI * 2); ctx.fill();
-                } else {
-                    if (enemy.isBoss) {
-                        ctx.save();
+                if (enemy.isBoss) {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
+                    ctx.clip(); // 100% physically clips away any square bounding box corners!
+                    const bImg = enemy.isFinalBoss ? imgBoss : imgBossTypes[(enemy.bossType || 0) % 10];
+                    const cleanBossCvs = getCleanTransparentSprite(bImg) || getCleanTransparentSprite(imgBoss);
+                    const bSize = enemy.isFinalBoss ? 180 : 104;
+                    if (cleanBossCvs) {
+                        ctx.drawImage(cleanBossCvs, enemy.x - bSize / 2, enemy.y - bSize / 2, bSize, bSize);
+                    } else {
+                        const pal = BOSS_PALETTES[enemy.bossType || 0];
+                        ctx.fillStyle = pal.body; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2); ctx.fill();
+                    }
+                    if (enemy.flashTimer > 0) {
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
                         ctx.beginPath();
                         ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
-                        ctx.clip(); // 100% physically clips away any square bounding box corners!
-                        const bImg = enemy.isFinalBoss ? imgBoss : imgBossTypes[(enemy.bossType || 0) % 10];
-                        const cleanBossCvs = getCleanTransparentSprite(bImg) || getCleanTransparentSprite(imgBoss);
-                        const bSize = enemy.isFinalBoss ? 180 : 104;
-                        if (cleanBossCvs) {
-                            ctx.drawImage(cleanBossCvs, enemy.x - bSize / 2, enemy.y - bSize / 2, bSize, bSize);
-                        } else {
-                            const pal = BOSS_PALETTES[enemy.bossType || 0];
-                            ctx.fillStyle = pal.body; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2); ctx.fill();
-                        }
-                        ctx.restore();
-                    } else {
-                        const aImg = imgAlienTypes[(enemy.alienType || 0) % 10];
-                        const cleanAlienCvs = getCleanTransparentSprite(aImg) || getCleanTransparentSprite(imgEnemy);
-                        if (cleanAlienCvs) { ctx.drawImage(cleanAlienCvs, enemy.x - 24, enemy.y - 24, 48, 48); }
-                        else {
-                            ctx.fillStyle = '#ff3838'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 18, 0, Math.PI * 2); ctx.fill();
-                        }
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                } else {
+                    const aImg = imgAlienTypes[(enemy.alienType || 0) % 10];
+                    const cleanAlienCvs = getCleanTransparentSprite(aImg) || getCleanTransparentSprite(imgEnemy);
+                    if (cleanAlienCvs) { ctx.drawImage(cleanAlienCvs, enemy.x - 24, enemy.y - 24, 48, 48); }
+                    else {
+                        ctx.fillStyle = '#ff3838'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 18, 0, Math.PI * 2); ctx.fill();
+                    }
+                    if (enemy.flashTimer > 0) {
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+                        ctx.beginPath();
+                        ctx.arc(enemy.x, enemy.y, 18, 0, Math.PI * 2);
+                        ctx.fill();
                     }
                 }
 
