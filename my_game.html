@@ -365,16 +365,13 @@
                 <!-- 3. 하단 서브 탭 모달 버튼 바 -->
                 <div style="display: flex; gap: 8px; justify-content: center; width: 95%; margin-bottom: 8px;">
                     <button
-                        style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 1px solid #10ac84; color: #10ac84; padding: 10px 4px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px;"
-                        onclick="openInfoModal('AUDIO')">🎵 사운드</button>
-                    <button
-                        style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 1px solid #00d2d3; color: #00d2d3; padding: 10px 4px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px;"
+                        style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 1px solid #00d2d3; color: #00d2d3; padding: 10px 4px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px;"
                         onclick="openInfoModal('CONTROLS')">⌨️ 조작법</button>
                     <button
-                        style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 1px solid #f1c40f; color: #f1c40f; padding: 10px 4px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px;"
-                        onclick="openInfoModal('ITEMS')">🎁 아이템도감</button>
+                        style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 1px solid #f1c40f; color: #f1c40f; padding: 10px 4px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px;"
+                        onclick="openInfoModal('ITEMS')">🎁 아이템 도감</button>
                     <button
-                        style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 1px solid #a4b0be; color: #ffffff; padding: 10px 4px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px;"
+                        style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 1px solid #a4b0be; color: #ffffff; padding: 10px 4px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px;"
                         onclick="openSettingsModal()">⚙️ 환경설정</button>
                 </div>
             </div>
@@ -443,7 +440,7 @@
 
             <!-- Info / Guide Modal Overlay -->
             <div id="infoModal" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(12, 14, 18, 0.95); z-index: 300; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box;">
-                <div style="font-size: 22px; font-weight: 900; color: #00d2d3; margin-bottom: 15px;">📖 작전 가이드 도감</div>
+                <div id="infoModalTitle" style="font-size: 22px; font-weight: 900; color: #00d2d3; margin-bottom: 15px;">📖 조작법</div>
                 <div style="width: 100%; max-width: 420px; background: #141822; border: 1px solid #2c3e50; border-radius: 10px; padding: 20px; box-sizing: border-box; max-height: 70vh; overflow-y: auto; line-height: 1.6; font-size: 13px;">
                     <div id="infoAudioSec" style="display: none;">
                         <h3 style="color: #10ac84; margin-top:0;">🎵 오디오 및 배경음 설정</h3>
@@ -1170,6 +1167,13 @@ if (document.readyState === 'loading') {
 
         function openInfoModal(section) {
             if (audioCtx) playUpgradeSound();
+            // 섹션에 따라 모달 제목 동적 변경
+            const titleEl = document.getElementById('infoModalTitle');
+            if (titleEl) {
+                if (section === 'CONTROLS') titleEl.innerHTML = '⌨️ 조작법';
+                else if (section === 'ITEMS') titleEl.innerHTML = '🎁 아이템 도감';
+                else titleEl.innerHTML = '🎵 사운드 안내';
+            }
             document.getElementById('infoAudioSec').style.display = section === 'AUDIO' ? 'block' : 'none';
             document.getElementById('infoControlSec').style.display = section === 'CONTROLS' ? 'block' : 'none';
             document.getElementById('infoItemSec').style.display = section === 'ITEMS' ? 'block' : 'none';
@@ -1690,6 +1694,8 @@ if (document.readyState === 'loading') {
             if (isNaN(player.y)) player.y = player.targetY;
 
             for (let i = floatingTexts.length - 1; i >= 0; i--) { floatingTexts[i].y += floatingTexts[i].vy; floatingTexts[i].life--; if (floatingTexts[i].life <= 0) floatingTexts.splice(i, 1); }
+            // floatingTexts 최대 100개 제한 (대량 피격 텍스트 누수 방지)
+            if (floatingTexts.length > 100) floatingTexts.splice(0, floatingTexts.length - 100);
             for (let i = muzzleFlashes.length - 1; i >= 0; i--) { muzzleFlashes[i].life--; if (muzzleFlashes[i].life <= 0) muzzleFlashes.splice(i, 1); }
 
             // Update particle lifetime & motion
@@ -2179,17 +2185,10 @@ if (document.readyState === 'loading') {
                     droppedItems.splice(i, 1);
                 }
             }
+            // droppedItems 최대 60개 제한 (누적 방지)
+            if (droppedItems.length > 60) droppedItems.splice(0, droppedItems.length - 60);
 
-            for (let i = particles.length - 1; i >= 0; i--) {
-                let p = particles[i];
-                if (!p) { particles.splice(i, 1); continue; }
-                p.x += p.vx || 0;
-                p.y += p.vy || 0;
-                if (p.gravity) p.vy += p.gravity;
-                p.alpha -= 0.035;
-                if (isNaN(p.alpha) || p.alpha <= 0) { particles.splice(i, 1); }
-            }
-            if (particles.length > 200) particles.splice(0, particles.length - 200);
+            // 중복 파티클 업데이트 루프 제거 (위 1700번대에서 이미 처리됨)
         }
 
         function createAdvancedExplosion(x, y, color, count, size) {
