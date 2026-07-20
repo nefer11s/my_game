@@ -5,7 +5,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v8.5.0)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v8.6.0)</title>
     <style>
         body {
             margin: 0;
@@ -301,7 +301,7 @@
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span
-                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v8.5.0)</span></div>
+                            style="color: #f1c40f; font-weight: bold; margin-left: 6px;">(v8.6.0)</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -655,13 +655,24 @@
                 style="font-size: 16px; font-weight: bold; color: #00d2d3; border-bottom: 1px solid #2c3e50; padding-bottom: 8px; text-align: center;">
                 ⚙️ 전술 수치 제어 및 밸런스 관리 설정</div>
 
-            <div class="section-divider">🧟 좀비 시스템 제어</div>
-            <div class="control-group"><label><span>👑 중간 보스 체력 배율</span> <span class="value-disp"
-                        id="bossVal">1.0x</span></label><input type="range" id="bossSlider" min="0.5" max="3.5"
-                    step="0.1" value="1.0"></div>
-            <div class="control-group"><label><span>💀 좀비 스폰 머릿수 배율</span> <span class="value-disp"
-                        id="zombieVal">1.0x</span></label><input type="range" id="zombieSlider" min="0.4" max="2.5"
-                    step="0.1" value="1.0"></div>
+            <div class="section-divider">🎯 난이도별 적군 체력 세부 커스텀</div>
+            <div class="control-group"><label><span>👾 일반 외계인 체력 배율</span> <span class="value-disp" id="minionHpVal">1.0x</span></label><input type="range" id="minionHpSlider" min="0.3" max="3.0" step="0.1" value="1.0" oninput="minionHpMultiplier=parseFloat(this.value); document.getElementById('minionHpVal').innerText=minionHpMultiplier.toFixed(1)+'x'"></div>
+            <div class="control-group"><label><span>⚠️ 중간 보스 체력 배율</span> <span class="value-disp" id="midBossHpVal">1.0x</span></label><input type="range" id="midBossHpSlider" min="0.3" max="4.0" step="0.1" value="1.0" oninput="midBossHpMultiplier=parseFloat(this.value); document.getElementById('midBossHpVal').innerText=midBossHpMultiplier.toFixed(1)+'x'"></div>
+            <div class="control-group"><label><span>👑 최종 마왕 체력 배율</span> <span class="value-disp" id="finalBossHpVal">1.0x</span></label><input type="range" id="finalBossHpSlider" min="0.3" max="5.0" step="0.1" value="1.0" oninput="finalBossHpMultiplier=parseFloat(this.value); document.getElementById('finalBossHpVal').innerText=finalBossHpMultiplier.toFixed(1)+'x'"></div>
+
+            <div class="section-divider">🎁 난이도별 아이템 드롭 & 빈도 제어</div>
+            <div class="control-group"><label><span>🎁 일반적 아이템 드롭 확률</span> <span class="value-disp" id="itemDropChanceVal">9%</span></label><input type="range" id="itemDropChanceSlider" min="1" max="50" step="1" value="9" oninput="itemDropChanceNormal=parseFloat(this.value)/100; document.getElementById('itemDropChanceVal').innerText=Math.round(itemDropChanceNormal*100)+'%'"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #a4b0be; margin-top: 4px;">
+                <span>📦 보스 처치 드롭 수량</span>
+                <select id="bossDropCountSelect" onchange="bossDropCountConfig=parseInt(this.value)" style="background: #1f242d; color: #fff; border: 1px solid #57606f; padding: 4px 8px; border-radius: 4px;">
+                    <option value="1">1개 (희귀)</option>
+                    <option value="2" selected>2개 (보통)</option>
+                    <option value="3">3개 (풍부)</option>
+                    <option value="4">4개 (폭풍)</option>
+                </select>
+            </div>
+
+            <div class="section-divider">🧟 적군 스폰 시스템 제어</div>
 
             <div class="section-divider">💚 메디컬 킷트 (체력 회복) 제어</div>
             <div class="control-group"><label><span>빈도: 회복킷 스폰 확률</span> <span class="value-disp"
@@ -727,7 +738,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v8.5.0";
+        const GAME_VERSION = "v8.6.0";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1055,9 +1066,49 @@
             document.getElementById('infoModal').style.display = 'none';
         }
 
-        function setSelectDiff(name, mult, btn) {
-            const lvMap = { 0.45: 1, 0.9: 2, 1.25: 3, 1.7: 4, 2.2: 5 }; difficulty = name + ` (Lv.${lvMap[mult] || 2})`; diffMultiplier = mult;
-            document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); if (audioCtx) playUpgradeSound();
+        const DIFFICULTY_PRESETS = {
+            EASY:      { name: "초보", diffMult: 0.45, minionHp: 0.6, midBossHp: 0.5, finalBossHp: 0.5, dropChance: 0.25, bossDropCount: 4 },
+            NORMAL:    { name: "일반", diffMult: 0.90, minionHp: 1.0, midBossHp: 1.0, finalBossHp: 1.0, dropChance: 0.09, bossDropCount: 2 },
+            HARD:      { name: "하드", diffMult: 1.25, minionHp: 1.4, midBossHp: 1.4, finalBossHp: 1.4, dropChance: 0.06, bossDropCount: 2 },
+            EXPERT:    { name: "정예", diffMult: 1.70, minionHp: 1.8, midBossHp: 1.8, finalBossHp: 1.8, dropChance: 0.04, bossDropCount: 1 },
+            NIGHTMARE: { name: "악몽", diffMult: 2.20, minionHp: 2.4, midBossHp: 2.5, finalBossHp: 2.5, dropChance: 0.02, bossDropCount: 1 }
+        };
+
+        let minionHpMultiplier = 1.0;
+        let midBossHpMultiplier = 1.0;
+        let finalBossHpMultiplier = 1.0;
+        let itemDropChanceNormal = 0.09;
+        let bossDropCountConfig = 2;
+
+        function updateSettingsUIFromVariables() {
+            const mHpS = document.getElementById('minionHpSlider'), mHpV = document.getElementById('minionHpVal');
+            const mbHpS = document.getElementById('midBossHpSlider'), mbHpV = document.getElementById('midBossHpVal');
+            const fbHpS = document.getElementById('finalBossHpSlider'), fbHpV = document.getElementById('finalBossHpVal');
+            const dropS = document.getElementById('itemDropChanceSlider'), dropV = document.getElementById('itemDropChanceVal');
+            const bDropSel = document.getElementById('bossDropCountSelect');
+
+            if (mHpS && mHpV) { mHpS.value = minionHpMultiplier; mHpV.innerText = minionHpMultiplier.toFixed(1) + 'x'; }
+            if (mbHpS && mbHpV) { mbHpS.value = midBossHpMultiplier; mbHpV.innerText = midBossHpMultiplier.toFixed(1) + 'x'; }
+            if (fbHpS && fbHpV) { fbHpS.value = finalBossHpMultiplier; fbHpV.innerText = finalBossHpMultiplier.toFixed(1) + 'x'; }
+            if (dropS && dropV) { dropS.value = Math.round(itemDropChanceNormal * 100); dropV.innerText = Math.round(itemDropChanceNormal * 100) + '%'; }
+            if (bDropSel) { bDropSel.value = bossDropCountConfig; }
+        }
+
+        function setSelectDiff(nameKey, mult, btn) {
+            const preset = DIFFICULTY_PRESETS[nameKey] || DIFFICULTY_PRESETS.NORMAL;
+            difficulty = preset.name + ` (Lv.${nameKey === 'EASY' ? 1 : nameKey === 'NORMAL' ? 2 : nameKey === 'HARD' ? 3 : nameKey === 'EXPERT' ? 4 : 5})`;
+            diffMultiplier = preset.diffMult;
+            minionHpMultiplier = preset.minionHp;
+            midBossHpMultiplier = preset.midBossHp;
+            finalBossHpMultiplier = preset.finalBossHp;
+            itemDropChanceNormal = preset.dropChance;
+            bossDropCountConfig = preset.bossDropCount;
+
+            updateSettingsUIFromVariables();
+
+            document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            if (audioCtx) playUpgradeSound();
         }
         function requestNativeFullscreenOnly() {
             try {
@@ -1791,8 +1842,7 @@
         }
 
         function spawnDroppedItem(x, y, isBoss) {
-            // Tuned down to 1/3 drop frequency (Normal: 0.09 drop chance, Bosses: 2 items)
-            const dropChance = isBoss ? 0.65 : 0.09;
+            const dropChance = isBoss ? 0.65 : itemDropChanceNormal;
             if (Math.random() > dropChance) return;
 
             let pool = [];
@@ -1806,8 +1856,8 @@
 
             if (pool.length === 0) pool.push("HEAL");
 
-            // Bosses drop 2 items in a scattering loot fountain!
-            const dropCount = isBoss ? 2 : 1;
+            // Bosses drop configurable items (default 2) in a scattering loot fountain!
+            const dropCount = isBoss ? bossDropCountConfig : 1;
             for (let d = 0; d < dropCount; d++) {
                 const chosen = pool[Math.floor(Math.random() * pool.length)];
                 let lbl = "";
