@@ -2200,8 +2200,7 @@
             if (bullets.length > 300) bullets.splice(0, bullets.length - 300);
             if (enemyLasers.length > 200) enemyLasers.splice(0, enemyLasers.length - 200);
 
-            // Boss Support Spawner (Spawns minion aliens continuously & non-stop during boss/mid-boss battles!)
-            // 1. Minion Alien Swarm Support Spawner (Guaranteed independent timer for continuous swarms!)
+            // Boss Support Spawner (Spawns minion aliens continuously & non-stop with randomized trajectories during boss/mid-boss battles!)
             const _mbMinionMult = (typeof midBossMinionMultiplier !== 'undefined') ? midBossMinionMultiplier : 1.0;
             if (_mbMinionMult > 0.0) {
                 const hasActiveBoss = enemies.some(e => (e.isBoss || e.isFinalBoss) && !e.isDying);
@@ -2209,14 +2208,14 @@
                     if (typeof window.bossMinionTimer === 'undefined') window.bossMinionTimer = 0;
                     window.bossMinionTimer++;
 
-                    // 난이도 및 설정된 밀도에 따른 확정 스폰 쿨다운 (약 2.5 ~ 3.5초 주기)
+                    // 난이도 및 밀도 설정에 따른 무한 반복 확정 스폰 쿨다운 (약 1.8 ~ 2.5초 주기 무한 출격)
                     const isNightmare = (selectedDifficultyKey === "NIGHTMARE");
                     const spawnThreshold = isNightmare
-                        ? Math.max(60, Math.floor(110 / _mbMinionMult))
-                        : Math.max(90, Math.floor(180 / _mbMinionMult));
+                        ? Math.max(45, Math.floor(75 / _mbMinionMult))
+                        : Math.max(65, Math.floor(130 / _mbMinionMult));
 
                     if (window.bossMinionTimer >= spawnThreshold && enemies.length < 85) {
-                        window.bossMinionTimer = 0; // 타이머 리셋 후 확정 스폰
+                        window.bossMinionTimer = 0; // 타이머 리셋 후 무한 확정 출격
                         const swarmCount = isNightmare
                             ? Math.max(5, Math.floor((4 + stageLevel * 1.2) * diffMultiplier * _mbMinionMult))
                             : Math.max(3, Math.floor((2 + stageLevel * 0.8) * diffMultiplier * _mbMinionMult));
@@ -2224,15 +2223,40 @@
                         for (let k = 0; k < swarmCount; k++) {
                             const aType = Math.floor(Math.random() * 10);
                             const hpBase = Math.floor((3 + stageLevel * 1.2) * diffMultiplier);
-                            const spawnX = 40 + Math.random() * (canvas.width - 80);
+                            
+                            // 스폰 위치: 상단 및 좌우 측면에서 랜덤 대형으로 다각도 출격
+                            const spawnSide = Math.random();
+                            let spawnX, spawnY;
+                            if (spawnSide < 0.7) {
+                                // 상단 무작위
+                                spawnX = 30 + Math.random() * (canvas.width - 60);
+                                spawnY = -20 - (k * 32);
+                            } else if (spawnSide < 0.85) {
+                                // 좌측 대각
+                                spawnX = -20 - (k * 25);
+                                spawnY = 40 + Math.random() * 200;
+                            } else {
+                                // 우측 대각
+                                spawnX = canvas.width + 20 + (k * 25);
+                                spawnY = 40 + Math.random() * 200;
+                            }
+
+                            // 랜덤한 궤적 패턴 (0: Sine 파동 궤적, 1: S자 지그재그 회전, 2: 8자 스파이럴 유도, 3: 급가속 대각 타겟 차징)
+                            const trajPattern = Math.floor(Math.random() * 4);
+
                             enemies.push({
                                 x: spawnX,
-                                y: -20 - (k * 36), // 화면 바로 위에서 순차 하강
+                                y: spawnY,
                                 radius: 18,
                                 hp: hpBase, maxHp: hpBase,
-                                speed: (2.0 + (stageLevel * 0.08)) * (diffMultiplier * 0.9),
+                                speed: (2.2 + (stageLevel * 0.08)) * (diffMultiplier * 0.9),
                                 isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0,
-                                hasItem: (Math.random() < 0.30) // 아이템 드롭 확률 제공
+                                hasItem: (Math.random() < 0.30),
+                                trajPattern: trajPattern, // 랜덤 궤적 패턴 ID
+                                sineSeed: Math.random() * 100,
+                                sineAmp: 30 + Math.random() * 50,
+                                sineFreq: 0.04 + Math.random() * 0.04,
+                                swayDir: Math.random() < 0.5 ? 1 : -1
                             });
                         }
                     }
@@ -2714,14 +2738,45 @@
                         enemy.y = Math.max(85, Math.min(canvas.height * 0.50, enemy.y));
                     }
                 } else {
-                    // Minion Alien Direct Target Charge Attack Movement!
+                    // Minion Alien Dynamic Randomized Trajectory Charge Movement Engine!
                     let targetAngle = Math.atan2(player.y - enemy.y, player.x - enemy.x);
                     let spd = enemy.speed || 2.2;
-                    enemy.vx = (enemy.vx || 0) * 0.88 + Math.cos(targetAngle) * spd * 0.12;
-                    enemy.vy = (enemy.vy || spd) * 0.88 + Math.sin(targetAngle) * spd * 0.12;
+                    if (!enemy.animTick) enemy.animTick = 0;
+                    enemy.animTick++;
+
+                    const pattern = (typeof enemy.trajPattern !== 'undefined') ? enemy.trajPattern : (enemy.alienType % 4);
+                    const sFreq = enemy.sineFreq || 0.04;
+                    const sAmp = enemy.sineAmp || 35;
+                    const sSeed = enemy.sineSeed || 0;
+
+                    if (pattern === 0) {
+                        // 1. S자 파동 곡선 궤적 (Sine wave sweeping charge)
+                        const perpAngle = targetAngle + Math.PI / 2;
+                        const waveOffset = Math.sin((enemy.animTick * sFreq) + sSeed) * (sAmp * 0.08);
+                        enemy.vx = (enemy.vx || 0) * 0.82 + (Math.cos(targetAngle) * spd + Math.cos(perpAngle) * waveOffset) * 0.18;
+                        enemy.vy = (enemy.vy || spd) * 0.82 + (Math.sin(targetAngle) * spd + Math.sin(perpAngle) * waveOffset) * 0.18;
+                    } else if (pattern === 1) {
+                        // 2. 지그재그 나선형 꺾기 궤적 (Zigzag snapping charge)
+                        const sway = (Math.sin(enemy.animTick * 0.08) > 0 ? 1 : -1) * (sAmp * 0.06) * (enemy.swayDir || 1);
+                        enemy.vx = (enemy.vx || 0) * 0.85 + (Math.cos(targetAngle) * spd + sway) * 0.15;
+                        enemy.vy = (enemy.vy || spd) * 0.85 + (Math.sin(targetAngle) * spd) * 0.15;
+                    } else if (pattern === 2) {
+                        // 3. 8자 스파이럴 포위 궤적 (Spiral curving charge)
+                        const spiral = Math.cos(enemy.animTick * 0.06 + sSeed) * 2.5;
+                        enemy.vx = (enemy.vx || 0) * 0.85 + (Math.cos(targetAngle) * spd + spiral) * 0.15;
+                        enemy.vy = (enemy.vy || spd) * 0.85 + (Math.sin(targetAngle) * spd + spiral * 0.5) * 0.15;
+                    } else {
+                        // 4. 추적 급가속 직진 돌진 궤적 (Direct target dash)
+                        enemy.vx = (enemy.vx || 0) * 0.88 + Math.cos(targetAngle) * spd * 0.12;
+                        enemy.vy = (enemy.vy || spd) * 0.88 + Math.sin(targetAngle) * spd * 0.12;
+                    }
+
                     enemy.x += enemy.vx;
-                    enemy.y += Math.max(0.6, enemy.vy);
-                    enemy.x = Math.max(25, Math.min(canvas.width - 25, enemy.x));
+                    enemy.y += Math.max(0.8, enemy.vy);
+
+                    // 좌우 벽 바운스 가이드
+                    if (enemy.x < 15) { enemy.x = 15; enemy.vx = Math.abs(enemy.vx || 1); }
+                    if (enemy.x > canvas.width - 15) { enemy.x = canvas.width - 15; enemy.vx = -Math.abs(enemy.vx || 1); }
                 }
 
                 if (!enemy || enemy.isDying) continue;
