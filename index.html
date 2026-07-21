@@ -457,21 +457,27 @@
                                     style="flex: 1; accent-color: #00d2d3; cursor: pointer; height: 5px;">
                                 <span class="bgm-vol-disp"
                                     style="font-size: 12px; font-weight: bold; color: #ff9f43; min-width: 35px; text-align: right; text-shadow: 0 0 6px rgba(255,159,67,0.4);">50%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /통합 전술 환경설정 패널 끝 -->
+
                     <!-- 난이도 및 전술 옵션 설정 모달 호출 대형 버튼 -->
-                    <button style="font-size: 16px; padding: 14px 28px; border-radius: 25px; background: rgba(20, 26, 38, 0.9); border: 2px solid #ff9f43; color: #ff9f43; font-weight: 900; cursor: pointer; box-shadow: 0 0 20px rgba(255, 159, 67, 0.5); margin-bottom: 12px; width: 90%; max-width: 360px;"
-                        onclick="openDifficultyModal()">⚙️ 작전 난이도 & 전술 옵션 설정</button>
-                    
-                    <div id="activeDiffSummaryDisp" style="font-size: 12px; color: #00d2d3; font-weight: bold; margin-bottom: 24px; text-shadow: 0 0 8px rgba(0,210,211,0.5);">
+                    <button style="font-size: 15px; padding: 13px 20px; border-radius: 25px; background: rgba(20, 26, 38, 0.9); border: 2px solid #ff9f43; color: #ff9f43; font-weight: 900; cursor: pointer; box-shadow: 0 0 20px rgba(255, 159, 67, 0.5); margin-bottom: 10px; width: 95%; max-width: 420px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                        onclick="openDifficultyModal()">⚙️ 작전 난이도 &amp; 전술 옵션 설정</button>
+
+                    <div id="activeDiffSummaryDisp" style="font-size: 12px; color: #00d2d3; font-weight: bold; margin-bottom: 18px; text-shadow: 0 0 8px rgba(0,210,211,0.5);">
                         🎯 현재 설정: [일반 (NORMAL)]
                     </div>
 
-                    <!-- 2. 메인 AAA 스타일에 매칭되는 고시성 CTA 버튼 -->
+                    <!-- 메인 CTA 버튼 -->
                     <button id="startBtn"
                         style="font-size: 22px; padding: 16px 52px; border-radius: 40px; background: linear-gradient(135deg, #00d2d3, #0984e3); box-shadow: 0 0 30px rgba(0, 210, 211, 0.7); border: 2px solid #fff; cursor: pointer; font-weight: 900; letter-spacing: 3px; margin-bottom: 12px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"
                         onclick="handleStartClick()">🚀 작 전 개 시</button>
                 </div>
 
-                <!-- 3. 하단 서브 탭 모달 버튼 바 (환경설정 제거 후 2개 대형 버튼으로 개편) -->
+                <!-- 하단 서브 탭 모달 버튼 바 -->
+
                 <div
                     style="display: flex; gap: 12px; justify-content: center; width: 95%; max-width: 480px; margin-bottom: 4px;">
                     <button
