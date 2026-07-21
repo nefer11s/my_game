@@ -1231,6 +1231,9 @@ if (document.readyState === 'loading') {
         }
 
         window.addEventListener('keydown', (e) => {
+            if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA')) {
+                return;
+            }
             const key = e.key.toLowerCase(); const step = 35;
             if (e.key === ' ' || key === 'x' || key === 'e') {
                 if (gameState === "PLAYING" && !isPaused) {
@@ -1247,13 +1250,15 @@ if (document.readyState === 'loading') {
             if (key === 'p' && gameState === "PLAYING") { togglePauseState(); }
             if (key === 'b' && gameState === "PLAYING") { toggleBGM(); }
             if (key === 'm' && (gameState === "PLAYING" || gameState === "GAMEOVER")) { stopBGM(); saveHighScore(); isPaused = false; playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; updateUIVisibility(); }
-            if (key === 's' && gameState === "PLAYING" && !isPaused) {
+            if (e.ctrlKey && key === 's' && gameState === "PLAYING" && !isPaused) {
+                e.preventDefault();
                 localStorage.setItem("rr_supreme_save_active", "true"); localStorage.setItem("rr_supreme_save_score", score); localStorage.setItem("rr_supreme_save_hp", player.hp); localStorage.setItem("rr_supreme_save_wave", waveCount);
                 localStorage.setItem("rr_supreme_save_allies", JSON.stringify(player.allies)); localStorage.setItem("rr_supreme_save_weapon", player.weaponType); localStorage.setItem("rr_supreme_save_buff", player.buffType);
                 localStorage.setItem("rr_supreme_save_defense", player.defenseType); localStorage.setItem("rr_supreme_save_diff", difficulty); localStorage.setItem("rr_supreme_save_mult", diffMultiplier);
                 saveHighScore(); playUpgradeSound(); addFloatingText(player.x, player.y - 60, "💾 전황 세이브 완료!", "#1cfc03");
             }
-            if (key === 'l' && gameState === "PLAYING") {
+            if (e.ctrlKey && key === 'l' && gameState === "PLAYING") {
+                e.preventDefault();
                 if (localStorage.getItem("rr_supreme_save_active") === "true") {
                     score = parseInt(localStorage.getItem("rr_supreme_save_score")); player.hp = parseInt(localStorage.getItem("rr_supreme_save_hp")); waveCount = parseInt(localStorage.getItem("rr_supreme_save_wave"));
                     player.allies = JSON.parse(localStorage.getItem("rr_supreme_save_allies")); player.weaponType = localStorage.getItem("rr_supreme_save_weapon"); player.buffType = localStorage.getItem("rr_supreme_save_buff");
@@ -1333,9 +1338,31 @@ if (document.readyState === 'loading') {
         let minionHpMultiplier = 1.0;
         let midBossHpMultiplier = 1.0;
         let finalBossHpMultiplier = 1.0;
-        let finalBossHpRatio = 15; // Default: 15x of Stage 5 Strongest Mid-Boss HP
-        let itemDropChanceNormal = 0.09;
-        let bossDropCountConfig = 2;
+        let finalBossHpRatio = 15;
+        function lockPortraitOrientation() {
+            try {
+                if (location.protocol !== 'file:' && screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock('portrait-primary').catch(() => {});
+                }
+            } catch (e) { }
+        }
+
+        function requestNativeFullscreenOnly() {
+            try {
+                if (window.self !== window.top) return;
+                lockPortraitOrientation();
+                const elem = document.documentElement;
+                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                    if (elem.requestFullscreen) {
+                        elem.requestFullscreen({ navigationUI: "hide" }).catch(() => { });
+                    } else if (elem.webkitRequestFullscreen) {
+                        try { elem.webkitRequestFullscreen(); } catch (e) { }
+                    } else if (elem.webkitEnterFullscreen) {
+                        try { elem.webkitEnterFullscreen(); } catch (e) { }
+                    }
+                }
+            } catch (e) { }
+        }
 
         function updateFinalBossHpRatioDisp() {
             const ratioSlider = document.getElementById('finalBossHpRatioSlider');
