@@ -517,10 +517,15 @@
                         🎯 현재 설정: [일반 (NORMAL)]
                     </div>
 
-                    <!-- 메인 CTA 버튼 -->
-                    <button id="startBtn"
-                        style="font-size: 22px; padding: 16px 52px; border-radius: 40px; background: linear-gradient(135deg, #00d2d3, #0984e3); box-shadow: 0 0 30px rgba(0, 210, 211, 0.7); border: 2px solid #fff; cursor: pointer; font-weight: 900; letter-spacing: 3px; margin-bottom: 12px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"
-                        onclick="handleStartClick()">🚀 작 전 개 시</button>
+                    <!-- 메인 CTA 버튼 구역 (일시정지 중 작전계속 지원) -->
+                    <div style="display: flex; flex-direction: column; gap: 10px; align-items: center; width: 100%; margin-bottom: 12px;">
+                        <button id="resumeBtn"
+                            style="display: none; font-size: 20px; padding: 14px 44px; border-radius: 40px; background: linear-gradient(135deg, #10ac84, #1dd1a1); box-shadow: 0 0 30px rgba(16, 172, 132, 0.8); border: 2px solid #fff; cursor: pointer; font-weight: 900; letter-spacing: 2px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"
+                            onclick="resumeGame()">▶️ 작 전 계 속 (RESUME)</button>
+                        <button id="startBtn"
+                            style="font-size: 20px; padding: 14px 44px; border-radius: 40px; background: linear-gradient(135deg, #00d2d3, #0984e3); box-shadow: 0 0 30px rgba(0, 210, 211, 0.7); border: 2px solid #fff; cursor: pointer; font-weight: 900; letter-spacing: 2px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"
+                            onclick="handleStartClick()">🚀 작 전 개 시 (START GAME)</button>
+                    </div>
                 </div>
 
                 <!-- 하단 서브 탭 모달 버튼 바 -->
@@ -1584,13 +1589,16 @@
         function getAllyRelativePos(index) { return { xOffset: ((index % 7) - 3) * 20, yOffset: (Math.floor(index / 7) + 1) * 22 }; }
 
         function updateUIVisibility() {
-            const sidebar = document.getElementById('sidebarPanel');
-            if (!sidebar) return;
-            // Always hide sidebar panel during gameplay for 100% clean, immersive view!
-            if (gameState === "PLAYING") {
-                sidebar.style.display = 'none';
-            } else {
-                sidebar.style.display = 'none';
+            const resumeBtn = document.getElementById('resumeBtn');
+            const startBtn = document.getElementById('startBtn');
+            if (resumeBtn && startBtn) {
+                if (isPaused && (gameState === "PAUSED" || gameState === "PLAYING")) {
+                    resumeBtn.style.display = 'block';
+                    startBtn.innerText = '🚀 새 작 전 개 시 (NEW GAME)';
+                } else {
+                    resumeBtn.style.display = 'none';
+                    startBtn.innerText = '🚀 작 전 개 시 (START GAME)';
+                }
             }
         }
 
@@ -1611,23 +1619,36 @@
                 if (key === 'arrowleft' || key === 'a') player.targetX = Math.max(40, player.targetX - step);
                 if (key === 'arrowright' || key === 'd') player.targetX = Math.min(canvas.width - 40, player.targetX + step);
             }
-            if (key === 'p' && gameState === "PLAYING") { togglePauseState(); }
+            if (key === 'p' && (gameState === "PLAYING" || gameState === "PAUSED")) { togglePauseState(); }
             if (key === 'b' && gameState === "PLAYING") { toggleBGM(); }
             if (key === 'm' && (gameState === "PLAYING" || gameState === "GAMEOVER")) { stopBGM(); saveHighScore(); isPaused = false; playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; updateUIVisibility(); }
         });
 
         function togglePauseState() {
-            isPaused = !isPaused;
             const pauseModal = document.getElementById('pauseItemSelectorModal');
-            if (isPaused) {
-                stopBGM();
-                if (pauseModal) pauseModal.style.display = 'flex';
-                if (audioCtx) playUpgradeSound();
-            } else {
-                if (pauseModal) pauseModal.style.display = 'none';
-                startBGM();
-                if (audioCtx) playUpgradeSound();
+            if (pauseModal) pauseModal.style.display = 'none'; // 팝업 모달 제거!
+
+            if (gameState === "PLAYING" || gameState === "PAUSED") {
+                isPaused = !isPaused;
+                if (isPaused) {
+                    stopBGM();
+                    gameState = "PAUSED";
+                    document.getElementById('menuOverlay').style.display = 'flex';
+                    if (audioCtx) playUpgradeSound();
+                } else {
+                    resumeGame();
+                }
+                updateUIVisibility();
             }
+        }
+
+        function resumeGame() {
+            isPaused = false;
+            gameState = "PLAYING";
+            document.getElementById('menuOverlay').style.display = 'none';
+            startBGM();
+            if (audioCtx) playUpgradeSound();
+            updateUIVisibility();
         }
 
         function returnToMainMenu() {
@@ -1963,6 +1984,7 @@
         function startGame() {
             requestNativeFullscreenOnly(); // Instant Fullscreen transition on Game Start!
             gameState = "PLAYING"; score = 0; waveCount = 0; spawnTimer = 0; isPaused = false;
+            document.getElementById('menuOverlay').style.display = 'none';
             const presetKey = (typeof selectedDifficultyKey !== 'undefined' && selectedDifficultyKey) ? selectedDifficultyKey : "NORMAL";
             const preset = DIFFICULTY_PRESETS[presetKey] || DIFFICULTY_PRESETS.NORMAL;
             player.allies = []; player.x = 270; player.targetX = 270; player.y = 590; player.targetY = 590; player.maxHp = 100; player.hp = 100; player.lives = 3; player.ultimateStock = customStartUltStockConfig || preset.ultStock || 3;

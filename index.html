@@ -507,10 +507,15 @@
                         🎯 현재 설정: [일반 (NORMAL)]
                     </div>
 
-                    <!-- 메인 CTA 버튼 -->
-                    <button id="startBtn"
-                        style="font-size: 22px; padding: 16px 52px; border-radius: 40px; background: linear-gradient(135deg, #00d2d3, #0984e3); box-shadow: 0 0 30px rgba(0, 210, 211, 0.7); border: 2px solid #fff; cursor: pointer; font-weight: 900; letter-spacing: 3px; margin-bottom: 12px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"
-                        onclick="handleStartClick()">🚀 작 전 개 시</button>
+                    <!-- 메인 CTA 버튼 구역 (일시정지 중 작전계속 지원) -->
+                    <div style="display: flex; flex-direction: column; gap: 10px; align-items: center; width: 100%; margin-bottom: 12px;">
+                        <button id="resumeBtn"
+                            style="display: none; font-size: 20px; padding: 14px 44px; border-radius: 40px; background: linear-gradient(135deg, #10ac84, #1dd1a1); box-shadow: 0 0 30px rgba(16, 172, 132, 0.8); border: 2px solid #fff; cursor: pointer; font-weight: 900; letter-spacing: 2px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"
+                            onclick="resumeGame()">▶️ 작 전 계 속 (RESUME)</button>
+                        <button id="startBtn"
+                            style="font-size: 20px; padding: 14px 44px; border-radius: 40px; background: linear-gradient(135deg, #00d2d3, #0984e3); box-shadow: 0 0 30px rgba(0, 210, 211, 0.7); border: 2px solid #fff; cursor: pointer; font-weight: 900; letter-spacing: 2px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"
+                            onclick="handleStartClick()">🚀 작 전 개 시 (START GAME)</button>
+                    </div>
                 </div>
 
                 <!-- 하단 서브 탭 모달 버튼 바 -->
@@ -884,84 +889,79 @@
     </div>
     </div>
 
-    <!-- 일시중지(P) 전술 아이템 셀렉터 팝업 모달 -->
+    <!-- 일시중지(P) 전술 아이템 셀렉터 및 조작법/도감 팝업 모달 -->
     <div id="pauseItemSelectorModal"
         style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 300; justify-content: center; align-items: center;">
         <div
-            style="background: #141822; border: 2px solid #f1c40f; border-radius: 12px; padding: 20px; width: 460px; max-height: 85vh; overflow-y: auto; box-shadow: 0 0 35px rgba(241, 196, 15, 0.5); display: flex; flex-direction: column; gap: 12px; box-sizing: border-box;">
+            style="background: #141822; border: 2px solid #f1c40f; border-radius: 12px; padding: 20px; width: 480px; max-height: 88vh; overflow-y: auto; box-shadow: 0 0 35px rgba(241, 196, 15, 0.5); display: flex; flex-direction: column; gap: 12px; box-sizing: border-box;">
             <div
                 style="font-size: 17px; font-weight: bold; color: #f1c40f; border-bottom: 1px solid #2c3e50; padding-bottom: 8px; text-align: center;">
-                ⏸️ 실시간 일시중지 - 전술 무기 & 아이템 변경 아스날</div>
-            <div style="font-size: 12px; color: #cbd5e1; text-align: center; margin-bottom: 4px;">원하는 아이템을 클릭하면 영구 적용 및
-                즉시 무장 변경됩니다!</div>
+                ⏸️ 일시중지 - 전술 아스날 & 작전 지침서</div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                <button
-                    style="background: rgba(28, 252, 3, 0.15); border: 1px solid #1cfc03; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('HEAL')">💚 <span style="color:#1cfc03; font-weight:bold;">메디컬
-                        킷</span><br><span style="font-size:10px; color:#a4b0be;">HP 회복 / 만피 시 최대 HP 확장</span></button>
-                <button
-                    style="background: rgba(0, 210, 211, 0.15); border: 1px solid #00d2d3; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('LASER')">⚡ <span style="color:#00d2d3; font-weight:bold;">플라즈마
-                        레이저</span><br><span style="font-size:10px; color:#a4b0be;">영구 관통 고출력 빔</span></button>
-                <button
-                    style="background: rgba(255, 211, 44, 0.15); border: 1px solid #ffd32c; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('GATLING')">🔫 <span style="color:#ffd32c; font-weight:bold;">3연장
-                        개틀링</span><br><span style="font-size:10px; color:#a4b0be;">영구 3열 고속 속사 유탄</span></button>
-                <button
-                    style="background: rgba(250, 130, 49, 0.15); border: 1px solid #fa8231; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('ROCKET')">🚀 <span style="color:#fa8231; font-weight:bold;">헤비
-                        로켓</span><br><span style="font-size:10px; color:#a4b0be;">영구 스플래시 중로켓</span></button>
-                <button
-                    style="background: rgba(255, 77, 77, 0.15); border: 1px solid #ff4d4d; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('MISSILE')">🔥 <span style="color:#ff4d4d; font-weight:bold;">열압력
-                        미사일</span><br><span style="font-size:10px; color:#a4b0be;">영구 자동 유도 미사일</span></button>
-                <button
-                    style="background: rgba(255, 159, 67, 0.15); border: 1px solid #ff9f43; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('DAMAGE_X2')">💥 <span style="color:#ff9f43; font-weight:bold;">2배 화력
-                        버프</span><br><span style="font-size:10px; color:#a4b0be;">영구 공격력 2배 증폭</span></button>
-                <button
-                    style="background: rgba(224, 86, 253, 0.15); border: 1px solid #e056fd; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('SPLASH_RANGE')">🔮 <span style="color:#e056fd; font-weight:bold;">스플래시
-                        범주</span><br><span style="font-size:10px; color:#a4b0be;">영구 폭발 범위 확장</span></button>
-                <button
-                    style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('BOMBARD')">☄️ <span style="color:#ff3838; font-weight:bold;">전술 폭격
-                        지원</span><br><span style="font-size:10px; color:#a4b0be;">영구 위성 궤도 정밀 폭격</span></button>
-                <button
-                    style="background: rgba(16, 172, 132, 0.15); border: 1px solid #10ac84; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('NANO_SHIELD')">🛡️ <span style="color:#10ac84; font-weight:bold;">나노
-                        방어막</span><br><span style="font-size:10px; color:#a4b0be;">영구 나노 무적 방어막</span></button>
-                <button
-                    style="background: rgba(164, 176, 190, 0.15); border: 1px solid #a4b0be; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('HEAVY_ARMOR')">🔩 <span style="color:#a4b0be; font-weight:bold;">중장갑
-                        아머</span><br><span style="font-size:10px; color:#a4b0be;">영구 피격 피해 50% 감쇄</span></button>
-                <button
-                    style="background: rgba(46, 134, 222, 0.15); border: 1px solid #2e86de; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('ALLY')">🪖 <span style="color:#2e86de; font-weight:bold;">아군 대원
-                        지원</span><br><span style="font-size:10px; color:#a4b0be;">드론 대원 +1명 즉시 합류</span></button>
-                <button
-                    style="background: rgba(255, 82, 82, 0.15); border: 1px solid #ff5252; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('BOMB')">💣 <span style="color:#ff5252; font-weight:bold;">전술
-                        폭탄</span><br><span style="font-size:10px; color:#a4b0be;">화면 전체 적 일괄 폭파</span></button>
-                <button
-                    style="background: rgba(255, 45, 85, 0.15); border: 1px solid #ff2d55; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('LIFE')">❤️ <span style="color:#ff2d55; font-weight:bold;">목숨
-                        추가</span><br><span style="font-size:10px; color:#a4b0be;">잔여 목숨 +1 보충</span></button>
-                <button
-                    style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('ULTIMATE')">💥 <span style="color:#ff3838; font-weight:bold;">필살기
-                        충전</span><br><span style="font-size:10px; color:#a4b0be;">전술 필살기 +1 보충</span></button>
+            <!-- 일시정지 서브 탭 버튼 바 -->
+            <div style="display: flex; gap: 6px; justify-content: center; width: 100%;">
+                <button id="pTabBtnArsenal" class="pause-tab-btn active-pause-tab" onclick="switchPauseTab('ARSENAL')"
+                    style="flex: 1; background: rgba(241, 196, 15, 0.2); border: 1px solid #f1c40f; color: #f1c40f; padding: 7px 4px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer;">⚡ 무장 변경</button>
+                <button id="pTabBtnControls" class="pause-tab-btn" onclick="switchPauseTab('CONTROLS')"
+                    style="flex: 1; background: rgba(0, 210, 211, 0.1); border: 1px solid #00d2d3; color: #00d2d3; padding: 7px 4px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer;">⌨️ 조작법</button>
+                <button id="pTabBtnCodex" class="pause-tab-btn" onclick="switchPauseTab('CODEX')"
+                    style="flex: 1; background: rgba(224, 86, 253, 0.1); border: 1px solid #e056fd; color: #e056fd; padding: 7px 4px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer;">🎁 아이템 도감</button>
+            </div>
+
+            <!-- 1. 무장 변경 아스날 탭 -->
+            <div id="pSecArsenal" style="display: block;">
+                <div style="font-size: 11px; color: #cbd5e1; text-align: center; margin-bottom: 8px;">원하는 아이템을 클릭하면 즉시 해당 무기로 장착 변경됩니다!</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <button style="background: rgba(28, 252, 3, 0.15); border: 1px solid #1cfc03; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('HEAL')">💚 <span style="color:#1cfc03; font-weight:bold;">메디컬 킷</span><br><span style="font-size:10px; color:#a4b0be;">HP 회복 / 만피 시 최대 HP 확장</span></button>
+                    <button style="background: rgba(0, 210, 211, 0.15); border: 1px solid #00d2d3; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('LASER')">⚡ <span style="color:#00d2d3; font-weight:bold;">플라즈마 레이저</span><br><span style="font-size:10px; color:#a4b0be;">관통 고출력 20배 빔</span></button>
+                    <button style="background: rgba(255, 211, 44, 0.15); border: 1px solid #ffd32c; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('GATLING')">🔫 <span style="color:#ffd32c; font-weight:bold;">3연장 개틀링</span><br><span style="font-size:10px; color:#a4b0be;">3열 고속 속사 유탄 연사</span></button>
+                    <button style="background: rgba(250, 130, 49, 0.15); border: 1px solid #fa8231; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('ROCKET')">🚀 <span style="color:#fa8231; font-weight:bold;">헤비 로켓</span><br><span style="font-size:10px; color:#a4b0be;">대형 광역 스플래시 로켓</span></button>
+                    <button style="background: rgba(255, 77, 77, 0.15); border: 1px solid #ff4d4d; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('MISSILE')">🔥 <span style="color:#ff4d4d; font-weight:bold;">열압력 미사일</span><br><span style="font-size:10px; color:#a4b0be;">자동 유도 파편 미사일</span></button>
+                    <button style="background: rgba(255, 159, 67, 0.15); border: 1px solid #ff9f43; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('DAMAGE_X2')">💥 <span style="color:#ff9f43; font-weight:bold;">2배 화력 버프</span><br><span style="font-size:10px; color:#a4b0be;">공격력 2배 증폭</span></button>
+                    <button style="background: rgba(224, 86, 253, 0.15); border: 1px solid #e056fd; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('SPLASH_RANGE')">🔮 <span style="color:#e056fd; font-weight:bold;">스플래시 범주</span><br><span style="font-size:10px; color:#a4b0be;">폭발 범위 확장 버프</span></button>
+                    <button style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('BOMBARD')">☄️ <span style="color:#ff3838; font-weight:bold;">전술 폭격 지원</span><br><span style="font-size:10px; color:#a4b0be;">위성 궤도 무차별 정밀 폭격</span></button>
+                    <button style="background: rgba(16, 172, 132, 0.15); border: 1px solid #10ac84; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('NANO_SHIELD')">🛡️ <span style="color:#10ac84; font-weight:bold;">나노 방어막</span><br><span style="font-size:10px; color:#a4b0be;">완전 나노 무적 방어막</span></button>
+                    <button style="background: rgba(164, 176, 190, 0.15); border: 1px solid #a4b0be; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('HEAVY_ARMOR')">🔩 <span style="color:#a4b0be; font-weight:bold;">중장갑 아머</span><br><span style="font-size:10px; color:#a4b0be;">피격 피해 50% 감쇄</span></button>
+                    <button style="background: rgba(46, 134, 222, 0.15); border: 1px solid #2e86de; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('ALLY')">🪖 <span style="color:#2e86de; font-weight:bold;">아군 대원 지원</span><br><span style="font-size:10px; color:#a4b0be;">드론 대원 +1명 즉시 합류</span></button>
+                    <button style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('ULTIMATE')">💥 <span style="color:#ff3838; font-weight:bold;">필살기 충전</span><br><span style="font-size:10px; color:#a4b0be;">전술 필살기 +1 보충</span></button>
+                </div>
+            </div>
+
+            <!-- 2. 조작법 가이드 탭 -->
+            <div id="pSecControls" style="display: none; background: rgba(20, 26, 38, 0.6); padding: 12px; border-radius: 8px; border: 1px solid #00d2d3;">
+                <div style="font-size: 13px; font-weight: bold; color: #00d2d3; margin-bottom: 8px;">🎮 전투 가이드 및 조작법</div>
+                <div style="font-size: 11px; color: #e2e8f0; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
+                    <div>🖱️ <b>기체 이동 (PC)</b>: 마우스 좌클릭 드래그 또는 마우스 커서 이동</div>
+                    <div>📱 <b>기체 이동 (모바일)</b>: 화면 터치 후 원하는 방향으로 상대 드래그 (손가락이 비행기를 가리지 않음)</div>
+                    <div>💥 <b>전술 필살기</b>: <code>Space</code> 키 클릭 또는 <b>2손가락 동시에 화면 터치</b></div>
+                    <div>⏸️ <b>일시정지 / 무장창</b>: <code>P</code> 키 클릭 또는 <b>3손가락 동시에 화면 터치</b></div>
+                </div>
+            </div>
+
+            <!-- 3. 아이템 도감 탭 -->
+            <div id="pSecCodex" style="display: none; background: rgba(20, 26, 38, 0.6); padding: 12px; border-radius: 8px; border: 1px solid #e056fd;">
+                <div style="font-size: 13px; font-weight: bold; color: #e056fd; margin-bottom: 8px;">🎁 드롭 아이템 도감 백과</div>
+                <div style="font-size: 11px; color: #e2e8f0; line-height: 1.5; display: flex; flex-direction: column; gap: 5px;">
+                    <div>💚 <b style="color:#1cfc03;">메디컬 킷</b>: HP 회복 (만피 시 최대 HP 확장)</div>
+                    <div>⚡ <b style="color:#00d2d3;">플라즈마 레이저</b>: 20배 관통 광선 빔</div>
+                    <div>🔫 <b style="color:#ffd32c;">3연장 개틀링</b>: 3열 고속 폭풍 속사</div>
+                    <div>🚀 <b style="color:#fa8231;">헤비 로켓</b>: 광역 폭발 스플래시 로켓</div>
+                    <div>🔥 <b style="color:#ff4d4d;">열압력 미사일</b>: 자동 유도 미사일</div>
+                    <div>💥 <b style="color:#ff9f43;">2배 화력 버프</b>: 20초간 화력 2배 증폭</div>
+                    <div>🔮 <b style="color:#e056fd;">스플래시 범주</b>: 폭발 영향 범위 2배 확장</div>
+                    <div>🛡️ <b style="color:#10ac84;">나노 방어막</b>: 20초간 완전 나노 무적</div>
+                    <div>🔩 <b style="color:#a4b0be;">중장갑 아머</b>: 피격 피격 데미지 50% 감쇄</div>
+                    <div>🪖 <b style="color:#2e86de;">아군 대원</b>: 크로스파이어 드론 대원 합류</div>
+                    <div>💥 <b style="color:#ff3838;">필살기 충전</b>: 전 화면 소각 전술 폭탄 +1</div>
+                    <div>❤️ <b style="color:#ff2d55;">목숨 추가</b>: 잔여 생명 +1 증가</div>
+                </div>
             </div>
 
             <!-- 일시중지 네비게이션 액션 버튼 바 -->
-            <div style="display: flex; gap: 6px; margin-top: 10px; width: 100%;">
+            <div style="display: flex; gap: 6px; margin-top: 6px; width: 100%;">
                 <button
-                    style="flex: 1; background: linear-gradient(135deg, #10ac84, #1cfc03); border: none; color: #141822; padding: 10px 4px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;"
+                    style="flex: 1.2; background: linear-gradient(135deg, #10ac84, #1cfc03); border: none; color: #141822; padding: 10px 4px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;"
                     onclick="togglePauseState()">▶️ 전투계속</button>
-                <button
-                    style="flex: 1; background: rgba(20, 26, 38, 0.9); border: 1px solid #00d2d3; color: #00d2d3; padding: 10px 4px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;"
-                    onclick="openInfoModal('CONTROLS')">⌨️ 조작법</button>
                 <button
                     style="flex: 1; background: rgba(44, 62, 80, 0.9); border: 1px solid #f1c40f; color: #f1c40f; padding: 10px 4px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;"
                     onclick="returnToMainMenu()">🏠 지휘소</button>
@@ -1573,13 +1573,16 @@
         function getAllyRelativePos(index) { return { xOffset: ((index % 7) - 3) * 20, yOffset: (Math.floor(index / 7) + 1) * 22 }; }
 
         function updateUIVisibility() {
-            const sidebar = document.getElementById('sidebarPanel');
-            if (!sidebar) return;
-            // Always hide sidebar panel during gameplay for 100% clean, immersive view!
-            if (gameState === "PLAYING") {
-                sidebar.style.display = 'none';
-            } else {
-                sidebar.style.display = 'none';
+            const resumeBtn = document.getElementById('resumeBtn');
+            const startBtn = document.getElementById('startBtn');
+            if (resumeBtn && startBtn) {
+                if (isPaused && (gameState === "PAUSED" || gameState === "PLAYING")) {
+                    resumeBtn.style.display = 'block';
+                    startBtn.innerText = '🚀 새 작 전 개 시 (NEW GAME)';
+                } else {
+                    resumeBtn.style.display = 'none';
+                    startBtn.innerText = '🚀 작 전 개 시 (START GAME)';
+                }
             }
         }
 
@@ -1600,23 +1603,36 @@
                 if (key === 'arrowleft' || key === 'a') player.targetX = Math.max(40, player.targetX - step);
                 if (key === 'arrowright' || key === 'd') player.targetX = Math.min(canvas.width - 40, player.targetX + step);
             }
-            if (key === 'p' && gameState === "PLAYING") { togglePauseState(); }
+            if (key === 'p' && (gameState === "PLAYING" || gameState === "PAUSED")) { togglePauseState(); }
             if (key === 'b' && gameState === "PLAYING") { toggleBGM(); }
             if (key === 'm' && (gameState === "PLAYING" || gameState === "GAMEOVER")) { stopBGM(); saveHighScore(); isPaused = false; playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; updateUIVisibility(); }
         });
 
         function togglePauseState() {
-            isPaused = !isPaused;
             const pauseModal = document.getElementById('pauseItemSelectorModal');
-            if (isPaused) {
-                stopBGM();
-                if (pauseModal) pauseModal.style.display = 'flex';
-                if (audioCtx) playUpgradeSound();
-            } else {
-                if (pauseModal) pauseModal.style.display = 'none';
-                startBGM();
-                if (audioCtx) playUpgradeSound();
+            if (pauseModal) pauseModal.style.display = 'none'; // 팝업 모달 제거!
+
+            if (gameState === "PLAYING" || gameState === "PAUSED") {
+                isPaused = !isPaused;
+                if (isPaused) {
+                    stopBGM();
+                    gameState = "PAUSED";
+                    document.getElementById('menuOverlay').style.display = 'flex';
+                    if (audioCtx) playUpgradeSound();
+                } else {
+                    resumeGame();
+                }
+                updateUIVisibility();
             }
+        }
+
+        function resumeGame() {
+            isPaused = false;
+            gameState = "PLAYING";
+            document.getElementById('menuOverlay').style.display = 'none';
+            startBGM();
+            if (audioCtx) playUpgradeSound();
+            updateUIVisibility();
         }
 
         function returnToMainMenu() {
