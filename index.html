@@ -580,6 +580,33 @@
                 onclick="confirmStartGameFromPrologue()">🔥 출격! 외계 함대 격퇴 및 엄마 구출 작전 개시</button>
         </div>
 
+        <!-- 히어로 전투기 긴급 발진 & 3, 2, 1 카운트다운 모달 -->
+        <div id="launchOverlay"
+            style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 10, 16, 0.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 290; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; text-align: center;">
+            <div style="font-size: 20px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 15px rgba(0, 210, 211, 0.8); margin-bottom: 6px; letter-spacing: 2px;">
+                🚀 [현우 지휘관 출격!]
+            </div>
+            <div style="font-size: 15px; font-weight: 900; color: #ffd32c; text-shadow: 0 0 10px rgba(255, 211, 44, 0.6); margin-bottom: 12px;">
+                "Fire Ceramic Fighter 긴급 발진 부스터 온!"
+            </div>
+
+            <div style="border: 3px solid #ff9f43; border-radius: 16px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 0 25px rgba(255, 159, 67, 0.5); max-width: 320px; width: 90%; background: #000;">
+                <img src="assets/hero_launch.png" alt="Hero Jet Scramble Launch" style="width: 100%; height: auto; max-height: 220px; object-fit: cover; display: block;">
+            </div>
+
+            <div id="countdownNumber"
+                style="font-size: 64px; font-weight: 900; color: #ff3838; text-shadow: 0 0 25px #ff3838, 0 0 50px #ff9f43; margin: 10px 0 16px 0; font-family: sans-serif; animation: countdownPop 0.8s ease-in-out infinite;">
+                3
+            </div>
+
+            <div style="font-size: 13px; color: #00d2d3; font-weight: bold; text-shadow: 0 0 8px rgba(0, 210, 211, 0.5);">
+                ⚔️ 목표: 외계 마왕 함대 소각 및 엄마 구출
+            </div>
+            <style>
+                @keyframes countdownPop { 0% { transform: scale(0.6); opacity: 0.3; } 50% { transform: scale(1.25); opacity: 1; } 100% { transform: scale(1.0); opacity: 0.9; } }
+            </style>
+        </div>
+
         <div id="victoryOverlay"
             style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 10, 16, 0.68); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 250; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; text-align: center;">
             <div
@@ -1695,10 +1722,36 @@
             document.getElementById('prologueOverlay').style.display = 'flex';
         }
 
+        let countdownInterval = null;
+
         function confirmStartGameFromPrologue() {
             if (audioCtx) playUpgradeSound();
             document.getElementById('prologueOverlay').style.display = 'none';
-            startGame();
+            document.getElementById('launchOverlay').style.display = 'flex';
+
+            let count = 3;
+            const cntElem = document.getElementById('countdownNumber');
+            cntElem.innerText = count;
+            cntElem.style.color = '#ff3838';
+
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            countdownInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    cntElem.innerText = count;
+                    if (audioCtx) playLaserSound();
+                } else if (count === 0) {
+                    cntElem.innerText = "START! 🔥";
+                    cntElem.style.color = "#00d2d3";
+                    if (audioCtx) playBombSound();
+                } else {
+                    clearInterval(countdownInterval);
+                    countdownInterval = null;
+                    document.getElementById('launchOverlay').style.display = 'none';
+                    startGame();
+                }
+            }, 900);
         }
         function handleRestartClick() { stopBGM(); playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('victoryOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; updateUIVisibility(); }
 
