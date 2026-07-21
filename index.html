@@ -359,19 +359,23 @@
 <body
     style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
     <div id="kakaoNotice"
-        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(12, 14, 18, 0.96); color:#fff; z-index:9999; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px; box-sizing:border-box;">
+        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(12, 14, 18, 0.96); color:#fff; z-index:9999; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px; box-sizing:border-box;">
         <div
-            style="background:#1e2430; border:2px solid #00d2d3; border-radius:16px; padding:28px 20px; max-width:360px; width:90%; box-shadow:0 0 30px rgba(0,210,211,0.3); display:flex; flex-direction:column; align-items:center;">
-            <div style="font-size:40px; margin-bottom:12px;">⚠️</div>
-            <div style="font-size:18px; font-weight:bold; color:#00d2d3; margin-bottom:10px;">카카오톡 인앱 브라우저 안내</div>
-            <div
-                style="font-size:15px; color:#dcdde1; line-height:1.6; margin-bottom:20px; word-break:keep-all; font-weight:500;">
-                카카오톡 내부 브라우저에서는 게임이 정상 동작하지 않을 수 있습니다.<br><br>
-                <span style="color:#f1c40f; font-weight:bold; font-size:16px;">아래 '다른 브라우저로 열기' 버튼을 눌러주세요.</span>
+            style="background:#1e2430; border:2px solid #00d2d3; border-radius:18px; padding:26px 20px; max-width:380px; width:92%; box-shadow:0 0 35px rgba(0,210,211,0.35); display:flex; flex-direction:column; align-items:center;">
+            <div style="font-size:42px; margin-bottom:10px;">⚠️</div>
+            <div style="font-size:20px; font-weight:900; color:#00d2d3; margin-bottom:12px; letter-spacing:1px;">카카오톡 내장 브라우저 안내</div>
+            
+            <div style="font-size:14px; color:#dcdde1; line-height:1.6; margin-bottom:18px; word-break:keep-all; font-weight:500; text-align:left; background:rgba(0,0,0,0.35); padding:14px 16px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); width:100%; box-sizing:border-box;">
+                카카오톡 내장 브라우저에서는 게임 터치 및 오디오가 제한될 수 있습니다.<br><br>
+                <div style="color:#ffd32c; font-weight:bold; margin-bottom:6px; font-size:15px;">📱 아이폰 (iOS) 이용 시:</div>
+                화면 우측 하단의 <span style="color:#00d2d3; font-weight:900; background:rgba(0,210,211,0.2); padding:2px 6px; border-radius:4px;">'...' (점 3개)</span> 버튼을 누르신 후 <span style="color:#1dd1a1; font-weight:900;">'다른 브라우저에서 열기'</span>를 선택해 주세요. ↘️<br><br>
+                <div style="color:#ff9f43; font-weight:bold; margin-bottom:6px; font-size:15px;">🤖 안드로이드 이용 시:</div>
+                아래 버튼을 누르면 Chrome 등 외부 브라우저로 자동 연결을 시도합니다.
             </div>
+
             <button
                 style="background:linear-gradient(135deg, #10ac84, #1dd1a1); border:none; color:#fff; font-size:16px; font-weight:bold; padding:14px 24px; border-radius:30px; cursor:pointer; width:100%; box-shadow:0 4px 15px rgba(16,172,132,0.4);"
-                onclick="redirectToExternalBrowser()">🌐 다른 브라우저로 열기</button>
+                onclick="redirectToExternalBrowser()">🌐 외부 브라우저로 전환 시도</button>
         </div>
     </div>
     <div id="initSplashOverlay"
@@ -1133,7 +1137,7 @@
     </div>
 
     <script>
-        // KakaoTalk in-app browser redirect
+        // KakaoTalk in-app browser redirect & iOS guidance
         function redirectToExternalBrowser() {
             const url = window.location.href;
             if (url.startsWith('file:')) {
@@ -1141,9 +1145,12 @@
                 return;
             }
             const ua = (navigator.userAgent || '').toLowerCase();
+            const isIOS = /iphone|ipad|ipod/.test(ua);
             if (ua.includes('android')) {
                 const intent = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(url) + ';end;';
                 window.location.href = intent;
+            } else if (isIOS) {
+                alert("💡 아이폰(iOS)은 카카오톡 보안 정책상 자동 브라우저 전환이 제한됩니다.\n\n우측 하단의 '...' (점 세 개) 버튼을 누른 후 '다른 브라우저에서 열기' (Safari)를 선택해 주세요! ↘️");
             } else {
                 window.location.reload();
             }
