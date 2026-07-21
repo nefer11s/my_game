@@ -851,13 +851,17 @@
     <script>
 // KakaoTalk in-app browser redirect
 function redirectToExternalBrowser() {
-  const ua = (navigator.userAgent || '').toLowerCase();
   const url = window.location.href;
+  if (url.startsWith('file:')) {
+    alert('로컬 파일(file://) 실행 환경입니다. 웹 서버(http/https) 주소에서 접속 시 외부 브라우저 전환이 지원됩니다.');
+    return;
+  }
+  const ua = (navigator.userAgent || '').toLowerCase();
   if (ua.includes('android')) {
     const intent = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(url) + ';end;';
     window.location.href = intent;
   } else {
-    window.location.href = url;
+    window.location.reload();
   }
 }
 
