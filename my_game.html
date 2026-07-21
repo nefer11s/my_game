@@ -521,10 +521,10 @@
                     <div style="display: flex; flex-direction: column; gap: 10px; align-items: center; width: 100%; margin-bottom: 12px;">
                         <button id="resumeBtn"
                             style="display: none; font-size: 20px; padding: 14px 44px; border-radius: 40px; background: linear-gradient(135deg, #10ac84, #1dd1a1); box-shadow: 0 0 30px rgba(16, 172, 132, 0.8); border: 2px solid #fff; cursor: pointer; font-weight: 900; letter-spacing: 2px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"
-                            onclick="resumeGame()">▶️ 작 전 계 속 (RESUME)</button>
+                            onclick="resumeGame()">▶️ 작전계속 (RESUME!)</button>
                         <button id="startBtn"
                             style="font-size: 20px; padding: 14px 44px; border-radius: 40px; background: linear-gradient(135deg, #00d2d3, #0984e3); box-shadow: 0 0 30px rgba(0, 210, 211, 0.7); border: 2px solid #fff; cursor: pointer; font-weight: 900; letter-spacing: 2px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"
-                            onclick="handleStartClick()">🚀 작 전 개 시 (START GAME)</button>
+                            onclick="handleStartClick()">🚀 작전개시 (START!)</button>
                     </div>
                 </div>
 
@@ -1632,10 +1632,10 @@
             if (resumeBtn && startBtn) {
                 if (isPaused && (gameState === "PAUSED" || gameState === "PLAYING")) {
                     resumeBtn.style.display = 'block';
-                    startBtn.innerText = '🚀 새 작 전 개 시 (NEW GAME)';
+                    startBtn.innerText = '🚀 새 작전개시 (NEW GAME!)';
                 } else {
                     resumeBtn.style.display = 'none';
-                    startBtn.innerText = '🚀 작 전 개 시 (START GAME)';
+                    startBtn.innerText = '🚀 작전개시 (START!)';
                 }
             }
         }
