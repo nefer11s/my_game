@@ -1492,10 +1492,11 @@ if (document.readyState === 'loading') {
         function handleStartClick() { initAudio(); startBGM(); playUpgradeSound(); requestNativeFullscreenOnly(); document.getElementById('menuOverlay').style.display = 'none'; startGame(); }
         function handleRestartClick() { stopBGM(); playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('victoryOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; updateUIVisibility(); }
 
-        canvas.addEventListener('mousemove', (e) => {
+        window.addEventListener('mousemove', (e) => {
             if (gameState !== "PLAYING" || isPaused) return;
-            if (enemies.some(enemy => (enemy.isBoss || enemy.isFinalBoss) && enemy.isDying)) return;
+            if (enemies.some(enemy => enemy.isFinalBoss && enemy.isDying)) return;
             const rect = canvas.getBoundingClientRect();
+            if (!rect.width || !rect.height) return;
             player.targetX = (e.clientX - rect.left) * (canvas.width / rect.width); player.targetY = (e.clientY - rect.top) * (canvas.height / rect.height);
             player.targetX = Math.max(40, Math.min(canvas.width - 40, player.targetX)); player.targetY = Math.max(72, Math.min(canvas.height - 80, player.targetY));
         });
@@ -1504,7 +1505,7 @@ if (document.readyState === 'loading') {
 
         function handleTouch(e) {
             if (gameState !== "PLAYING") return;
-            if (enemies.some(enemy => (enemy.isBoss || enemy.isFinalBoss) && enemy.isDying)) return;
+            if (enemies.some(enemy => enemy.isFinalBoss && enemy.isDying)) return;
 
             // Check if three or more fingers touch the screen -> Trigger Pause
             if (e.touches && e.touches.length >= 3) {
@@ -2323,7 +2324,7 @@ if (document.readyState === 'loading') {
                 }
                 if (enemySpliced) continue;
                 if (enemy) {
-                    if ((!enemy.isFinalBoss && enemy.isDying) || (!enemy.isFinalBoss && !enemy.isBoss && enemy.y > canvas.height)) {
+                    if (!enemy.isFinalBoss && (enemy.isDying || enemy.y > canvas.height + 100)) {
                         enemies.splice(i, 1);
                     }
                 }
