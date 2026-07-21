@@ -2664,30 +2664,58 @@
                     if (enemy.spawnShieldTimer > 0) enemy.spawnShieldTimer--;
                     if (enemy.phaseGateTimer > 0) enemy.phaseGateTimer--;
 
-                    // Phase 3 attack speed & motion boost!
+                    // 최종 보스 사방팔방(상하좌우 8자/웨이브/다이빙) 3D-like 전방위 다이내믹 기동 엔진!
                     const moveSpd = enemy.phase === 3 ? 2.8 : enemy.phase === 2 ? 2.2 : 1.6;
-                    if (enemy.y < 200) {
+                    if (!enemy.bossAnimTick) enemy.bossAnimTick = Math.random() * 1000;
+                    enemy.bossAnimTick++;
+                    const bTick = enemy.bossAnimTick;
+
+                    if (enemy.y < 160 && !enemy.hasLanded) {
                         enemy.y += 3.5;
-                        if (enemy.y >= 200) {
-                            enemy.y = 200;
+                        if (enemy.y >= 160) {
+                            enemy.hasLanded = true;
                             canvasShakeTimer = 20;
                         }
                     } else {
                         if (!enemy.hoverDir) enemy.hoverDir = 1;
-                        enemy.x += enemy.hoverDir * moveSpd * (diffMultiplier * 0.9);
+                        // X축: 기본 왕복 + 플레이어 위치 미세 유도 추적
+                        enemy.x += (enemy.hoverDir * moveSpd * 1.5 + (player.x - enemy.x) * 0.008) * (diffMultiplier * 0.9);
                         if (enemy.x > canvas.width - 90) enemy.hoverDir = -1;
                         if (enemy.x < 90) enemy.hoverDir = 1;
+
+                        // Y축: 페이즈별 사방팔방 진폭 (1, 2, 3 페이즈에 따라 웅장하고 유기적으로 상하좌우를 휘저음)
+                        const yBase = enemy.phase === 3 ? 240 : enemy.phase === 2 ? 210 : 180;
+                        const yAmp1 = enemy.phase === 3 ? 120 : enemy.phase === 2 ? 85 : 55;
+                        const yAmp2 = enemy.phase === 3 ? 55 : enemy.phase === 2 ? 40 : 25;
+
+                        const targetY = yBase + Math.sin(bTick * (0.02 + enemy.phase * 0.008)) * yAmp1 + Math.cos(bTick * 0.012) * yAmp2;
+                        enemy.y += (targetY - enemy.y) * 0.06;
+                        enemy.y = Math.max(90, Math.min(canvas.height * 0.58, enemy.y));
                     }
                 } else if (enemy.isBoss) {
-                    // Stage Mid-Boss Hover & Battle Movement Logic (v11.1.0 - Never flies offscreen or into HUD!)
-                    if (enemy.y < 165) {
+                    // 중간 보스 사방팔방(상하좌우 8자 웨이브 & 다이빙) 맞춤형 기동 엔진
+                    if (!enemy.bossAnimTick) enemy.bossAnimTick = Math.random() * 1000;
+                    enemy.bossAnimTick++;
+                    const bTick = enemy.bossAnimTick;
+
+                    if (enemy.y < 140 && !enemy.hasLanded) {
                         enemy.y += 2.5;
-                        if (enemy.y >= 165) enemy.y = 165;
+                        if (enemy.y >= 140) enemy.hasLanded = true;
                     } else {
                         if (!enemy.hoverDir) enemy.hoverDir = Math.random() > 0.5 ? 1 : -1;
-                        enemy.x += enemy.hoverDir * 1.8 * (diffMultiplier * 0.9);
+
+                        // X축: 파동형 왕복 기동
+                        const xOffset = Math.sin(bTick * 0.03) * 1.8;
+                        enemy.x += (enemy.hoverDir * 1.9 + xOffset) * (diffMultiplier * 0.9);
                         if (enemy.x > canvas.width - 65) enemy.hoverDir = -1;
                         if (enemy.x < 65) enemy.hoverDir = 1;
+
+                        // Y축: 상하 8자 및 웅장한 웨이브 호버링 (Y: 90 ~ 310 영역)
+                        const bTypeOffset = ((enemy.bossType || 0) % 4) * 15;
+                        const yBase = 175 + bTypeOffset;
+                        const targetY = yBase + Math.sin(bTick * 0.028 + (enemy.bossType || 0)) * 60 + Math.cos(bTick * 0.014) * 35;
+                        enemy.y += (targetY - enemy.y) * 0.05;
+                        enemy.y = Math.max(85, Math.min(canvas.height * 0.50, enemy.y));
                     }
                 } else {
                     // Minion Alien Direct Target Charge Attack Movement!
