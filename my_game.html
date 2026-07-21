@@ -2634,12 +2634,12 @@ if (document.readyState === 'loading') {
                 if (eff.life <= 0) activeAnnihilationEffect = null;
             }
 
-            // Enforce Strict Gameplay Area Clipping (y: 112px ~ canvas.height)
+            // Enforce Strict Gameplay Area Clipping (y: 54px ~ canvas.height)
             // Prevents any enemy ship, projectile, overhead HP bar, or particle from bleeding into the top HUD status bar!
             ctx.save();
             try {
                 ctx.beginPath();
-                ctx.rect(0, 112, canvas.width, canvas.height - 112);
+                ctx.rect(0, 54, canvas.width, canvas.height - 54);
                 ctx.clip();
 
             stars.forEach(s => {
