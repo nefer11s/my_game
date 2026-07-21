@@ -2512,7 +2512,8 @@ if (document.readyState === 'loading') {
                 }
             }
             else if (t === "ULTIMATE") {
-                const maxUlt = (currentDifficultyPreset && currentDifficultyPreset.ultStock) ? currentDifficultyPreset.ultStock : 6;
+                const currentPreset = DIFFICULTY_PRESETS[selectedDifficultyKey || "NORMAL"];
+                const maxUlt = (currentPreset && currentPreset.ultStock) ? currentPreset.ultStock : 6;
                 if (player.ultimateStock < maxUlt) {
                     player.ultimateStock++;
                     updateUltimateUI();
@@ -3188,7 +3189,8 @@ if (document.readyState === 'loading') {
             ctx.fillText(`🪖 드론 ${player.allies.length}기`, 252, bottomHUDY + 44);
 
             // 3. Ultimate Skill Stock Badge (Right Aligned)
-            const maxUltBar = (currentDifficultyPreset && currentDifficultyPreset.ultStock) ? currentDifficultyPreset.ultStock : 6;
+            const currentPreset = DIFFICULTY_PRESETS[selectedDifficultyKey || "NORMAL"];
+            const maxUltBar = (currentPreset && currentPreset.ultStock) ? currentPreset.ultStock : 6;
             ctx.textAlign = 'right';
             ctx.fillStyle = player.ultimateStock > 0 ? '#ff6b6b' : '#a4b0be';
             ctx.font = '900 12px sans-serif';
