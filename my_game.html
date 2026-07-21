@@ -2304,13 +2304,36 @@
                 enemy.x += (player.x - enemy.x) * (enemy.isBoss ? 0.012 : 0.007);
 
                 // Enemy Firing Logic - High Visibility Plasma Bullets (Tuned Cooldowns for Smooth Evade)
-                if (!enemy.isBoss && globalAnimTick % 85 === 0 && Math.random() > 0.45) {
+                if (!enemy.isBoss && globalAnimTick % 80 === 0 && Math.random() > 0.40) {
                     const pal = ALIEN_PALETTES[(enemy.alienType || 0) % ALIEN_PALETTES.length] || ALIEN_PALETTES[0];
-                    enemyLasers.push({ x: enemy.x, y: enemy.y + 18, w: 8, h: 22, vy: 4.8, color: pal.glow || '#55efc4', isBoss: false, vx: 0 });
+                    const minionWpn = (enemy.alienType || 0) % 6; // 6가지 신규 잡몹 무기 무작위 발사!
+                    const targetAngle = Math.atan2(player.y - enemy.y, player.x - enemy.x);
+                    const spd = 4.6;
+
+                    if (minionWpn === 0) {
+                        // 1. 🌟 Plasma Star Orb (플라즈마 회전 별탄)
+                        enemyLasers.push({ x: enemy.x, y: enemy.y + 18, w: 14, h: 14, vx: Math.cos(targetAngle) * spd, vy: Math.sin(targetAngle) * spd, color: pal.glow || '#ff9f43', bulletType: 'STAR', angle: 0, isBoss: false });
+                    } else if (minionWpn === 1) {
+                        // 2. 🔮 Homing Bio Orb (유도형 바이오 구체)
+                        enemyLasers.push({ x: enemy.x, y: enemy.y + 18, w: 16, h: 16, vx: Math.cos(targetAngle) * 3.6, vy: Math.sin(targetAngle) * 3.6, color: '#e056fd', bulletType: 'HOMING_ORB', isBoss: false });
+                    } else if (minionWpn === 2) {
+                        // 3. ⚡ Twin Lightning Slash (쌍둥이 뇌전 베기 탄막)
+                        enemyLasers.push({ x: enemy.x - 10, y: enemy.y + 16, w: 18, h: 8, vx: -0.8, vy: 5.2, color: '#00ffcc', bulletType: 'SLASH', isBoss: false });
+                        enemyLasers.push({ x: enemy.x + 10, y: enemy.y + 16, w: 18, h: 8, vx: 0.8, vy: 5.2, color: '#00ffcc', bulletType: 'SLASH', isBoss: false });
+                    } else if (minionWpn === 3) {
+                        // 4. 🌀 Vortex Spiral Web (소용돌이 나선 거미줄 탄막)
+                        enemyLasers.push({ x: enemy.x, y: enemy.y + 18, w: 12, h: 12, vx: Math.sin(globalAnimTick * 0.1) * 2.2, vy: 4.8, color: '#badc58', bulletType: 'VORTEX', angle: 0, isBoss: false });
+                    } else if (minionWpn === 4) {
+                        // 5. 💥 Cluster Shatter Bomb (파편 분열 폭탄)
+                        enemyLasers.push({ x: enemy.x, y: enemy.y + 18, w: 15, h: 15, vx: 0, vy: 4.2, color: '#ff3838', bulletType: 'CLUSTER', timer: 45, isBoss: false });
+                    } else {
+                        // 6. 🛡️ Dark Needle (고속 암흑 침 레이저)
+                        enemyLasers.push({ x: enemy.x, y: enemy.y + 18, w: 6, h: 28, vx: 0, vy: 6.8, color: '#74b9ff', bulletType: 'NEEDLE', isBoss: false });
+                    }
                 }
-                if (!enemy.isDying && enemy.isFinalBoss && globalAnimTick % 45 === 0) {
-                    // Final Boss Randomized & Multi-Pattern Attack Engine!
-                    const atkType = Math.floor(Math.random() * 5);
+                if (!enemy.isDying && enemy.isFinalBoss && globalAnimTick % 40 === 0) {
+                    // Final Boss Randomized & Multi-Pattern Attack Engine! (Total 7 Patterns with 2 NEW Mega Weapons!)
+                    const atkType = Math.floor(Math.random() * 7);
 
                     if (atkType === 0) {
                         // 1. 360-degree Radial Ring Energy Burst (12 projectiles)
@@ -2320,10 +2343,10 @@
                             const spd = 4.8;
                             enemyLasers.push({
                                 x: enemy.x, y: enemy.y + 20,
-                                w: 10, h: 10,
+                                w: 12, h: 12,
                                 vx: Math.cos(angle) * spd,
                                 vy: Math.sin(angle) * spd,
-                                color: '#ffd32c', isBoss: true
+                                color: '#ffd32c', bulletType: 'STAR', isBoss: true
                             });
                         }
                         addFloatingText(enemy.x, enemy.y - 60, "💥 360도 링 파동 탄막!", "#ffd32c", 14);
@@ -2335,7 +2358,7 @@
                                 x: enemy.x + (vx * 15), y: enemy.y + 40,
                                 w: 11, h: 28,
                                 vy: 6.2, vx: vx,
-                                color: idx % 2 === 0 ? '#ff2d55' : '#00d2d3', isBoss: true
+                                color: idx % 2 === 0 ? '#ff2d55' : '#00d2d3', bulletType: 'NEEDLE', isBoss: true
                             });
                         });
                         addFloatingText(enemy.x, enemy.y - 60, "⚡ 7방향 레이저 융단 폭격!", "#ff2d55", 14);
@@ -2347,10 +2370,10 @@
                             const finalAngle = pAngle + (b * 0.25);
                             enemyLasers.push({
                                 x: enemy.x + (b * 25), y: enemy.y + 30,
-                                w: 16, h: 32,
+                                w: 18, h: 18,
                                 vx: Math.cos(finalAngle) * bSpd,
                                 vy: Math.sin(finalAngle) * bSpd,
-                                color: '#ff9f43', isBoss: true
+                                color: '#ff9f43', bulletType: 'HOMING_ORB', isBoss: true
                             });
                         }
                         addFloatingText(enemy.x, enemy.y - 60, "💣 조준형 열압력 폭탄 탄막!", "#ff9f43", 14);
@@ -2361,49 +2384,84 @@
                             const angle = baseAngle + s * (Math.PI / 3);
                             enemyLasers.push({
                                 x: enemy.x, y: enemy.y + 30,
-                                w: 10, h: 24,
+                                w: 12, h: 24,
                                 vx: Math.cos(angle) * 5.0,
                                 vy: Math.abs(Math.sin(angle)) * 4.5 + 2.0,
-                                color: '#e056fd', isBoss: true
+                                color: '#e056fd', bulletType: 'VORTEX', isBoss: true
                             });
                         }
                         addFloatingText(enemy.x, enemy.y - 60, "🌀 나선 회전 레이저 포화!", "#e056fd", 14);
-                    } else {
+                    } else if (atkType === 4) {
                         // 5. Triple Heavy Beam & Side Scattering Volley
-                        enemyLasers.push({ x: enemy.x - 45, y: enemy.y + 40, w: 14, h: 36, vy: 7.0, vx: -1.2, color: '#ff3838', isBoss: true });
-                        enemyLasers.push({ x: enemy.x, y: enemy.y + 50, w: 18, h: 42, vy: 7.5, vx: 0, color: '#1cfc03', isBoss: true });
-                        enemyLasers.push({ x: enemy.x + 45, y: enemy.y + 40, w: 14, h: 36, vy: 7.0, vx: 1.2, color: '#ff3838', isBoss: true });
+                        enemyLasers.push({ x: enemy.x - 45, y: enemy.y + 40, w: 14, h: 36, vy: 7.0, vx: -1.2, color: '#ff3838', bulletType: 'NEEDLE', isBoss: true });
+                        enemyLasers.push({ x: enemy.x, y: enemy.y + 50, w: 18, h: 42, vy: 7.5, vx: 0, color: '#1cfc03', bulletType: 'NEEDLE', isBoss: true });
+                        enemyLasers.push({ x: enemy.x + 45, y: enemy.y + 40, w: 14, h: 36, vy: 7.0, vx: 1.2, color: '#ff3838', bulletType: 'NEEDLE', isBoss: true });
                         addFloatingText(enemy.x, enemy.y - 60, "🔥 3중 주포 광선 & 분산포!", "#1cfc03", 14);
+                    } else if (atkType === 5) {
+                        // 6. 🆕 🌌 Black Hole Dimensional Vortex (신박한 1호: 디멘션 블랙홀 소용돌이 폭풍!)
+                        const coreCount = 16;
+                        for (let b = 0; b < coreCount; b++) {
+                            const bAngle = b * (Math.PI * 2 / coreCount) + (globalAnimTick * 0.08);
+                            const bSpd = 4.2;
+                            enemyLasers.push({
+                                x: enemy.x, y: enemy.y + 30,
+                                w: 15, h: 15,
+                                vx: Math.cos(bAngle) * bSpd,
+                                vy: Math.sin(bAngle) * bSpd + 1.2,
+                                color: '#00ffcc', bulletType: 'VORTEX', angle: bAngle, isBoss: true
+                            });
+                        }
+                        addFloatingText(enemy.x, enemy.y - 60, "🌌 🔮 디멘션 블랙홀 소용돌이 폭풍!", "#00ffcc", 16);
+                    } else {
+                        // 7. 🆕 ⚔️ Hyperion X-Cross Mega Beam Barrage (신박한 2호: 하이페리온 X자 교차 메가 융단 빔!)
+                        const xSpds = [-3.8, -1.9, 1.9, 3.8];
+                        xSpds.forEach(vx => {
+                            enemyLasers.push({
+                                x: enemy.x, y: enemy.y + 35,
+                                w: 22, h: 48,
+                                vx: vx, vy: 6.8,
+                                color: '#ff007f', bulletType: 'SLASH', isBoss: true
+                            });
+                        });
+                        addFloatingText(enemy.x, enemy.y - 60, "⚔️ ⚡ 하이페리온 X자 메가 광선 포격!", "#ff007f", 16);
                     }
-                } else if (!enemy.isDying && !enemy.isFinalBoss && enemy.isBoss && globalAnimTick % 70 === 0) {
+                } else if (!enemy.isDying && !enemy.isFinalBoss && enemy.isBoss && globalAnimTick % 65 === 0) {
                     const pal = BOSS_PALETTES[(enemy.bossType || 0) % BOSS_PALETTES.length] || BOSS_PALETTES[0];
                     const glowColor = pal.glow || '#ff0055';
-                    const mbAtkType = Math.floor(Math.random() * 4);
+                    const mbAtkType = Math.floor(Math.random() * 6); // 중간보스 신규 무기 6종 확장!
 
                     if (mbAtkType === 0) {
-                        // 1. 5방향 확산 레이저 탄막
-                        const vxs = [-2.0, -1.0, 0, 1.0, 2.0];
+                        // 1. 5방향 플라즈마 별탄 확산
+                        const vxs = [-2.2, -1.1, 0, 1.1, 2.2];
                         vxs.forEach(vx => {
-                            enemyLasers.push({ x: enemy.x + (vx * 12), y: enemy.y + 35, w: 10, h: 26, vy: 5.8, vx: vx, color: glowColor, isBoss: true });
+                            enemyLasers.push({ x: enemy.x + (vx * 12), y: enemy.y + 35, w: 12, h: 12, vy: 5.8, vx: vx, color: glowColor, bulletType: 'STAR', isBoss: true });
                         });
                     } else if (mbAtkType === 1) {
-                        // 2. 조준형 플라즈마 폭탄 3연발
+                        // 2. 조준형 유도 바이오 폭탄 3연발
                         const pAngle = Math.atan2(player.y - enemy.y, player.x - enemy.x);
                         const bSpd = 5.2;
                         for (let b = -1; b <= 1; b++) {
-                            const finalAngle = pAngle + (b * 0.2);
-                            enemyLasers.push({ x: enemy.x + (b * 20), y: enemy.y + 35, w: 14, h: 28, vx: Math.cos(finalAngle) * bSpd, vy: Math.sin(finalAngle) * bSpd, color: '#ff9f43', isBoss: true });
+                            const finalAngle = pAngle + (b * 0.22);
+                            enemyLasers.push({ x: enemy.x + (b * 20), y: enemy.y + 35, w: 16, h: 16, vx: Math.cos(finalAngle) * bSpd, vy: Math.sin(finalAngle) * bSpd, color: '#ff9f43', bulletType: 'HOMING_ORB', isBoss: true });
                         }
                     } else if (mbAtkType === 2) {
-                        // 3. 8방향 360도 에너지 링 방출
+                        // 3. 쌍둥이 뇌전 베기 슬래시 포화
+                        enemyLasers.push({ x: enemy.x - 25, y: enemy.y + 35, w: 24, h: 10, vx: -1.5, vy: 6.0, color: '#00ffcc', bulletType: 'SLASH', isBoss: true });
+                        enemyLasers.push({ x: enemy.x + 25, y: enemy.y + 35, w: 24, h: 10, vx: 1.5, vy: 6.0, color: '#00ffcc', bulletType: 'SLASH', isBoss: true });
+                    } else if (mbAtkType === 3) {
+                        // 4. 소용돌이 나선 링 탄막
                         for (let r = 0; r < 8; r++) {
-                            const angle = r * (Math.PI / 4);
-                            enemyLasers.push({ x: enemy.x, y: enemy.y + 25, w: 9, h: 9, vx: Math.cos(angle) * 4.5, vy: Math.sin(angle) * 4.5, color: '#00d2d3', isBoss: true });
+                            const angle = r * (Math.PI / 4) + (globalAnimTick * 0.1);
+                            enemyLasers.push({ x: enemy.x, y: enemy.y + 25, w: 12, h: 12, vx: Math.cos(angle) * 4.8, vy: Math.sin(angle) * 4.8, color: '#badc58', bulletType: 'VORTEX', isBoss: true });
                         }
+                    } else if (mbAtkType === 4) {
+                        // 5. 파편 분열 폭탄 2연발
+                        enemyLasers.push({ x: enemy.x - 18, y: enemy.y + 35, w: 16, h: 16, vx: -0.6, vy: 4.8, color: '#ff3838', bulletType: 'CLUSTER', timer: 40, isBoss: true });
+                        enemyLasers.push({ x: enemy.x + 18, y: enemy.y + 35, w: 16, h: 16, vx: 0.6, vy: 4.8, color: '#ff3838', bulletType: 'CLUSTER', timer: 40, isBoss: true });
                     } else {
-                        // 4. 고속 주포 쌍구 레이저
-                        enemyLasers.push({ x: enemy.x - 22, y: enemy.y + 38, w: 12, h: 32, vy: 7.2, vx: -0.3, color: '#ff3838', isBoss: true });
-                        enemyLasers.push({ x: enemy.x + 22, y: enemy.y + 38, w: 12, h: 32, vy: 7.2, vx: 0.3, color: '#ff3838', isBoss: true });
+                        // 6. 고속 암흑 침 레이저 연사
+                        enemyLasers.push({ x: enemy.x - 22, y: enemy.y + 38, w: 8, h: 32, vy: 7.5, vx: -0.3, color: '#74b9ff', bulletType: 'NEEDLE', isBoss: true });
+                        enemyLasers.push({ x: enemy.x + 22, y: enemy.y + 38, w: 8, h: 32, vy: 7.5, vx: 0.3, color: '#74b9ff', bulletType: 'NEEDLE', isBoss: true });
                     }
                 }
             });
@@ -3639,8 +3697,80 @@
                 });
 
                 enemyLasers.forEach(l => {
-                    ctx.fillStyle = l.color || '#ff3838';
-                    ctx.fillRect(l.x - l.w / 2, l.y - l.h / 2, l.w, l.h);
+                    ctx.save();
+                    ctx.shadowColor = l.color || '#ff3838';
+                    ctx.shadowBlur = 10;
+
+                    const bType = l.bulletType || 'NEEDLE';
+
+                    if (bType === 'STAR') {
+                        // 🌟 회전하는 4각 플라즈마 별탄
+                        ctx.translate(l.x, l.y);
+                        if (!l.rot) l.rot = 0;
+                        l.rot += 0.15;
+                        ctx.rotate(l.rot);
+                        ctx.fillStyle = l.color || '#ffd32c';
+                        ctx.beginPath();
+                        const r1 = l.w || 12, r2 = r1 * 0.45;
+                        for (let i = 0; i < 8; i++) {
+                            const r = i % 2 === 0 ? r1 : r2;
+                            const a = i * Math.PI / 4;
+                            ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+                        }
+                        ctx.closePath();
+                        ctx.fill();
+                    } else if (bType === 'HOMING_ORB') {
+                        // 🔮 유도형 바이오 펄스 구체탄
+                        ctx.fillStyle = l.color || '#e056fd';
+                        ctx.beginPath();
+                        ctx.arc(l.x, l.y, (l.w || 16) / 2, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#ffffff';
+                        ctx.beginPath();
+                        ctx.arc(l.x, l.y, (l.w || 16) * 0.28, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (bType === 'SLASH') {
+                        // ⚡ 사선 베기 슬래시 탄막
+                        ctx.translate(l.x, l.y);
+                        const angle = Math.atan2(l.vy || 5, l.vx || 0);
+                        ctx.rotate(angle);
+                        ctx.fillStyle = l.color || '#00ffcc';
+                        ctx.fillRect(-l.w / 2, -l.h / 2, l.w, l.h);
+                        ctx.strokeStyle = '#ffffff';
+                        ctx.lineWidth = 1.5;
+                        ctx.strokeRect(-l.w / 2, -l.h / 2, l.w, l.h);
+                    } else if (bType === 'VORTEX') {
+                        // 🌀 소용돌이 나선 파동탄
+                        ctx.translate(l.x, l.y);
+                        if (!l.rot) l.rot = 0;
+                        l.rot += 0.2;
+                        ctx.rotate(l.rot);
+                        ctx.strokeStyle = l.color || '#badc58';
+                        ctx.lineWidth = 2.5;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, (l.w || 12) / 2, 0, Math.PI * 1.5);
+                        ctx.stroke();
+                        ctx.fillStyle = '#ffffff';
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (bType === 'CLUSTER') {
+                        // 💥 파편 분열 시한 폭탄
+                        ctx.fillStyle = l.color || '#ff3838';
+                        ctx.beginPath();
+                        ctx.arc(l.x, l.y, (l.w || 15) / 2, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.strokeStyle = '#ffd32c';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    } else {
+                        // 🛡️ 고속 스나이핑 암흑 침 레이저 (Needle)
+                        ctx.fillStyle = l.color || '#ff3838';
+                        ctx.fillRect(l.x - l.w / 2, l.y - l.h / 2, l.w, l.h);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(l.x - l.w / 4, l.y - l.h / 2, l.w / 2, l.h * 0.4);
+                    }
+                    ctx.restore();
                 });
 
                 // Crisp, High-Contrast Item Rendering with Emoji Badges and Pop Out Animation!
