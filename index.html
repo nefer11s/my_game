@@ -1113,7 +1113,7 @@ if (document.readyState === 'loading') {
                 }
             }
             if (gameState === "PLAYING" && !isPaused) {
-                if (key === 'arrowup' || key === 'w') player.targetY = Math.max(160, player.targetY - step);
+                if (key === 'arrowup' || key === 'w') player.targetY = Math.max(72, player.targetY - step);
                 if (key === 'arrowdown' || key === 's') player.targetY = Math.min(canvas.height - 80, player.targetY + step);
                 if (key === 'arrowleft' || key === 'a') player.targetX = Math.max(40, player.targetX - step);
                 if (key === 'arrowright' || key === 'd') player.targetX = Math.min(canvas.width - 40, player.targetX + step);
@@ -1350,7 +1350,7 @@ if (document.readyState === 'loading') {
             if (enemies.some(enemy => (enemy.isBoss || enemy.isFinalBoss) && enemy.isDying)) return;
             const rect = canvas.getBoundingClientRect();
             player.targetX = (e.clientX - rect.left) * (canvas.width / rect.width); player.targetY = (e.clientY - rect.top) * (canvas.height / rect.height);
-            player.targetX = Math.max(40, Math.min(canvas.width - 40, player.targetX)); player.targetY = Math.max(160, Math.min(canvas.height - 80, player.targetY));
+            player.targetX = Math.max(40, Math.min(canvas.width - 40, player.targetX)); player.targetY = Math.max(72, Math.min(canvas.height - 80, player.targetY));
         });
 
         let lastTouchX = 0, lastTouchY = 0;
@@ -1399,7 +1399,7 @@ if (document.readyState === 'loading') {
                     player.targetY += canvasDeltaY * 1.35;
 
                     player.targetX = Math.max(40, Math.min(canvas.width - 40, player.targetX));
-                    player.targetY = Math.max(160, Math.min(canvas.height - 80, player.targetY));
+                    player.targetY = Math.max(72, Math.min(canvas.height - 80, player.targetY));
 
                     lastTouchX = touch.clientX;
                     lastTouchY = touch.clientY;
