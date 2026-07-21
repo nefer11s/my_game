@@ -474,9 +474,6 @@
                         </div>
                     </div>
 
-                    <!-- 세부 전술 옵션 모달 호출 버튼 -->
-                    <button style="font-size: 14px; padding: 10px 20px; border-radius: 25px; background: rgba(20, 26, 38, 0.9); border: 2px solid #e056fd; color: #e056fd; font-weight: 900; cursor: pointer; box-shadow: 0 0 16px rgba(224, 86, 253, 0.4); margin-bottom: 10px; width: 95%; max-width: 420px; white-space: nowrap;"
-                        onclick="openDifficultyModal()">🛠️ 세부 전술 파라미터 설정 (고급)</button>
 
                     <div id="activeDiffSummaryDisp" style="font-size: 12px; color: #00d2d3; font-weight: bold; margin-bottom: 18px; text-shadow: 0 0 8px rgba(0,210,211,0.5);">
                         🎯 현재 설정: [일반 (NORMAL)]
@@ -491,13 +488,16 @@
                 <!-- 하단 서브 탭 모달 버튼 바 -->
 
                 <div
-                    style="display: flex; gap: 12px; justify-content: center; width: 95%; max-width: 480px; margin-bottom: 4px;">
+                    style="display: flex; gap: 8px; justify-content: center; width: 95%; max-width: 480px; margin-bottom: 4px;">
                     <button
-                        style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 2px solid #00d2d3; color: #00d2d3; padding: 12px 8px; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 14px; box-shadow: 0 0 15px rgba(0, 210, 211, 0.3); transition: all 0.2s ease;"
+                        style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 2px solid #00d2d3; color: #00d2d3; padding: 10px 4px; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 12px; box-shadow: 0 0 15px rgba(0, 210, 211, 0.3); transition: all 0.2s ease;"
                         onclick="openInfoModal('CONTROLS')">⌨️ 조작법 가이드</button>
                     <button
-                        style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 2px solid #f1c40f; color: #f1c40f; padding: 12px 8px; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 14px; box-shadow: 0 0 15px rgba(241, 196, 15, 0.3); transition: all 0.2s ease;"
-                        onclick="openInfoModal('ITEMS')">🎁 전술 아이템 도감</button>
+                        style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 2px solid #f1c40f; color: #f1c40f; padding: 10px 4px; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 12px; box-shadow: 0 0 15px rgba(241, 196, 15, 0.3); transition: all 0.2s ease;"
+                        onclick="openInfoModal('ITEMS')">🎁 아이템 도감</button>
+                    <button
+                        style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 2px solid #e056fd; color: #e056fd; padding: 10px 4px; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 12px; box-shadow: 0 0 15px rgba(224, 86, 253, 0.3); transition: all 0.2s ease;"
+                        onclick="openDifficultyModal()">🛠️ 고급 설정</button>
                 </div>
                 <div
                     style="font-size: 11px; color: #636e72; opacity: 0.7; margin-top: 4px; text-align: center; font-weight: bold;">
