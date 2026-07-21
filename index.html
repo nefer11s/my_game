@@ -443,7 +443,7 @@
                         <button class="diff-btn active" onclick="setSelectDiff('NORMAL', 0.9, this)">일반</button>
                         <button class="diff-btn" onclick="setSelectDiff('HARD', 1.25, this)">하드</button>
                         <button class="diff-btn" onclick="setSelectDiff('EXPERT', 1.7, this)">정예</button>
-                        <button class="diff-btn" onclick="setSelectDiff('NIGHTMARE', 2.2, this)">악몽</button>
+                        <button class="diff-btn" onclick="setSelectDiff('NIGHTMARE', 3.5, this)">악몽</button>
                     </div>
 
                     <!-- 2. 메인 AAA 스타일에 매칭되는 고시성 CTA 버튼 -->
@@ -1357,8 +1357,8 @@ if (document.readyState === 'loading') {
             EASY:      { name: "초보", diffMult: 0.45, minionHp: 0.5, midBossHp: 0.5, finalBossHp: 0.5, dropChance: 0.25, bossDropCount: 4, healAmt: 40, wpnDur: 12, buffDur: 12, splashRange: 55, defDur: 12, ultStock: 7, ultDropWeight: 6 },
             NORMAL:    { name: "일반", diffMult: 0.90, minionHp: 1.0, midBossHp: 1.0, finalBossHp: 1.0, dropChance: 0.09, bossDropCount: 2, healAmt: 25, wpnDur: 8,  buffDur: 8,  splashRange: 40, defDur: 8,  ultStock: 6, ultDropWeight: 4 },
             HARD:      { name: "하드", diffMult: 1.25, minionHp: 1.4, midBossHp: 1.4, finalBossHp: 1.4, dropChance: 0.06, bossDropCount: 2, healAmt: 20, wpnDur: 6,  buffDur: 6,  splashRange: 35, defDur: 6,  ultStock: 5, ultDropWeight: 3 },
-            EXPERT:    { name: "정예", diffMult: 1.70, minionHp: 1.8, midBossHp: 1.8, finalBossHp: 1.8, dropChance: 0.04, bossDropCount: 1, healAmt: 15, wpnDur: 4,  buffDur: 4,  splashRange: 30, defDur: 4,  ultStock: 4, ultDropWeight: 2 },
-            NIGHTMARE: { name: "악몽", diffMult: 2.20, minionHp: 2.3, midBossHp: 2.5, finalBossHp: 2.5, dropChance: 0.02, bossDropCount: 1, healAmt: 10, wpnDur: 3,  buffDur: 3,  splashRange: 25, defDur: 3,  ultStock: 4, ultDropWeight: 1 }
+            EXPERT:    { name: "정예", diffMult: 1.70, minionHp: 1.8, minionHp: 1.8, midBossHp: 1.8, finalBossHp: 1.8, dropChance: 0.04, bossDropCount: 1, healAmt: 15, wpnDur: 4,  buffDur: 4,  splashRange: 30, defDur: 4,  ultStock: 4, ultDropWeight: 2 },
+            NIGHTMARE: { name: "악몽", diffMult: 3.50, minionHp: 3.5, midBossHp: 3.8, finalBossHp: 4.0, dropChance: 0.01, bossDropCount: 1, healAmt: 5,  wpnDur: 2,  buffDur: 2,  splashRange: 20, defDur: 2,  ultStock: 2, ultDropWeight: 0.5 }
         };
 
         let selectedDifficultyKey = "NORMAL";
@@ -1911,20 +1911,22 @@ if (document.readyState === 'loading') {
             if (enemyLasers.length > 200) enemyLasers.splice(0, enemyLasers.length - 200);
 
             // Boss Support Spawner (Spawns minion aliens & mid-bosses continuously during boss battles!)
-            // 1. Minion Alien Support Spawner (Every 3.0 seconds during boss / final boss battles)
-            if (globalAnimTick % 180 === 0 && enemies.some(e => (e.isBoss || e.isFinalBoss) && !e.isDying) && enemies.length < 80) {
-                const laneWidth = canvas.width / 3;
-                const zCount = Math.max(2, Math.floor((2 + stageLevel * 0.5) * diffMultiplier));
+            // 1. Minion Alien Swarm Support Spawner (Every 2.2 seconds during boss / mid-boss battles)
+            const isNightmare = (selectedDifficultyKey === "NIGHTMARE");
+            const minionSpawnInterval = isNightmare ? 80 : 130;
+            if (globalAnimTick % minionSpawnInterval === 0 && enemies.some(e => (e.isBoss || e.isFinalBoss) && !e.isDying) && enemies.length < 90) {
+                const multiplier = isNightmare ? 3.5 : diffMultiplier;
+                const zCount = isNightmare ? Math.max(3, Math.floor(4 * multiplier)) : Math.max(2, Math.floor((2 + stageLevel * 0.5) * multiplier));
                 for (let k = 0; k < zCount; k++) {
                     const aType = Math.floor(Math.random() * 10);
-                    const hpBase = Math.floor((4 + stageLevel * 2) * diffMultiplier);
+                    const hpBase = Math.floor((4 + stageLevel * 2) * multiplier);
                     const spawnX = 35 + Math.random() * (canvas.width - 70);
                     enemies.push({
                         x: spawnX,
-                        y: 50 - (k * 40),
+                        y: 50 - (k * 38),
                         radius: 18,
                         hp: hpBase, maxHp: hpBase,
-                        speed: (1.6 + (stageLevel * 0.04)) * (diffMultiplier * 0.9),
+                        speed: (1.8 + (stageLevel * 0.05)) * (multiplier * 0.9),
                         isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0,
                         hasItem: (Math.random() < 0.25)
                     });
@@ -2026,13 +2028,36 @@ if (document.readyState === 'loading') {
                         enemyLasers.push({ x: enemy.x + 45, y: enemy.y + 40, w: 14, h: 36, vy: 7.0, vx: 1.2, color: '#ff3838', isBoss: true });
                         addFloatingText(enemy.x, enemy.y - 60, "🔥 3중 주포 광선 & 분산포!", "#1cfc03", 14);
                     }
-                } else if (!enemy.isDying && !enemy.isFinalBoss && enemy.isBoss && globalAnimTick % 95 === 0) {
+                } else if (!enemy.isDying && !enemy.isFinalBoss && enemy.isBoss && globalAnimTick % 70 === 0) {
                     const pal = BOSS_PALETTES[(enemy.bossType || 0) % BOSS_PALETTES.length] || BOSS_PALETTES[0];
                     const glowColor = pal.glow || '#ff0055';
-                    // Triple Spread Shot for Bosses (Tuned Velocity)
-                    enemyLasers.push({ x: enemy.x - 20, y: enemy.y + 35, w: 10, h: 26, vy: 5.5, vx: -1.0, color: glowColor, isBoss: true });
-                    enemyLasers.push({ x: enemy.x, y: enemy.y + 40, w: 12, h: 28, vy: 6.0, vx: 0, color: '#ff0055', isBoss: true });
-                    enemyLasers.push({ x: enemy.x + 20, y: enemy.y + 35, w: 10, h: 26, vy: 5.5, vx: 1.0, color: glowColor, isBoss: true });
+                    const mbAtkType = Math.floor(Math.random() * 4);
+
+                    if (mbAtkType === 0) {
+                        // 1. 5방향 확산 레이저 탄막
+                        const vxs = [-2.0, -1.0, 0, 1.0, 2.0];
+                        vxs.forEach(vx => {
+                            enemyLasers.push({ x: enemy.x + (vx * 12), y: enemy.y + 35, w: 10, h: 26, vy: 5.8, vx: vx, color: glowColor, isBoss: true });
+                        });
+                    } else if (mbAtkType === 1) {
+                        // 2. 조준형 플라즈마 폭탄 3연발
+                        const pAngle = Math.atan2(player.y - enemy.y, player.x - enemy.x);
+                        const bSpd = 5.2;
+                        for (let b = -1; b <= 1; b++) {
+                            const finalAngle = pAngle + (b * 0.2);
+                            enemyLasers.push({ x: enemy.x + (b * 20), y: enemy.y + 35, w: 14, h: 28, vx: Math.cos(finalAngle) * bSpd, vy: Math.sin(finalAngle) * bSpd, color: '#ff9f43', isBoss: true });
+                        }
+                    } else if (mbAtkType === 2) {
+                        // 3. 8방향 360도 에너지 링 방출
+                        for (let r = 0; r < 8; r++) {
+                            const angle = r * (Math.PI / 4);
+                            enemyLasers.push({ x: enemy.x, y: enemy.y + 25, w: 9, h: 9, vx: Math.cos(angle) * 4.5, vy: Math.sin(angle) * 4.5, color: '#00d2d3', isBoss: true });
+                        }
+                    } else {
+                        // 4. 고속 주포 쌍구 레이저
+                        enemyLasers.push({ x: enemy.x - 22, y: enemy.y + 38, w: 12, h: 32, vy: 7.2, vx: -0.3, color: '#ff3838', isBoss: true });
+                        enemyLasers.push({ x: enemy.x + 22, y: enemy.y + 38, w: 12, h: 32, vy: 7.2, vx: 0.3, color: '#ff3838', isBoss: true });
+                    }
                 }
             });
 
