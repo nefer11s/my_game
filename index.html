@@ -464,29 +464,6 @@
                             </div>
                         </div>
 
-                        <!-- 💥 필살기 폭탄 수량 & 한도 직관적 설정 -->
-                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; border-top: 1px dashed rgba(255, 56, 56, 0.35); padding-top: 8px;">
-                            <div style="color: #ff4757; font-weight: 900; font-size: 13px; text-shadow: 0 0 8px rgba(255, 71, 87, 0.5);">
-                                💣 필살기 시작 / 소지 한도
-                            </div>
-                            <div style="display: flex; gap: 6px; align-items: center;">
-                                <select id="mainMenuStartUltSelect" onchange="syncUltConfigs(parseInt(this.value), null)"
-                                    style="background: #141822; color: #ff6b6b; border: 1px solid #ff4757; padding: 4px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
-                                    <option value="3" selected>시작 3개</option>
-                                    <option value="4">시작 4개</option>
-                                    <option value="5">시작 5개</option>
-                                    <option value="7">시작 7개</option>
-                                    <option value="10">시작 10개</option>
-                                </select>
-                                <select id="mainMenuMaxUltCapSelect" onchange="syncUltConfigs(null, parseInt(this.value))"
-                                    style="background: #141822; color: #ffd32c; border: 1px solid #ffd32c; padding: 4px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
-                                    <option value="3">한도 3개</option>
-                                    <option value="5" selected>한도 5개</option>
-                                    <option value="7">한도 7개</option>
-                                    <option value="10">한도 10개</option>
-                                </select>
-                            </div>
-                        </div>
                     </div>
                     <!-- /통합 전술 환경설정 패널 끝 -->
 
@@ -1720,12 +1697,10 @@
         function syncUltConfigs(startVal, maxVal) {
             if (startVal !== null && startVal !== undefined) {
                 customStartUltStockConfig = startVal;
-                setSelectClosest(document.getElementById('mainMenuStartUltSelect'), startVal);
                 setSelectClosest(document.getElementById('startUltStockSelect'), startVal);
             }
             if (maxVal !== null && maxVal !== undefined) {
                 maxUltimateCapConfig = maxVal;
-                setSelectClosest(document.getElementById('mainMenuMaxUltCapSelect'), maxVal);
                 setSelectClosest(document.getElementById('maxUltCapSelect'), maxVal);
             }
         }
@@ -1870,8 +1845,6 @@
             if (audioCtx) playUpgradeSound();
             setSelectClosest(document.getElementById('startUltStockSelect'), customStartUltStockConfig);
             setSelectClosest(document.getElementById('maxUltCapSelect'), maxUltimateCapConfig);
-            setSelectClosest(document.getElementById('mainMenuStartUltSelect'), customStartUltStockConfig);
-            setSelectClosest(document.getElementById('mainMenuMaxUltCapSelect'), maxUltimateCapConfig);
             document.getElementById('settingsModal').style.display = 'flex';
         }
         function closeSettingsModal() {

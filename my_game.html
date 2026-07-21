@@ -454,51 +454,6 @@
                         </div>
                     </div>
 
-                    <!-- 통합 전술 환경설정 패널 -->
-                    <div
-                        style="background: rgba(20, 26, 38, 0.7); border: 1px solid rgba(0, 210, 211, 0.4); border-radius: 14px; padding: 12px 18px; margin-bottom: 22px; width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; backdrop-filter: blur(6px); box-shadow: 0 4px 20px rgba(0,0,0,0.35);">
-                        <!-- BGM 사운드 설정 -->
-                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-                            <div
-                                style="display: flex; align-items: center; gap: 8px; color: #00d2d3; font-weight: 900; font-size: 13px; text-shadow: 0 0 8px rgba(0, 210, 211, 0.5); min-width: 120px;">
-                                <span>🎵 사운드 (BGM)</span>
-                                <button id="menuBgmToggleBtn" onclick="toggleBGM()"
-                                    style="background: rgba(16, 172, 132, 0.25); border: 1px solid #10ac84; color: #10ac84; font-size: 11px; font-weight: bold; padding: 2px 7px; border-radius: 6px; cursor: pointer; transition: all 0.2s;">ON</button>
-                            </div>
-                            <div style="display: flex; align-items: center; gap: 8px; flex: 1; max-width: 220px;">
-                                <input type="range" class="bgm-vol-input" min="0" max="100" step="5" value="50"
-                                    oninput="updateBGMVolume(this.value)"
-                                    style="flex: 1; accent-color: #00d2d3; cursor: pointer; height: 5px;">
-                                <span class="bgm-vol-disp"
-                                    style="font-size: 12px; font-weight: bold; color: #ff9f43; min-width: 35px; text-align: right; text-shadow: 0 0 6px rgba(255,159,67,0.4);">50%</span>
-                            </div>
-                        </div>
-
-                        <!-- 💥 필살기 폭탄 수량 & 한도 직관적 설정 -->
-                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; border-top: 1px dashed rgba(255, 56, 56, 0.35); padding-top: 8px;">
-                            <div style="color: #ff4757; font-weight: 900; font-size: 13px; text-shadow: 0 0 8px rgba(255, 71, 87, 0.5);">
-                                💣 필살기 시작 / 소지 한도
-                            </div>
-                            <div style="display: flex; gap: 6px; align-items: center;">
-                                <select id="mainMenuStartUltSelect" onchange="syncUltConfigs(parseInt(this.value), null)"
-                                    style="background: #141822; color: #ff6b6b; border: 1px solid #ff4757; padding: 4px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
-                                    <option value="3" selected>시작 3개</option>
-                                    <option value="4">시작 4개</option>
-                                    <option value="5">시작 5개</option>
-                                    <option value="7">시작 7개</option>
-                                    <option value="10">시작 10개</option>
-                                </select>
-                                <select id="mainMenuMaxUltCapSelect" onchange="syncUltConfigs(null, parseInt(this.value))"
-                                    style="background: #141822; color: #ffd32c; border: 1px solid #ffd32c; padding: 4px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
-                                    <option value="3">한도 3개</option>
-                                    <option value="5" selected>한도 5개</option>
-                                    <option value="7">한도 7개</option>
-                                    <option value="10">한도 10개</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /통합 전술 환경설정 패널 끝 -->
 
                     <!-- 🎯 난이도 프리셋 선택 (초기화면 상주) -->
                     <div style="width: 100%; max-width: 480px; margin-bottom: 10px;">
@@ -635,6 +590,42 @@
                         <option value="1.0" selected>보통 (1.0x 기본 밀도)</option>
                         <option value="1.5">많음 (1.5x 집중 스웜)</option>
                         <option value="2.2">극악 (2.2x 대규모 군단)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 🎵 사운드(BGM) 설정 -->
+            <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(16, 172, 132, 0.35); border-radius: 16px; padding: 14px 16px; width: 100%; max-width: 440px; box-sizing: border-box; margin-bottom: 14px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
+                <div style="font-size: 14px; color: #10ac84; margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 10px rgba(16, 172, 132, 0.6); letter-spacing: 1px;">
+                    🎵 사운드 & 배경음악(BGM) 설정
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px;">
+                    <span style="color: #10ac84; font-weight: bold; font-size: 12px;">BGM 스위치</span>
+                    <button id="advBgmToggleBtn" onclick="toggleBGM(); updateAdvBgmUI();"
+                        style="background: rgba(16, 172, 132, 0.25); border: 1px solid #10ac84; color: #10ac84; font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 6px; cursor: pointer;">ON</button>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="color: #a4b0be; font-weight: bold; font-size: 11px; min-width: 55px;">음량:</span>
+                    <input type="range" id="advBgmVolSlider" min="0" max="100" step="5" value="50"
+                        style="flex: 1; accent-color: #10ac84; cursor: pointer; height: 5px;"
+                        oninput="updateBGMVolume(this.value); document.getElementById('advBgmVolDisp').innerText=this.value+'%';">
+                    <span id="advBgmVolDisp" style="font-size: 11px; font-weight: bold; color: #ff9f43; min-width: 35px; text-align: right;">50%</span>
+                </div>
+            </div>
+
+            <!-- 💥 필살기 소지 한도 설정 -->
+            <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(255, 56, 56, 0.35); border-radius: 16px; padding: 14px 16px; width: 100%; max-width: 440px; box-sizing: border-box; margin-bottom: 18px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
+                <div style="font-size: 14px; color: #ff3838; margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 10px rgba(255, 56, 56, 0.6); letter-spacing: 1px;">
+                    💥 필살기 설정
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #a4b0be;">
+                    <span style="font-weight: bold;">💣 필살기 폭탄 소지 한도</span>
+                    <select id="advMaxUltCapSelect" onchange="maxUltimateCapConfig=parseInt(this.value)"
+                        style="background: rgba(15, 20, 30, 0.85); color: #ff3838; border: 1px solid rgba(255, 56, 56, 0.4); padding: 5px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
+                        <option value="3">3개 (제한적)</option>
+                        <option value="5" selected>5개 (기본 표준)</option>
+                        <option value="7">7개 (여유)</option>
+                        <option value="10">10개 (무제한급)</option>
                     </select>
                 </div>
             </div>
@@ -1507,6 +1498,22 @@
                 }
                 stopBGM();
             }
+            updateAdvBgmUI();
+        }
+
+        // 고급설정 모달 내 BGM 버튼 상태 동기화
+        function updateAdvBgmUI() {
+            const advBtn = document.getElementById('advBgmToggleBtn');
+            if (advBtn) {
+                advBtn.innerText = bgmEnabled ? 'ON' : 'OFF';
+                advBtn.style.background = bgmEnabled ? 'rgba(16, 172, 132, 0.25)' : 'rgba(255, 56, 56, 0.25)';
+                advBtn.style.borderColor = bgmEnabled ? '#10ac84' : '#ff3838';
+                advBtn.style.color = bgmEnabled ? '#10ac84' : '#ff3838';
+            }
+            const advVol = document.getElementById('advBgmVolSlider');
+            const advVolDisp = document.getElementById('advBgmVolDisp');
+            if (advVol) advVol.value = Math.round(bgmVolume * 100);
+            if (advVolDisp) advVolDisp.innerText = Math.round(bgmVolume * 100) + '%';
         }
 
         function updateBGMVolume(val) {
@@ -1756,12 +1763,10 @@
         function syncUltConfigs(startVal, maxVal) {
             if (startVal !== null && startVal !== undefined) {
                 customStartUltStockConfig = startVal;
-                setSelectClosest(document.getElementById('mainMenuStartUltSelect'), startVal);
                 setSelectClosest(document.getElementById('startUltStockSelect'), startVal);
             }
             if (maxVal !== null && maxVal !== undefined) {
                 maxUltimateCapConfig = maxVal;
-                setSelectClosest(document.getElementById('mainMenuMaxUltCapSelect'), maxVal);
                 setSelectClosest(document.getElementById('maxUltCapSelect'), maxVal);
             }
         }
@@ -1788,6 +1793,10 @@
         function openDifficultyModal() {
             if (audioCtx) playUpgradeSound();
             updateSettingsUIFromVariables();
+            // 고급설정 모달 내 BGM/필살기 상태 동기화
+            updateAdvBgmUI();
+            const advUltSel = document.getElementById('advMaxUltCapSelect');
+            if (advUltSel) setSelectClosest(advUltSel, maxUltimateCapConfig);
             document.getElementById('difficultyModal').style.display = 'flex';
         }
 
@@ -1884,8 +1893,6 @@
             if (audioCtx) playUpgradeSound();
             setSelectClosest(document.getElementById('startUltStockSelect'), customStartUltStockConfig);
             setSelectClosest(document.getElementById('maxUltCapSelect'), maxUltimateCapConfig);
-            setSelectClosest(document.getElementById('mainMenuStartUltSelect'), customStartUltStockConfig);
-            setSelectClosest(document.getElementById('mainMenuMaxUltCapSelect'), maxUltimateCapConfig);
             document.getElementById('settingsModal').style.display = 'flex';
         }
         function closeSettingsModal() {
@@ -3675,7 +3682,13 @@
                         const cleanBossCvs = getCleanTransparentSprite(bImg) || getCleanTransparentSprite(imgBoss);
                         const bSize = enemy.isFinalBoss ? 180 : 104;
                         if (cleanBossCvs) {
+                            // 원형 클리핑으로 사각형 배경 제거
+                            ctx.save();
+                            ctx.beginPath();
+                            ctx.arc(enemy.x, enemy.y, bSize / 2, 0, Math.PI * 2);
+                            ctx.clip();
                             ctx.drawImage(cleanBossCvs, enemy.x - bSize / 2, enemy.y - bSize / 2, bSize, bSize);
+                            ctx.restore();
                         } else {
                             const pal = BOSS_PALETTES[(enemy.bossType || 0) % BOSS_PALETTES.length] || BOSS_PALETTES[0];
                             ctx.fillStyle = pal.body || '#4834d4'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2); ctx.fill();
@@ -3755,8 +3768,15 @@
                         }
                         const aImg = imgAlienTypes.length > 0 ? imgAlienTypes[(enemy.alienType || 0) % imgAlienTypes.length] : null;
                         const cleanAlienCvs = getCleanTransparentSprite(aImg) || getCleanTransparentSprite(imgEnemy);
-                        if (cleanAlienCvs) { ctx.drawImage(cleanAlienCvs, enemy.x - 24, enemy.y - 24, 48, 48); }
-                        else {
+                        if (cleanAlienCvs) {
+                            // 원형 클리핑으로 사각형 배경 제거
+                            ctx.save();
+                            ctx.beginPath();
+                            ctx.arc(enemy.x, enemy.y, 22, 0, Math.PI * 2);
+                            ctx.clip();
+                            ctx.drawImage(cleanAlienCvs, enemy.x - 24, enemy.y - 24, 48, 48);
+                            ctx.restore();
+                        } else {
                             ctx.fillStyle = '#ff3838'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 18, 0, Math.PI * 2); ctx.fill();
                         }
                         if (enemy.flashTimer > 0) {
