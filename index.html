@@ -1968,8 +1968,8 @@
                 canvasShakeTimer = 45;
                 addFloatingText(canvas.width / 2, 220, `👑 [최종 마왕 강림] (${bossHp.toLocaleString()} HP) 5초 무적 결계!`, "#ff2d55", 24, 160);
             } else if (isMidBossWave) {
-                // Stage Mid-Bosses (v11.4.0, Rebalanced: ~15x Minion HP = 110~220 HP)
-                const bType = (stageLevel === 5) ? 9 : Math.floor(Math.random() * 10);
+                // Stage Mid-Bosses (v11.7.3 - Stage 3, 4, 5 map to newly generated midboss sprites boss_2, boss_3, boss_4!)
+                const bType = (stageLevel === 3) ? 2 : (stageLevel === 4) ? 3 : (stageLevel === 5) ? 4 : (stageLevel % 2 === 0 ? 1 : 0);
                 const midBossHp = Math.floor((100 + stageLevel * 25) * diffMultiplier * (midBossHpMultiplier || 1.0));
                 enemies.push({
                     x: laneWidth * 1.5, y: 6, radius: 44,
