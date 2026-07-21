@@ -1627,17 +1627,23 @@
         let itemDropChanceNormal = 0.09;
         let bossDropCountConfig = 2;
 
-        function updateSettingsUIFromVariables() {
-            const mHpS = document.getElementById('minionHpSelect');
-            const mbHpS = document.getElementById('midBossHpSelect');
-            const fbHpS = document.getElementById('finalBossHpSelect');
-            const mbMinS = document.getElementById('midBossMinionSelect');
-            const dropSel = document.getElementById('itemDropSelect');
+        // select.value = 1.0 → JS가 "1"로 변환하면 value="1.0" 옵션과 불일치하는 문제 해결
+        function setSelectClosest(sel, val) {
+            if (!sel) return;
+            const numVal = parseFloat(val);
+            let bestIdx = 0, bestDiff = Infinity;
+            for (let i = 0; i < sel.options.length; i++) {
+                const diff = Math.abs(parseFloat(sel.options[i].value) - numVal);
+                if (diff < bestDiff) { bestDiff = diff; bestIdx = i; }
+            }
+            sel.selectedIndex = bestIdx;
+        }
 
-            if (mHpS) mHpS.value = minionHpMultiplier;
-            if (mbHpS) mbHpS.value = midBossHpMultiplier;
-            if (fbHpS) fbHpS.value = finalBossHpMultiplier;
-            if (mbMinS) mbMinS.value = midBossMinionMultiplier;
+        function updateSettingsUIFromVariables() {
+            setSelectClosest(document.getElementById('minionHpSelect'), minionHpMultiplier);
+            setSelectClosest(document.getElementById('midBossHpSelect'), midBossHpMultiplier);
+            setSelectClosest(document.getElementById('finalBossHpSelect'), finalBossHpMultiplier);
+            setSelectClosest(document.getElementById('midBossMinionSelect'), midBossMinionMultiplier);
         }
 
         function openDifficultyModal() {
