@@ -1922,7 +1922,23 @@
                     speed: (0.7 + (stageLevel * 0.03)) * (diffMultiplier * 0.85),
                     isBoss: true, isFinalBoss: false, bossType: bType, flashTimer: 0, animFrame: 0
                 });
-                const bossMsg = (stageLevel === 5) ? `⚠️ STAGE 5 마왕 호위보스 (${midBossHp.toLocaleString()} HP) 출격!` : `⚠️ STAGE ${stageLevel} 중간 보스 (${midBossHp.toLocaleString()} HP) 출격!`;
+
+                // 🔥 스테이지 레벨이 높을수록 중간보스 등장 시 함께 강림하는 초기 호위 잡몹 (Stage 1: 3기 ~ Stage 4: 7기, Stage 5: 9기!)
+                const initialMinions = Math.floor(2 + stageLevel * 1.4);
+                for (let k = 0; k < initialMinions; k++) {
+                    const aType = Math.floor(Math.random() * 10);
+                    const spawnX = 35 + Math.random() * (canvas.width - 70);
+                    enemies.push({
+                        x: spawnX, y: 50 - (k * 32), radius: 18,
+                        hp: hpBase, maxHp: hpBase,
+                        speed: (1.8 + (stageLevel * 0.05)) * (diffMultiplier * 0.9),
+                        isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0,
+                        movePattern: 'CHARGING', vx: 0, vy: 0,
+                        hasItem: (Math.random() < 0.35)
+                    });
+                }
+
+                const bossMsg = (stageLevel === 5) ? `⚠️ STAGE 5 마왕 호위보스 (${midBossHp.toLocaleString()} HP) & 호위부대 ${initialMinions}기 강림!` : `⚠️ STAGE ${stageLevel} 중간 보스 (${midBossHp.toLocaleString()} HP) & 호위부대 ${initialMinions}기 강림!`;
                 addFloatingText(canvas.width / 2, 220, bossMsg, "#ff9f43", 18);
             } else {
                 // All Minion Aliens spawn scattered individually across top screen and charge towards player!
@@ -2132,21 +2148,22 @@
             if (enemyLasers.length > 200) enemyLasers.splice(0, enemyLasers.length - 200);
 
             // Boss Support Spawner (Spawns minion aliens & mid-bosses continuously during boss battles!)
-            // 1. Minion Alien Swarm Support Spawner (Every 2.2 seconds during boss / mid-boss battles)
+            // 1. Minion Alien Swarm Support Spawner (Scales interval & density with stageLevel! Stage 4&5 swarm faster!)
             const isNightmare = (selectedDifficultyKey === "NIGHTMARE");
-            const minionSpawnInterval = isNightmare ? 80 : 130;
+            const baseInterval = Math.max(30, 130 - (stageLevel * 18));
+            const minionSpawnInterval = isNightmare ? Math.max(20, Math.floor(baseInterval * 0.55)) : Math.floor(baseInterval * (minionHpMultiplier ? 1 / minionHpMultiplier : 1.0));
             if (globalAnimTick % minionSpawnInterval === 0 && enemies.some(e => (e.isBoss || e.isFinalBoss) && !e.isDying) && enemies.length < 90) {
-                const zCount = isNightmare ? Math.max(3, Math.floor(4 * diffMultiplier)) : Math.max(2, Math.floor((2 + stageLevel * 0.5) * diffMultiplier));
+                const zCount = isNightmare ? Math.max(4, Math.floor((3 + stageLevel * 1.1) * diffMultiplier)) : Math.max(2, Math.floor((1.5 + stageLevel * 1.0) * diffMultiplier));
                 for (let k = 0; k < zCount; k++) {
                     const aType = Math.floor(Math.random() * 10);
-                    const hpBase = Math.floor((4 + stageLevel * 2) * diffMultiplier);
+                    const hpBase = Math.floor((3 + stageLevel * 1.5) * diffMultiplier);
                     const spawnX = 35 + Math.random() * (canvas.width - 70);
                     enemies.push({
                         x: spawnX,
-                        y: 50 - (k * 38),
+                        y: 50 - (k * 32),
                         radius: 18,
                         hp: hpBase, maxHp: hpBase,
-                        speed: (1.8 + (stageLevel * 0.05)) * (diffMultiplier * 0.9),
+                        speed: (1.8 + (stageLevel * 0.06)) * (diffMultiplier * 0.9),
                         isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0,
                         hasItem: (Math.random() < 0.25)
                     });
