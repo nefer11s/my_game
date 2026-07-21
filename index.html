@@ -1587,11 +1587,11 @@
         }
 
         const DIFFICULTY_PRESETS = {
-            EASY: { name: "초보", diffMult: 0.45, minionHp: 0.5, midBossHp: 0.5, finalBossHp: 0.5, midBossMinion: 0.5, dropChance: 0.25, bossDropCount: 4, healAmt: 40, wpnDur: 12, buffDur: 12, splashRange: 55, defDur: 12, ultStock: 7, ultDropWeight: 6 },
-            NORMAL: { name: "일반", diffMult: 0.90, minionHp: 1.0, midBossHp: 1.0, finalBossHp: 1.0, midBossMinion: 1.0, dropChance: 0.09, bossDropCount: 2, healAmt: 25, wpnDur: 8, buffDur: 8, splashRange: 40, defDur: 8, ultStock: 6, ultDropWeight: 4 },
-            HARD: { name: "하드", diffMult: 1.25, minionHp: 1.4, midBossHp: 1.4, finalBossHp: 1.4, midBossMinion: 1.3, dropChance: 0.06, bossDropCount: 2, healAmt: 20, wpnDur: 6, buffDur: 6, splashRange: 35, defDur: 6, ultStock: 5, ultDropWeight: 3 },
-            EXPERT: { name: "정예", diffMult: 1.70, minionHp: 1.8, midBossHp: 1.8, finalBossHp: 1.8, midBossMinion: 1.6, dropChance: 0.04, bossDropCount: 1, healAmt: 15, wpnDur: 4, buffDur: 4, splashRange: 30, defDur: 4, ultStock: 4, ultDropWeight: 2 },
-            NIGHTMARE: { name: "악몽", diffMult: 3.50, minionHp: 3.5, midBossHp: 3.8, finalBossHp: 4.0, midBossMinion: 2.2, dropChance: 0.01, bossDropCount: 1, healAmt: 5, wpnDur: 2, buffDur: 2, splashRange: 20, defDur: 2, ultStock: 2, ultDropWeight: 0.5 }
+            EASY: { name: "초보", diffMult: 0.45, minionHp: 0.5, midBossHp: 0.5, finalBossHp: 0.5, midBossMinion: 0.5, dropChance: 0.25, bossDropCount: 4, healAmt: 40, wpnDur: 12, buffDur: 12, splashRange: 55, defDur: 12, ultStock: 3, ultDropWeight: 6 },
+            NORMAL: { name: "일반", diffMult: 0.90, minionHp: 1.0, midBossHp: 1.0, finalBossHp: 1.0, midBossMinion: 1.0, dropChance: 0.09, bossDropCount: 2, healAmt: 25, wpnDur: 8, buffDur: 8, splashRange: 40, defDur: 8, ultStock: 3, ultDropWeight: 4 },
+            HARD: { name: "하드", diffMult: 1.25, minionHp: 1.4, midBossHp: 1.4, finalBossHp: 1.4, midBossMinion: 1.3, dropChance: 0.06, bossDropCount: 2, healAmt: 20, wpnDur: 6, buffDur: 6, splashRange: 35, defDur: 6, ultStock: 4, ultDropWeight: 3 },
+            EXPERT: { name: "정예", diffMult: 1.70, minionHp: 1.8, midBossHp: 1.8, finalBossHp: 1.8, midBossMinion: 1.6, dropChance: 0.04, bossDropCount: 1, healAmt: 15, wpnDur: 4, buffDur: 4, splashRange: 30, defDur: 4, ultStock: 5, ultDropWeight: 2 },
+            NIGHTMARE: { name: "악몽", diffMult: 3.50, minionHp: 3.5, midBossHp: 3.8, finalBossHp: 4.0, midBossMinion: 2.2, dropChance: 0.01, bossDropCount: 1, healAmt: 5, wpnDur: 2, buffDur: 2, splashRange: 20, defDur: 2, ultStock: 5, ultDropWeight: 0.5 }
         };
 
         let selectedDifficultyKey = "NORMAL";
@@ -3217,8 +3217,7 @@
                 }
             }
             else if (t === "ULTIMATE") {
-                const currentPreset = DIFFICULTY_PRESETS[selectedDifficultyKey || "NORMAL"];
-                const maxUlt = (currentPreset && currentPreset.ultStock) ? currentPreset.ultStock : 6;
+                const maxUlt = 5; // 🔥 전술 필살기 폭탄 소지 한도 Max 5개 조절!
                 if (player.ultimateStock < maxUlt) {
                     player.ultimateStock++;
                     updateUltimateUI();
