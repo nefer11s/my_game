@@ -1115,7 +1115,7 @@ if (document.readyState === 'loading') {
             }
             if (gameState === "PLAYING" && !isPaused) {
                 if (key === 'arrowup' || key === 'w') player.targetY = Math.max(160, player.targetY - step);
-                if (key === 'arrowdown' || key === 's') player.targetY = Math.min(canvas.height - 40, player.targetY + step);
+                if (key === 'arrowdown' || key === 's') player.targetY = Math.min(canvas.height - 80, player.targetY + step);
                 if (key === 'arrowleft' || key === 'a') player.targetX = Math.max(40, player.targetX - step);
                 if (key === 'arrowright' || key === 'd') player.targetX = Math.min(canvas.width - 40, player.targetX + step);
             }
@@ -1366,7 +1366,7 @@ if (document.readyState === 'loading') {
             if (enemies.some(enemy => (enemy.isBoss || enemy.isFinalBoss) && enemy.isDying)) return;
             const rect = canvas.getBoundingClientRect();
             player.targetX = (e.clientX - rect.left) * (canvas.width / rect.width); player.targetY = (e.clientY - rect.top) * (canvas.height / rect.height);
-            player.targetX = Math.max(40, Math.min(canvas.width - 40, player.targetX)); player.targetY = Math.max(160, Math.min(canvas.height - 40, player.targetY));
+            player.targetX = Math.max(40, Math.min(canvas.width - 40, player.targetX)); player.targetY = Math.max(160, Math.min(canvas.height - 80, player.targetY));
         });
 
         let lastTouchX = 0, lastTouchY = 0;
@@ -1415,7 +1415,7 @@ if (document.readyState === 'loading') {
                     player.targetY += canvasDeltaY * 1.35;
 
                     player.targetX = Math.max(40, Math.min(canvas.width - 40, player.targetX));
-                    player.targetY = Math.max(160, Math.min(canvas.height - 40, player.targetY));
+                    player.targetY = Math.max(160, Math.min(canvas.height - 80, player.targetY));
 
                     lastTouchX = touch.clientX;
                     lastTouchY = touch.clientY;
@@ -1516,7 +1516,7 @@ if (document.readyState === 'loading') {
                 const maxMidBossHp = Math.max(200, Math.floor((100 + 5 * 25) * diffMultiplier * (midBossHpMultiplier || 1.0)));
                 const bossHp = Math.max(3500, Math.floor(maxMidBossHp * (finalBossHpRatio || 17.5) * (finalBossHpMultiplier || 1.0)));
                 enemies.push({
-                    x: canvas.width / 2, y: 171, radius: 88,
+                    x: canvas.width / 2, y: -38, radius: 88,
                     hp: bossHp,
                     maxHp: bossHp,
                     phase: 1,
@@ -1531,7 +1531,7 @@ if (document.readyState === 'loading') {
                 const bType = (stageLevel === 5) ? 9 : Math.floor(Math.random() * 10);
                 const midBossHp = Math.floor((100 + stageLevel * 25) * diffMultiplier * (midBossHpMultiplier || 1.0));
                 enemies.push({
-                    x: laneWidth * 1.5, y: 127, radius: 44,
+                    x: laneWidth * 1.5, y: 6, radius: 44,
                     hp: midBossHp,
                     maxHp: midBossHp,
                     speed: (0.7 + (stageLevel * 0.03)) * (diffMultiplier * 0.85),
@@ -1544,7 +1544,7 @@ if (document.readyState === 'loading') {
                 for (let i = 0; i < zCount; i++) {
                     const aType = Math.floor(Math.random() * 10);
                     const spawnX = 35 + Math.random() * (canvas.width - 70);
-                    const spawnY = 101 + (i * 38);
+                    const spawnY = 50 - (i * 38);
                     enemies.push({
                         x: spawnX,
                         y: spawnY,
@@ -1756,7 +1756,7 @@ if (document.readyState === 'loading') {
                     const hpBase = Math.floor((4 + stageLevel * 2) * diffMultiplier);
                     enemies.push({
                         x: laneWidth + 30 + Math.random() * (laneWidth - 60),
-                        y: 101 + (k * 40),
+                        y: 50 - (k * 40),
                         radius: 18,
                         hp: hpBase, maxHp: hpBase,
                         speed: (1.4 + (stageLevel * 0.04)) * (diffMultiplier * 0.9),
