@@ -1380,25 +1380,63 @@
             itemImages[k] = img;
         });
 
-        // Dynamic Runtime Chromakey Black-Box Removal Helper (100% Zero Bounding Box)
+        // Dynamic Runtime Chromakey Black-Box Removal Helper (Border Flood-Fill for 100% Zero Bounding Box)
         const processedCanvasCache = new WeakMap();
         function getCleanTransparentSprite(img) {
             if (!img || !img.complete || img.naturalWidth === 0) return null;
             if (processedCanvasCache.has(img)) return processedCanvasCache.get(img);
+
             const cvs = document.createElement('canvas');
-            cvs.width = img.naturalWidth;
-            cvs.height = img.naturalHeight;
+            const w = img.naturalWidth, h = img.naturalHeight;
+            cvs.width = w; cvs.height = h;
             const cctx = cvs.getContext('2d');
             cctx.drawImage(img, 0, 0);
-            processedCanvasCache.set(img, cvs); // 캐싱을 즉시 등록하여 getImageData 무한 재연산 및 스레드 멈춤 방지
+            processedCanvasCache.set(img, cvs);
+
             try {
-                const imgData = cctx.getImageData(0, 0, cvs.width, cvs.height);
+                const imgData = cctx.getImageData(0, 0, w, h);
                 const d = imgData.data;
-                for (let i = 0; i < d.length; i += 4) {
-                    const r = d[i], g = d[i + 1], b = d[i + 2];
-                    if ((r < 75 && g < 75 && b < 75 && Math.abs(r - g) < 25 && Math.abs(g - b) < 25) ||
-                        (r > 180 && g > 180 && b > 180)) {
-                        d[i + 3] = 0; // Force 100% Alpha Transparency on dark gray or pure white/off-white background!
+
+                // 4개 테두리 외곽 픽셀부터 지능형 BFS Flood-Fill로 사각형 검은색/어두운 배경 픽셀만 100% 투명화!
+                const visited = new Uint8Array(w * h);
+                const queue = [];
+
+                for (let x = 0; x < w; x++) {
+                    queue.push(x, 0); queue.push(x, h - 1);
+                    visited[x] = 1; visited[(h - 1) * w + x] = 1;
+                }
+                for (let y = 0; y < h; y++) {
+                    queue.push(0, y); queue.push(w - 1, y);
+                    visited[y * w] = 1; visited[y * w + (w - 1)] = 1;
+                }
+
+                let head = 0;
+                while (head < queue.length) {
+                    const cx = queue[head++];
+                    const cy = queue[head++];
+                    const idx = (cy * w + cx) * 4;
+
+                    const r = d[idx], g = d[idx + 1], b = d[idx + 2], a = d[idx + 3];
+
+                    // 배경 조건 (어두운 회색/검정 배경 또는 비투명 외곽 노이즈)
+                    const isBgPixel = (r < 115 && g < 115 && b < 115) || (r > 170 && g > 170 && b > 170) || (a < 50);
+
+                    if (isBgPixel) {
+                        d[idx + 3] = 0; // 100% 완전 투명화!
+
+                        const neighbors = [
+                            [cx + 1, cy], [cx - 1, cy], [cx, cy + 1], [cx, cy - 1]
+                        ];
+                        for (let n = 0; n < 4; n++) {
+                            const nx = neighbors[n][0], ny = neighbors[n][1];
+                            if (nx >= 0 && nx < w && ny >= 0 && ny < h) {
+                                const nPos = ny * w + nx;
+                                if (!visited[nPos]) {
+                                    visited[nPos] = 1;
+                                    queue.push(nx, ny);
+                                }
+                            }
+                        }
                     }
                 }
                 cctx.putImageData(imgData, 0, 0);
@@ -3603,9 +3641,6 @@
                     if (!enemy || (enemy.isDying && !enemy.isFinalBoss) || enemy.isEliminated) return;
                     if (enemy.isBoss) {
                         ctx.save();
-                        ctx.beginPath();
-                        ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
-                        ctx.clip(); // 100% physically clips away any square bounding box corners!
                         const bImg = enemy.isFinalBoss ? imgBoss : (imgBossTypes.length > 0 ? imgBossTypes[(enemy.bossType || 0) % imgBossTypes.length] : null);
                         const cleanBossCvs = getCleanTransparentSprite(bImg) || getCleanTransparentSprite(imgBoss);
                         const bSize = enemy.isFinalBoss ? 180 : 104;
