@@ -513,8 +513,31 @@
                         <p>- 단축키 <b>B</b>키로 BGM을 즉시 켜고 끌 수 있습니다.<br>- 8비트 웨이브합성 사운드로 신스웨이브 BGM이 연주됩니다.</p>
                     </div>
                     <div id="infoControlSec" style="display: none;">
-                        <h3 style="color: #00d2d3; margin-top:0;">⌨️ 스마트폰 & PC 조작 가이드</h3>
-                        <p><b>📱 스마트폰 터치:</b><br>- 1손가락 드래그: 상대 무빙 기동<br>- 2손가락 터치: 💥 필살기 즉시 발동<br>- 3손가락 터치: ⏸️ 일시정지 / 메뉴<br><br><b>💻 PC 키보드:</b><br>- W,A,S,D / 마우스: 무빙 기동<br>- SPACE / X / E: 필살기 발동<br>- P: 일시정지</p>
+                        <h3 style="color: #00d2d3; margin-top:0; border-bottom: 1px solid rgba(0, 210, 211, 0.3); padding-bottom: 8px; font-size: 17px; text-align: center;">⌨️ 전술 기동 및 스마트 조작법 가이드</h3>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 14px; text-align: left;">
+                            <!-- 스마트폰 조작 -->
+                            <div style="background: rgba(0, 210, 211, 0.08); border: 1px solid rgba(0, 210, 211, 0.35); border-radius: 12px; padding: 12px;">
+                                <div style="color: #00d2d3; font-weight: 900; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">📱 스마트폰 (모바일)</div>
+                                <div style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: #dcdde1; line-height: 1.5;">
+                                    <div>👉 <b style="color:#fff;">1손가락 터치 드래그:</b> 손가락이 비행기를 가리지 않는 상대 무빙 기동</div>
+                                    <div>💥 <b style="color:#ff3838;">2손가락 동시에 터치:</b> 💥 전술 태양 필살기 발동</div>
+                                    <div>⏸️ <b style="color:#f1c40f;">3손가락 동시에 터치:</b> ⏸️ 일시정지 / 아스날 메뉴</div>
+                                </div>
+                            </div>
+
+                            <!-- PC 조작 -->
+                            <div style="background: rgba(9, 132, 227, 0.08); border: 1px solid rgba(9, 132, 227, 0.35); border-radius: 12px; padding: 12px;">
+                                <div style="color: #74b9ff; font-weight: 900; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">💻 PC (컴퓨터)</div>
+                                <div style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: #dcdde1; line-height: 1.5;">
+                                    <div>🎮 <b style="color:#fff;">W, A, S, D / 방향키 / 마우스:</b> 전투기 위치 자유 기동</div>
+                                    <div>💥 <b style="color:#ff3838;">SPACE / X / E 키:</b> 💥 전술 태양 필살기 발동</div>
+                                    <div>⏸️ <b style="color:#f1c40f;">P 키:</b> ⏸️ 일시정지 / 아스날 전술 메뉴</div>
+                                    <div>🎵 <b style="color:#10ac84;">B 키:</b> 🎵 BGM 음악 ON / OFF</div>
+                                    <div>🏠 <b style="color:#a4b0be;">M 키:</b> 🏠 지휘소 메뉴로 복귀</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div id="infoItemSec" style="display: none;">
                         <h3 style="color: #f1c40f; margin-top:0; border-bottom: 1px solid rgba(241, 196, 15, 0.3); padding-bottom: 8px; font-size: 16px; text-align: center;">🎁 전술 드롭 아이템 분류 도감</h3>
@@ -1252,22 +1275,6 @@ if (document.readyState === 'loading') {
             if (key === 'p' && gameState === "PLAYING") { togglePauseState(); }
             if (key === 'b' && gameState === "PLAYING") { toggleBGM(); }
             if (key === 'm' && (gameState === "PLAYING" || gameState === "GAMEOVER")) { stopBGM(); saveHighScore(); isPaused = false; playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; updateUIVisibility(); }
-            if (e.ctrlKey && key === 's' && gameState === "PLAYING" && !isPaused) {
-                e.preventDefault();
-                localStorage.setItem("rr_supreme_save_active", "true"); localStorage.setItem("rr_supreme_save_score", score); localStorage.setItem("rr_supreme_save_hp", player.hp); localStorage.setItem("rr_supreme_save_wave", waveCount);
-                localStorage.setItem("rr_supreme_save_allies", JSON.stringify(player.allies)); localStorage.setItem("rr_supreme_save_weapon", player.weaponType); localStorage.setItem("rr_supreme_save_buff", player.buffType);
-                localStorage.setItem("rr_supreme_save_defense", player.defenseType); localStorage.setItem("rr_supreme_save_diff", difficulty); localStorage.setItem("rr_supreme_save_mult", diffMultiplier);
-                saveHighScore(); playUpgradeSound(); addFloatingText(player.x, player.y - 60, "💾 전황 세이브 완료!", "#1cfc03");
-            }
-            if (e.ctrlKey && key === 'l' && gameState === "PLAYING") {
-                e.preventDefault();
-                if (localStorage.getItem("rr_supreme_save_active") === "true") {
-                    score = parseInt(localStorage.getItem("rr_supreme_save_score")); player.hp = parseInt(localStorage.getItem("rr_supreme_save_hp")); waveCount = parseInt(localStorage.getItem("rr_supreme_save_wave"));
-                    player.allies = JSON.parse(localStorage.getItem("rr_supreme_save_allies")); player.weaponType = localStorage.getItem("rr_supreme_save_weapon"); player.buffType = localStorage.getItem("rr_supreme_save_buff");
-                    player.defenseType = localStorage.getItem("rr_supreme_save_defense"); difficulty = localStorage.getItem("rr_supreme_save_diff"); diffMultiplier = parseFloat(localStorage.getItem("rr_supreme_save_mult"));
-                    isPaused = false; playUpgradeSound(); addFloatingText(player.x, player.y - 60, "📂 스냅샷 로드 완료!", "#00d2d3");
-                } else { addFloatingText(player.x, player.y - 60, "❌ 저장 시점 없음", "#ff3838"); }
-            }
         });
 
         function togglePauseState() {
