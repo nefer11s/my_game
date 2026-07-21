@@ -464,7 +464,11 @@
             <div id="gameOverOverlay" style="display: none;">
                 <div class="go-title">MISSION OVERRUN</div>
                 <div id="goScore">최종 스코어: 0 PTS</div>
-                <button id="restartBtn" onclick="handleRestartClick()">지휘소로 복귀</button>
+                <div style="margin: 14px 0 18px 0; display: flex; align-items: center; gap: 8px; justify-content: center;">
+                    <span style="font-size: 13px; color: #00d2d3; font-weight: bold;">👤 지휘관명 (최대 10자):</span>
+                    <input type="text" id="goNameInput" maxlength="10" value="지휘관" style="background: rgba(20, 26, 38, 0.85); border: 1px solid #00d2d3; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 13px; width: 130px; text-align: center; outline: none; box-shadow: 0 0 10px rgba(0, 210, 211, 0.3);">
+                </div>
+                <button id="restartBtn" onclick="saveHighScore(); handleRestartClick();">💾 명예의 전당 등록 및 복귀</button>
             </div>
 
             <div id="victoryOverlay"
@@ -487,11 +491,14 @@
                     💬 "현우엄마를 무사히 구출해 은하계에 다시 평화가 찾아왔습니다! 현우 지휘관님과 승리의 기쁨을 나눕니다."
                 </div>
 
-                <div id="victoryScore" style="font-size: 15px; color: #ffffff; margin-bottom: 20px;">최종 전과 스코어: 0 PTS
+                <div id="victoryScore" style="font-size: 15px; color: #ffffff; margin-bottom: 12px;">최종 전과 스코어: 0 PTS</div>
+                <div style="margin-bottom: 18px; display: flex; align-items: center; gap: 8px; justify-content: center;">
+                    <span style="font-size: 13px; color: #1cfc03; font-weight: bold;">👤 지휘관명 (최대 10자):</span>
+                    <input type="text" id="victoryNameInput" maxlength="10" value="지휘관" style="background: rgba(20, 26, 38, 0.85); border: 1px solid #1cfc03; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 13px; width: 130px; text-align: center; outline: none; box-shadow: 0 0 10px rgba(28, 252, 3, 0.3);">
                 </div>
                 <button
                     style="font-size: 18px; padding: 12px 40px; border-radius: 30px; background: linear-gradient(135deg, #10ac84, #1cfc03); border: 2px solid #fff; color: #141822; font-weight: 900; cursor: pointer; box-shadow: 0 0 20px rgba(28, 252, 3, 0.5);"
-                    onclick="returnToMainMenu()">🚀 지휘소 메뉴로 복귀</button>
+                    onclick="saveHighScore(); returnToMainMenu();">💾 명예의 전당 등록 및 복귀</button>
             </div>
 
             <!-- (환경설정 모달 삭제됨: 모든 설정 옵션이 초기 화면 전술 패널로 통합) -->
@@ -936,18 +943,24 @@ if (document.readyState === 'loading') {
             try {
                 const stored = localStorage.getItem("hy_fire_fighter_scores");
                 if (stored) {
-                    list = JSON.parse(stored);
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed)) {
+                        list = parsed.map(item => {
+                            if (typeof item === 'number') return { name: "지휘관", score: item };
+                            return { name: item.name || "지휘관", score: item.score || 0 };
+                        });
+                    }
                 } else if (localStorage.getItem("rr_supreme_highscore")) {
                     const legacy = parseInt(localStorage.getItem("rr_supreme_highscore"));
-                    if (!isNaN(legacy) && legacy > 0) list = [legacy];
+                    if (!isNaN(legacy) && legacy > 0) list = [{ name: "지휘관", score: legacy }];
                 }
             } catch(e) { list = []; }
-            return Array.isArray(list) ? list : [];
+            return list;
         }
 
         function updateHighScoreUI() {
             const scores = getScoreList();
-            highScore = scores.length > 0 ? scores[0] : 0;
+            highScore = scores.length > 0 ? scores[0].score : 0;
             const container = document.getElementById('topScoreList');
             if (!container) return;
             if (scores.length === 0) {
@@ -958,12 +971,21 @@ if (document.readyState === 'loading') {
             const colors = ['#f1c40f', '#e0e0e0', '#cd7f32', '#00d2d3', '#a4b0be'];
             let html = '';
             const top5 = scores.slice(0, 5);
-            top5.forEach((sc, idx) => {
-                html += `<div style="background: rgba(255,255,255,0.06); border: 1px solid ${colors[idx]}55; padding: 3px 8px; border-radius: 6px; font-size: 11px;">
-                    <span>${medals[idx]} ${idx+1}위:</span> <span style="color:${colors[idx]}; font-weight:900;">${sc.toLocaleString()}</span> <span style="font-size:9px; color:#aaa;">PTS</span>
+            top5.forEach((item, idx) => {
+                const nameStr = item.name ? item.name : "지휘관";
+                html += `<div style="background: rgba(255,255,255,0.06); border: 1px solid ${colors[idx]}55; padding: 4px 10px; border-radius: 8px; font-size: 12px; display: flex; align-items: center; gap: 6px;">
+                    <span>${medals[idx]} <b style="color:${colors[idx]};">${idx+1}위</b></span>
+                    <span style="color:#dcdde1; font-weight:bold; max-width:85px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">[${nameStr}]</span>
+                    <span style="color:${colors[idx]}; font-weight:900;">${item.score.toLocaleString()}</span> <span style="font-size:9px; color:#aaa;">PTS</span>
                 </div>`;
             });
             container.innerHTML = html;
+            
+            const lastName = localStorage.getItem("hy_last_commander_name") || "지휘관";
+            ['goNameInput', 'victoryNameInput'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = lastName;
+            });
         }
 
         updateHighScoreUI();
@@ -2640,16 +2662,29 @@ if (document.readyState === 'loading') {
             updateUIVisibility();
         }
 
-        function saveHighScore() {
-            if (score <= 0) return;
+        function saveHighScore(customName, customScore) {
+            const sc = (typeof customScore === 'number') ? customScore : score;
+            if (sc <= 0) return;
+
+            let name = customName;
+            if (!name) {
+                const goIn = document.getElementById('goNameInput');
+                const vicIn = document.getElementById('victoryNameInput');
+                if (goIn && goIn.value.trim()) name = goIn.value.trim();
+                else if (vicIn && vicIn.value.trim()) name = vicIn.value.trim();
+                else name = localStorage.getItem("hy_last_commander_name") || "지휘관";
+            }
+            if (name.length > 10) name = name.substring(0, 10);
+            try { localStorage.setItem("hy_last_commander_name", name); } catch(e){}
+
             let scores = getScoreList();
-            scores.push(score);
-            scores.sort((a, b) => b - a);
+            scores.push({ name: name, score: sc });
+            scores.sort((a, b) => b.score - a.score);
             scores = scores.slice(0, 10);
             try {
                 localStorage.setItem("hy_fire_fighter_scores", JSON.stringify(scores));
             } catch(e) {}
-            highScore = scores[0] || 0;
+            highScore = scores[0] ? scores[0].score : 0;
             updateHighScoreUI();
         }
         function gameOver() { gameState = "GAMEOVER"; stopBGM(); saveHighScore(); document.getElementById('goScore').innerText = `최종 전과 스코어: ${score.toLocaleString()} PTS`; document.getElementById('gameOverOverlay').style.display = 'flex'; }
