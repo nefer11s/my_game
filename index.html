@@ -2200,35 +2200,44 @@
             if (bullets.length > 300) bullets.splice(0, bullets.length - 300);
             if (enemyLasers.length > 200) enemyLasers.splice(0, enemyLasers.length - 200);
 
-            // Boss Support Spawner (Spawns minion aliens & mid-bosses continuously during boss battles!)
-            // 1. Minion Alien Swarm Support Spawner (Every 2.2 seconds during boss / mid-boss battles)
-            // 1. Minion Alien Swarm Support Spawner (Scales interval & density with stageLevel + midBossMinionMultiplier!)
-            const isNightmare = (selectedDifficultyKey === "NIGHTMARE");
+            // Boss Support Spawner (Spawns minion aliens continuously & non-stop during boss/mid-boss battles!)
+            // 1. Minion Alien Swarm Support Spawner (Guaranteed independent timer for continuous swarms!)
             const _mbMinionMult = (typeof midBossMinionMultiplier !== 'undefined') ? midBossMinionMultiplier : 1.0;
-            // 중간보스 호위잡몹밀도가 0.0이면 스폰 전혀 안됨
             if (_mbMinionMult > 0.0) {
-                const baseInterval = Math.max(30, 130 - (stageLevel * 18));
-                const minionSpawnInterval = isNightmare
-                    ? Math.max(20, Math.floor(baseInterval * 0.55 / _mbMinionMult))
-                    : Math.max(25, Math.floor(baseInterval / _mbMinionMult));
-                if (globalAnimTick % minionSpawnInterval === 0 && enemies.some(e => (e.isBoss || e.isFinalBoss) && !e.isDying) && enemies.length < 90) {
-                    const zCount = isNightmare
-                        ? Math.max(4, Math.floor((3 + stageLevel * 1.1) * diffMultiplier * _mbMinionMult))
-                        : Math.max(1, Math.floor((1.5 + stageLevel * 1.0) * diffMultiplier * _mbMinionMult));
-                    for (let k = 0; k < zCount; k++) {
-                        const aType = Math.floor(Math.random() * 10);
-                        const hpBase = Math.floor((3 + stageLevel * 1.5) * diffMultiplier);
-                        const spawnX = 35 + Math.random() * (canvas.width - 70);
-                        enemies.push({
-                            x: spawnX,
-                            y: 50 - (k * 32),
-                            radius: 18,
-                            hp: hpBase, maxHp: hpBase,
-                            speed: (1.8 + (stageLevel * 0.06)) * (diffMultiplier * 0.9),
-                            isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0,
-                            hasItem: (Math.random() < 0.25)
-                        });
+                const hasActiveBoss = enemies.some(e => (e.isBoss || e.isFinalBoss) && !e.isDying);
+                if (hasActiveBoss) {
+                    if (typeof window.bossMinionTimer === 'undefined') window.bossMinionTimer = 0;
+                    window.bossMinionTimer++;
+
+                    // 난이도 및 설정된 밀도에 따른 확정 스폰 쿨다운 (약 2.5 ~ 3.5초 주기)
+                    const isNightmare = (selectedDifficultyKey === "NIGHTMARE");
+                    const spawnThreshold = isNightmare
+                        ? Math.max(60, Math.floor(110 / _mbMinionMult))
+                        : Math.max(90, Math.floor(180 / _mbMinionMult));
+
+                    if (window.bossMinionTimer >= spawnThreshold && enemies.length < 85) {
+                        window.bossMinionTimer = 0; // 타이머 리셋 후 확정 스폰
+                        const swarmCount = isNightmare
+                            ? Math.max(5, Math.floor((4 + stageLevel * 1.2) * diffMultiplier * _mbMinionMult))
+                            : Math.max(3, Math.floor((2 + stageLevel * 0.8) * diffMultiplier * _mbMinionMult));
+
+                        for (let k = 0; k < swarmCount; k++) {
+                            const aType = Math.floor(Math.random() * 10);
+                            const hpBase = Math.floor((3 + stageLevel * 1.2) * diffMultiplier);
+                            const spawnX = 40 + Math.random() * (canvas.width - 80);
+                            enemies.push({
+                                x: spawnX,
+                                y: -20 - (k * 36), // 화면 바로 위에서 순차 하강
+                                radius: 18,
+                                hp: hpBase, maxHp: hpBase,
+                                speed: (2.0 + (stageLevel * 0.08)) * (diffMultiplier * 0.9),
+                                isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0,
+                                hasItem: (Math.random() < 0.30) // 아이템 드롭 확률 제공
+                            });
+                        }
                     }
+                } else {
+                    window.bossMinionTimer = 0;
                 }
             }
 
