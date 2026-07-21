@@ -462,9 +462,21 @@
                     </div>
                     <!-- /통합 전술 환경설정 패널 끝 -->
 
-                    <!-- 난이도 및 전술 옵션 설정 모달 호출 대형 버튼 -->
-                    <button style="font-size: 15px; padding: 13px 20px; border-radius: 25px; background: rgba(20, 26, 38, 0.9); border: 2px solid #ff9f43; color: #ff9f43; font-weight: 900; cursor: pointer; box-shadow: 0 0 20px rgba(255, 159, 67, 0.5); margin-bottom: 10px; width: 95%; max-width: 420px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
-                        onclick="openDifficultyModal()">⚙️ 작전 난이도 &amp; 전술 옵션 설정</button>
+                    <!-- 🎯 난이도 프리셋 선택 (초기화면 상주) -->
+                    <div style="width: 100%; max-width: 480px; margin-bottom: 10px;">
+                        <div style="font-size: 12px; color: #ff9f43; font-weight: 900; margin-bottom: 7px; text-shadow: 0 0 8px rgba(255,159,67,0.5); letter-spacing: 1px;">🎯 작전 난이도 선택</div>
+                        <div class="diff-btn-container" style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
+                            <button class="diff-btn" onclick="setSelectDiff('EASY', 0.45, this)">초보</button>
+                            <button class="diff-btn active" onclick="setSelectDiff('NORMAL', 0.9, this)">일반</button>
+                            <button class="diff-btn" onclick="setSelectDiff('HARD', 1.25, this)">하드</button>
+                            <button class="diff-btn" onclick="setSelectDiff('EXPERT', 1.7, this)">정예</button>
+                            <button class="diff-btn" onclick="setSelectDiff('NIGHTMARE', 3.5, this)">악몽</button>
+                        </div>
+                    </div>
+
+                    <!-- 세부 전술 옵션 모달 호출 버튼 -->
+                    <button style="font-size: 14px; padding: 10px 20px; border-radius: 25px; background: rgba(20, 26, 38, 0.9); border: 2px solid #e056fd; color: #e056fd; font-weight: 900; cursor: pointer; box-shadow: 0 0 16px rgba(224, 86, 253, 0.4); margin-bottom: 10px; width: 95%; max-width: 420px; white-space: nowrap;"
+                        onclick="openDifficultyModal()">🛠️ 세부 전술 파라미터 설정 (고급)</button>
 
                     <div id="activeDiffSummaryDisp" style="font-size: 12px; color: #00d2d3; font-weight: bold; margin-bottom: 18px; text-shadow: 0 0 8px rgba(0,210,211,0.5);">
                         🎯 현재 설정: [일반 (NORMAL)]
@@ -505,28 +517,17 @@
             <button id="restartBtn" onclick="saveHighScore(); handleRestartClick();">💾 명예의 전당 등록 및 복귀</button>
         </div>
 
-        <!-- ⚙️ 작전 난이도 & 전술 옵션 설정 전용 모달 -->
+        <!-- 🛠️ 세부 전술 파라미터 설정 전용 모달 (고급) -->
         <div id="difficultyModal"
             style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 10, 16, 0.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 270; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; text-align: center;">
-            <div style="font-size: 22px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 15px rgba(0, 210, 211, 0.8); margin-bottom: 4px; letter-spacing: 2px;">
-                ⚙️ 작전 난이도 & 전술 옵션 설정
+            <div style="font-size: 20px; font-weight: 900; color: #e056fd; text-shadow: 0 0 15px rgba(224, 86, 253, 0.8); margin-bottom: 4px; letter-spacing: 2px;">
+                🛠️ 세부 전술 파라미터 설정
             </div>
             <div style="font-size: 13px; color: #a4b0be; font-weight: bold; margin-bottom: 16px;">
-                게임 난이도 프리셋 및 5대 전술 파라미터를 맞춤 설정합니다.
+                5대 전술 파라미터를 난이도 프리셋과 별개로 세밀하게 조정합니다.
             </div>
 
-            <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(0, 210, 211, 0.4); border-radius: 16px; padding: 18px 16px; width: 100%; max-width: 440px; box-sizing: border-box; margin-bottom: 18px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
-                <!-- 1. 🎯 난이도 프리셋 선택 -->
-                <div style="font-size: 14px; color: #ff9f43; margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 10px rgba(255, 159, 67, 0.6); letter-spacing: 1px;">
-                    🎯 난이도 프리셋 선택
-                </div>
-                <div class="diff-btn-container" style="margin-bottom: 20px; display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
-                    <button class="diff-btn" onclick="setSelectDiff('EASY', 0.45, this)">초보</button>
-                    <button class="diff-btn active" onclick="setSelectDiff('NORMAL', 0.9, this)">일반</button>
-                    <button class="diff-btn" onclick="setSelectDiff('HARD', 1.25, this)">하드</button>
-                    <button class="diff-btn" onclick="setSelectDiff('EXPERT', 1.7, this)">정예</button>
-                    <button class="diff-btn" onclick="setSelectDiff('NIGHTMARE', 3.5, this)">악몽</button>
-                </div>
+            <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(224, 86, 253, 0.35); border-radius: 16px; padding: 18px 16px; width: 100%; max-width: 440px; box-sizing: border-box; margin-bottom: 18px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
 
                 <!-- 2. 🛠️ 커스텀 상세 전술 옵션 GRID -->
                 <div style="font-size: 14px; color: #00d2d3; margin-bottom: 12px; font-weight: 900; text-shadow: 0 0 10px rgba(0, 210, 211, 0.6); letter-spacing: 1px;">
