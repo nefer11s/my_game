@@ -1315,21 +1315,7 @@ if (document.readyState === 'loading') {
             } catch (e) { }
         }
 
-        // Default Fullscreen Enforcer: Auto request fullscreen on any user interaction anywhere on the screen!
-        ['click', 'touchstart', 'touchmove', 'keydown', 'pointerdown'].forEach(evtType => {
-            window.addEventListener(evtType, () => {
-                requestNativeFullscreenOnly();
-            }, { passive: true });
-        });
-        window.addEventListener('load', () => { requestNativeFullscreenOnly(); });
-        document.addEventListener('click', function initAutoFS() {
-            requestNativeFullscreenOnly();
-            document.removeEventListener('click', initAutoFS);
-        }, { once: true });
-        document.addEventListener('touchstart', function initAutoFSTouch() {
-            requestNativeFullscreenOnly();
-            document.removeEventListener('touchstart', initAutoFSTouch);
-        }, { once: true });
+
 
         function previewVictoryScreen() {
             if (audioCtx) playUpgradeSound();
