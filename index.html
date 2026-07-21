@@ -555,6 +555,31 @@
             <button id="restartBtn" onclick="saveHighScore(); handleRestartClick();">💾 명예의 전당 등록 및 복귀</button>
         </div>
 
+        <!-- 작전 개시 시나리오 프롤로그 커트씬 모달 -->
+        <div id="prologueOverlay"
+            style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 10, 16, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 280; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; text-align: center;">
+            <div style="font-size: 20px; font-weight: 900; color: #ff2d55; text-shadow: 0 0 15px rgba(255, 45, 85, 0.8); margin-bottom: 6px; letter-spacing: 2px;">
+                🚨 [긴급 작전 시나리오]
+            </div>
+            <div style="font-size: 15px; font-weight: 900; color: #ffd32c; text-shadow: 0 0 10px rgba(255, 211, 44, 0.6); margin-bottom: 12px;">
+                "외계 마왕 함선 침공 & 현우엄마 납치 사건!"
+            </div>
+
+            <div style="border: 3px solid #00d2d3; border-radius: 16px; overflow: hidden; margin-bottom: 14px; box-shadow: 0 0 25px rgba(0, 210, 211, 0.5); max-width: 320px; width: 90%; background: #000;">
+                <img src="assets/abduction_story.png" alt="Abduction Story Scene" style="width: 100%; height: auto; max-height: 220px; object-fit: cover; display: block;">
+            </div>
+
+            <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(0, 210, 211, 0.4); border-radius: 12px; padding: 12px 16px; color: #dcdde1; font-weight: bold; font-size: 12px; margin-bottom: 18px; max-width: 440px; line-height: 1.6; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.4);">
+                <div style="color: #ff3838; font-weight: 900; margin-bottom: 4px;">🛸 외계 마왕의 기습 침공:</div>
+                평화롭던 지구 마을에 정체불명의 외계 마왕 함선이 출현하여 견인 광선으로 현우 엄마를 납치해 우주 저편으로 달아났습니다!<br>
+                <div style="color: #00d2d3; font-weight: 900; margin-top: 6px;">🚀 현우 지휘관의 출격 명령:</div>
+                세라믹 비행기 <b style="color:#ffd32c;">'Fire Ceramic Fighter'</b>에 즉시 탑승하여 외계 함대를 궤멸시키고 엄마를 무사히 구출하십시오!
+            </div>
+
+            <button style="font-size: 16px; padding: 13px 30px; border-radius: 30px; background: linear-gradient(135deg, #ff2d55, #ff9f43); border: 2px solid #fff; color: #fff; font-weight: 900; cursor: pointer; box-shadow: 0 0 25px rgba(255, 45, 85, 0.7); animation: splashPulse 1.5s infinite;"
+                onclick="confirmStartGameFromPrologue()">🔥 출격! 외계 함대 격퇴 및 엄마 구출 작전 개시</button>
+        </div>
+
         <div id="victoryOverlay"
             style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 10, 16, 0.68); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 250; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; text-align: center;">
             <div
@@ -1661,7 +1686,20 @@
             document.getElementById('infoModal').style.display = 'none';
         }
 
-        function handleStartClick() { initAudio(); startBGM(); playUpgradeSound(); requestNativeFullscreenOnly(); document.getElementById('menuOverlay').style.display = 'none'; startGame(); }
+        function handleStartClick() {
+            initAudio();
+            startBGM();
+            playUpgradeSound();
+            requestNativeFullscreenOnly();
+            document.getElementById('menuOverlay').style.display = 'none';
+            document.getElementById('prologueOverlay').style.display = 'flex';
+        }
+
+        function confirmStartGameFromPrologue() {
+            if (audioCtx) playUpgradeSound();
+            document.getElementById('prologueOverlay').style.display = 'none';
+            startGame();
+        }
         function handleRestartClick() { stopBGM(); playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('victoryOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; updateUIVisibility(); }
 
         window.addEventListener('mousemove', (e) => {
