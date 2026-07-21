@@ -1306,7 +1306,7 @@
         const imgAllyDrone = new Image(); imgAllyDrone.src = 'assets/support_drone_gold.png';
 
         const imgAlienTypes = [];
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 12; i++) {
             const img = new Image();
             img.src = `assets/alien_${i}.png`;
             imgAlienTypes.push(img);
@@ -1933,7 +1933,9 @@
             { main: '#718093', glow: '#e1b12c', sub: '#2f3640', name: 'Titan Destroyer' },
             { main: '#badc58', glow: '#6ab04c', sub: '#44bd32', name: 'Bio Hazard' },
             { main: '#74b9ff', glow: '#0984e3', sub: '#81ecec', name: 'Crystal Phantom' },
-            { main: '#ff6b6b', glow: '#ee5253', sub: '#ff4757', name: 'Inferno Overlord' }
+            { main: '#ff6b6b', glow: '#ee5253', sub: '#ff4757', name: 'Inferno Overlord' },
+            { main: '#ff007f', glow: '#ff66cc', sub: '#cc0066', name: 'Bio Spiked Devil' },    // 10: 뿔 가시 악마 외계인
+            { main: '#00ffcc', glow: '#66ffff', sub: '#009999', name: 'Quad-Eye Jelly Fiend' } // 11: 4눈 네온 해파리 외계인
         ];
 
         const BOSS_PALETTES = [
@@ -1991,7 +1993,7 @@
                 // 🔥 스테이지 레벨이 높을수록 중간보스 등장 시 함께 강림하는 초기 호위 잡몹 (Stage 1: 3기 ~ Stage 4: 7기, Stage 5: 9기!)
                 const initialMinions = Math.floor(2 + stageLevel * 1.4);
                 for (let k = 0; k < initialMinions; k++) {
-                    const aType = Math.floor(Math.random() * 10);
+                    const aType = Math.floor(Math.random() * 12);
                     const spawnX = 35 + Math.random() * (canvas.width - 70);
                     enemies.push({
                         x: spawnX, y: 50 - (k * 32), radius: 18,
@@ -2008,7 +2010,7 @@
             } else {
                 // All Minion Aliens spawn scattered individually across top screen and charge towards player!
                 for (let i = 0; i < zCount; i++) {
-                    const aType = Math.floor(Math.random() * 10);
+                    const aType = Math.floor(Math.random() * 12);
                     const spawnX = 35 + Math.random() * (canvas.width - 70);
                     const spawnY = 50 - (i * 38);
                     enemies.push({
@@ -2233,7 +2235,7 @@
                             : Math.max(3, Math.floor((2 + stageLevel * 0.8) * diffMultiplier * _mbMinionMult));
 
                         for (let k = 0; k < swarmCount; k++) {
-                            const aType = Math.floor(Math.random() * 10);
+                            const aType = Math.floor(Math.random() * 12);
                             const hpBase = Math.floor((3 + stageLevel * 1.2) * diffMultiplier);
                             
                             // 스폰 위치: 상단 및 좌우 측면에서 랜덤 대형으로 다각도 출격
