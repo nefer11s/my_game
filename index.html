@@ -2,7 +2,8 @@
 <html lang="ko">
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="screen-orientation" content="portrait">
     <meta name="x5-orientation" content="portrait">
     <meta name="full-screen" content="yes">
@@ -12,7 +13,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Fire Ceramic Fighter (HY Soft) - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.5.0)</title>
+    <title>Fire Ceramic Fighter (HY Soft 제공) - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.5.0)</title>
     <style>
         body {
             margin: 0;
@@ -149,7 +150,7 @@
             font-size: 15px;
             transition: all 0.25s ease;
             backdrop-filter: blur(4px);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
         }
 
         .diff-btn:hover {
@@ -171,6 +172,7 @@
         #startBtn {
             transition: all 0.3s ease;
         }
+
         #startBtn:hover {
             box-shadow: 0 0 50px rgba(0, 210, 211, 0.9) !important;
             transform: scale(1.03);
@@ -350,38 +352,66 @@
         }
     </style>
     <script>
-    const userAgent = navigator.userAgent.toLowerCase();
+        const userAgent = navigator.userAgent.toLowerCase();
     </script>
 </head>
 
 <body
     style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background-color: #0c0e12; color: white;">
-<div id="kakaoNotice" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(12, 14, 18, 0.96); color:#fff; z-index:9999; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px; box-sizing:border-box;">
-  <div style="background:#1e2430; border:2px solid #00d2d3; border-radius:16px; padding:28px 20px; max-width:360px; width:90%; box-shadow:0 0 30px rgba(0,210,211,0.3); display:flex; flex-direction:column; align-items:center;">
-    <div style="font-size:40px; margin-bottom:12px;">⚠️</div>
-    <div style="font-size:18px; font-weight:bold; color:#00d2d3; margin-bottom:10px;">카카오톡 인앱 브라우저 안내</div>
-    <div style="font-size:15px; color:#dcdde1; line-height:1.6; margin-bottom:20px; word-break:keep-all; font-weight:500;">
-      카카오톡 내부 브라우저에서는 게임이 정상 동작하지 않을 수 있습니다.<br><br>
-      <span style="color:#f1c40f; font-weight:bold; font-size:16px;">아래 '다른 브라우저로 열기' 버튼을 눌러주세요.</span>
+    <div id="kakaoNotice"
+        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(12, 14, 18, 0.96); color:#fff; z-index:9999; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px; box-sizing:border-box;">
+        <div
+            style="background:#1e2430; border:2px solid #00d2d3; border-radius:16px; padding:28px 20px; max-width:360px; width:90%; box-shadow:0 0 30px rgba(0,210,211,0.3); display:flex; flex-direction:column; align-items:center;">
+            <div style="font-size:40px; margin-bottom:12px;">⚠️</div>
+            <div style="font-size:18px; font-weight:bold; color:#00d2d3; margin-bottom:10px;">카카오톡 인앱 브라우저 안내</div>
+            <div
+                style="font-size:15px; color:#dcdde1; line-height:1.6; margin-bottom:20px; word-break:keep-all; font-weight:500;">
+                카카오톡 내부 브라우저에서는 게임이 정상 동작하지 않을 수 있습니다.<br><br>
+                <span style="color:#f1c40f; font-weight:bold; font-size:16px;">아래 '다른 브라우저로 열기' 버튼을 눌러주세요.</span>
+            </div>
+            <button
+                style="background:linear-gradient(135deg, #10ac84, #1dd1a1); border:none; color:#fff; font-size:16px; font-weight:bold; padding:14px 24px; border-radius:30px; cursor:pointer; width:100%; box-shadow:0 4px 15px rgba(16,172,132,0.4);"
+                onclick="redirectToExternalBrowser()">🌐 다른 브라우저로 열기</button>
+        </div>
     </div>
-    <button style="background:linear-gradient(135deg, #10ac84, #1dd1a1); border:none; color:#fff; font-size:16px; font-weight:bold; padding:14px 24px; border-radius:30px; cursor:pointer; width:100%; box-shadow:0 4px 15px rgba(16,172,132,0.4);" onclick="redirectToExternalBrowser()">🌐 다른 브라우저로 열기</button>
-  </div>
-</div>    <div id="initSplashOverlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #080a0f; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; padding: 20px; box-sizing: border-box;" onclick="document.getElementById('initSplashOverlay').style.display='none'; requestNativeFullscreenOnly(); initAudio();">
-        <img src="assets/splash_hero.png" style="width: 80%; max-width: 400px; border-radius: 20px; box-shadow: 0 0 30px rgba(0, 210, 211, 0.4); margin-bottom: 25px;" alt="Game Cover">
-        <div style="font-size: 36px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.7); margin-bottom: 10px; letter-spacing: 2px; text-align: center; line-height: 1.2;">
+    <div id="initSplashOverlay"
+        style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #080a0f; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; padding: 20px; box-sizing: border-box;"
+        onclick="document.getElementById('initSplashOverlay').style.display='none'; requestNativeFullscreenOnly(); initAudio();">
+        <img src="assets/splash_hero.png"
+            style="width: 80%; max-width: 400px; border-radius: 20px; box-shadow: 0 0 30px rgba(0, 210, 211, 0.4); margin-bottom: 25px;"
+            alt="Game Cover">
+        <div
+            style="font-size: 36px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.7); margin-bottom: 10px; letter-spacing: 2px; text-align: center; line-height: 1.2;">
             Fire Ceramic Fighter<br>
-            <span style="font-size: 18px; color: #a4b0be; font-weight: bold; letter-spacing: 1px;">(HY Soft)</span>
+            <span style="font-size: 18px; color: #a4b0be; font-weight: bold; letter-spacing: 1px;">(HY Soft 제공)</span>
         </div>
-        <div style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 30px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5); text-align: center;">
-            "외계인에 잡혀간 현우엄마를 구출하라!"
+        <div
+            style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 30px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5); text-align: center;">
+            "외계인에게 잡혀간 현우엄마를 구출하라!"
         </div>
-        <div style="font-size: 18px; color: #ff9f43; font-weight: bold; padding: 15px 30px; border: 2px solid #ff9f43; border-radius: 30px; animation: splashPulse 1.5s infinite; text-align: center;">
+        <div
+            style="font-size: 18px; color: #ff9f43; font-weight: bold; padding: 15px 30px; border: 2px solid #ff9f43; border-radius: 30px; animation: splashPulse 1.5s infinite; text-align: center;">
             👇 화면을 터치하여 전체화면으로 시작
         </div>
-        <div style="position: absolute; bottom: 12px; font-size: 11px; color: #636e72; opacity: 0.7; font-weight: bold; text-align: center;">
+        <div
+            style="position: absolute; bottom: 12px; font-size: 11px; color: #636e72; opacity: 0.7; font-weight: bold; text-align: center;">
             v11.5.0 (배포 2026-07-21 18:14)
         </div>
-        <style>@keyframes splashPulse { 0% { box-shadow: 0 0 0 0 rgba(255,159,67, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(255,159,67, 0); } 100% { box-shadow: 0 0 0 0 rgba(255,159,67, 0); } }</style>
+        <style>
+            @keyframes splashPulse {
+                0% {
+                    box-shadow: 0 0 0 0 rgba(255, 159, 67, 0.7);
+                }
+
+                70% {
+                    box-shadow: 0 0 0 15px rgba(255, 159, 67, 0);
+                }
+
+                100% {
+                    box-shadow: 0 0 0 0 rgba(255, 159, 67, 0);
+                }
+            }
+        </style>
     </div>
 
     <div id="gameWrapper" style="display: flex; gap: 20px; justify-content: center;">
@@ -393,39 +423,51 @@
                     <div class="menu-title"
                         style="font-size: 32px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.7); margin-bottom: 6px; letter-spacing: 3px; text-align: center; line-height: 1.2;">
                         Fire Ceramic Fighter<br>
-                        <span style="font-size: 16px; color: #a4b0be; font-weight: bold; letter-spacing: 1px;">(HY Soft)</span>
+                        <span style="font-size: 16px; color: #a4b0be; font-weight: bold; letter-spacing: 1px;">(HY Soft
+                            제공)</span>
                     </div>
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5); text-align: center;">
-                        "외계인에 잡혀간 현우엄마를 구출하라!"</div>
+                        "외계인에게 잡혀간 현우엄마를 구출하라!"</div>
                     <div id="menuHighScore"
                         style="background: rgba(12, 16, 24, 0.7); border: 1px solid rgba(241, 196, 15, 0.5); padding: 10px 14px; border-radius: 14px; color: #f1c40f; font-size: 12px; margin-bottom: 20px; box-shadow: 0 0 15px rgba(241, 196, 15, 0.2); width: 100%; max-width: 480px; box-sizing: border-box; backdrop-filter: blur(4px);">
-                        <div style="font-weight: 900; font-size: 13px; color: #ffd32c; margin-bottom: 8px; text-shadow: 0 0 8px rgba(241, 196, 15, 0.6); text-align: center; letter-spacing: 1px;">🏆 명예의 전당 (TOP 5)</div>
-                        <div id="topScoreList" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 10px; font-weight: bold; color: #fff;">
+                        <div
+                            style="font-weight: 900; font-size: 13px; color: #ffd32c; margin-bottom: 8px; text-shadow: 0 0 8px rgba(241, 196, 15, 0.6); text-align: center; letter-spacing: 1px;">
+                            🏆 명예의 전당 (TOP 5)</div>
+                        <div id="topScoreList"
+                            style="display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 10px; font-weight: bold; color: #fff;">
                             <span style="color: #a4b0be; font-size: 11px;">기록 불러오는 중...</span>
                         </div>
                     </div>
 
                     <!-- 통합 전술 환경설정 패널 -->
-                    <div style="background: rgba(20, 26, 38, 0.7); border: 1px solid rgba(0, 210, 211, 0.4); border-radius: 14px; padding: 12px 18px; margin-bottom: 22px; width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; backdrop-filter: blur(6px); box-shadow: 0 4px 20px rgba(0,0,0,0.35);">
+                    <div
+                        style="background: rgba(20, 26, 38, 0.7); border: 1px solid rgba(0, 210, 211, 0.4); border-radius: 14px; padding: 12px 18px; margin-bottom: 22px; width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; backdrop-filter: blur(6px); box-shadow: 0 4px 20px rgba(0,0,0,0.35);">
                         <!-- BGM 사운드 설정 -->
                         <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-                            <div style="display: flex; align-items: center; gap: 8px; color: #00d2d3; font-weight: 900; font-size: 13px; text-shadow: 0 0 8px rgba(0, 210, 211, 0.5); min-width: 120px;">
+                            <div
+                                style="display: flex; align-items: center; gap: 8px; color: #00d2d3; font-weight: 900; font-size: 13px; text-shadow: 0 0 8px rgba(0, 210, 211, 0.5); min-width: 120px;">
                                 <span>🎵 사운드 (BGM)</span>
-                                <button id="menuBgmToggleBtn" onclick="toggleBGM()" style="background: rgba(16, 172, 132, 0.25); border: 1px solid #10ac84; color: #10ac84; font-size: 11px; font-weight: bold; padding: 2px 7px; border-radius: 6px; cursor: pointer; transition: all 0.2s;">ON</button>
+                                <button id="menuBgmToggleBtn" onclick="toggleBGM()"
+                                    style="background: rgba(16, 172, 132, 0.25); border: 1px solid #10ac84; color: #10ac84; font-size: 11px; font-weight: bold; padding: 2px 7px; border-radius: 6px; cursor: pointer; transition: all 0.2s;">ON</button>
                             </div>
                             <div style="display: flex; align-items: center; gap: 8px; flex: 1; max-width: 220px;">
-                                <input type="range" class="bgm-vol-input" min="0" max="100" step="5" value="50" oninput="updateBGMVolume(this.value)" style="flex: 1; accent-color: #00d2d3; cursor: pointer; height: 5px;">
-                                <span class="bgm-vol-disp" style="font-size: 12px; font-weight: bold; color: #ff9f43; min-width: 35px; text-align: right; text-shadow: 0 0 6px rgba(255,159,67,0.4);">50%</span>
+                                <input type="range" class="bgm-vol-input" min="0" max="100" step="5" value="50"
+                                    oninput="updateBGMVolume(this.value)"
+                                    style="flex: 1; accent-color: #00d2d3; cursor: pointer; height: 5px;">
+                                <span class="bgm-vol-disp"
+                                    style="font-size: 12px; font-weight: bold; color: #ff9f43; min-width: 35px; text-align: right; text-shadow: 0 0 6px rgba(255,159,67,0.4);">50%</span>
                             </div>
                         </div>
-                        
+
                         <!-- 2x2 전술 맞춤 설정 그리드 -->
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-top: 1px dashed rgba(255, 255, 255, 0.15); padding-top: 8px;">
+                        <div
+                            style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-top: 1px dashed rgba(255, 255, 255, 0.15); padding-top: 8px;">
                             <!-- 1. 중간보스 난이도/체력 -->
                             <div style="display: flex; align-items: center; gap: 4px; font-size: 11px;">
                                 <span style="color: #ff9f43; font-weight: bold; white-space: nowrap;">⚔️ 중간보스</span>
-                                <select id="midBossHpSelect" onchange="midBossHpMultiplier = parseFloat(this.value)" style="background: rgba(15, 20, 30, 0.85); color: #ff9f43; border: 1px solid rgba(255, 159, 67, 0.4); padding: 3px 4px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
+                                <select id="midBossHpSelect" onchange="midBossHpMultiplier = parseFloat(this.value)"
+                                    style="background: rgba(15, 20, 30, 0.85); color: #ff9f43; border: 1px solid rgba(255, 159, 67, 0.4); padding: 3px 4px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
                                     <option value="0.6">약함 (0.6x)</option>
                                     <option value="1.0" selected>보통 (1.0x)</option>
                                     <option value="1.6">강함 (1.6x)</option>
@@ -435,7 +477,8 @@
                             <!-- 2. 잡몹(일반적) 출현 밀도/체력 -->
                             <div style="display: flex; align-items: center; gap: 4px; font-size: 11px;">
                                 <span style="color: #00d2d3; font-weight: bold; white-space: nowrap;">👾 잡몹밀도</span>
-                                <select id="minionHpSelect" onchange="minionHpMultiplier = parseFloat(this.value)" style="background: rgba(15, 20, 30, 0.85); color: #00d2d3; border: 1px solid rgba(0, 210, 211, 0.4); padding: 3px 4px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
+                                <select id="minionHpSelect" onchange="minionHpMultiplier = parseFloat(this.value)"
+                                    style="background: rgba(15, 20, 30, 0.85); color: #00d2d3; border: 1px solid rgba(0, 210, 211, 0.4); padding: 3px 4px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
                                     <option value="0.6">소형 (0.6x)</option>
                                     <option value="1.0" selected>보통 (1.0x)</option>
                                     <option value="1.5">대형 (1.5x)</option>
@@ -445,7 +488,8 @@
                             <!-- 3. 마왕(최종보스) 체력 -->
                             <div style="display: flex; align-items: center; gap: 4px; font-size: 11px;">
                                 <span style="color: #ff3838; font-weight: bold; white-space: nowrap;">👑 마왕체력</span>
-                                <select id="finalBossHpSelect" onchange="finalBossHpMultiplier = parseFloat(this.value)" style="background: rgba(15, 20, 30, 0.85); color: #ff3838; border: 1px solid rgba(255, 56, 56, 0.4); padding: 3px 4px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
+                                <select id="finalBossHpSelect" onchange="finalBossHpMultiplier = parseFloat(this.value)"
+                                    style="background: rgba(15, 20, 30, 0.85); color: #ff3838; border: 1px solid rgba(255, 56, 56, 0.4); padding: 3px 4px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
                                     <option value="0.7">쉬움 (0.7x)</option>
                                     <option value="1.0" selected>보통 (1.0x)</option>
                                     <option value="1.5">어려움 (1.5x)</option>
@@ -455,7 +499,8 @@
                             <!-- 4. 드롭 아이템 빈도 -->
                             <div style="display: flex; align-items: center; gap: 4px; font-size: 11px;">
                                 <span style="color: #f1c40f; font-weight: bold; white-space: nowrap;">🎁 아이템드롭</span>
-                                <select id="itemDropSelect" onchange="allyWeight = parseInt(this.value)" style="background: rgba(15, 20, 30, 0.85); color: #f1c40f; border: 1px solid rgba(241, 196, 15, 0.4); padding: 3px 4px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
+                                <select id="itemDropSelect" onchange="allyWeight = parseInt(this.value)"
+                                    style="background: rgba(15, 20, 30, 0.85); color: #f1c40f; border: 1px solid rgba(241, 196, 15, 0.4); padding: 3px 4px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
                                     <option value="50">풍부함 (50%)</option>
                                     <option value="30">보통 (30%)</option>
                                     <option value="15" selected>조절됨 (15%)</option>
@@ -464,7 +509,9 @@
                         </div>
                     </div>
 
-                    <div style="font-size: 15px; color: #ff9f43; margin-bottom: 12px; font-weight: 900; text-shadow: 0 0 10px rgba(255, 159, 67, 0.6); letter-spacing: 1px;">🎯 작전 난이도 선택</div>
+                    <div
+                        style="font-size: 15px; color: #ff9f43; margin-bottom: 12px; font-weight: 900; text-shadow: 0 0 10px rgba(255, 159, 67, 0.6); letter-spacing: 1px;">
+                        🎯 작전 난이도 선택</div>
                     <div class="diff-btn-container"
                         style="margin-bottom: 40px; display: flex; gap: 6px; justify-content: center;">
                         <button class="diff-btn" onclick="setSelectDiff('EASY', 0.45, this)">초보</button>
@@ -481,7 +528,8 @@
                 </div>
 
                 <!-- 3. 하단 서브 탭 모달 버튼 바 (환경설정 제거 후 2개 대형 버튼으로 개편) -->
-                <div style="display: flex; gap: 12px; justify-content: center; width: 95%; max-width: 480px; margin-bottom: 4px;">
+                <div
+                    style="display: flex; gap: 12px; justify-content: center; width: 95%; max-width: 480px; margin-bottom: 4px;">
                     <button
                         style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 2px solid #00d2d3; color: #00d2d3; padding: 12px 8px; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 14px; box-shadow: 0 0 15px rgba(0, 210, 211, 0.3); transition: all 0.2s ease;"
                         onclick="openInfoModal('CONTROLS')">⌨️ 조작법 가이드</button>
@@ -489,175 +537,228 @@
                         style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 2px solid #f1c40f; color: #f1c40f; padding: 12px 8px; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 14px; box-shadow: 0 0 15px rgba(241, 196, 15, 0.3); transition: all 0.2s ease;"
                         onclick="openInfoModal('ITEMS')">🎁 전술 아이템 도감</button>
                 </div>
-                <div style="font-size: 11px; color: #636e72; opacity: 0.7; margin-top: 4px; text-align: center; font-weight: bold;">
+                <div
+                    style="font-size: 11px; color: #636e72; opacity: 0.7; margin-top: 4px; text-align: center; font-weight: bold;">
                     v11.5.0 (배포 2026-07-21 18:14)
                 </div>
             </div>
+        </div>
+
+        <div id="gameOverOverlay" style="display: none;">
+            <div class="go-title">MISSION OVERRUN</div>
+            <div id="goScore">최종 스코어: 0 PTS</div>
+            <div style="margin: 14px 0 18px 0; display: flex; align-items: center; gap: 8px; justify-content: center;">
+                <span style="font-size: 13px; color: #00d2d3; font-weight: bold;">👤 지휘관명 (최대 10자):</span>
+                <input type="text" id="goNameInput" maxlength="10" value="지휘관"
+                    style="background: rgba(20, 26, 38, 0.85); border: 1px solid #00d2d3; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 13px; width: 130px; text-align: center; outline: none; box-shadow: 0 0 10px rgba(0, 210, 211, 0.3);">
+            </div>
+            <button id="restartBtn" onclick="saveHighScore(); handleRestartClick();">💾 명예의 전당 등록 및 복귀</button>
+        </div>
+
+        <div id="victoryOverlay"
+            style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 10, 16, 0.68); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 250; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; text-align: center;">
+            <div
+                style="font-size: 32px; font-weight: 900; color: #1cfc03; text-shadow: 0 0 25px rgba(28, 252, 3, 0.8); margin-bottom: 8px; letter-spacing: 3px;">
+                🎉 MISSION VICTORY!</div>
+            <div
+                style="font-size: 17px; color: #f1c40f; font-weight: bold; margin-bottom: 12px; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);">
+                "외계인에게 잡혀간 현우엄마 구출 작전 완벽 성공!"</div>
+
+            <div
+                style="border: 3px solid #1cfc03; border-radius: 12px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 0 20px rgba(28, 252, 3, 0.4); max-width: 240px; display: flex; align-items: center; justify-content: center; background: #000;">
+                <img src="assets/victory_photo.png" alt="Victory Photo"
+                    style="width: 100%; max-height: 180px; object-fit: contain;">
             </div>
 
-            <div id="gameOverOverlay" style="display: none;">
-                <div class="go-title">MISSION OVERRUN</div>
-                <div id="goScore">최종 스코어: 0 PTS</div>
-                <div style="margin: 14px 0 18px 0; display: flex; align-items: center; gap: 8px; justify-content: center;">
-                    <span style="font-size: 13px; color: #00d2d3; font-weight: bold;">👤 지휘관명 (최대 10자):</span>
-                    <input type="text" id="goNameInput" maxlength="10" value="지휘관" style="background: rgba(20, 26, 38, 0.85); border: 1px solid #00d2d3; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 13px; width: 130px; text-align: center; outline: none; box-shadow: 0 0 10px rgba(0, 210, 211, 0.3);">
-                </div>
-                <button id="restartBtn" onclick="saveHighScore(); handleRestartClick();">💾 명예의 전당 등록 및 복귀</button>
+            <div
+                style="background: rgba(28, 252, 3, 0.12); border: 1px solid #1cfc03; border-radius: 8px; padding: 10px 18px; color: #1cfc03; font-weight: bold; font-size: 13px; margin-bottom: 15px; max-width: 380px; line-height: 1.5; text-shadow: 0 0 5px rgba(28,252,3,0.3);">
+                💬 "현우엄마를 무사히 구출해 은하계에 다시 평화가 찾아왔습니다! 현우 지휘관님과 승리의 기쁨을 나눕니다."
             </div>
 
-            <div id="victoryOverlay"
-                style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 10, 16, 0.68); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 250; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; text-align: center;">
-                <div
-                    style="font-size: 32px; font-weight: 900; color: #1cfc03; text-shadow: 0 0 25px rgba(28, 252, 3, 0.8); margin-bottom: 8px; letter-spacing: 3px;">
-                    🎉 MISSION VICTORY!</div>
-                <div
-                    style="font-size: 17px; color: #f1c40f; font-weight: bold; margin-bottom: 12px; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);">
-                    "외계인에게 잡혀간 현우엄마 구출 작전 완벽 성공!"</div>
-
-                <div
-                    style="border: 3px solid #1cfc03; border-radius: 12px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 0 20px rgba(28, 252, 3, 0.4); max-width: 240px; display: flex; align-items: center; justify-content: center; background: #000;">
-                    <img src="assets/victory_photo.png" alt="Victory Photo"
-                        style="width: 100%; max-height: 180px; object-fit: contain;">
-                </div>
-
-                <div
-                    style="background: rgba(28, 252, 3, 0.12); border: 1px solid #1cfc03; border-radius: 8px; padding: 10px 18px; color: #1cfc03; font-weight: bold; font-size: 13px; margin-bottom: 15px; max-width: 380px; line-height: 1.5; text-shadow: 0 0 5px rgba(28,252,3,0.3);">
-                    💬 "현우엄마를 무사히 구출해 은하계에 다시 평화가 찾아왔습니다! 현우 지휘관님과 승리의 기쁨을 나눕니다."
-                </div>
-
-                <div id="victoryScore" style="font-size: 15px; color: #ffffff; margin-bottom: 12px;">최종 전과 스코어: 0 PTS</div>
-                <div style="margin-bottom: 18px; display: flex; align-items: center; gap: 8px; justify-content: center;">
-                    <span style="font-size: 13px; color: #1cfc03; font-weight: bold;">👤 지휘관명 (최대 10자):</span>
-                    <input type="text" id="victoryNameInput" maxlength="10" value="지휘관" style="background: rgba(20, 26, 38, 0.85); border: 1px solid #1cfc03; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 13px; width: 130px; text-align: center; outline: none; box-shadow: 0 0 10px rgba(28, 252, 3, 0.3);">
-                </div>
-                <button
-                    style="font-size: 18px; padding: 12px 40px; border-radius: 30px; background: linear-gradient(135deg, #10ac84, #1cfc03); border: 2px solid #fff; color: #141822; font-weight: 900; cursor: pointer; box-shadow: 0 0 20px rgba(28, 252, 3, 0.5);"
-                    onclick="saveHighScore(); returnToMainMenu();">💾 명예의 전당 등록 및 복귀</button>
+            <div id="victoryScore" style="font-size: 15px; color: #ffffff; margin-bottom: 12px;">최종 전과 스코어: 0 PTS</div>
+            <div style="margin-bottom: 18px; display: flex; align-items: center; gap: 8px; justify-content: center;">
+                <span style="font-size: 13px; color: #1cfc03; font-weight: bold;">👤 지휘관명 (최대 10자):</span>
+                <input type="text" id="victoryNameInput" maxlength="10" value="지휘관"
+                    style="background: rgba(20, 26, 38, 0.85); border: 1px solid #1cfc03; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 13px; width: 130px; text-align: center; outline: none; box-shadow: 0 0 10px rgba(28, 252, 3, 0.3);">
             </div>
+            <button
+                style="font-size: 18px; padding: 12px 40px; border-radius: 30px; background: linear-gradient(135deg, #10ac84, #1cfc03); border: 2px solid #fff; color: #141822; font-weight: 900; cursor: pointer; box-shadow: 0 0 20px rgba(28, 252, 3, 0.5);"
+                onclick="saveHighScore(); returnToMainMenu();">💾 명예의 전당 등록 및 복귀</button>
+        </div>
 
-            <!-- (환경설정 모달 삭제됨: 모든 설정 옵션이 초기 화면 전술 패널로 통합) -->
+        <!-- (환경설정 모달 삭제됨: 모든 설정 옵션이 초기 화면 전술 패널로 통합) -->
 
-            <!-- Info / Guide Modal Overlay (Expanded Full Screen Style) -->
-            <div id="infoModal" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 10, 16, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 300; justify-content: center; align-items: center; flex-direction: column; padding: 10px; box-sizing: border-box;">
-                <div style="width: 98%; max-width: 520px; background: rgba(16, 20, 30, 0.95); border: 2px solid #00d2d3; border-radius: 16px; padding: 18px 16px 16px 16px; box-sizing: border-box; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0, 210, 211, 0.4);">
-                    <div id="infoModalTitle" style="font-size: 22px; font-weight: 900; color: #00d2d3; margin-bottom: 12px; text-align: center; text-shadow: 0 0 10px rgba(0, 210, 211, 0.6);">📖 조작법 가이드</div>
-                    <div id="infoAudioSec" style="display: none;">
-                        <h3 style="color: #10ac84; margin-top:0;">🎵 오디오 및 배경음 설정</h3>
-                        <p>- 단축키 <b>B</b>키로 BGM을 즉시 켜고 끌 수 있습니다.<br>- 8비트 웨이브합성 사운드로 신스웨이브 BGM이 연주됩니다.</p>
-                    </div>
-                    <div id="infoControlSec" style="display: none;">
-                        <h3 style="color: #00d2d3; margin-top:0; border-bottom: 1px solid rgba(0, 210, 211, 0.3); padding-bottom: 8px; font-size: 17px; text-align: center;">⌨️ 전술 기동 및 스마트 조작법 가이드</h3>
-                        
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 14px; text-align: left;">
-                            <!-- 스마트폰 조작 -->
-                            <div style="background: rgba(0, 210, 211, 0.08); border: 1px solid rgba(0, 210, 211, 0.35); border-radius: 12px; padding: 12px;">
-                                <div style="color: #00d2d3; font-weight: 900; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">📱 스마트폰 (모바일)</div>
-                                <div style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: #dcdde1; line-height: 1.5;">
-                                    <div>👉 <b style="color:#fff;">1손가락 터치 드래그:</b> 손가락이 비행기를 가리지 않는 상대 무빙 기동</div>
-                                    <div>💥 <b style="color:#ff3838;">2손가락 동시에 터치:</b> 💥 전술 태양 필살기 발동</div>
-                                    <div>⏸️ <b style="color:#f1c40f;">3손가락 동시에 터치:</b> ⏸️ 일시정지 / 아스날 메뉴</div>
-                                </div>
+        <!-- Info / Guide Modal Overlay (Expanded Full Screen Style) -->
+        <div id="infoModal"
+            style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 10, 16, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 300; justify-content: center; align-items: center; flex-direction: column; padding: 10px; box-sizing: border-box;">
+            <div
+                style="width: 98%; max-width: 520px; background: rgba(16, 20, 30, 0.95); border: 2px solid #00d2d3; border-radius: 16px; padding: 18px 16px 16px 16px; box-sizing: border-box; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0, 210, 211, 0.4);">
+                <div id="infoModalTitle"
+                    style="font-size: 22px; font-weight: 900; color: #00d2d3; margin-bottom: 12px; text-align: center; text-shadow: 0 0 10px rgba(0, 210, 211, 0.6);">
+                    📖 조작법 가이드</div>
+                <div id="infoAudioSec" style="display: none;">
+                    <h3 style="color: #10ac84; margin-top:0;">🎵 오디오 및 배경음 설정</h3>
+                    <p>- 단축키 <b>B</b>키로 BGM을 즉시 켜고 끌 수 있습니다.<br>- 8비트 웨이브합성 사운드로 신스웨이브 BGM이 연주됩니다.</p>
+                </div>
+                <div id="infoControlSec" style="display: none;">
+                    <h3
+                        style="color: #00d2d3; margin-top:0; border-bottom: 1px solid rgba(0, 210, 211, 0.3); padding-bottom: 8px; font-size: 17px; text-align: center;">
+                        ⌨️ 전술 기동 및 스마트 조작법 가이드</h3>
+
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 14px; text-align: left;">
+                        <!-- 스마트폰 조작 -->
+                        <div
+                            style="background: rgba(0, 210, 211, 0.08); border: 1px solid rgba(0, 210, 211, 0.35); border-radius: 12px; padding: 12px;">
+                            <div
+                                style="color: #00d2d3; font-weight: 900; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                                📱 스마트폰 (모바일)</div>
+                            <div
+                                style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: #dcdde1; line-height: 1.5;">
+                                <div>👉 <b style="color:#fff;">1손가락 터치 드래그:</b> 손가락이 비행기를 가리지 않는 상대 무빙 기동</div>
+                                <div>💥 <b style="color:#ff3838;">2손가락 동시에 터치:</b> 💥 전술 태양 필살기 발동</div>
+                                <div>⏸️ <b style="color:#f1c40f;">3손가락 동시에 터치:</b> ⏸️ 일시정지 / 아스날 메뉴</div>
                             </div>
+                        </div>
 
-                            <!-- PC 조작 -->
-                            <div style="background: rgba(9, 132, 227, 0.08); border: 1px solid rgba(9, 132, 227, 0.35); border-radius: 12px; padding: 12px;">
-                                <div style="color: #74b9ff; font-weight: 900; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">💻 PC (컴퓨터)</div>
-                                <div style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: #dcdde1; line-height: 1.5;">
-                                    <div>🎮 <b style="color:#fff;">W, A, S, D / 방향키 / 마우스:</b> 전투기 위치 자유 기동</div>
-                                    <div>💥 <b style="color:#ff3838;">SPACE / X / E 키:</b> 💥 전술 태양 필살기 발동</div>
-                                    <div>⏸️ <b style="color:#f1c40f;">P 키:</b> ⏸️ 일시정지 / 아스날 전술 메뉴</div>
-                                    <div>🎵 <b style="color:#10ac84;">B 키:</b> 🎵 BGM 음악 ON / OFF</div>
-                                    <div>🏠 <b style="color:#a4b0be;">M 키:</b> 🏠 지휘소 메뉴로 복귀</div>
-                                </div>
+                        <!-- PC 조작 -->
+                        <div
+                            style="background: rgba(9, 132, 227, 0.08); border: 1px solid rgba(9, 132, 227, 0.35); border-radius: 12px; padding: 12px;">
+                            <div
+                                style="color: #74b9ff; font-weight: 900; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                                💻 PC (컴퓨터)</div>
+                            <div
+                                style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: #dcdde1; line-height: 1.5;">
+                                <div>🎮 <b style="color:#fff;">W, A, S, D / 방향키 / 마우스:</b> 전투기 위치 자유 기동</div>
+                                <div>💥 <b style="color:#ff3838;">SPACE / X / E 키:</b> 💥 전술 태양 필살기 발동</div>
+                                <div>⏸️ <b style="color:#f1c40f;">P 키:</b> ⏸️ 일시정지 / 아스날 전술 메뉴</div>
+                                <div>🎵 <b style="color:#10ac84;">B 키:</b> 🎵 BGM 음악 ON / OFF</div>
+                                <div>🏠 <b style="color:#a4b0be;">M 키:</b> 🏠 지휘소 메뉴로 복귀</div>
                             </div>
                         </div>
                     </div>
-                    <div id="infoItemSec" style="display: none;">
-                        <h3 style="color: #f1c40f; margin-top:0; border-bottom: 1px solid rgba(241, 196, 15, 0.3); padding-bottom: 8px; font-size: 16px; text-align: center;">🎁 전술 드롭 아이템 분류 도감</h3>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; text-align: left; margin-top: 10px;">
-                            
-                            <!-- 1. 주력 무기 계열 -->
-                            <div style="background: rgba(0, 210, 211, 0.08); border: 1px solid rgba(0, 210, 211, 0.35); border-radius: 10px; padding: 10px;">
-                                <div style="color: #00d2d3; font-weight: 900; font-size: 13px; margin-bottom: 6px;">⚔️ 주력 무기 계열</div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px;">
-                                    <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">⚡ <b style="color:#00d2d3;">LASER</b><br><span style="color:#a4b0be; font-size:10px;">관통 레이저 빔</span></div>
-                                    <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">🔫 <b style="color:#00d2d3;">GATLING</b><br><span style="color:#a4b0be; font-size:10px;">초고속 개틀링 포</span></div>
-                                    <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">🚀 <b style="color:#ff9f43;">ROCKET</b><br><span style="color:#a4b0be; font-size:10px;">광역 고폭 로켓</span></div>
-                                    <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">🎯 <b style="color:#ff7675;">MISSILE</b><br><span style="color:#a4b0be; font-size:10px;">열압력 유도 미사일</span></div>
-                                </div>
-                            </div>
+                </div>
+                <div id="infoItemSec" style="display: none;">
+                    <h3
+                        style="color: #f1c40f; margin-top:0; border-bottom: 1px solid rgba(241, 196, 15, 0.3); padding-bottom: 8px; font-size: 16px; text-align: center;">
+                        🎁 전술 드롭 아이템 분류 도감</h3>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; text-align: left; margin-top: 10px;">
 
-                            <!-- 2. 생존 및 회복 계열 -->
-                            <div style="background: rgba(46, 213, 115, 0.08); border: 1px solid rgba(46, 213, 115, 0.35); border-radius: 10px; padding: 10px;">
-                                <div style="color: #2ed573; font-weight: 900; font-size: 13px; margin-bottom: 6px;">🛡️ 방어 및 생존 계열</div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px;">
-                                    <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💚 <b style="color:#2ed573;">HEAL</b><br><span style="color:#a4b0be; font-size:10px;">체력 회복 & 최대확장</span></div>
-                                    <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">🛡️ <b style="color:#1cfc03;">NANO_SHIELD</b><br><span style="color:#a4b0be; font-size:10px;">충돌 완전 무적 쉴드</span></div>
-                                </div>
+                        <!-- 1. 주력 무기 계열 -->
+                        <div
+                            style="background: rgba(0, 210, 211, 0.08); border: 1px solid rgba(0, 210, 211, 0.35); border-radius: 10px; padding: 10px;">
+                            <div style="color: #00d2d3; font-weight: 900; font-size: 13px; margin-bottom: 6px;">⚔️ 주력 무기
+                                계열</div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px;">
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">⚡ <b
+                                        style="color:#00d2d3;">LASER</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">관통 레이저 빔</span></div>
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">🔫 <b
+                                        style="color:#00d2d3;">GATLING</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">초고속 개틀링 포</span></div>
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">🚀 <b
+                                        style="color:#ff9f43;">ROCKET</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">광역 고폭 로켓</span></div>
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">🎯 <b
+                                        style="color:#ff7675;">MISSILE</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">열압력 유도 미사일</span></div>
                             </div>
-
-                            <!-- 3. 화력 버프 계열 -->
-                            <div style="background: rgba(255, 159, 67, 0.08); border: 1px solid rgba(255, 159, 67, 0.35); border-radius: 10px; padding: 10px;">
-                                <div style="color: #ff9f43; font-weight: 900; font-size: 13px; margin-bottom: 6px;">💥 전술 버프 계열</div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px;">
-                                    <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💥 <b style="color:#f1c40f;">DAMAGE_X2</b><br><span style="color:#a4b0be; font-size:10px;">주력 화력 200% 증가</span></div>
-                                    <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💣 <b style="color:#ff6b6b;">BOMBARD</b><br><span style="color:#a4b0be; font-size:10px;">공중 융단 폭격 지원</span></div>
-                                </div>
-                            </div>
-
-                            <!-- 4. 아군 지원 & 필살기 계열 -->
-                            <div style="background: rgba(255, 56, 56, 0.08); border: 1px solid rgba(255, 56, 56, 0.35); border-radius: 10px; padding: 10px;">
-                                <div style="color: #ff3838; font-weight: 900; font-size: 13px; margin-bottom: 6px;">🤖 지원 드론 & 필살기</div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; font-size: 11px;">
-                                    <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">✈️ <b style="color:#54a0ff;">ALLY</b><br><span style="color:#a4b0be; font-size:10px;">호위 드론 출격</span></div>
-                                    <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💣 <b style="color:#ff3838;">BOMB</b><br><span style="color:#a4b0be; font-size:10px;">전면 소각 폭탄</span></div>
-                                    <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💥 <b style="color:#ff3838;">ULTIMATE</b><br><span style="color:#a4b0be; font-size:10px;">태양 필살기 +1</span></div>
-                                </div>
-                            </div>
-
                         </div>
-                    </div>
-                </div>
-                <button style="background: linear-gradient(135deg, #00d2d3, #0984e3); border: none; color: #fff; width: 100%; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 14px; box-shadow: 0 0 20px rgba(0, 210, 211, 0.5);" onclick="closeInfoModal()">✖ 닫기</button>
-            </div>
-            </div>
-        </div>
 
-        <div id="sidebarPanel" style="display: none;">
-            <div id="controlDashboard">
-                <div class="dashboard-title">🎛️ 빠른 전술 제어 센터</div>
-                <div class="control-group"
-                    style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; padding: 8px; border-radius: 6px;">
-                    <button id="ultimateBtn"
-                        style="background:#ff3838; border:none; color:#fff; padding:8px; width:100%; border-radius:4px; cursor:pointer; font-weight:bold; font-size:13px;"
-                        onclick="triggerUltimateAnnihilation()">💥 전술 섬멸 필살기 [SPACE] (잔여: <span
-                            id="ultCountDisp">3</span>/5)</button>
-                </div>
-                <button
-                    style="background: #2c3e50; border: 1px solid #00d2d3; color: #00d2d3; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;"
-                    onclick="openInfoModal('CONTROLS')">📖 전술 조작 가이드</button>
-            </div>
-            <div class="hotkey-info">
-                <div style="font-weight:bold; color:#00d2d3; margin-bottom:5px; text-align:center;">🎮 조작 및 단축키 가이드
-                </div>
-                <div
-                    style="margin-bottom: 8px; border-bottom: 1px solid rgba(0, 210, 211, 0.2); padding-bottom: 6px; line-height: 1.7;">
-                    <div style="font-size: 11px; color: #a4b0be; font-weight: bold; margin-bottom: 4px;">📱 모바일 조작
-                        (스마트폰)</div>
-                    <span class="hotkey-badge">1손가락 드래그</span> 비행기 가림 없는 무빙<br>
-                    <span class="hotkey-badge">2손가락 터치</span> 💥 전술 필살기 발동<br>
-                    <span class="hotkey-badge">3손가락 터치</span> ⏸️ 일시정지 및 아스날 메뉴
-                </div>
-                <div style="line-height: 1.7;">
-                    <div style="font-size: 11px; color: #a4b0be; font-weight: bold; margin-bottom: 4px;">💻 PC 조작 (키보드)
+                        <!-- 2. 생존 및 회복 계열 -->
+                        <div
+                            style="background: rgba(46, 213, 115, 0.08); border: 1px solid rgba(46, 213, 115, 0.35); border-radius: 10px; padding: 10px;">
+                            <div style="color: #2ed573; font-weight: 900; font-size: 13px; margin-bottom: 6px;">🛡️ 방어 및
+                                생존 계열</div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px;">
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💚 <b
+                                        style="color:#2ed573;">HEAL</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">체력 회복 & 최대확장</span></div>
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">🛡️ <b
+                                        style="color:#1cfc03;">NANO_SHIELD</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">충돌 완전 무적 쉴드</span></div>
+                            </div>
+                        </div>
+
+                        <!-- 3. 화력 버프 계열 -->
+                        <div
+                            style="background: rgba(255, 159, 67, 0.08); border: 1px solid rgba(255, 159, 67, 0.35); border-radius: 10px; padding: 10px;">
+                            <div style="color: #ff9f43; font-weight: 900; font-size: 13px; margin-bottom: 6px;">💥 전술 버프
+                                계열</div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px;">
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💥 <b
+                                        style="color:#f1c40f;">DAMAGE_X2</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">주력 화력 200% 증가</span></div>
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💣 <b
+                                        style="color:#ff6b6b;">BOMBARD</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">공중 융단 폭격 지원</span></div>
+                            </div>
+                        </div>
+
+                        <!-- 4. 아군 지원 & 필살기 계열 -->
+                        <div
+                            style="background: rgba(255, 56, 56, 0.08); border: 1px solid rgba(255, 56, 56, 0.35); border-radius: 10px; padding: 10px;">
+                            <div style="color: #ff3838; font-weight: 900; font-size: 13px; margin-bottom: 6px;">🤖 지원 드론
+                                & 필살기</div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; font-size: 11px;">
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">✈️ <b
+                                        style="color:#54a0ff;">ALLY</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">호위 드론 출격</span></div>
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💣 <b
+                                        style="color:#ff3838;">BOMB</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">전면 소각 폭탄</span></div>
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💥 <b
+                                        style="color:#ff3838;">ULTIMATE</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">태양 필살기 +1</span></div>
+                            </div>
+                        </div>
+
                     </div>
-                    <span class="hotkey-badge">W,A,S,D / 마우스</span> 상하좌우 무빙 기동<br>
-                    <span class="hotkey-badge">SPACE / X / E</span> 💥 필살기 발동<br>
-                    <span class="hotkey-badge">P</span> ⏸️ 일시정지 및 아스날 메뉴<br>
-                    <span class="hotkey-badge">B</span> BGM 배경음악 토글
                 </div>
+            </div>
+            <button
+                style="background: linear-gradient(135deg, #00d2d3, #0984e3); border: none; color: #fff; width: 100%; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 14px; box-shadow: 0 0 20px rgba(0, 210, 211, 0.5);"
+                onclick="closeInfoModal()">✖ 닫기</button>
+        </div>
+    </div>
+    </div>
+
+    <div id="sidebarPanel" style="display: none;">
+        <div id="controlDashboard">
+            <div class="dashboard-title">🎛️ 빠른 전술 제어 센터</div>
+            <div class="control-group"
+                style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; padding: 8px; border-radius: 6px;">
+                <button id="ultimateBtn"
+                    style="background:#ff3838; border:none; color:#fff; padding:8px; width:100%; border-radius:4px; cursor:pointer; font-weight:bold; font-size:13px;"
+                    onclick="triggerUltimateAnnihilation()">💥 전술 섬멸 필살기 [SPACE] (잔여: <span
+                        id="ultCountDisp">3</span>/5)</button>
+            </div>
+            <button
+                style="background: #2c3e50; border: 1px solid #00d2d3; color: #00d2d3; padding: 10px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;"
+                onclick="openInfoModal('CONTROLS')">📖 전술 조작 가이드</button>
+        </div>
+        <div class="hotkey-info">
+            <div style="font-weight:bold; color:#00d2d3; margin-bottom:5px; text-align:center;">🎮 조작 및 단축키 가이드
+            </div>
+            <div
+                style="margin-bottom: 8px; border-bottom: 1px solid rgba(0, 210, 211, 0.2); padding-bottom: 6px; line-height: 1.7;">
+                <div style="font-size: 11px; color: #a4b0be; font-weight: bold; margin-bottom: 4px;">📱 모바일 조작
+                    (스마트폰)</div>
+                <span class="hotkey-badge">1손가락 드래그</span> 비행기 가림 없는 무빙<br>
+                <span class="hotkey-badge">2손가락 터치</span> 💥 전술 필살기 발동<br>
+                <span class="hotkey-badge">3손가락 터치</span> ⏸️ 일시정지 및 아스날 메뉴
+            </div>
+            <div style="line-height: 1.7;">
+                <div style="font-size: 11px; color: #a4b0be; font-weight: bold; margin-bottom: 4px;">💻 PC 조작 (키보드)
+                </div>
+                <span class="hotkey-badge">W,A,S,D / 마우스</span> 상하좌우 무빙 기동<br>
+                <span class="hotkey-badge">SPACE / X / E</span> 💥 필살기 발동<br>
+                <span class="hotkey-badge">P</span> ⏸️ 일시정지 및 아스날 메뉴<br>
+                <span class="hotkey-badge">B</span> BGM 배경음악 토글
             </div>
         </div>
+    </div>
     </div>
 
     <!-- 일시중지(P) 전술 아이템 셀렉터 팝업 모달 -->
@@ -847,16 +948,37 @@
                 ⚙️ 전술 수치 제어 및 밸런스 관리 설정</div>
 
             <div class="section-divider">🎯 난이도별 적군 체력 세부 커스텀</div>
-            <div class="control-group"><label><span>👾 일반 외계인 체력 배율</span> <span class="value-disp" id="minionHpVal">1.0x</span></label><input type="range" id="minionHpSlider" min="0.3" max="3.0" step="0.1" value="1.0" oninput="minionHpMultiplier=parseFloat(this.value); document.getElementById('minionHpVal').innerText=minionHpMultiplier.toFixed(1)+'x'; updateFinalBossHpRatioDisp();"></div>
-            <div class="control-group"><label><span>⚠️ 중간 보스 체력 배율</span> <span class="value-disp" id="midBossHpVal">1.0x</span></label><input type="range" id="midBossHpSlider" min="0.3" max="4.0" step="0.1" value="1.0" oninput="midBossHpMultiplier=parseFloat(this.value); document.getElementById('midBossHpVal').innerText=midBossHpMultiplier.toFixed(1)+'x'; updateFinalBossHpRatioDisp();"></div>
-            <div class="control-group"><label><span>👑 최종 마왕 체력 (최강 중간보스 대비)</span> <span class="value-disp" id="finalBossHpRatioVal">15배 (35,100 HP)</span></label><input type="range" id="finalBossHpRatioSlider" min="3" max="30" step="1" value="15" oninput="finalBossHpRatio=parseInt(this.value); updateFinalBossHpRatioDisp();"></div>
-            <div class="control-group"><label><span>👑 최종 마왕 체력 추가 배율</span> <span class="value-disp" id="finalBossHpVal">1.0x</span></label><input type="range" id="finalBossHpSlider" min="0.3" max="5.0" step="0.1" value="1.0" oninput="finalBossHpMultiplier=parseFloat(this.value); document.getElementById('finalBossHpVal').innerText=finalBossHpMultiplier.toFixed(1)+'x'; updateFinalBossHpRatioDisp();"></div>
+            <div class="control-group"><label><span>👾 일반 외계인 체력 배율</span> <span class="value-disp"
+                        id="minionHpVal">1.0x</span></label><input type="range" id="minionHpSlider" min="0.3" max="3.0"
+                    step="0.1" value="1.0"
+                    oninput="minionHpMultiplier=parseFloat(this.value); document.getElementById('minionHpVal').innerText=minionHpMultiplier.toFixed(1)+'x'; updateFinalBossHpRatioDisp();">
+            </div>
+            <div class="control-group"><label><span>⚠️ 중간 보스 체력 배율</span> <span class="value-disp"
+                        id="midBossHpVal">1.0x</span></label><input type="range" id="midBossHpSlider" min="0.3"
+                    max="4.0" step="0.1" value="1.0"
+                    oninput="midBossHpMultiplier=parseFloat(this.value); document.getElementById('midBossHpVal').innerText=midBossHpMultiplier.toFixed(1)+'x'; updateFinalBossHpRatioDisp();">
+            </div>
+            <div class="control-group"><label><span>👑 최종 마왕 체력 (최강 중간보스 대비)</span> <span class="value-disp"
+                        id="finalBossHpRatioVal">15배 (35,100 HP)</span></label><input type="range"
+                    id="finalBossHpRatioSlider" min="3" max="30" step="1" value="15"
+                    oninput="finalBossHpRatio=parseInt(this.value); updateFinalBossHpRatioDisp();"></div>
+            <div class="control-group"><label><span>👑 최종 마왕 체력 추가 배율</span> <span class="value-disp"
+                        id="finalBossHpVal">1.0x</span></label><input type="range" id="finalBossHpSlider" min="0.3"
+                    max="5.0" step="0.1" value="1.0"
+                    oninput="finalBossHpMultiplier=parseFloat(this.value); document.getElementById('finalBossHpVal').innerText=finalBossHpMultiplier.toFixed(1)+'x'; updateFinalBossHpRatioDisp();">
+            </div>
 
             <div class="section-divider">🎁 난이도별 아이템 드롭 & 빈도 제어</div>
-            <div class="control-group"><label><span>🎁 일반적 아이템 드롭 확률</span> <span class="value-disp" id="itemDropChanceVal">9%</span></label><input type="range" id="itemDropChanceSlider" min="1" max="50" step="1" value="9" oninput="itemDropChanceNormal=parseFloat(this.value)/100; document.getElementById('itemDropChanceVal').innerText=Math.round(itemDropChanceNormal*100)+'%'"></div>
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #a4b0be; margin-top: 4px;">
+            <div class="control-group"><label><span>🎁 일반적 아이템 드롭 확률</span> <span class="value-disp"
+                        id="itemDropChanceVal">9%</span></label><input type="range" id="itemDropChanceSlider" min="1"
+                    max="50" step="1" value="9"
+                    oninput="itemDropChanceNormal=parseFloat(this.value)/100; document.getElementById('itemDropChanceVal').innerText=Math.round(itemDropChanceNormal*100)+'%'">
+            </div>
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #a4b0be; margin-top: 4px;">
                 <span>📦 보스 처치 드롭 수량</span>
-                <select id="bossDropCountSelect" onchange="bossDropCountConfig=parseInt(this.value)" style="background: #1f242d; color: #fff; border: 1px solid #57606f; padding: 4px 8px; border-radius: 4px;">
+                <select id="bossDropCountSelect" onchange="bossDropCountConfig=parseInt(this.value)"
+                    style="background: #1f242d; color: #fff; border: 1px solid #57606f; padding: 4px 8px; border-radius: 4px;">
                     <option value="1">1개 (희귀)</option>
                     <option value="2" selected>2개 (보통)</option>
                     <option value="3">3개 (풍부)</option>
@@ -916,42 +1038,42 @@
     </div>
 
     <script>
-// KakaoTalk in-app browser redirect
-function redirectToExternalBrowser() {
-  const url = window.location.href;
-  if (url.startsWith('file:')) {
-    alert('로컬 파일(file://) 실행 환경입니다. 웹 서버(http/https) 주소에서 접속 시 외부 브라우저 전환이 지원됩니다.');
-    return;
-  }
-  const ua = (navigator.userAgent || '').toLowerCase();
-  if (ua.includes('android')) {
-    const intent = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(url) + ';end;';
-    window.location.href = intent;
-  } else {
-    window.location.reload();
-  }
-}
+        // KakaoTalk in-app browser redirect
+        function redirectToExternalBrowser() {
+            const url = window.location.href;
+            if (url.startsWith('file:')) {
+                alert('로컬 파일(file://) 실행 환경입니다. 웹 서버(http/https) 주소에서 접속 시 외부 브라우저 전환이 지원됩니다.');
+                return;
+            }
+            const ua = (navigator.userAgent || '').toLowerCase();
+            if (ua.includes('android')) {
+                const intent = 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(url) + ';end;';
+                window.location.href = intent;
+            } else {
+                window.location.reload();
+            }
+        }
 
-// Show notice for KakaoTalk in-app browser (mobile only)
-function checkKakaoNotice() {
-  const ua = (navigator.userAgent || '').toLowerCase();
-  const isKakao = ua.includes('kakaotalk') || ua.includes('talk');
-  const isMobileOS = /android|iphone|ipad|ipod/.test(ua);
-  const noticeEl = document.getElementById('kakaoNotice');
-  const gameWrapper = document.getElementById('gameWrapper');
+        // Show notice for KakaoTalk in-app browser (mobile only)
+        function checkKakaoNotice() {
+            const ua = (navigator.userAgent || '').toLowerCase();
+            const isKakao = ua.includes('kakaotalk') || ua.includes('talk');
+            const isMobileOS = /android|iphone|ipad|ipod/.test(ua);
+            const noticeEl = document.getElementById('kakaoNotice');
+            const gameWrapper = document.getElementById('gameWrapper');
 
-  if (isKakao && isMobileOS) {
-    if (noticeEl) noticeEl.style.display = 'flex';
-    if (gameWrapper) gameWrapper.style.display = 'none';
-  } else {
-    if (noticeEl) noticeEl.style.display = 'none';
-    if (gameWrapper) gameWrapper.style.display = '';
-  }
-}
-checkKakaoNotice();
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', checkKakaoNotice);
-}
+            if (isKakao && isMobileOS) {
+                if (noticeEl) noticeEl.style.display = 'flex';
+                if (gameWrapper) gameWrapper.style.display = 'none';
+            } else {
+                if (noticeEl) noticeEl.style.display = 'none';
+                if (gameWrapper) gameWrapper.style.display = '';
+            }
+        }
+        checkKakaoNotice();
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', checkKakaoNotice);
+        }
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -1011,7 +1133,7 @@ if (document.readyState === 'loading') {
                     const legacy = parseInt(localStorage.getItem("rr_supreme_highscore"));
                     if (!isNaN(legacy) && legacy > 0) list = [{ name: "지휘관", score: legacy }];
                 }
-            } catch(e) { list = []; }
+            } catch (e) { list = []; }
             return list;
         }
 
@@ -1051,7 +1173,7 @@ if (document.readyState === 'loading') {
             });
             if (top5.length > 1) html += `</div>`;
             container.innerHTML = html;
-            
+
             const lastName = localStorage.getItem("hy_last_commander_name") || "지휘관";
             ['goNameInput', 'victoryNameInput'].forEach(id => {
                 const el = document.getElementById(id);
@@ -1193,7 +1315,7 @@ if (document.readyState === 'loading') {
                     filter.type = 'lowpass'; filter.frequency.setValueAtTime(350, now); filter.frequency.exponentialRampToValueAtTime(100, now + 0.18);
                     gain.gain.setValueAtTime(0.35, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
                     osc.connect(filter); filter.connect(gain); gain.connect(bgmMasterGain);
-                    osc.onended = () => { try { osc.disconnect(); filter.disconnect(); gain.disconnect(); } catch(e){} };
+                    osc.onended = () => { try { osc.disconnect(); filter.disconnect(); gain.disconnect(); } catch (e) { } };
                     osc.start(now); osc.stop(now + 0.2);
                 }
                 const noteFreq = leadNotes[bgmStep % leadNotes.length];
@@ -1201,7 +1323,7 @@ if (document.readyState === 'loading') {
                 leadOsc.type = 'square'; leadOsc.frequency.setValueAtTime(noteFreq * 2, now);
                 leadGain.gain.setValueAtTime(0.1, now); leadGain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
                 leadOsc.connect(leadGain); leadGain.connect(bgmMasterGain);
-                leadOsc.onended = () => { try { leadOsc.disconnect(); leadGain.disconnect(); } catch(e){} };
+                leadOsc.onended = () => { try { leadOsc.disconnect(); leadGain.disconnect(); } catch (e) { } };
                 leadOsc.start(now); leadOsc.stop(now + 0.1);
 
                 if (bgmStep % 4 === 2) {
@@ -1213,11 +1335,11 @@ if (document.readyState === 'loading') {
                     const filter = audioCtx.createBiquadFilter(); filter.type = 'highpass'; filter.frequency.value = 7000;
                     const noiseGain = audioCtx.createGain(); noiseGain.gain.setValueAtTime(0.12, now); noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
                     noise.connect(filter); filter.connect(noiseGain); noiseGain.connect(bgmMasterGain);
-                    noise.onended = () => { try { noise.disconnect(); filter.disconnect(); noiseGain.disconnect(); } catch(e){} };
+                    noise.onended = () => { try { noise.disconnect(); filter.disconnect(); noiseGain.disconnect(); } catch (e) { } };
                     noise.start(now); noise.stop(now + 0.02);
                 }
                 bgmStep++;
-            } catch(e){}
+            } catch (e) { }
         }
 
         function playShootSound() {
@@ -1240,10 +1362,10 @@ if (document.readyState === 'loading') {
                 subGain.gain.setValueAtTime(0.25, now); subGain.gain.linearRampToValueAtTime(0.005, now + 0.04);
                 noise.connect(filter); filter.connect(noiseGain); noiseGain.connect(audioCtx.destination);
                 subOsc.connect(subGain); subGain.connect(audioCtx.destination);
-                noise.onended = () => { try { noise.disconnect(); filter.disconnect(); noiseGain.disconnect(); } catch(e){} };
-                subOsc.onended = () => { try { subOsc.disconnect(); subGain.disconnect(); } catch(e){} };
+                noise.onended = () => { try { noise.disconnect(); filter.disconnect(); noiseGain.disconnect(); } catch (e) { } };
+                subOsc.onended = () => { try { subOsc.disconnect(); subGain.disconnect(); } catch (e) { } };
                 noise.start(now); subOsc.start(now); noise.stop(now + 0.04); subOsc.stop(now + 0.04);
-            } catch(e){}
+            } catch (e) { }
         }
 
         function playExplosionSound(isBoss) {
@@ -1255,9 +1377,9 @@ if (document.readyState === 'loading') {
                 let lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = isBoss ? 350 : 250;
                 gain.gain.setValueAtTime(isBoss ? 0.5 : 0.3, now); gain.gain.linearRampToValueAtTime(0.005, now + (isBoss ? 0.45 : 0.25));
                 osc.connect(lp); lp.connect(gain); gain.connect(audioCtx.destination);
-                osc.onended = () => { try { osc.disconnect(); lp.disconnect(); gain.disconnect(); } catch(e){} };
+                osc.onended = () => { try { osc.disconnect(); lp.disconnect(); gain.disconnect(); } catch (e) { } };
                 osc.start(now); osc.stop(now + (isBoss ? 0.45 : 0.25));
-            } catch(e){}
+            } catch (e) { }
         }
 
         function playUpgradeSound() {
@@ -1269,10 +1391,10 @@ if (document.readyState === 'loading') {
                     osc.type = 'sine'; osc.frequency.setValueAtTime(freq, now + idx * 0.04);
                     gain.gain.setValueAtTime(0.12, now + idx * 0.04); gain.gain.linearRampToValueAtTime(0.001, now + idx * 0.04 + 0.12);
                     osc.connect(gain); gain.connect(audioCtx.destination);
-                    osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch(e){} };
+                    osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch (e) { } };
                     osc.start(now + idx * 0.04); osc.stop(now + idx * 0.04 + 0.12);
                 });
-            } catch(e){}
+            } catch (e) { }
         }
 
         function playHurtSound() {
@@ -1283,9 +1405,9 @@ if (document.readyState === 'loading') {
                 osc.type = 'sawtooth'; osc.frequency.setValueAtTime(120, now); osc.frequency.linearRampToValueAtTime(30, now + 0.15);
                 gain.gain.setValueAtTime(0.3, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
                 osc.connect(gain); gain.connect(audioCtx.destination);
-                osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch(e){} };
+                osc.onended = () => { try { osc.disconnect(); gain.disconnect(); } catch (e) { } };
                 osc.start(now); osc.stop(now + 0.15);
-            } catch(e){}
+            } catch (e) { }
         }
 
         function getAllyRelativePos(index) { return { xOffset: ((index % 7) - 3) * 20, yOffset: (Math.floor(index / 7) + 1) * 22 }; }
@@ -1382,11 +1504,11 @@ if (document.readyState === 'loading') {
         }
 
         const DIFFICULTY_PRESETS = {
-            EASY:      { name: "초보", diffMult: 0.45, minionHp: 0.5, midBossHp: 0.5, finalBossHp: 0.5, dropChance: 0.25, bossDropCount: 4, healAmt: 40, wpnDur: 12, buffDur: 12, splashRange: 55, defDur: 12, ultStock: 7, ultDropWeight: 6 },
-            NORMAL:    { name: "일반", diffMult: 0.90, minionHp: 1.0, midBossHp: 1.0, finalBossHp: 1.0, dropChance: 0.09, bossDropCount: 2, healAmt: 25, wpnDur: 8,  buffDur: 8,  splashRange: 40, defDur: 8,  ultStock: 6, ultDropWeight: 4 },
-            HARD:      { name: "하드", diffMult: 1.25, minionHp: 1.4, midBossHp: 1.4, finalBossHp: 1.4, dropChance: 0.06, bossDropCount: 2, healAmt: 20, wpnDur: 6,  buffDur: 6,  splashRange: 35, defDur: 6,  ultStock: 5, ultDropWeight: 3 },
-            EXPERT:    { name: "정예", diffMult: 1.70, minionHp: 1.8, minionHp: 1.8, midBossHp: 1.8, finalBossHp: 1.8, dropChance: 0.04, bossDropCount: 1, healAmt: 15, wpnDur: 4,  buffDur: 4,  splashRange: 30, defDur: 4,  ultStock: 4, ultDropWeight: 2 },
-            NIGHTMARE: { name: "악몽", diffMult: 3.50, minionHp: 3.5, midBossHp: 3.8, finalBossHp: 4.0, dropChance: 0.01, bossDropCount: 1, healAmt: 5,  wpnDur: 2,  buffDur: 2,  splashRange: 20, defDur: 2,  ultStock: 2, ultDropWeight: 0.5 }
+            EASY: { name: "초보", diffMult: 0.45, minionHp: 0.5, midBossHp: 0.5, finalBossHp: 0.5, dropChance: 0.25, bossDropCount: 4, healAmt: 40, wpnDur: 12, buffDur: 12, splashRange: 55, defDur: 12, ultStock: 7, ultDropWeight: 6 },
+            NORMAL: { name: "일반", diffMult: 0.90, minionHp: 1.0, midBossHp: 1.0, finalBossHp: 1.0, dropChance: 0.09, bossDropCount: 2, healAmt: 25, wpnDur: 8, buffDur: 8, splashRange: 40, defDur: 8, ultStock: 6, ultDropWeight: 4 },
+            HARD: { name: "하드", diffMult: 1.25, minionHp: 1.4, midBossHp: 1.4, finalBossHp: 1.4, dropChance: 0.06, bossDropCount: 2, healAmt: 20, wpnDur: 6, buffDur: 6, splashRange: 35, defDur: 6, ultStock: 5, ultDropWeight: 3 },
+            EXPERT: { name: "정예", diffMult: 1.70, minionHp: 1.8, minionHp: 1.8, midBossHp: 1.8, finalBossHp: 1.8, dropChance: 0.04, bossDropCount: 1, healAmt: 15, wpnDur: 4, buffDur: 4, splashRange: 30, defDur: 4, ultStock: 4, ultDropWeight: 2 },
+            NIGHTMARE: { name: "악몽", diffMult: 3.50, minionHp: 3.5, midBossHp: 3.8, finalBossHp: 4.0, dropChance: 0.01, bossDropCount: 1, healAmt: 5, wpnDur: 2, buffDur: 2, splashRange: 20, defDur: 2, ultStock: 2, ultDropWeight: 0.5 }
         };
 
         let selectedDifficultyKey = "NORMAL";
@@ -1397,7 +1519,7 @@ if (document.readyState === 'loading') {
         function lockPortraitOrientation() {
             try {
                 if (location.protocol !== 'file:' && screen.orientation && screen.orientation.lock) {
-                    screen.orientation.lock('portrait-primary').catch(() => {});
+                    screen.orientation.lock('portrait-primary').catch(() => { });
                 }
             } catch (e) { }
         }
@@ -1892,7 +2014,7 @@ if (document.readyState === 'loading') {
 
             if (isNaN(player.targetX)) player.targetX = canvas.width / 2;
             if (isNaN(player.targetY)) player.targetY = canvas.height / 2;
-            player.x += (player.targetX - player.x) * player.speed; 
+            player.x += (player.targetX - player.x) * player.speed;
             player.y += (player.targetY - player.y) * player.speed;
             if (isNaN(player.x)) player.x = player.targetX;
             if (isNaN(player.y)) player.y = player.targetY;
@@ -1905,7 +2027,7 @@ if (document.readyState === 'loading') {
                 if (ft.life <= 0) floatingTexts.splice(i, 1);
             }
             if (floatingTexts.length > 100) floatingTexts.splice(0, floatingTexts.length - 100);
-            
+
             for (let i = muzzleFlashes.length - 1; i >= 0; i--) {
                 let mf = muzzleFlashes[i];
                 if (!mf) { muzzleFlashes.splice(i, 1); continue; }
@@ -2239,7 +2361,7 @@ if (document.readyState === 'loading') {
                             let range = ((bType === "MISSILE" ? currentSplashRange * 1.6 : currentSplashRange) || 40);
                             let sd = bType === "ROCKET" ? bDmg * 3 : bDmg;
                             createAdvancedExplosion(bx, by, bType === "MISSILE" ? '#ff7675' : '#ff9f43', 14, range / 35); playExplosionSound(bType === "MISSILE");
-                            
+
                             // 1) Direct hit damage
                             handleEnemyDamageHit(enemy, hitWp, sd, bx, by, false);
 
@@ -2609,7 +2731,7 @@ if (document.readyState === 'loading') {
             playExplosionSound(enemy.isBoss);
             createAdvancedExplosion(enemy.x, enemy.y, enemy.isBoss ? '#ff9f43' : (enemy.hasItem ? '#ffd32c' : '#a8e6cf'), enemy.isBoss ? 30 : 14, enemy.isBoss ? 2.5 : 1.0);
             score += enemy.maxHp * 15;
-            
+
             if (enemy.isBoss) {
                 addFloatingText(enemy.x, enemy.y - 40, "💥 중간 보스 격파!", '#ff9f43', 20);
             }
@@ -2852,7 +2974,7 @@ if (document.readyState === 'loading') {
                 else name = localStorage.getItem("hy_last_commander_name") || "지휘관";
             }
             if (name.length > 10) name = name.substring(0, 10);
-            try { localStorage.setItem("hy_last_commander_name", name); } catch(e){}
+            try { localStorage.setItem("hy_last_commander_name", name); } catch (e) { }
 
             let scores = getScoreList();
             scores.push({ name: name, score: sc });
@@ -2860,7 +2982,7 @@ if (document.readyState === 'loading') {
             scores = scores.slice(0, 10);
             try {
                 localStorage.setItem("hy_fire_fighter_scores", JSON.stringify(scores));
-            } catch(e) {}
+            } catch (e) { }
             highScore = scores[0] ? scores[0].score : 0;
             updateHighScoreUI();
         }
@@ -2945,367 +3067,367 @@ if (document.readyState === 'loading') {
                 ctx.rect(0, 54, canvas.width, canvas.height - 54);
                 ctx.clip();
 
-            stars.forEach(s => {
-                s.y += s.speed;
-                if (s.y > canvas.height) { s.y = 0; s.x = Math.random() * canvas.width; }
-                ctx.fillStyle = '#00d2d3';
-                ctx.globalAlpha = s.alpha * 0.4;
-                ctx.fillRect(s.x, s.y, s.size, s.size);
-            });
-            ctx.globalAlpha = 1.0;
-
-            if (globalAnimTick % 3 === 0) {
-                particles.push({
-                    x: player.x + (Math.random() - 0.5) * 6,
-                    y: player.y + 20,
-                    vx: (Math.random() - 0.5) * 0.4,
-                    vy: Math.random() * 2 + 1.5,
-                    radius: Math.random() * 2 + 1,
-                    alpha: 0.8,
-                    color: Math.random() > 0.4 ? '#ff9f43' : '#ff3838',
-                    gravity: 0.05
+                stars.forEach(s => {
+                    s.y += s.speed;
+                    if (s.y > canvas.height) { s.y = 0; s.x = Math.random() * canvas.width; }
+                    ctx.fillStyle = '#00d2d3';
+                    ctx.globalAlpha = s.alpha * 0.4;
+                    ctx.fillRect(s.x, s.y, s.size, s.size);
                 });
-            }
+                ctx.globalAlpha = 1.0;
 
-            ctx.save();
-            ctx.shadowBlur = 0;
-            const cleanHeroCvs = getCleanTransparentSprite(imgHero);
-            if (cleanHeroCvs) {
-                ctx.drawImage(cleanHeroCvs, player.x - 30, player.y - 30, 60, 60);
-            } else {
-                ctx.fillStyle = '#00d2d3'; ctx.beginPath();
-                ctx.moveTo(player.x, player.y - 28); ctx.lineTo(player.x - 24, player.y + 18); ctx.lineTo(player.x - 10, player.y + 10); ctx.lineTo(player.x - 8, player.y + 24); ctx.lineTo(player.x + 8, player.y + 24); ctx.lineTo(player.x + 10, player.y + 10); ctx.lineTo(player.x + 24, player.y + 18); ctx.closePath(); ctx.fill();
-            }
-            ctx.restore();
+                if (globalAnimTick % 3 === 0) {
+                    particles.push({
+                        x: player.x + (Math.random() - 0.5) * 6,
+                        y: player.y + 20,
+                        vx: (Math.random() - 0.5) * 0.4,
+                        vy: Math.random() * 2 + 1.5,
+                        radius: Math.random() * 2 + 1,
+                        alpha: 0.8,
+                        color: Math.random() > 0.4 ? '#ff9f43' : '#ff3838',
+                        gravity: 0.05
+                    });
+                }
 
-            // Render Visible Defense Forcefield Shields around Player Hero Ship!
-            if (player.defenseType === "NANO_SHIELD") {
                 ctx.save();
-                ctx.shadowColor = '#00d2d3';
-                ctx.shadowBlur = 22;
-                ctx.strokeStyle = '#00d2d3';
-                ctx.lineWidth = 3;
-
-                // Glowing Cyan Forcefield Bubble
-                ctx.fillStyle = 'rgba(0, 210, 211, 0.22)';
-                ctx.beginPath();
-                ctx.arc(player.x, player.y, 40, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-
-                // Dual Orbiting Nano Energy Rings
-                const rot = (globalAnimTick * 0.08) % (Math.PI * 2);
-                ctx.strokeStyle = '#1cfc03';
-                ctx.lineWidth = 3.5;
-                ctx.beginPath();
-                ctx.arc(player.x, player.y, 45, rot, rot + Math.PI * 0.7);
-                ctx.stroke();
-
-                ctx.beginPath();
-                ctx.arc(player.x, player.y, 45, rot + Math.PI, rot + Math.PI * 1.7);
-                ctx.stroke();
-                ctx.restore();
-            } else if (player.defenseType === "HEAVY_ARMOR") {
-                ctx.save();
-                ctx.shadowColor = '#f1c40f';
-                ctx.shadowBlur = 20;
-                ctx.strokeStyle = '#f1c40f';
-                ctx.lineWidth = 3;
-
-                // Gold Energy Barrier Dome
-                ctx.fillStyle = 'rgba(241, 196, 15, 0.22)';
-                ctx.beginPath();
-                ctx.arc(player.x, player.y, 38, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-
-                // Heavy Frontal Energy Deflector Crest
-                ctx.strokeStyle = '#ff9f43';
-                ctx.lineWidth = 5;
-                ctx.beginPath();
-                ctx.arc(player.x, player.y - 4, 43, -Math.PI * 0.75, -Math.PI * 0.25);
-                ctx.stroke();
-                ctx.restore();
-            }
-
-            // Render Real-time HP Bar directly BELOW Player Hero Ship!
-            ctx.save();
-            ctx.shadowBlur = 0;
-            ctx.filter = 'none';
-            const pHpW = 54, pHpH = 6, pHpX = player.x - pHpW / 2, pHpY = player.y + 36;
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
-            ctx.fillRect(pHpX, pHpY, pHpW, pHpH);
-            ctx.strokeStyle = '#353b48';
-            ctx.lineWidth = 1;
-            ctx.strokeRect(pHpX, pHpY, pHpW, pHpH);
-
-            const pRatio = Math.max(0, Math.min(1, player.hp / player.maxHp));
-            ctx.fillStyle = pRatio > 0.35 ? '#10ac84' : '#ff3838';
-            ctx.fillRect(pHpX, pHpY, pHpW * pRatio, pHpH);
-
-            ctx.font = 'bold 9px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.strokeStyle = '#000000';
-            ctx.lineWidth = 3;
-            ctx.strokeText(`${player.hp}/${player.maxHp}`, player.x, pHpY + 14);
-            ctx.fillStyle = '#ffffff';
-            ctx.fillText(`${player.hp}/${player.maxHp}`, player.x, pHpY + 14);
-            ctx.restore();
-
-            player.allies.forEach((ally, idx) => {
-                const offset = getAllyRelativePos(idx);
-                const ax = player.x + offset.xOffset;
-                const ay = player.y + offset.yOffset;
-                const cleanDroneCvs = getCleanTransparentSprite(imgAllyDrone);
-                ctx.save();
-                ctx.beginPath();
-                ctx.arc(ax, ay, 15, 0, Math.PI * 2);
-                ctx.clip(); // 100% Cuts off any square bounding box corners physically!
-                if (cleanDroneCvs) {
-                    ctx.drawImage(cleanDroneCvs, ax - 16, ay - 16, 32, 32);
-                } else if (cleanHeroCvs) {
-                    ctx.drawImage(cleanHeroCvs, ax - 14, ay - 14, 28, 28);
+                ctx.shadowBlur = 0;
+                const cleanHeroCvs = getCleanTransparentSprite(imgHero);
+                if (cleanHeroCvs) {
+                    ctx.drawImage(cleanHeroCvs, player.x - 30, player.y - 30, 60, 60);
                 } else {
-                    ctx.fillStyle = '#78e08f'; ctx.fillRect(ax - 8, ay - 8, 16, 16);
+                    ctx.fillStyle = '#00d2d3'; ctx.beginPath();
+                    ctx.moveTo(player.x, player.y - 28); ctx.lineTo(player.x - 24, player.y + 18); ctx.lineTo(player.x - 10, player.y + 10); ctx.lineTo(player.x - 8, player.y + 24); ctx.lineTo(player.x + 8, player.y + 24); ctx.lineTo(player.x + 10, player.y + 10); ctx.lineTo(player.x + 24, player.y + 18); ctx.closePath(); ctx.fill();
                 }
                 ctx.restore();
-            });
 
-            enemies.forEach(enemy => {
-                if (!enemy || (enemy.isDying && !enemy.isFinalBoss) || enemy.isEliminated) return;
-                if (enemy.isBoss) {
+                // Render Visible Defense Forcefield Shields around Player Hero Ship!
+                if (player.defenseType === "NANO_SHIELD") {
                     ctx.save();
+                    ctx.shadowColor = '#00d2d3';
+                    ctx.shadowBlur = 22;
+                    ctx.strokeStyle = '#00d2d3';
+                    ctx.lineWidth = 3;
+
+                    // Glowing Cyan Forcefield Bubble
+                    ctx.fillStyle = 'rgba(0, 210, 211, 0.22)';
                     ctx.beginPath();
-                    ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
-                    ctx.clip(); // 100% physically clips away any square bounding box corners!
-                    const bImg = enemy.isFinalBoss ? imgBoss : (imgBossTypes.length > 0 ? imgBossTypes[(enemy.bossType || 0) % imgBossTypes.length] : null);
-                    const cleanBossCvs = getCleanTransparentSprite(bImg) || getCleanTransparentSprite(imgBoss);
-                    const bSize = enemy.isFinalBoss ? 180 : 104;
-                    if (cleanBossCvs) {
-                        ctx.drawImage(cleanBossCvs, enemy.x - bSize / 2, enemy.y - bSize / 2, bSize, bSize);
-                    } else {
-                        const pal = BOSS_PALETTES[(enemy.bossType || 0) % BOSS_PALETTES.length] || BOSS_PALETTES[0];
-                        ctx.fillStyle = pal.body || '#4834d4'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2); ctx.fill();
-                    }
-                    if (enemy.isFinalBoss && enemy.spawnShieldTimer > 0) {
-                        ctx.save();
-                        ctx.shadowColor = '#f1c40f';
-                        ctx.shadowBlur = 25;
-                        ctx.strokeStyle = '#f1c40f';
-                        ctx.lineWidth = 4;
-                        ctx.fillStyle = 'rgba(241, 196, 15, 0.18)';
-                        ctx.beginPath();
-                        ctx.arc(enemy.x, enemy.y, 96, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.stroke();
-                        ctx.restore();
-                    }
-                    if (enemy.flashTimer > 0) {
-                        ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
-                        ctx.beginPath();
-                        ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                    if (enemy.isFinalBoss && !enemy.isDying) {
-                        const wpList = [
-                            { x: enemy.x, y: enemy.y - 65, r: 24 },
-                            { x: enemy.x - 38, y: enemy.y + 10, r: 20 },
-                            { x: enemy.x, y: enemy.y + 22, r: 24 },
-                            { x: enemy.x + 38, y: enemy.y + 10, r: 20 }
-                        ];
-                        ctx.save();
-                        ctx.shadowColor = '#ff2d55';
-                        ctx.shadowBlur = 12;
-                        ctx.strokeStyle = 'rgba(255, 45, 85, 0.7)';
-                        ctx.lineWidth = 1.5;
-                        const pulseR = Math.sin(globalAnimTick * 0.15) * 2;
-                        wpList.forEach(wp => {
-                            ctx.beginPath();
-                            ctx.arc(wp.x, wp.y, wp.r + pulseR, 0, Math.PI * 2);
-                            ctx.stroke();
-                        });
-                        ctx.restore();
-                    }
+                    ctx.arc(player.x, player.y, 40, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
 
-                    if (enemy.hitFlashes && enemy.hitFlashes.length > 0) {
-                        for (let h = enemy.hitFlashes.length - 1; h >= 0; h--) {
-                            const hf = enemy.hitFlashes[h];
-                            hf.life--;
-                            ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-                            ctx.beginPath();
-                            ctx.arc(hf.x, hf.y, hf.radius * 0.9, 0, Math.PI * 2);
-                            ctx.fill();
+                    // Dual Orbiting Nano Energy Rings
+                    const rot = (globalAnimTick * 0.08) % (Math.PI * 2);
+                    ctx.strokeStyle = '#1cfc03';
+                    ctx.lineWidth = 3.5;
+                    ctx.beginPath();
+                    ctx.arc(player.x, player.y, 45, rot, rot + Math.PI * 0.7);
+                    ctx.stroke();
 
-                            ctx.strokeStyle = '#ff2d55';
-                            ctx.lineWidth = 3;
-                            ctx.beginPath();
-                            ctx.arc(hf.x, hf.y, hf.radius * (1.2 + (8 - hf.life) * 0.1), 0, Math.PI * 2);
-                            ctx.stroke();
-
-                            if (hf.life <= 0) enemy.hitFlashes.splice(h, 1);
-                        }
-                    }
+                    ctx.beginPath();
+                    ctx.arc(player.x, player.y, 45, rot + Math.PI, rot + Math.PI * 1.7);
+                    ctx.stroke();
                     ctx.restore();
-                } else {
-                    if (enemy.hasItem && !enemy.isDying) {
-                        ctx.save();
-                        ctx.shadowColor = '#ffd32c';
-                        ctx.shadowBlur = 12;
-                        ctx.strokeStyle = '#ffd32c';
-                        ctx.lineWidth = 2.5;
-                        ctx.setLineDash([8, 5]);
-                        ctx.lineDashOffset = -globalAnimTick * 0.6;
-                        ctx.beginPath();
-                        ctx.arc(enemy.x, enemy.y, enemy.radius + 7 + Math.sin(globalAnimTick * 0.12) * 2, 0, Math.PI * 2);
-                        ctx.stroke();
-                        ctx.restore();
-                    }
-                    const aImg = imgAlienTypes.length > 0 ? imgAlienTypes[(enemy.alienType || 0) % imgAlienTypes.length] : null;
-                    const cleanAlienCvs = getCleanTransparentSprite(aImg) || getCleanTransparentSprite(imgEnemy);
-                    if (cleanAlienCvs) { ctx.drawImage(cleanAlienCvs, enemy.x - 24, enemy.y - 24, 48, 48); }
-                    else {
-                        ctx.fillStyle = '#ff3838'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 18, 0, Math.PI * 2); ctx.fill();
-                    }
-                    if (enemy.flashTimer > 0) {
-                        ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
-                        ctx.beginPath();
-                        ctx.arc(enemy.x, enemy.y, 18, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                }
-
-                // Real-time Overhead HP Bar for ALL Enemies (Minions, Mid-Bosses & Final Boss)!
-                if (!enemy.isDying && enemy.hp > 0) {
+                } else if (player.defenseType === "HEAVY_ARMOR") {
                     ctx.save();
-                    ctx.shadowBlur = 0;
-                    ctx.filter = 'none';
+                    ctx.shadowColor = '#f1c40f';
+                    ctx.shadowBlur = 20;
+                    ctx.strokeStyle = '#f1c40f';
+                    ctx.lineWidth = 3;
 
-                    if (enemy.isBoss) {
-                        const isFinal = enemy.isFinalBoss;
-                        const bBarW = isFinal ? 140 : 76;
-                        const bBarH = isFinal ? 9 : 6;
-                        const bBarX = enemy.x - bBarW / 2;
-                        const bBarY = enemy.y - enemy.radius - (isFinal ? 22 : 14);
+                    // Gold Energy Barrier Dome
+                    ctx.fillStyle = 'rgba(241, 196, 15, 0.22)';
+                    ctx.beginPath();
+                    ctx.arc(player.x, player.y, 38, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
 
-                        // Dark Background Badge & Border
-                        ctx.fillStyle = 'rgba(10, 12, 18, 0.85)';
-                        ctx.fillRect(bBarX - 2, bBarY - 14, bBarW + 4, bBarH + 18);
-                        ctx.strokeStyle = isFinal ? '#ff2d55' : '#f1c40f';
-                        ctx.lineWidth = 1;
-                        ctx.strokeRect(bBarX - 2, bBarY - 14, bBarW + 4, bBarH + 18);
-
-                        // HP Fill Bar
-                        const bRatio = Math.max(0, Math.min(1, enemy.hp / enemy.maxHp));
-                        ctx.fillStyle = isFinal ? '#ff2d55' : '#ff9f43';
-                        ctx.fillRect(bBarX, bBarY, bBarW * bRatio, bBarH);
-
-                        // HP Ratio Text
-                        const label = isFinal ? `👑 FINAL BOSS (${enemy.hp}/${enemy.maxHp})` : `BOSS HP (${enemy.hp}/${enemy.maxHp})`;
-                        ctx.font = isFinal ? 'bold 11px sans-serif' : 'bold 9px sans-serif';
-                        ctx.textAlign = 'center';
-                        ctx.strokeStyle = '#000000';
-                        ctx.lineWidth = 3;
-                        ctx.strokeText(label, enemy.x, bBarY - 3);
-                        ctx.fillStyle = isFinal ? '#ffd32c' : '#ffffff';
-                        ctx.fillText(label, enemy.x, bBarY - 3);
-                    } else {
-                        // Normal Minion Alien Overhead HP Bar
-                        const mBarW = 34, mBarH = 4;
-                        const mBarX = enemy.x - mBarW / 2;
-                        const mBarY = enemy.y - enemy.radius - 8;
-
-                        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-                        ctx.fillRect(mBarX, mBarY, mBarW, mBarH);
-                        ctx.strokeStyle = '#2c3e50';
-                        ctx.lineWidth = 1;
-                        ctx.strokeRect(mBarX, mBarY, mBarW, mBarH);
-
-                        const mRatio = Math.max(0, Math.min(1, enemy.hp / (enemy.maxHp || 1)));
-                        ctx.fillStyle = mRatio > 0.35 ? '#ff4757' : '#ff6b6b';
-                        ctx.fillRect(mBarX, mBarY, mBarW * mRatio, mBarH);
-
-                        ctx.font = 'bold 8px sans-serif';
-                        ctx.textAlign = 'center';
-                        ctx.strokeStyle = '#000000';
-                        ctx.lineWidth = 2.5;
-                        ctx.strokeText(`${enemy.hp}/${enemy.maxHp || enemy.hp}`, enemy.x, mBarY - 2);
-                        ctx.fillStyle = '#ffffff';
-                        ctx.fillText(`${enemy.hp}/${enemy.maxHp || enemy.hp}`, enemy.x, mBarY - 2);
-                    }
+                    // Heavy Frontal Energy Deflector Crest
+                    ctx.strokeStyle = '#ff9f43';
+                    ctx.lineWidth = 5;
+                    ctx.beginPath();
+                    ctx.arc(player.x, player.y - 4, 43, -Math.PI * 0.75, -Math.PI * 0.25);
+                    ctx.stroke();
                     ctx.restore();
                 }
-            });
 
-            enemyLasers.forEach(l => {
-                ctx.fillStyle = l.color || '#ff3838';
-                ctx.fillRect(l.x - l.w / 2, l.y - l.h / 2, l.w, l.h);
-            });
-
-            // Crisp, High-Contrast Item Rendering with Emoji Badges and Pop Out Animation!
-            droppedItems.forEach(item => {
-                ctx.save();
-                ctx.shadowBlur = 12;
-                ctx.shadowColor = item.color || '#f1c40f';
-
-                // Solid background badge with crisp border
-                ctx.fillStyle = item.color || '#f1c40f';
-                ctx.beginPath();
-                ctx.arc(item.x, item.y, 17, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 2.5;
-                ctx.stroke();
-
-                let icon = "🎁";
-                if (item.type === "DOUBLE" || item.type === "TRIPLE") icon = "⚡";
-                else if (item.type === "HOMING") icon = "🎯";
-                else if (item.type === "MISSILE") icon = "🚀";
-                else if (item.type === "LASER") icon = "⚡";
-                else if (item.type === "HEAL") icon = "💚";
-                else if (item.type === "ULTIMATE") icon = "💥";
-                else if (item.type === "LIFE") icon = "❤️";
-                else if (item.type === "NANO_SHIELD") icon = "🛡️";
-
-                ctx.font = 'bold 15px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillStyle = '#ffffff';
-                ctx.fillText(icon, item.x, item.y);
-
-                // Sharp high-contrast text badge below item
-                ctx.font = 'bold 12px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'alphabetic';
-                ctx.strokeStyle = '#000000';
-                ctx.lineWidth = 3.5;
-                ctx.strokeText(item.label, item.x, item.y + 30);
-                ctx.fillStyle = item.color || '#ffffff';
-                ctx.fillText(item.label, item.x, item.y + 30);
-                ctx.restore();
-            });
-
-            bullets.forEach(b => { ctx.fillStyle = '#ffd32c'; ctx.fillRect(b.x - 1.5, b.y, 3, 10); });
-            for (let i = particles.length - 1; i >= 0; i--) { ctx.fillStyle = particles[i].color; ctx.globalAlpha = particles[i].alpha; ctx.beginPath(); ctx.arc(particles[i].x, particles[i].y, particles[i].radius, 0, Math.PI * 2); ctx.fill(); }
-
-            // Crisp, Sharp Floating Combat Text without ANY Blur/Glow Effects
-            for (let i = floatingTexts.length - 1; i >= 0; i--) {
-                let t = floatingTexts[i];
-                if (!t) continue;
+                // Render Real-time HP Bar directly BELOW Player Hero Ship!
                 ctx.save();
                 ctx.shadowBlur = 0;
                 ctx.filter = 'none';
-                const alpha = t.life < 30 ? (t.life / 30) : 1.0;
-                ctx.globalAlpha = alpha;
-                const fSize = t.fontSize || 13;
-                ctx.font = `bold ${fSize}px sans-serif`;
+                const pHpW = 54, pHpH = 6, pHpX = player.x - pHpW / 2, pHpY = player.y + 36;
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+                ctx.fillRect(pHpX, pHpY, pHpW, pHpH);
+                ctx.strokeStyle = '#353b48';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(pHpX, pHpY, pHpW, pHpH);
+
+                const pRatio = Math.max(0, Math.min(1, player.hp / player.maxHp));
+                ctx.fillStyle = pRatio > 0.35 ? '#10ac84' : '#ff3838';
+                ctx.fillRect(pHpX, pHpY, pHpW * pRatio, pHpH);
+
+                ctx.font = 'bold 9px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.strokeStyle = '#000000';
-                ctx.lineWidth = 4;
-                ctx.strokeText(t.text, t.x, t.y);
-                ctx.fillStyle = t.color || '#ffffff';
-                ctx.fillText(t.text, t.x, t.y);
+                ctx.lineWidth = 3;
+                ctx.strokeText(`${player.hp}/${player.maxHp}`, player.x, pHpY + 14);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillText(`${player.hp}/${player.maxHp}`, player.x, pHpY + 14);
                 ctx.restore();
-            }
+
+                player.allies.forEach((ally, idx) => {
+                    const offset = getAllyRelativePos(idx);
+                    const ax = player.x + offset.xOffset;
+                    const ay = player.y + offset.yOffset;
+                    const cleanDroneCvs = getCleanTransparentSprite(imgAllyDrone);
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(ax, ay, 15, 0, Math.PI * 2);
+                    ctx.clip(); // 100% Cuts off any square bounding box corners physically!
+                    if (cleanDroneCvs) {
+                        ctx.drawImage(cleanDroneCvs, ax - 16, ay - 16, 32, 32);
+                    } else if (cleanHeroCvs) {
+                        ctx.drawImage(cleanHeroCvs, ax - 14, ay - 14, 28, 28);
+                    } else {
+                        ctx.fillStyle = '#78e08f'; ctx.fillRect(ax - 8, ay - 8, 16, 16);
+                    }
+                    ctx.restore();
+                });
+
+                enemies.forEach(enemy => {
+                    if (!enemy || (enemy.isDying && !enemy.isFinalBoss) || enemy.isEliminated) return;
+                    if (enemy.isBoss) {
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
+                        ctx.clip(); // 100% physically clips away any square bounding box corners!
+                        const bImg = enemy.isFinalBoss ? imgBoss : (imgBossTypes.length > 0 ? imgBossTypes[(enemy.bossType || 0) % imgBossTypes.length] : null);
+                        const cleanBossCvs = getCleanTransparentSprite(bImg) || getCleanTransparentSprite(imgBoss);
+                        const bSize = enemy.isFinalBoss ? 180 : 104;
+                        if (cleanBossCvs) {
+                            ctx.drawImage(cleanBossCvs, enemy.x - bSize / 2, enemy.y - bSize / 2, bSize, bSize);
+                        } else {
+                            const pal = BOSS_PALETTES[(enemy.bossType || 0) % BOSS_PALETTES.length] || BOSS_PALETTES[0];
+                            ctx.fillStyle = pal.body || '#4834d4'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2); ctx.fill();
+                        }
+                        if (enemy.isFinalBoss && enemy.spawnShieldTimer > 0) {
+                            ctx.save();
+                            ctx.shadowColor = '#f1c40f';
+                            ctx.shadowBlur = 25;
+                            ctx.strokeStyle = '#f1c40f';
+                            ctx.lineWidth = 4;
+                            ctx.fillStyle = 'rgba(241, 196, 15, 0.18)';
+                            ctx.beginPath();
+                            ctx.arc(enemy.x, enemy.y, 96, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.stroke();
+                            ctx.restore();
+                        }
+                        if (enemy.flashTimer > 0) {
+                            ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+                            ctx.beginPath();
+                            ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                        if (enemy.isFinalBoss && !enemy.isDying) {
+                            const wpList = [
+                                { x: enemy.x, y: enemy.y - 65, r: 24 },
+                                { x: enemy.x - 38, y: enemy.y + 10, r: 20 },
+                                { x: enemy.x, y: enemy.y + 22, r: 24 },
+                                { x: enemy.x + 38, y: enemy.y + 10, r: 20 }
+                            ];
+                            ctx.save();
+                            ctx.shadowColor = '#ff2d55';
+                            ctx.shadowBlur = 12;
+                            ctx.strokeStyle = 'rgba(255, 45, 85, 0.7)';
+                            ctx.lineWidth = 1.5;
+                            const pulseR = Math.sin(globalAnimTick * 0.15) * 2;
+                            wpList.forEach(wp => {
+                                ctx.beginPath();
+                                ctx.arc(wp.x, wp.y, wp.r + pulseR, 0, Math.PI * 2);
+                                ctx.stroke();
+                            });
+                            ctx.restore();
+                        }
+
+                        if (enemy.hitFlashes && enemy.hitFlashes.length > 0) {
+                            for (let h = enemy.hitFlashes.length - 1; h >= 0; h--) {
+                                const hf = enemy.hitFlashes[h];
+                                hf.life--;
+                                ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+                                ctx.beginPath();
+                                ctx.arc(hf.x, hf.y, hf.radius * 0.9, 0, Math.PI * 2);
+                                ctx.fill();
+
+                                ctx.strokeStyle = '#ff2d55';
+                                ctx.lineWidth = 3;
+                                ctx.beginPath();
+                                ctx.arc(hf.x, hf.y, hf.radius * (1.2 + (8 - hf.life) * 0.1), 0, Math.PI * 2);
+                                ctx.stroke();
+
+                                if (hf.life <= 0) enemy.hitFlashes.splice(h, 1);
+                            }
+                        }
+                        ctx.restore();
+                    } else {
+                        if (enemy.hasItem && !enemy.isDying) {
+                            ctx.save();
+                            ctx.shadowColor = '#ffd32c';
+                            ctx.shadowBlur = 12;
+                            ctx.strokeStyle = '#ffd32c';
+                            ctx.lineWidth = 2.5;
+                            ctx.setLineDash([8, 5]);
+                            ctx.lineDashOffset = -globalAnimTick * 0.6;
+                            ctx.beginPath();
+                            ctx.arc(enemy.x, enemy.y, enemy.radius + 7 + Math.sin(globalAnimTick * 0.12) * 2, 0, Math.PI * 2);
+                            ctx.stroke();
+                            ctx.restore();
+                        }
+                        const aImg = imgAlienTypes.length > 0 ? imgAlienTypes[(enemy.alienType || 0) % imgAlienTypes.length] : null;
+                        const cleanAlienCvs = getCleanTransparentSprite(aImg) || getCleanTransparentSprite(imgEnemy);
+                        if (cleanAlienCvs) { ctx.drawImage(cleanAlienCvs, enemy.x - 24, enemy.y - 24, 48, 48); }
+                        else {
+                            ctx.fillStyle = '#ff3838'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 18, 0, Math.PI * 2); ctx.fill();
+                        }
+                        if (enemy.flashTimer > 0) {
+                            ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+                            ctx.beginPath();
+                            ctx.arc(enemy.x, enemy.y, 18, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                    }
+
+                    // Real-time Overhead HP Bar for ALL Enemies (Minions, Mid-Bosses & Final Boss)!
+                    if (!enemy.isDying && enemy.hp > 0) {
+                        ctx.save();
+                        ctx.shadowBlur = 0;
+                        ctx.filter = 'none';
+
+                        if (enemy.isBoss) {
+                            const isFinal = enemy.isFinalBoss;
+                            const bBarW = isFinal ? 140 : 76;
+                            const bBarH = isFinal ? 9 : 6;
+                            const bBarX = enemy.x - bBarW / 2;
+                            const bBarY = enemy.y - enemy.radius - (isFinal ? 22 : 14);
+
+                            // Dark Background Badge & Border
+                            ctx.fillStyle = 'rgba(10, 12, 18, 0.85)';
+                            ctx.fillRect(bBarX - 2, bBarY - 14, bBarW + 4, bBarH + 18);
+                            ctx.strokeStyle = isFinal ? '#ff2d55' : '#f1c40f';
+                            ctx.lineWidth = 1;
+                            ctx.strokeRect(bBarX - 2, bBarY - 14, bBarW + 4, bBarH + 18);
+
+                            // HP Fill Bar
+                            const bRatio = Math.max(0, Math.min(1, enemy.hp / enemy.maxHp));
+                            ctx.fillStyle = isFinal ? '#ff2d55' : '#ff9f43';
+                            ctx.fillRect(bBarX, bBarY, bBarW * bRatio, bBarH);
+
+                            // HP Ratio Text
+                            const label = isFinal ? `👑 FINAL BOSS (${enemy.hp}/${enemy.maxHp})` : `BOSS HP (${enemy.hp}/${enemy.maxHp})`;
+                            ctx.font = isFinal ? 'bold 11px sans-serif' : 'bold 9px sans-serif';
+                            ctx.textAlign = 'center';
+                            ctx.strokeStyle = '#000000';
+                            ctx.lineWidth = 3;
+                            ctx.strokeText(label, enemy.x, bBarY - 3);
+                            ctx.fillStyle = isFinal ? '#ffd32c' : '#ffffff';
+                            ctx.fillText(label, enemy.x, bBarY - 3);
+                        } else {
+                            // Normal Minion Alien Overhead HP Bar
+                            const mBarW = 34, mBarH = 4;
+                            const mBarX = enemy.x - mBarW / 2;
+                            const mBarY = enemy.y - enemy.radius - 8;
+
+                            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                            ctx.fillRect(mBarX, mBarY, mBarW, mBarH);
+                            ctx.strokeStyle = '#2c3e50';
+                            ctx.lineWidth = 1;
+                            ctx.strokeRect(mBarX, mBarY, mBarW, mBarH);
+
+                            const mRatio = Math.max(0, Math.min(1, enemy.hp / (enemy.maxHp || 1)));
+                            ctx.fillStyle = mRatio > 0.35 ? '#ff4757' : '#ff6b6b';
+                            ctx.fillRect(mBarX, mBarY, mBarW * mRatio, mBarH);
+
+                            ctx.font = 'bold 8px sans-serif';
+                            ctx.textAlign = 'center';
+                            ctx.strokeStyle = '#000000';
+                            ctx.lineWidth = 2.5;
+                            ctx.strokeText(`${enemy.hp}/${enemy.maxHp || enemy.hp}`, enemy.x, mBarY - 2);
+                            ctx.fillStyle = '#ffffff';
+                            ctx.fillText(`${enemy.hp}/${enemy.maxHp || enemy.hp}`, enemy.x, mBarY - 2);
+                        }
+                        ctx.restore();
+                    }
+                });
+
+                enemyLasers.forEach(l => {
+                    ctx.fillStyle = l.color || '#ff3838';
+                    ctx.fillRect(l.x - l.w / 2, l.y - l.h / 2, l.w, l.h);
+                });
+
+                // Crisp, High-Contrast Item Rendering with Emoji Badges and Pop Out Animation!
+                droppedItems.forEach(item => {
+                    ctx.save();
+                    ctx.shadowBlur = 12;
+                    ctx.shadowColor = item.color || '#f1c40f';
+
+                    // Solid background badge with crisp border
+                    ctx.fillStyle = item.color || '#f1c40f';
+                    ctx.beginPath();
+                    ctx.arc(item.x, item.y, 17, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 2.5;
+                    ctx.stroke();
+
+                    let icon = "🎁";
+                    if (item.type === "DOUBLE" || item.type === "TRIPLE") icon = "⚡";
+                    else if (item.type === "HOMING") icon = "🎯";
+                    else if (item.type === "MISSILE") icon = "🚀";
+                    else if (item.type === "LASER") icon = "⚡";
+                    else if (item.type === "HEAL") icon = "💚";
+                    else if (item.type === "ULTIMATE") icon = "💥";
+                    else if (item.type === "LIFE") icon = "❤️";
+                    else if (item.type === "NANO_SHIELD") icon = "🛡️";
+
+                    ctx.font = 'bold 15px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillText(icon, item.x, item.y);
+
+                    // Sharp high-contrast text badge below item
+                    ctx.font = 'bold 12px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'alphabetic';
+                    ctx.strokeStyle = '#000000';
+                    ctx.lineWidth = 3.5;
+                    ctx.strokeText(item.label, item.x, item.y + 30);
+                    ctx.fillStyle = item.color || '#ffffff';
+                    ctx.fillText(item.label, item.x, item.y + 30);
+                    ctx.restore();
+                });
+
+                bullets.forEach(b => { ctx.fillStyle = '#ffd32c'; ctx.fillRect(b.x - 1.5, b.y, 3, 10); });
+                for (let i = particles.length - 1; i >= 0; i--) { ctx.fillStyle = particles[i].color; ctx.globalAlpha = particles[i].alpha; ctx.beginPath(); ctx.arc(particles[i].x, particles[i].y, particles[i].radius, 0, Math.PI * 2); ctx.fill(); }
+
+                // Crisp, Sharp Floating Combat Text without ANY Blur/Glow Effects
+                for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                    let t = floatingTexts[i];
+                    if (!t) continue;
+                    ctx.save();
+                    ctx.shadowBlur = 0;
+                    ctx.filter = 'none';
+                    const alpha = t.life < 30 ? (t.life / 30) : 1.0;
+                    ctx.globalAlpha = alpha;
+                    const fSize = t.fontSize || 13;
+                    ctx.font = `bold ${fSize}px sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.strokeStyle = '#000000';
+                    ctx.lineWidth = 4;
+                    ctx.strokeText(t.text, t.x, t.y);
+                    ctx.fillStyle = t.color || '#ffffff';
+                    ctx.fillText(t.text, t.x, t.y);
+                    ctx.restore();
+                }
             } finally {
                 // Restore Canvas State to End Gameplay Area Clipping before rendering Top Standalone HUD Header!
                 ctx.restore();
@@ -3436,7 +3558,7 @@ if (document.readyState === 'loading') {
             // BOTTOM HUD Footer (Height: 56px)
             // -------------------------------------------------------------
             const bottomHUDY = canvas.height - 56;
-            
+
             ctx.save();
             // Bottom HUD Background (Translucent Glass)
             ctx.fillStyle = 'rgba(8, 10, 15, 0.7)';
@@ -3456,7 +3578,7 @@ if (document.readyState === 'loading') {
             const hpBarX = 14, hpBarY = bottomHUDY + 10, hpBarW = 100, hpBarH = 15;
             ctx.fillStyle = 'rgba(30, 39, 46, 0.8)';
             ctx.fillRect(hpBarX, hpBarY, hpBarW, hpBarH);
-            
+
             // Neon HP Bar glow
             ctx.save();
             const hpRatio = Math.max(0, Math.min(1, player.hp / player.maxHp));
@@ -3495,20 +3617,20 @@ if (document.readyState === 'loading') {
             ctx.save();
             ctx.textAlign = 'left';
             ctx.font = '900 12px sans-serif';
-            
+
             ctx.shadowColor = '#00d2d3';
             ctx.shadowBlur = 6;
             ctx.fillStyle = '#00d2d3';
             ctx.fillText(`🔫 ${wName}`, 14, bottomHUDY + 44);
-            
+
             ctx.shadowColor = '#ff9ff3';
             ctx.fillStyle = '#ff9ff3';
             ctx.fillText(`💥 ${bName}`, 102, bottomHUDY + 44);
-            
+
             ctx.shadowColor = '#1dd1a1';
             ctx.fillStyle = '#1dd1a1';
             ctx.fillText(`🛡️ ${dName}`, 178, bottomHUDY + 44);
-            
+
             ctx.shadowColor = '#f1c40f';
             ctx.fillStyle = '#f1c40f';
             ctx.fillText(`🪖 드론 ${player.allies.length}기`, 252, bottomHUDY + 44);
