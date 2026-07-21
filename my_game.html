@@ -1878,23 +1878,42 @@ if (document.readyState === 'loading') {
             if (bullets.length > 300) bullets.splice(0, bullets.length - 300);
             if (enemyLasers.length > 200) enemyLasers.splice(0, enemyLasers.length - 200);
 
-            // Boss Minion Support Spawner (Spawns random minion aliens every 3.5 seconds during boss battles)
-            // enemies 배열 최대 80개 제한 (무한 소환 시 성능 저하 방지)
-            if (globalAnimTick % 210 === 0 && enemies.some(e => e.isBoss && !e.isDying) && enemies.length < 80) {
+            // Boss Support Spawner (Spawns minion aliens & mid-bosses continuously during boss battles!)
+            // 1. Minion Alien Support Spawner (Every 3.0 seconds during boss / final boss battles)
+            if (globalAnimTick % 180 === 0 && enemies.some(e => (e.isBoss || e.isFinalBoss) && !e.isDying) && enemies.length < 80) {
                 const laneWidth = canvas.width / 3;
-                const zCount = Math.max(1, Math.floor((2 + stageLevel * 0.4) * diffMultiplier));
+                const zCount = Math.max(2, Math.floor((2 + stageLevel * 0.5) * diffMultiplier));
                 for (let k = 0; k < zCount; k++) {
                     const aType = Math.floor(Math.random() * 10);
                     const hpBase = Math.floor((4 + stageLevel * 2) * diffMultiplier);
+                    const spawnX = 35 + Math.random() * (canvas.width - 70);
                     enemies.push({
-                        x: laneWidth + 30 + Math.random() * (laneWidth - 60),
+                        x: spawnX,
                         y: 50 - (k * 40),
                         radius: 18,
                         hp: hpBase, maxHp: hpBase,
-                        speed: (1.4 + (stageLevel * 0.04)) * (diffMultiplier * 0.9),
-                        isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0
+                        speed: (1.6 + (stageLevel * 0.04)) * (diffMultiplier * 0.9),
+                        isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0,
+                        hasItem: (Math.random() < 0.25)
                     });
                 }
+            }
+
+            // 2. Mid-Boss Support Spawner during Final Boss Battle (Spawns Stage Mid-Boss every 10 seconds!)
+            if (globalAnimTick % 600 === 0 && enemies.some(e => e.isFinalBoss && !e.isDying) && enemies.length < 80) {
+                const bType = Math.floor(Math.random() * 10);
+                const midBossHp = Math.floor(150 * diffMultiplier * (midBossHpMultiplier || 1.0));
+                enemies.push({
+                    x: Math.random() < 0.5 ? 90 : canvas.width - 90,
+                    y: 60,
+                    radius: 42,
+                    hp: midBossHp,
+                    maxHp: midBossHp,
+                    speed: 1.2 * diffMultiplier,
+                    isBoss: true, isFinalBoss: false, bossType: bType, flashTimer: 0, animFrame: 0,
+                    hasItem: true
+                });
+                addFloatingText(canvas.width / 2, 240, `⚠️ [최종 마왕 호위 부대] 중간 보스 지원 출격! (${midBossHp} HP)`, "#ff9f43", 16);
             }
 
             enemies.forEach(enemy => {
@@ -1909,13 +1928,73 @@ if (document.readyState === 'loading') {
                     const pal = ALIEN_PALETTES[(enemy.alienType || 0) % ALIEN_PALETTES.length] || ALIEN_PALETTES[0];
                     enemyLasers.push({ x: enemy.x, y: enemy.y + 18, w: 8, h: 22, vy: 4.8, color: pal.glow || '#55efc4', isBoss: false, vx: 0 });
                 }
-                if (!enemy.isDying && enemy.isFinalBoss && globalAnimTick % 65 === 0) {
-                    // 5-way Annihilation Barrage for Final Boss!
-                    enemyLasers.push({ x: enemy.x - 40, y: enemy.y + 45, w: 10, h: 26, vy: 5.2, vx: -1.8, color: '#ff2d55', isBoss: true });
-                    enemyLasers.push({ x: enemy.x - 20, y: enemy.y + 50, w: 12, h: 28, vy: 5.8, vx: -0.9, color: '#ff3838', isBoss: true });
-                    enemyLasers.push({ x: enemy.x, y: enemy.y + 55, w: 14, h: 32, vy: 6.5, vx: 0, color: '#1cfc03', isBoss: true });
-                    enemyLasers.push({ x: enemy.x + 20, y: enemy.y + 50, w: 12, h: 28, vy: 5.8, vx: 0.9, color: '#ff3838', isBoss: true });
-                    enemyLasers.push({ x: enemy.x + 40, y: enemy.y + 45, w: 10, h: 26, vy: 5.2, vx: 1.8, color: '#ff2d55', isBoss: true });
+                if (!enemy.isDying && enemy.isFinalBoss && globalAnimTick % 45 === 0) {
+                    // Final Boss Randomized & Multi-Pattern Attack Engine!
+                    const atkType = Math.floor(Math.random() * 5);
+
+                    if (atkType === 0) {
+                        // 1. 360-degree Radial Ring Energy Burst (12 projectiles)
+                        const count = 12;
+                        for (let r = 0; r < count; r++) {
+                            const angle = r * (Math.PI * 2 / count);
+                            const spd = 4.8;
+                            enemyLasers.push({
+                                x: enemy.x, y: enemy.y + 20,
+                                w: 10, h: 10,
+                                vx: Math.cos(angle) * spd,
+                                vy: Math.sin(angle) * spd,
+                                color: '#ffd32c', isBoss: true
+                            });
+                        }
+                        addFloatingText(enemy.x, enemy.y - 60, "💥 360도 링 파동 탄막!", "#ffd32c", 14);
+                    } else if (atkType === 1) {
+                        // 2. 7-Way Heavy Laser Stream
+                        const vxs = [-2.7, -1.8, -0.9, 0, 0.9, 1.8, 2.7];
+                        vxs.forEach((vx, idx) => {
+                            enemyLasers.push({
+                                x: enemy.x + (vx * 15), y: enemy.y + 40,
+                                w: 11, h: 28,
+                                vy: 6.2, vx: vx,
+                                color: idx % 2 === 0 ? '#ff2d55' : '#00d2d3', isBoss: true
+                            });
+                        });
+                        addFloatingText(enemy.x, enemy.y - 60, "⚡ 7방향 레이저 융단 폭격!", "#ff2d55", 14);
+                    } else if (atkType === 2) {
+                        // 3. Targeted Homing Plasma Bombs (3 heavy bombs toward player)
+                        const pAngle = Math.atan2(player.y - enemy.y, player.x - enemy.x);
+                        const bSpd = 5.5;
+                        for (let b = -1; b <= 1; b++) {
+                            const finalAngle = pAngle + (b * 0.25);
+                            enemyLasers.push({
+                                x: enemy.x + (b * 25), y: enemy.y + 30,
+                                w: 16, h: 32,
+                                vx: Math.cos(finalAngle) * bSpd,
+                                vy: Math.sin(finalAngle) * bSpd,
+                                color: '#ff9f43', isBoss: true
+                            });
+                        }
+                        addFloatingText(enemy.x, enemy.y - 60, "💣 조준형 열압력 폭탄 탄막!", "#ff9f43", 14);
+                    } else if (atkType === 3) {
+                        // 4. Rotating Spiral Laser Barrage
+                        const baseAngle = (globalAnimTick * 0.15);
+                        for (let s = 0; s < 6; s++) {
+                            const angle = baseAngle + s * (Math.PI / 3);
+                            enemyLasers.push({
+                                x: enemy.x, y: enemy.y + 30,
+                                w: 10, h: 24,
+                                vx: Math.cos(angle) * 5.0,
+                                vy: Math.abs(Math.sin(angle)) * 4.5 + 2.0,
+                                color: '#e056fd', isBoss: true
+                            });
+                        }
+                        addFloatingText(enemy.x, enemy.y - 60, "🌀 나선 회전 레이저 포화!", "#e056fd", 14);
+                    } else {
+                        // 5. Triple Heavy Beam & Side Scattering Volley
+                        enemyLasers.push({ x: enemy.x - 45, y: enemy.y + 40, w: 14, h: 36, vy: 7.0, vx: -1.2, color: '#ff3838', isBoss: true });
+                        enemyLasers.push({ x: enemy.x, y: enemy.y + 50, w: 18, h: 42, vy: 7.5, vx: 0, color: '#1cfc03', isBoss: true });
+                        enemyLasers.push({ x: enemy.x + 45, y: enemy.y + 40, w: 14, h: 36, vy: 7.0, vx: 1.2, color: '#ff3838', isBoss: true });
+                        addFloatingText(enemy.x, enemy.y - 60, "🔥 3중 주포 광선 & 분산포!", "#1cfc03", 14);
+                    }
                 } else if (!enemy.isDying && !enemy.isFinalBoss && enemy.isBoss && globalAnimTick % 95 === 0) {
                     const pal = BOSS_PALETTES[(enemy.bossType || 0) % BOSS_PALETTES.length] || BOSS_PALETTES[0];
                     const glowColor = pal.glow || '#ff0055';
@@ -2460,9 +2539,9 @@ if (document.readyState === 'loading') {
             enemy.hp = 0;
 
             if (enemy.isFinalBoss) {
-                enemy.deathTimer = 450; // 3x Extended 7.5 seconds (450 frames) dramatic fireworks explosion sequence!
+                enemy.deathTimer = 420; // Exactly 7.0 seconds (420 frames @ 60fps) fireworks explosion sequence!
                 enemyLasers = []; // Clear enemy lasers on boss defeat
-                addFloatingText(enemy.x, enemy.y - 70, "💥 [마왕 격파! 히어로 돌파 및 7.5초 화염 대폭발]", "#ff2d55", 22);
+                addFloatingText(enemy.x, enemy.y - 70, "💥 [마왕 격파! 7초 화염 대폭발 & 히어로 돌파]", "#ff2d55", 22);
                 playExplosionSound(true);
                 return;
             }
