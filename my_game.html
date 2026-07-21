@@ -392,8 +392,12 @@
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5); text-align: center;">
                         "외계인에 잡혀간 현우엄마를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">v11.4.9</span> <span style="color: #636e72; font-size: 11px; margin-left: 4px;">배포 2026-07-21 09:33</span></div>
                     <div id="menuHighScore"
-                        style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 20px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
-                        🏆 HIGH SCORE: 0 PTS</div>
+                        style="background: rgba(12, 16, 24, 0.7); border: 1px solid rgba(241, 196, 15, 0.5); padding: 10px 14px; border-radius: 14px; color: #f1c40f; font-size: 12px; margin-bottom: 20px; box-shadow: 0 0 15px rgba(241, 196, 15, 0.2); width: 100%; max-width: 480px; box-sizing: border-box; backdrop-filter: blur(4px);">
+                        <div style="font-weight: 900; font-size: 13px; color: #ffd32c; margin-bottom: 8px; text-shadow: 0 0 8px rgba(241, 196, 15, 0.6); text-align: center; letter-spacing: 1px;">🏆 명예의 전당 (TOP 5)</div>
+                        <div id="topScoreList" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 10px; font-weight: bold; color: #fff;">
+                            <span style="color: #a4b0be; font-size: 11px;">기록 불러오는 중...</span>
+                        </div>
+                    </div>
 
                     <!-- 통합 전술 환경설정 패널 -->
                     <div style="background: rgba(20, 26, 38, 0.7); border: 1px solid rgba(0, 210, 211, 0.4); border-radius: 14px; padding: 12px 18px; margin-bottom: 22px; width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; backdrop-filter: blur(6px); box-shadow: 0 4px 20px rgba(0,0,0,0.35);">
@@ -928,8 +932,42 @@ if (document.readyState === 'loading') {
 
         let gameState = "MENU", isPaused = false, score = 0, highScore = 0, spawnTimer = 0, constWaveInterval = 190, globalAnimTick = 0, difficulty = "NORMAL (Lv.2)";
 
-        if (localStorage.getItem("rr_supreme_highscore")) highScore = parseInt(localStorage.getItem("rr_supreme_highscore"));
-        document.getElementById('menuHighScore').innerText = "🏆 최고 기록 스코어: " + highScore.toLocaleString() + " PTS";
+        function getScoreList() {
+            let list = [];
+            try {
+                const stored = localStorage.getItem("hy_fire_fighter_scores");
+                if (stored) {
+                    list = JSON.parse(stored);
+                } else if (localStorage.getItem("rr_supreme_highscore")) {
+                    const legacy = parseInt(localStorage.getItem("rr_supreme_highscore"));
+                    if (!isNaN(legacy) && legacy > 0) list = [legacy];
+                }
+            } catch(e) { list = []; }
+            return Array.isArray(list) ? list : [];
+        }
+
+        function updateHighScoreUI() {
+            const scores = getScoreList();
+            highScore = scores.length > 0 ? scores[0] : 0;
+            const container = document.getElementById('topScoreList');
+            if (!container) return;
+            if (scores.length === 0) {
+                container.innerHTML = `<span style="color: #a4b0be; font-size: 11px;">기록이 없습니다. 작전을 개시하세요!</span>`;
+                return;
+            }
+            const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+            const colors = ['#f1c40f', '#e0e0e0', '#cd7f32', '#00d2d3', '#a4b0be'];
+            let html = '';
+            const top5 = scores.slice(0, 5);
+            top5.forEach((sc, idx) => {
+                html += `<div style="background: rgba(255,255,255,0.06); border: 1px solid ${colors[idx]}55; padding: 3px 8px; border-radius: 6px; font-size: 11px;">
+                    <span>${medals[idx]} ${idx+1}위:</span> <span style="color:${colors[idx]}; font-weight:900;">${sc.toLocaleString()}</span> <span style="font-size:9px; color:#aaa;">PTS</span>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        updateHighScoreUI();
 
         const player = { x: 270, y: 590, radius: 17, speed: 0.28, targetX: 270, targetY: 590, allies: [], shootCooldown: 0, shootInterval: 10, hp: 100, maxHp: 100, lives: 3, weaponType: "NORMAL", buffType: "NONE", defenseType: "NONE", weaponTimer: 0, buffTimer: 0, defenseTimer: 0, ultimateStock: 3 };
         let bullets = [], enemies = [], enemyLasers = [], gates = [], trappedHero = null, particles = [], muzzleFlashes = [], floatingTexts = [], droppedItems = [];
@@ -2622,11 +2660,16 @@ if (document.readyState === 'loading') {
         }
 
         function saveHighScore() {
-            if (score > highScore) {
-                highScore = score;
-                localStorage.setItem("rr_supreme_highscore", highScore);
-            }
-            document.getElementById('menuHighScore').innerText = "🏆 최고 기록 스코어: " + highScore.toLocaleString() + " PTS";
+            if (score <= 0) return;
+            let scores = getScoreList();
+            scores.push(score);
+            scores.sort((a, b) => b - a);
+            scores = scores.slice(0, 10);
+            try {
+                localStorage.setItem("hy_fire_fighter_scores", JSON.stringify(scores));
+            } catch(e) {}
+            highScore = scores[0] || 0;
+            updateHighScoreUI();
         }
         function gameOver() { gameState = "GAMEOVER"; stopBGM(); saveHighScore(); document.getElementById('goScore').innerText = `최종 전과 스코어: ${score.toLocaleString()} PTS`; document.getElementById('gameOverOverlay').style.display = 'flex'; }
         function addFloatingText(x, y, text, color, fontSize = 12, life = 110, vy = -0.4) { floatingTexts.push({ x, y, text, color, life, vy, fontSize, scale: 1.4 }); }
