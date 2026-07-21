@@ -1509,7 +1509,7 @@ if (document.readyState === 'loading') {
                 const maxMidBossHp = Math.max(200, Math.floor((100 + 5 * 25) * diffMultiplier * (midBossHpMultiplier || 1.0)));
                 const bossHp = Math.max(3500, Math.floor(maxMidBossHp * (finalBossHpRatio || 17.5) * (finalBossHpMultiplier || 1.0)));
                 enemies.push({
-                    x: canvas.width / 2, y: -80, radius: 88,
+                    x: canvas.width / 2, y: 171, radius: 88,
                     hp: bossHp,
                     maxHp: bossHp,
                     phase: 1,
@@ -1524,7 +1524,7 @@ if (document.readyState === 'loading') {
                 const bType = (stageLevel === 5) ? 9 : Math.floor(Math.random() * 10);
                 const midBossHp = Math.floor((100 + stageLevel * 25) * diffMultiplier * (midBossHpMultiplier || 1.0));
                 enemies.push({
-                    x: laneWidth * 1.5, y: -90, radius: 44,
+                    x: laneWidth * 1.5, y: 127, radius: 44,
                     hp: midBossHp,
                     maxHp: midBossHp,
                     speed: (0.7 + (stageLevel * 0.03)) * (diffMultiplier * 0.85),
@@ -1537,7 +1537,7 @@ if (document.readyState === 'loading') {
                 for (let i = 0; i < zCount; i++) {
                     const aType = Math.floor(Math.random() * 10);
                     const spawnX = 35 + Math.random() * (canvas.width - 70);
-                    const spawnY = -40 - (i * 38);
+                    const spawnY = 101 + (i * 38);
                     enemies.push({
                         x: spawnX,
                         y: spawnY,
@@ -1749,7 +1749,7 @@ if (document.readyState === 'loading') {
                     const hpBase = Math.floor((4 + stageLevel * 2) * diffMultiplier);
                     enemies.push({
                         x: laneWidth + 30 + Math.random() * (laneWidth - 60),
-                        y: -40 - (k * 40),
+                        y: 101 + (k * 40),
                         radius: 18,
                         hp: hpBase, maxHp: hpBase,
                         speed: (1.4 + (stageLevel * 0.04)) * (diffMultiplier * 0.9),
@@ -3008,20 +3008,20 @@ if (document.readyState === 'loading') {
                 ctx.restore();
             }
 
-            // Premium Clean & High-Contrast HUD Header Background (Height: 112px)
+            // Premium Clean & High-Contrast HUD Header Background (Height: 76px)
             ctx.save();
             ctx.shadowBlur = 0;
             ctx.filter = 'none';
 
             // 100% Opaque Dark Panel with crisp dual neon bottom border dividing HUD and Game Play Area
             ctx.fillStyle = '#080a0f';
-            ctx.fillRect(0, 0, canvas.width, 112);
+            ctx.fillRect(0, 0, canvas.width, 76);
 
-            // Dual Neon & Gold Separator Bar (110~114px)
+            // Dual Neon & Gold Separator Bar (74~78px)
             ctx.fillStyle = '#00d2d3';
-            ctx.fillRect(0, 110, canvas.width, 2);
+            ctx.fillRect(0, 74, canvas.width, 2);
             ctx.fillStyle = '#f1c40f';
-            ctx.fillRect(0, 112, canvas.width, 2);
+            ctx.fillRect(0, 76, canvas.width, 2);
 
             // Text Contrast Enhancement: Enable text drop shadow for max legibility
             ctx.shadowColor = '#000000';
@@ -3030,11 +3030,11 @@ if (document.readyState === 'loading') {
             ctx.shadowOffsetY = 1;
 
             // -------------------------------------------------------------
-            // ROW 1 (y: 12 ~ 42): Core Primary Info (HP, Stage, Score)
+            // ROW 1 (y: 6 ~ 32): Core Primary Info (HP, Stage, Score)
             // -------------------------------------------------------------
 
             // 1-A. LEFT: Player HP Bar & Lives Badge
-            const hpBarX = 14, hpBarY = 12, hpBarW = 100, hpBarH = 15;
+            const hpBarX = 14, hpBarY = 10, hpBarW = 100, hpBarH = 15;
             ctx.fillStyle = '#1e272e';
             ctx.fillRect(hpBarX, hpBarY, hpBarW, hpBarH);
             ctx.strokeStyle = '#485460';
@@ -3051,12 +3051,12 @@ if (document.readyState === 'loading') {
             ctx.textAlign = 'center';
             ctx.fillText(`${player.hp}/${player.maxHp}`, hpBarX + hpBarW / 2, hpBarY + 12);
 
-            // Lives Badge Stacked Below HP Bar
+            // Lives Badge Stacked Next to HP Bar
             if (player.lives > 1) {
                 ctx.fillStyle = '#ff6b6b';
                 ctx.font = '900 12px sans-serif';
                 ctx.textAlign = 'left';
-                ctx.fillText(`❤️x${player.lives} (목숨)`, 14, 40);
+                ctx.fillText(`❤️x${player.lives}`, hpBarX + hpBarW + 8, hpBarY + 12);
             }
 
             // Dedicated Top Canvas Final Boss Health Bar
@@ -3065,7 +3065,7 @@ if (document.readyState === 'loading') {
                 ctx.save();
                 const bBarW = Math.min(340, canvas.width - 40);
                 const bBarX = (canvas.width - bBarW) / 2;
-                const bBarY = 46;
+                const bBarY = 28;
                 const bBarH = 14;
 
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
@@ -3101,7 +3101,7 @@ if (document.readyState === 'loading') {
             const waveInStage = ((waveCount - 1) % 5) + 1;
             ctx.fillStyle = 'rgba(0, 210, 211, 0.25)';
             ctx.beginPath();
-            if (ctx.roundRect) ctx.roundRect(canvas.width / 2 - 55, 10, 110, 26, 6); else ctx.rect(canvas.width / 2 - 55, 10, 110, 26);
+            if (ctx.roundRect) ctx.roundRect(canvas.width / 2 - 55, 6, 110, 20, 6); else ctx.rect(canvas.width / 2 - 55, 6, 110, 20);
             ctx.fill();
             ctx.strokeStyle = '#00d2d3';
             ctx.lineWidth = 1.5;
@@ -3110,20 +3110,20 @@ if (document.readyState === 'loading') {
             ctx.fillStyle = '#ffffff';
             ctx.font = '900 14px sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText(`STAGE ${stageNum}-${waveInStage}`, canvas.width / 2, 28);
+            ctx.fillText(`STAGE ${stageNum}-${waveInStage}`, canvas.width / 2, 21);
 
             // 1-C. RIGHT: Score (Large & Prominent)
             ctx.textAlign = 'right';
             ctx.fillStyle = '#feca57';
             ctx.font = '900 17px sans-serif';
-            ctx.fillText(`${score.toLocaleString()} PTS`, canvas.width - 14, 25);
+            ctx.fillText(`${score.toLocaleString()} PTS`, canvas.width - 14, 18);
 
             ctx.fillStyle = '#dcdde1';
             ctx.font = 'bold 11px sans-serif';
-            ctx.fillText(`HI: ${highScore.toLocaleString()}`, canvas.width - 14, 40);
+            ctx.fillText(`HI: ${highScore.toLocaleString()}`, canvas.width - 14, 32);
 
             // -------------------------------------------------------------
-            // ROW 2 (y: 50 ~ 74): Active Equipment & Tactical Ultimate Status
+            // ROW 2 (y: 44): Active Equipment & Tactical Ultimate Status
             // -------------------------------------------------------------
             let wName = player.weaponType === "NORMAL" ? "기본화기" : player.weaponType === "GATLING" ? "개틀링" : player.weaponType === "LASER" ? "레이저" : player.weaponType === "MISSILE" ? "미사일" : "고폭로켓";
             let bName = player.buffType === "NONE" ? "일반" : player.buffType === "DAMAGE_X2" ? "피해2배" : player.buffType === "BOMBARD" ? "융단폭격" : "스플래시";
@@ -3132,40 +3132,40 @@ if (document.readyState === 'loading') {
             ctx.textAlign = 'left';
             ctx.font = '900 12px sans-serif';
             ctx.fillStyle = '#48dbfb';
-            ctx.fillText(`🔫 ${wName}`, 14, 64);
+            ctx.fillText(`🔫 ${wName}`, 14, 44);
             ctx.fillStyle = '#ff9ff3';
-            ctx.fillText(`💥 ${bName}`, 102, 64);
+            ctx.fillText(`💥 ${bName}`, 102, 44);
             ctx.fillStyle = '#1dd1a1';
-            ctx.fillText(`🛡️ ${dName}`, 178, 64);
+            ctx.fillText(`🛡️ ${dName}`, 178, 44);
             ctx.fillStyle = '#c8d6e5';
-            ctx.fillText(`🪖 드론 ${player.allies.length}기`, 252, 64);
+            ctx.fillText(`🪖 드론 ${player.allies.length}기`, 252, 44);
 
             // Ultimate Skill Stock Badge (Right Aligned, Bright Red)
             const maxUltBar = (currentDifficultyPreset && currentDifficultyPreset.ultStock) ? currentDifficultyPreset.ultStock : 6;
             ctx.textAlign = 'right';
             ctx.fillStyle = player.ultimateStock > 0 ? '#ff6b6b' : '#a4b0be';
             ctx.font = '900 12px sans-serif';
-            ctx.fillText(`💥 필살기: ${player.ultimateStock}/${maxUltBar} [SPACE]`, canvas.width - 14, 64);
+            ctx.fillText(`💥 필살기: ${player.ultimateStock}/${maxUltBar} [SPACE]`, canvas.width - 14, 44);
 
             // -------------------------------------------------------------
-            // ROW 3 (y: 80 ~ 106): Stage Progress Bar & Next Boss Reference Text
+            // ROW 3 (y: 56 ~ 70): Stage Progress Bar & Next Boss Reference Text
             // -------------------------------------------------------------
             // Wave Progress Bar
             ctx.fillStyle = '#222f3e';
-            ctx.fillRect(14, 78, canvas.width - 28, 5);
+            ctx.fillRect(14, 56, canvas.width - 28, 5);
             if (waveCount < 25) {
                 ctx.fillStyle = '#ff9f43';
-                ctx.fillRect(14, 78, ((spawnTimer / constWaveInterval) * (canvas.width - 28)), 5);
+                ctx.fillRect(14, 56, ((spawnTimer / constWaveInterval) * (canvas.width - 28)), 5);
             } else {
                 ctx.fillStyle = '#ff4757';
-                ctx.fillRect(14, 78, canvas.width - 28, 5);
+                ctx.fillRect(14, 56, canvas.width - 28, 5);
             }
 
             // Reference Info (High Contrast Bright Colors)
             ctx.textAlign = 'left';
             ctx.fillStyle = '#c8d6e5';
             ctx.font = 'bold 11px sans-serif';
-            ctx.fillText(`${difficulty.split(" ")[0]} ${GAME_VERSION}`, 14, 98);
+            ctx.fillText(`${difficulty.split(" ")[0]} ${GAME_VERSION}`, 14, 70);
 
             let nextBossStr = "";
             if (waveCount < 5) nextBossStr = `중간보스까지: ${5 - waveCount}W`;
@@ -3178,7 +3178,7 @@ if (document.readyState === 'loading') {
             ctx.textAlign = 'right';
             ctx.fillStyle = waveCount >= 20 ? '#ff6b6b' : '#ff9f43';
             ctx.font = 'bold 12px sans-serif';
-            ctx.fillText(`🔥 WAVE ${waveCount}  |  ${nextBossStr}`, canvas.width - 14, 98);
+            ctx.fillText(`🔥 WAVE ${waveCount}  |  ${nextBossStr}`, canvas.width - 14, 70);
 
             ctx.restore();
 
