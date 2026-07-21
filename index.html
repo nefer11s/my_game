@@ -12,7 +12,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.4.8)</title>
+    <title>HY세라믹 솔라윙스 - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.4.9)</title>
     <style>
         body {
             margin: 0;
@@ -335,7 +335,7 @@
                         HY세라믹 솔라윙스</div>
                     <div class="menu-subtitle"
                         style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5);">
-                        "외계인에 잡혀간 현우엄마를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">v11.4.8</span> <span style="color: #636e72; font-size: 11px; margin-left: 4px;">배포 2026-07-21 04:19</span></div>
+                        "외계인에 잡혀간 현우엄마를 구출하라!" <span style="color: #f1c40f; font-weight: bold; margin-left: 6px;">v11.4.9</span> <span style="color: #636e72; font-size: 11px; margin-left: 4px;">배포 2026-07-21 09:33</span></div>
                     <div id="menuHighScore"
                         style="background: rgba(0, 0, 0, 0.4); border: 1px solid #f1c40f; padding: 6px 18px; border-radius: 20px; color: #f1c40f; font-weight: bold; font-size: 13px; margin-bottom: 35px; box-shadow: 0 0 10px rgba(241, 196, 15, 0.2);">
                         🏆 HIGH SCORE: 0 PTS</div>
@@ -838,10 +838,11 @@ if (document.readyState === 'loading') {
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v11.4.8";
+        const GAME_VERSION = "v11.4.9";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
+        let canvasShakeTimer = 0;
         let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9;
         let healWeight = 35, healAmount = 25, wpnWeight = 45, wpnDurationConfig = 480, buffWeight = 45, buffDurationConfig = 480, currentSplashRange = 40, defWeight = 35, defDurationConfig = 480;
         let allyWeight = 30, bombWeight = 20;
