@@ -3070,9 +3070,10 @@
             if (particles) particles = particles.filter(p => p && typeof p === 'object');
             if (player && player.allies) player.allies = player.allies.filter(a => a && typeof a === 'object');
 
-            // 최종 보스가 사망 연출 중이거나 승리 세션 연출 중일 때 화면 잔해 강제 소거
+            // 최종 보스가 사망 연출 중이거나 승리 세션 연출 중일 때 화면 잔해 및 잡몹 강제 소거
             const isFinalBossDying = enemies.some(e => e.isFinalBoss && e.isDying);
             if (isFinalBossDying || victoryStage > 0) {
+                enemies = enemies.filter(e => e.isFinalBoss); // 최종 보스 외 모든 적들 제거
                 bullets = [];
                 enemyLasers = [];
                 droppedItems = [];
