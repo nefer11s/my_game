@@ -449,29 +449,29 @@
                         Fire Ceramic Fighter
                     </div>
                     <div class="menu-subtitle"
-                        style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5); text-align: center;">
+                        style="font-size: 15px; color: #ff3838; letter-spacing: 2px; font-weight: bold; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255, 56, 56, 0.5); text-align: center;" data-i18n="menu_subtitle">
                         "외계인에게 잡혀간 현우엄마를 구출하라!"</div>
                     <div id="menuHighScore"
                         style="background: rgba(12, 16, 24, 0.7); border: 1px solid rgba(241, 196, 15, 0.5); padding: 10px 14px; border-radius: 14px; color: #f1c40f; font-size: 12px; margin-bottom: 20px; box-shadow: 0 0 15px rgba(241, 196, 15, 0.2); width: 100%; max-width: 480px; box-sizing: border-box; backdrop-filter: blur(4px);">
                         <div
-                            style="font-weight: 900; font-size: 13px; color: #ffd32c; margin-bottom: 8px; text-shadow: 0 0 8px rgba(241, 196, 15, 0.6); text-align: center; letter-spacing: 1px;">
+                            style="font-weight: 900; font-size: 13px; color: #ffd32c; margin-bottom: 8px; text-shadow: 0 0 8px rgba(241, 196, 15, 0.6); text-align: center; letter-spacing: 1px;" data-i18n="menu_hall_of_fame">
                             🏆 명예의 전당 (TOP 3)</div>
                         <div id="topScoreList"
                             style="display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 10px; font-weight: bold; color: #fff;">
-                            <span style="color: #a4b0be; font-size: 11px;">기록 불러오는 중...</span>
+                            <span style="color: #a4b0be; font-size: 11px;" data-i18n="menu_loading">기록 불러오는 중...</span>
                         </div>
                     </div>
 
 
                     <!-- 🎯 난이도 프리셋 선택 (초기화면 상주) -->
                     <div style="width: 100%; max-width: 480px; margin-bottom: 10px;">
-                        <div style="font-size: 12px; color: #ff9f43; font-weight: 900; margin-bottom: 7px; text-shadow: 0 0 8px rgba(255,159,67,0.5); letter-spacing: 1px;">🎯 작전 난이도 선택</div>
+                        <div style="font-size: 12px; color: #ff9f43; font-weight: 900; margin-bottom: 7px; text-shadow: 0 0 8px rgba(255,159,67,0.5); letter-spacing: 1px;" data-i18n="menu_diff_select">🎯 작전 난이도 선택</div>
                         <div class="diff-btn-container" style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
-                            <button class="diff-btn" onclick="setSelectDiff('EASY', 0.45, this)">초보</button>
-                            <button class="diff-btn active" onclick="setSelectDiff('NORMAL', 0.9, this)">일반</button>
-                            <button class="diff-btn" onclick="setSelectDiff('HARD', 1.25, this)">하드</button>
-                            <button class="diff-btn" onclick="setSelectDiff('EXPERT', 1.7, this)">정예</button>
-                            <button class="diff-btn" onclick="setSelectDiff('NIGHTMARE', 3.5, this)">악몽</button>
+                            <button class="diff-btn" onclick="setSelectDiff('EASY', 0.45, this)" data-i18n="btn_easy">초보</button>
+                            <button class="diff-btn active" onclick="setSelectDiff('NORMAL', 0.9, this)" data-i18n="btn_normal">일반</button>
+                            <button class="diff-btn" onclick="setSelectDiff('HARD', 1.25, this)" data-i18n="btn_hard">하드</button>
+                            <button class="diff-btn" onclick="setSelectDiff('EXPERT', 1.7, this)" data-i18n="btn_expert">정예</button>
+                            <button class="diff-btn" onclick="setSelectDiff('NIGHTMARE', 3.5, this)" data-i18n="btn_nightmare">악몽</button>
                         </div>
                     </div>
 
@@ -484,10 +484,10 @@
                     <div style="display: flex; flex-direction: column; gap: 10px; align-items: center; width: 100%; margin-bottom: 12px;">
                         <button id="resumeBtn"
                             style="display: none; font-size: 20px; padding: 14px 44px; border-radius: 40px; background: linear-gradient(135deg, #10ac84, #1dd1a1); box-shadow: 0 0 30px rgba(16, 172, 132, 0.8); border: 2px solid #fff; cursor: pointer; font-weight: 900; letter-spacing: 2px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"
-                            onclick="resumeGame()">▶️ 작전계속 (RESUME!)</button>
+                            onclick="resumeGame()" data-i18n="btn_resume">▶️ 작전계속 (RESUME!)</button>
                         <button id="startBtn"
                             style="font-size: 20px; padding: 14px 44px; border-radius: 40px; background: linear-gradient(135deg, #00d2d3, #0984e3); box-shadow: 0 0 30px rgba(0, 210, 211, 0.7); border: 2px solid #fff; cursor: pointer; font-weight: 900; letter-spacing: 2px; color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);"
-                            onclick="handleStartClick()">🚀 작전개시 (START!)</button>
+                            onclick="handleStartClick()" data-i18n="btn_start">🚀 작전개시 (START!)</button>
                     </div>
                 </div>
 
@@ -496,16 +496,16 @@
                     style="display: flex; gap: 8px; justify-content: center; width: 95%; max-width: 480px; margin-bottom: 4px;">
                     <button
                         style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 2px solid #00d2d3; color: #00d2d3; padding: 10px 4px; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 12px; box-shadow: 0 0 15px rgba(0, 210, 211, 0.3); transition: all 0.2s ease;"
-                        onclick="openInfoModal('CONTROLS')">⌨️ 조작법 가이드</button>
+                        onclick="openInfoModal('CONTROLS')" data-i18n="btn_controls">⌨️ 조작법 가이드</button>
                     <button
                         style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 2px solid #f1c40f; color: #f1c40f; padding: 10px 4px; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 12px; box-shadow: 0 0 15px rgba(241, 196, 15, 0.3); transition: all 0.2s ease;"
-                        onclick="openInfoModal('ITEMS')">🎁 아이템 도감</button>
+                        onclick="openInfoModal('ITEMS')" data-i18n="btn_items">🎁 아이템 도감</button>
                     <button
                         style="flex: 1; background: rgba(20, 26, 38, 0.85); border: 2px solid #e056fd; color: #e056fd; padding: 10px 4px; border-radius: 10px; cursor: pointer; font-weight: 900; font-size: 12px; box-shadow: 0 0 15px rgba(224, 86, 253, 0.3); transition: all 0.2s ease;"
-                        onclick="openDifficultyModal()">🛠️ 고급 설정</button>
+                        onclick="openDifficultyModal()" data-i18n="btn_settings">🛠️ 고급 설정</button>
                 </div>
                 <div
-                    style="font-size: 11px; color: #636e72; opacity: 0.7; margin-top: 4px; text-align: center; font-weight: bold;">
+                    style="font-size: 11px; color: #636e72; opacity: 0.7; margin-top: 4px; text-align: center; font-weight: bold;" data-i18n="splash_ver">
                     (HY Soft 제공) v11.9.1 (배포 2026-07-22 11:15)
                 </div>
             </div>
@@ -1391,7 +1391,19 @@
                 splash_start: "👇 화면을 터치하여 전체화면으로 시작",
                 splash_ver: "(HY Soft 제공) v11.9.1 (배포 2026-07-22 11:15)",
                 menu_title: "🔥 파이어 세라믹 파이터",
-                menu_subtitle: "Fire Ceramic Fighter (v11.9.1)",
+                menu_subtitle: "\"외계인에게 잡혀간 현우엄마를 구출하라!\"",
+                menu_hall_of_fame: "🏆 명예의 전당 (TOP 3)",
+                menu_loading: "기록 불러오는 중...",
+                menu_diff_select: "🎯 작전 난이도 선택",
+                btn_easy: "초보",
+                btn_normal: "일반",
+                btn_hard: "하드",
+                btn_expert: "정예",
+                btn_nightmare: "악몽",
+                btn_start: "🚀 작전개시 (START!)",
+                btn_controls: "⌨️ 조작법 가이드",
+                btn_items: "🎁 아이템 도감",
+                btn_settings: "🛠️ 고급 설정",
                 difficulty_easy: "EASY (Lv.1)",
                 difficulty_normal: "NORMAL (Lv.2)",
                 difficulty_hard: "HARD (Lv.3)",
@@ -1470,7 +1482,7 @@
                 info_codex_title: "🎁 전술 드롭 아이템 분류 도감",
                 katok_local_alert: "로컬 파일(file://) 실행 환경입니다. 웹 서버(http/https) 주소에서 접속 시 외부 브라우저 전환이 지원됩니다.",
                 katok_ios_alert: "💡 아이폰(iOS)은 카카오톡 보안 정책상 자동 브라우저 전환이 제한됩니다.\n\n우측 하단의 '...' (점 세 개) 버튼을 누른 후 '다른 브라우저에서 열기' (Safari)를 선택해 주세요! ↘️",
-                btn_resume: "▶️ 전투계속",
+                btn_resume: "▶️ 작전계속 (RESUME!)",
                 btn_menu: "🏠 지휘소",
                 btn_restart: "🔄 재작전",
                 pause_title: "⏸️ 일시중지 - 전술 아스날 & 작전 지침서",
@@ -1492,7 +1504,19 @@
                 splash_start: "👇 Touch screen to start in fullscreen",
                 splash_ver: "(Provided by HY Soft) v11.9.1 (Released 2026-07-22 11:15)",
                 menu_title: "🔥 FIRE CERAMIC FIGHTER",
-                menu_subtitle: "Fire Ceramic Fighter (v11.9.1)",
+                menu_subtitle: "\"Rescue Hyunwoo's mother from the aliens!\"",
+                menu_hall_of_fame: "🏆 Hall of Fame (TOP 3)",
+                menu_loading: "Loading records...",
+                menu_diff_select: "🎯 Select Mission Difficulty",
+                btn_easy: "Easy",
+                btn_normal: "Normal",
+                btn_hard: "Hard",
+                btn_expert: "Expert",
+                btn_nightmare: "Nightmare",
+                btn_start: "🚀 Start Mission",
+                btn_controls: "⌨️ Controls Guide",
+                btn_items: "🎁 Item Codex",
+                btn_settings: "🛠️ Advanced Settings",
                 difficulty_easy: "EASY (Lv.1)",
                 difficulty_normal: "NORMAL (Lv.2)",
                 difficulty_hard: "HARD (Lv.3)",
@@ -1571,7 +1595,7 @@
                 info_codex_title: "🎁 Drop Items Encyclopedia",
                 katok_local_alert: "Local file environment. External browser redirection is supported under HTTP/HTTPS web server.",
                 katok_ios_alert: "💡 Automatically opening external browser on iPhone (iOS) is blocked due to KakaoTalk security policy.\n\nPlease tap '...' (three dots) on bottom right, and select 'Open in Safari'! ↘️",
-                btn_resume: "▶️ Resume Battle",
+                btn_resume: "▶️ Resume Mission",
                 btn_menu: "🏠 Command HQ",
                 btn_restart: "🔄 Restart Scramble",
                 pause_title: "⏸️ Game Paused - Tactical Arsenal",
@@ -1620,6 +1644,14 @@
             }
             updateHighScoreUI();
             updateUIVisibility();
+            
+            // 난이도 설정 텍스트 다국어 갱신
+            const activeDisp = document.getElementById('activeDiffSummaryDisp');
+            if (activeDisp && typeof selectedDifficultyKey !== 'undefined') {
+                const label = (currentLang === 'en') ? "Active Preset" : "현재 설정";
+                const localizedName = getLocaleText('btn_' + selectedDifficultyKey.toLowerCase());
+                activeDisp.innerText = `🎯 ${label}: [${localizedName}]`;
+            }
         }
 
         function changeLanguage(lang) {
@@ -2312,7 +2344,9 @@
             
             const activeDisp = document.getElementById('activeDiffSummaryDisp');
             if (activeDisp) {
-                activeDisp.innerText = `🎯 현재 설정: [${preset.name}]`;
+                const label = (currentLang === 'en') ? "Active Preset" : "현재 설정";
+                const localizedName = getLocaleText('btn_' + diffKey.toLowerCase());
+                activeDisp.innerText = `🎯 ${label}: [${localizedName}]`;
             }
             if (audioCtx) playUpgradeSound();
         }

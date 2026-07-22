@@ -1411,7 +1411,17 @@
                 splash_subtitle: "\"외계인에게 잡혀간 현우엄마를 구출하라!\"",
                 splash_start: "👇 화면을 터치하여 전체화면으로 시작",
                 splash_ver: "(HY Soft 제공) v11.9.1 (배포 2026-07-22 11:15)",
-                btn_start: "🚀 전투 출격 개시 (START)",
+                menu_subtitle: "\"외계인에게 잡혀간 현우엄마를 구출하라!\"",
+                menu_hall_of_fame: "🏆 명예의 전당 (TOP 3)",
+                menu_loading: "기록 불러오는 중...",
+                menu_diff_select: "🎯 작전 난이도 선택",
+                btn_easy: "초보",
+                btn_normal: "일반",
+                btn_hard: "하드",
+                btn_expert: "정예",
+                btn_nightmare: "악몽",
+                btn_resume: "▶️ 작전계속 (RESUME!)",
+                btn_start: "🚀 작전개시 (START!)",
                 btn_controls: "⌨️ 조작법 가이드",
                 btn_items: "🎁 아이템 도감",
                 btn_settings: "🛠️ 고급 설정",
@@ -1510,9 +1520,19 @@
                 splash_subtitle: "\"Rescue Hyunwoo's mother from the aliens!\"",
                 splash_start: "👇 Touch screen to start in fullscreen",
                 splash_ver: "(Provided by HY Soft) v11.9.1 (Released 2026-07-22 11:15)",
-                btn_start: "🚀 START BATTLE SQUAD",
+                menu_subtitle: "\"Rescue Hyunwoo's mother from the aliens!\"",
+                menu_hall_of_fame: "🏆 Hall of Fame (TOP 3)",
+                menu_loading: "Loading records...",
+                menu_diff_select: "🎯 Select Mission Difficulty",
+                btn_easy: "Easy",
+                btn_normal: "Normal",
+                btn_hard: "Hard",
+                btn_expert: "Expert",
+                btn_nightmare: "Nightmare",
+                btn_resume: "▶️ Resume Mission",
+                btn_start: "🚀 Start Mission",
                 btn_controls: "⌨️ Controls Guide",
-                btn_items: "🎁 Item Encyclopedia",
+                btn_items: "🎁 Item Codex",
                 btn_settings: "🛠️ Advanced Settings",
                 
                 // Difficulty Setting Modal
@@ -1643,6 +1663,14 @@
             // 셀렉트 박스 동기화
             const selectEl = document.getElementById('advLanguageSelect');
             if (selectEl) selectEl.value = lang;
+
+            // 난이도 설정 텍스트 다국어 갱신
+            const activeDisp = document.getElementById('activeDiffSummaryDisp');
+            if (activeDisp && typeof selectedDifficultyKey !== 'undefined') {
+                const label = (currentLang === 'en') ? "Active Preset" : "현재 설정";
+                const localizedName = getLocaleText('btn_' + selectedDifficultyKey.toLowerCase());
+                activeDisp.innerText = `🎯 ${label}: [${localizedName}]`;
+            }
         }
 
         function changeLanguage(lang) {
@@ -2347,7 +2375,11 @@
             if (btn) btn.classList.add('active');
 
             const activeDisp = document.getElementById('activeDiffSummaryDisp');
-            if (activeDisp) activeDisp.innerText = `🎯 현재 설정: [${preset.name}]`;
+            if (activeDisp) {
+                const label = (currentLang === 'en') ? "Active Preset" : "현재 설정";
+                const localizedName = getLocaleText('btn_' + diffKey.toLowerCase());
+                activeDisp.innerText = `🎯 ${label}: [${localizedName}]`;
+            }
             if (audioCtx) playUpgradeSound();
         }
         function lockPortraitOrientation() {
