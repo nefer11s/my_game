@@ -1891,6 +1891,12 @@
             if (!img || !img.complete || img.naturalWidth === 0) return null;
             if (processedCanvasCache.has(img)) return processedCanvasCache.get(img);
 
+            // 로컬 file:// 프로토콜 상에서는 브라우저 보안 정책(CORS)으로 인해 getImageData가 차단되므로 원본 이미지를 반환하여 오염 경고 방지
+            if (window.location.protocol === 'file:') {
+                processedCanvasCache.set(img, img);
+                return img;
+            }
+
             const cvs = document.createElement('canvas');
             const w = img.naturalWidth, h = img.naturalHeight;
             cvs.width = w; cvs.height = h;
@@ -2129,6 +2135,14 @@
             } catch (e) { }
         }
 
+        function playLaserSound() {
+            playShootSound();
+        }
+
+        function playBombSound() {
+            playExplosionSound(true);
+        }
+
         function getAllyRelativePos(index) { return { xOffset: ((index % 7) - 3) * 20, yOffset: (Math.floor(index / 7) + 1) * 22 }; }
 
         function updateUIVisibility() {
@@ -2313,12 +2327,16 @@
                 lockPortraitOrientation();
                 const elem = document.documentElement;
                 if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                    let p;
                     if (elem.requestFullscreen) {
-                        elem.requestFullscreen({ navigationUI: "hide" }).catch(() => { });
+                        p = elem.requestFullscreen({ navigationUI: "hide" });
                     } else if (elem.webkitRequestFullscreen) {
-                        try { elem.webkitRequestFullscreen(); } catch (e) { }
+                        p = elem.webkitRequestFullscreen();
                     } else if (elem.webkitEnterFullscreen) {
-                        try { elem.webkitEnterFullscreen(); } catch (e) { }
+                        p = elem.webkitEnterFullscreen();
+                    }
+                    if (p && typeof p.catch === 'function') {
+                        p.catch(() => {});
                     }
                 }
             } catch (e) { }
@@ -2388,37 +2406,6 @@
                 activeDisp.innerText = `🎯 ${label}: [${localizedName}]`;
             }
             if (audioCtx) playUpgradeSound();
-        }
-        function lockPortraitOrientation() {
-            try {
-                if (screen.orientation && screen.orientation.lock) {
-                    screen.orientation.lock('portrait-primary').catch(() => {
-                        if (screen.orientation.lock) {
-                            screen.orientation.lock('portrait').catch(() => { });
-                        }
-                    });
-                }
-            } catch (e) { }
-        }
-
-        function requestNativeFullscreenOnly() {
-            try {
-                lockPortraitOrientation(); // KakaoTalk In-App Browser & Smartphone Portrait Lock!
-                const elem = document.documentElement;
-                if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-                    if (elem.requestFullscreen) {
-                        elem.requestFullscreen({ navigationUI: "hide" }).catch(() => { });
-                    } else if (elem.webkitRequestFullscreen) {
-                        elem.webkitRequestFullscreen();
-                    } else if (elem.webkitEnterFullscreen) {
-                        elem.webkitEnterFullscreen();
-                    } else if (elem.msRequestFullscreen) {
-                        elem.msRequestFullscreen();
-                    }
-                }
-                // Mobile Safari & Chrome address bar auto-hide fallback
-                window.scrollTo(0, 1);
-            } catch (e) { }
         }
 
         function toggleNativeFullscreen() {
