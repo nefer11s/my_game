@@ -1659,13 +1659,9 @@
                 if (gameWrapper) gameWrapper.style.display = '';
             }
         }
-        initLanguage();
         checkKakaoNotice();
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                initLanguage();
-                checkKakaoNotice();
-            });
+            document.addEventListener('DOMContentLoaded', checkKakaoNotice);
         }
 
         const canvas = document.getElementById('gameCanvas');
@@ -4836,6 +4832,7 @@
             }
             requestAnimationFrame(loop);
         }
+        initLanguage();
         loop();
     </script>
 </body>

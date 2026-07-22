@@ -1698,12 +1698,9 @@
         }
         checkKakaoNotice();
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                checkKakaoNotice();
-                initLanguage();
-            });
+            document.addEventListener('DOMContentLoaded', checkKakaoNotice);
         } else {
-            initLanguage();
+            checkKakaoNotice();
         }
 
         const canvas = document.getElementById('gameCanvas');
@@ -4834,6 +4831,7 @@
             }
             requestAnimationFrame(loop);
         }
+        initLanguage();
         loop();
     </script>
 </body>
