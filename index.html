@@ -763,20 +763,35 @@
                 <!-- 구분선 -->
                 <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 4px 0;"></div>
 
-                <!-- 💥 필살기 소지 한도 설정 -->
+                <!-- 💥 필살기 설정 -->
                 <div>
                     <div style="font-size: 14px; color: #ff3838; margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 10px rgba(255, 56, 56, 0.6); letter-spacing: 1px;" data-i18n="settings_ult_title">
                         💥 필살기 설정
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #a4b0be;">
-                        <span style="font-weight: bold;" data-i18n="settings_ult_limit">💣 필살기 폭탄 소지 한도</span>
-                        <select id="advMaxUltCapSelect" onchange="maxUltimateCapConfig=parseInt(this.value)"
-                            style="background: rgba(15, 20, 30, 0.85); color: #ff3838; border: 1px solid rgba(255, 56, 56, 0.4); padding: 5px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
-                            <option value="3" data-i18n="opt_ult_3">3개 (제한적)</option>
-                            <option value="5" selected data-i18n="opt_ult_5">5개 (기본 표준)</option>
-                            <option value="7" data-i18n="opt_ult_7">7개 (여유)</option>
-                            <option value="10" data-i18n="opt_ult_10">10개 (무제한급)</option>
-                        </select>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #a4b0be;">
+                            <span style="font-weight: bold;" data-i18n="settings_ult_limit">💣 필살기 폭탄 소지 한도</span>
+                            <select id="advMaxUltCapSelect" onchange="syncUltConfigs(null, parseInt(this.value))"
+                                style="background: rgba(15, 20, 30, 0.85); color: #ff3838; border: 1px solid rgba(255, 56, 56, 0.4); padding: 5px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
+                                <option value="3" data-i18n="opt_ult_3">3개 (제한적)</option>
+                                <option value="5" selected data-i18n="opt_ult_5">5개 (기본 표준)</option>
+                                <option value="7" data-i18n="opt_ult_7">7개 (여유)</option>
+                                <option value="10" data-i18n="opt_ult_10">10개 (무제한급)</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #a4b0be;">
+                            <span style="font-weight: bold;" data-i18n="settings_ult_start">💣 필살기 기본 시작 수치</span>
+                            <select id="advStartUltSelect" onchange="syncUltConfigs(parseInt(this.value), null)"
+                                style="background: rgba(15, 20, 30, 0.85); color: #ff3838; border: 1px solid rgba(255, 56, 56, 0.4); padding: 5px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
+                                <option value="0" data-i18n="opt_ult_start_0">0개 (없음)</option>
+                                <option value="1" data-i18n="opt_ult_start_1">1개</option>
+                                <option value="2" data-i18n="opt_ult_start_2">2개</option>
+                                <option value="3" selected data-i18n="opt_ult_start_3">3개 (기본 표준)</option>
+                                <option value="5" data-i18n="opt_ult_start_5">5개</option>
+                                <option value="7" data-i18n="opt_ult_start_7">7개</option>
+                                <option value="10" data-i18n="opt_ult_start_10">10개</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1507,6 +1522,7 @@
                 settings_bgm_vol: "음량:",
                 settings_ult_title: "💥 필살기 설정",
                 settings_ult_limit: "💣 필살기 폭탄 소지 한도",
+                settings_ult_start: "💣 필살기 기본 시작 수치",
                 settings_lang_title: "🌐 언어 설정 / Language Settings",
                 settings_lang_select: "선택 (Select Language)",
                 settings_save: "💾 설정 저장 및 완료",
@@ -1533,6 +1549,13 @@
                 opt_ult_5: "5개 (기본 표준)",
                 opt_ult_7: "7개 (여유)",
                 opt_ult_10: "10개 (무제한급)",
+                opt_ult_start_0: "0개 (없음)",
+                opt_ult_start_1: "1개",
+                opt_ult_start_2: "2개",
+                opt_ult_start_3: "3개 (기본 표준)",
+                opt_ult_start_5: "5개",
+                opt_ult_start_7: "7개",
+                opt_ult_start_10: "10개",
                 
                 // 프롤로그
                 prologue_title: "🚨 [긴급 작전 시나리오]",
@@ -1622,6 +1645,7 @@
                 settings_bgm_vol: "Volume:",
                 settings_ult_title: "💥 Ultimate Attack Settings",
                 settings_ult_limit: "💣 Ult Bomb Max Limit",
+                settings_ult_start: "💣 Starting Ultimate Stocks",
                 settings_lang_title: "🌐 Language Settings",
                 settings_lang_select: "Select Language",
                 settings_save: "💾 Save and Complete Settings",
@@ -1648,6 +1672,13 @@
                 opt_ult_5: "5 Stocks (Default)",
                 opt_ult_7: "7 Stocks",
                 opt_ult_10: "10 Stocks (Unlimited)",
+                opt_ult_start_0: "0 (None)",
+                opt_ult_start_1: "1",
+                opt_ult_start_2: "2",
+                opt_ult_start_3: "3 (Standard)",
+                opt_ult_start_5: "5",
+                opt_ult_start_7: "7",
+                opt_ult_start_10: "10",
                 
                 // Prologue
                 prologue_title: "🚨 [EMERGENCY SCENARIO]",
@@ -2476,10 +2507,12 @@
             if (startVal !== null && startVal !== undefined) {
                 customStartUltStockConfig = startVal;
                 setSelectClosest(document.getElementById('startUltStockSelect'), startVal);
+                setSelectClosest(document.getElementById('advStartUltSelect'), startVal);
             }
             if (maxVal !== null && maxVal !== undefined) {
                 maxUltimateCapConfig = maxVal;
                 setSelectClosest(document.getElementById('maxUltCapSelect'), maxVal);
+                setSelectClosest(document.getElementById('advMaxUltCapSelect'), maxVal);
             }
         }
         function lockPortraitOrientation() {
@@ -2537,6 +2570,8 @@
             updateAdvBgmUI();
             const advUltSel = document.getElementById('advMaxUltCapSelect');
             if (advUltSel) setSelectClosest(advUltSel, maxUltimateCapConfig);
+            const advStartUltSel = document.getElementById('advStartUltSelect');
+            if (advStartUltSel) setSelectClosest(advStartUltSel, customStartUltStockConfig);
             document.getElementById('difficultyModal').style.display = 'flex';
             
             // 디버그 플로팅 버튼 z-index 기본값 복구
