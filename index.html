@@ -2436,6 +2436,48 @@
                 addFloatingText(canvas.width / 2, 240, `⚠️ [최종 마왕 호위 부대] 중간 보스 지원 출격! (${midBossHp} HP)`, "#ff9f43", 16);
             }
 
+            // 3. Minion Support Spawner during Final Boss Battle (Spawns minion swarm every 5~10 seconds)
+            if (enemies.some(e => e.isFinalBoss && !e.isDying)) {
+                if (typeof window.finalBossMinionTimer === 'undefined') window.finalBossMinionTimer = 0;
+                if (typeof window.finalBossMinionInterval === 'undefined') {
+                    window.finalBossMinionInterval = 300 + Math.random() * 300; // 5~10초 랜덤 (300~600 프레임)
+                }
+                window.finalBossMinionTimer++;
+
+                if (window.finalBossMinionTimer >= window.finalBossMinionInterval && enemies.length < 80) {
+                    window.finalBossMinionTimer = 0;
+                    window.finalBossMinionInterval = 300 + Math.random() * 300; // 다음 스폰 주기 재설정
+
+                    const spawnCount = Math.max(3, Math.floor(3 * diffMultiplier));
+                    const hpBase = 3;
+                    for (let k = 0; k < spawnCount; k++) {
+                        const aType = Math.floor(Math.random() * 12);
+                        const spawnX = 30 + Math.random() * (canvas.width - 60);
+                        const spawnY = -20 - (k * 32);
+                        const trajPattern = Math.floor(Math.random() * 4);
+
+                        enemies.push({
+                            x: spawnX,
+                            y: spawnY,
+                            radius: 18,
+                            hp: hpBase, maxHp: hpBase,
+                            speed: (2.2 + (stageLevel * 0.08)) * (diffMultiplier * 0.9),
+                            isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0,
+                            hasItem: (Math.random() < 0.30),
+                            trajPattern: trajPattern,
+                            sineSeed: Math.random() * 100,
+                            sineAmp: 30 + Math.random() * 50,
+                            sineFreq: 0.04 + Math.random() * 0.04,
+                            swayDir: Math.random() < 0.5 ? 1 : -1
+                        });
+                    }
+                    addFloatingText(canvas.width / 2, 180, `👾 [마왕의 군단] 잡몹 습격!`, "#ffd32c", 14);
+                }
+            } else {
+                window.finalBossMinionTimer = 0;
+                window.finalBossMinionInterval = undefined;
+            }
+
             enemies.forEach(enemy => {
                 if (enemy.flashTimer > 0) enemy.flashTimer--; if (globalAnimTick % 8 === 0) enemy.animFrame = (enemy.animFrame + 1) % 4;
                 if (enemy.isDying) return;
