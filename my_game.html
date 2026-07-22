@@ -4027,9 +4027,6 @@
             if (enemy.isBoss) {
                 addFloatingText(enemy.x, enemy.y - 40, "💥 중간 보스 격파!", '#ff9f43', 20);
             }
-            if (enemy.hasItem) {
-                addFloatingText(enemy.x, enemy.y - 25, "🎁 아이템 획득 확정!", '#ffd32c', 16);
-            }
             spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss, enemy.hasItem);
             // Defer minion removal to main loop end to preserve loop index stability
         }
@@ -4060,21 +4057,26 @@
                 const chosen = pool[Math.floor(Math.random() * pool.length)];
                 let lbl = "";
                 let color = "#ffffff";
-                if (chosen === "DOUBLE") { lbl = "⚡ 2줄"; color = "#ffd32c"; }
-                else if (chosen === "TRIPLE") { lbl = "⚡ 3줄"; color = "#ff9f43"; }
-                else if (chosen === "HOMING") { lbl = "🎯 유도"; color = "#00d2d3"; }
-                else if (chosen === "MISSILE") { lbl = "🚀 미사일"; color = "#ff3838"; }
-                else if (chosen === "LASER") { lbl = "⚡ 레이저"; color = "#00d2d3"; }
-                else if (chosen === "DAMAGE_X2") { lbl = "💥 2X"; color = "#ff9f43"; }
-                else if (chosen === "SPLASH_RANGE") { lbl = "🔮 SP"; color = "#e056fd"; }
-                else if (chosen === "BOMBARD") { lbl = "☄️ BB"; color = "#ff3838"; }
-                else if (chosen === "NANO_SHIELD") { lbl = "🛡️ NS"; color = "#10ac84"; }
-                else if (chosen === "HEAVY_ARMOR") { lbl = "🔩 HA"; color = "#a4b0be"; }
-                else if (chosen === "HEAL") { lbl = "💚 HP"; color = "#1cfc03"; }
-                else if (chosen === "ALLY") { lbl = "🪖 AL"; color = "#2e86de"; }
-                else if (chosen === "BOMB") { lbl = "💣 BM"; color = "#ff5252"; }
-                else if (chosen === "ULTIMATE") { lbl = "💥 ULT"; color = "#ff3838"; }
-                else if (chosen === "LIFE") { lbl = "❤️ LIFE"; color = "#ff2d55"; }
+                let itemName = "";
+                if (chosen === "DOUBLE") { lbl = "⚡ 2줄"; color = "#ffd32c"; itemName = "2줄 직진탄"; }
+                else if (chosen === "TRIPLE") { lbl = "⚡ 3줄"; color = "#ff9f43"; itemName = "3줄 확산탄"; }
+                else if (chosen === "HOMING") { lbl = "🎯 유도"; color = "#00d2d3"; itemName = "적 추적 유도탄"; }
+                else if (chosen === "MISSILE") { lbl = "🚀 미사일"; color = "#ff3838"; itemName = "10배 중장갑 미사일(파편)"; }
+                else if (chosen === "LASER") { lbl = "⚡ 레이저"; color = "#00d2d3"; itemName = "20배 고출력 관통레이저"; }
+                else if (chosen === "DAMAGE_X2") { lbl = "💥 2X"; color = "#ff9f43"; itemName = "피해량 2배"; }
+                else if (chosen === "SPLASH_RANGE") { lbl = "🔮 SP"; color = "#e056fd"; itemName = "스플래시 폭발탄"; }
+                else if (chosen === "BOMBARD") { lbl = "☄️ BB"; color = "#ff3838"; itemName = "공중 무차별폭격"; }
+                else if (chosen === "NANO_SHIELD") { lbl = "🛡️ NS"; color = "#10ac84"; itemName = "완전 나노무적"; }
+                else if (chosen === "HEAVY_ARMOR") { lbl = "🔩 HA"; color = "#a4b0be"; itemName = "중장갑 피해반감"; }
+                else if (chosen === "HEAL") { lbl = "💚 HP"; color = "#1cfc03"; itemName = "메디컬 키트"; }
+                else if (chosen === "ALLY") { lbl = "🪖 AL"; color = "#2e86de"; itemName = "아군 대원"; }
+                else if (chosen === "BOMB") { lbl = "💣 BM"; color = "#ff5252"; itemName = "전술 폭탄"; }
+                else if (chosen === "ULTIMATE") { lbl = "💥 ULT"; color = "#ff3838"; itemName = "필살기 충전"; }
+                else if (chosen === "LIFE") { lbl = "❤️ LIFE"; color = "#ff2d55"; itemName = "목숨 추가"; }
+
+                if (hasItem && !isBoss) {
+                    addFloatingText(x, y - 25, `🎁 ${itemName} 획득 확정!`, '#ffd32c', 16);
+                }
 
                 const angle = isBoss ? ((d - (dropCount - 1) / 2) / (dropCount - 1)) * (Math.PI * 0.6) - (Math.PI / 2) : 0;
                 const speed = isBoss ? (Math.random() * 2 + 4.5) : (Math.random() * 1.5 + 1);
@@ -4283,6 +4285,28 @@
         function translateDynamicText(text) {
             if (currentLang !== 'en') return text;
             let t = text;
+            // 아이템 및 부품 한글 명칭 영문 치환
+            t = t.replace(/2줄 직진탄/g, "Double Straight Fire");
+            t = t.replace(/3줄 확산탄/g, "Triple Spread Fire");
+            t = t.replace(/적 추적 유도탄/g, "Homing Missile");
+            t = t.replace(/10배 중장갑 미사일\(파편\)/g, "HE Shrapnel Missile");
+            t = t.replace(/20배 고출력 관통레이저/g, "High-Power Piercing Laser");
+            t = t.replace(/속사 개틀링/g, "Rapid Gatling");
+            t = t.replace(/전술 로켓/g, "Tactical Rocket");
+            t = t.replace(/피해량 2배/g, "Double Damage");
+            t = t.replace(/공중 무차별폭격/g, "Air Bombardment");
+            t = t.replace(/스플래시 폭발탄/g, "Splash Explosive");
+            t = t.replace(/완전 나노무적/g, "Invulnerable Shield");
+            t = t.replace(/중장갑 피해반감/g, "Heavy Armor Defense");
+            t = t.replace(/메디컬 키트/g, "Medical Kit");
+            t = t.replace(/아군 대원/g, "Support Drone");
+            t = t.replace(/전술 폭탄/g, "Tactical Bomb");
+            t = t.replace(/필살기 충전/g, "Ultimate Charge");
+            t = t.replace(/목숨 추가/g, "Extra Life");
+            t = t.replace(/돌격병/g, "Rifleman");
+            t = t.replace(/저격수/g, "Sniper");
+            t = t.replace(/중화기병/g, "Heavy Weaponry");
+
             t = t.replace(/👑 \[최종 마왕 강림\] \((.+?) HP\) 5초 무적 결계!/, "👑 [FINAL DEMON LORD DESCENDS] ($1 HP) 5s Invulnerable!");
             t = t.replace(/⚠️ STAGE 5 마왕 호위보스 \((.+?)\) & 호위부대 (.+?)기 강림!/, "⚠️ STAGE 5 Demon Guard ($1) & $2 Escorts Scrambled!");
             t = t.replace(/⚠️ STAGE (.+?) 중간 보스 \((.+?)\) & 호위부대 (.+?)기 강림!/, "⚠️ STAGE $1 Midboss ($2) & $3 Escorts Scrambled!");
@@ -4302,6 +4326,7 @@
             t = t.replace(/🔥 \[FINAL PHASE 3\] 폭주 오버드라이브! 전면 결전 사격!/, "🔥 [FINAL PHASE 3] Berserk Overdrive! Total Showdown Fire!");
             t = t.replace(/💥 \[마왕 격파! 7초 화염 대폭발 & 히어로 돌파\]/, "💥 [DEMON DEFEATED! 7s Exploding Finish]");
             t = t.replace(/💥 중간 보스 격파!/, "💥 Midboss Defeated!");
+            t = t.replace(/🎁 (.+?) 획득 확정!/, "🎁 $1 Drop Confirmed!");
             t = t.replace(/🎁 아이템 획득 확정!/, "🎁 Drop Item Confirmed!");
             t = t.replace(/⚠️ 필살기 수량 부족! \((.+?)\)/, "⚠️ No Ultimate Stock! ($1)");
             t = t.replace(/💣 전술 폭탄 작동! 전면 소각!/, "💣 Tactical Bomb Activated! Incinerate All!");
