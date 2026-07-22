@@ -3132,6 +3132,28 @@
                 }
                 return;
             }
+            if (gameState === "MENU") {
+                if (activeAnnihilationEffect) {
+                    globalAnimTick++;
+                    for (let i = particles.length - 1; i >= 0; i--) {
+                        let p = particles[i];
+                        if (!p) { particles.splice(i, 1); continue; }
+                        p.x += p.vx || 0;
+                        p.y += p.vy || 0;
+                        if (p.gravity) p.vy += p.gravity;
+                        p.alpha -= 0.04;
+                        if (isNaN(p.alpha) || p.alpha <= 0) { particles.splice(i, 1); }
+                    }
+                    for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                        let ft = floatingTexts[i];
+                        if (!ft) { floatingTexts.splice(i, 1); continue; }
+                        ft.y += (ft.vy || -1);
+                        ft.life--;
+                        if (ft.life <= 0) floatingTexts.splice(i, 1);
+                    }
+                }
+                return;
+            }
             if (gameState !== "PLAYING" || isPaused) return; globalAnimTick++;
             if (player.weaponTimer > 0) { player.weaponTimer--; if (player.weaponTimer <= 0) player.weaponType = "NORMAL"; }
             if (player.buffTimer > 0) { player.buffTimer--; if (player.buffTimer <= 0) player.buffType = "NONE"; }
