@@ -3274,10 +3274,12 @@
                 victoryTimer++;
 
                 if (victoryStage === 1) {
-                    // 드론들이 모여서 정렬
+                    // 드론들이 플레이어 주위를 원형으로 천천히 수렴하며 감싸기
                     victoryDrones.forEach(drone => {
-                        drone.x += (drone.targetX - drone.x) * 0.08;
-                        drone.y += (drone.targetY - drone.y) * 0.08;
+                        const targetX = player.x + Math.cos(drone.angle) * 85;
+                        const targetY = player.y + Math.sin(drone.angle) * 85;
+                        drone.x += (targetX - drone.x) * 0.035; // 보간 속도를 0.035로 낮추어 천천히 접근
+                        drone.y += (targetY - drone.y) * 0.035;
                         if (globalAnimTick % 4 === 0) {
                             particles.push({
                                 x: drone.x, y: drone.y + 8,
@@ -3292,7 +3294,7 @@
                     player.x += (player.targetX - player.x) * player.speed;
                     player.y += (player.targetY - player.y) * player.speed;
 
-                    if (victoryTimer >= 120) { // 2초 정렬 대기 후 상승 시작
+                    if (victoryTimer >= 240) { // 정렬 대기 시간을 4초(240프레임)로 연장하여 완만한 수렴 연출 감상
                         victoryStage = 2;
                         victoryTimer = 0;
                     }
@@ -3304,7 +3306,11 @@
                     player.invulnerableTimer = 20;
 
                     victoryDrones.forEach(drone => {
-                        drone.y -= escSpeed;
+                        const targetX = player.x + Math.cos(drone.angle) * 85;
+                        const targetY = player.y + Math.sin(drone.angle) * 85;
+                        // 상승 연출 도중에도 플레이어를 중심으로 구형 포메이션을 칼같이 유지
+                        drone.x += (targetX - drone.x) * 0.035;
+                        drone.y += (targetY - drone.y) * 0.035;
                         if (globalAnimTick % 3 === 0) {
                             particles.push({
                                 x: drone.x, y: drone.y + 8,
@@ -3992,16 +3998,16 @@
                             victoryBossX = enemy.x;
                             victoryBossY = enemy.y;
                             victoryDrones = [];
-                            // 12기의 드론 생성 (화면 외곽 스폰)
+                            // 12기의 드론 생성 (플레이어 기준 사방 외곽 스폰)
                             for (let d = 0; d < 12; d++) {
                                 const angle = (d / 12) * Math.PI * 2;
                                 const startAngle = Math.random() * Math.PI * 2;
                                 const startDist = canvas.width;
                                 victoryDrones.push({
-                                    x: enemy.x + Math.cos(startAngle) * startDist,
-                                    y: enemy.y + Math.sin(startAngle) * startDist,
-                                    targetX: enemy.x + Math.cos(angle) * 75,
-                                    targetY: enemy.y + Math.sin(angle) * 75,
+                                    x: player.x + Math.cos(startAngle) * startDist,
+                                    y: player.y + Math.sin(startAngle) * startDist,
+                                    targetX: player.x + Math.cos(angle) * 85,
+                                    targetY: player.y + Math.sin(angle) * 85,
                                     angle: angle
                                 });
                             }
