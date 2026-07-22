@@ -684,11 +684,12 @@
                     🛠️ 디버그 프리뷰 화면 선택
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <button class="debug-btn" onclick="previewScreen('INIT_SPLASH')" style="background: #7f8c8d; border: 1px solid #95a5a6; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">🌐 URL 진입 스플래시</button>
                     <button class="debug-btn" onclick="previewScreen('SPLASH')" style="background: #2c3e50; border: 1px solid #34495e; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">🌐 초기 대기화면</button>
                     <button class="debug-btn" onclick="previewScreen('PROLOGUE')" style="background: #2c3e50; border: 1px solid #34495e; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">📖 프롤로그 화면</button>
                     <button class="debug-btn" onclick="previewScreen('SCRAMBLE')" style="background: #2c3e50; border: 1px solid #34495e; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">🚀 스크램블(런칭)</button>
                     <button class="debug-btn" onclick="previewScreen('BOSS_DEATH')" style="background: #78281f; border: 1px solid #922b21; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">💥 보스 처치 화면</button>
-                    <button class="debug-btn" onclick="previewScreen('VICTORY')" style="background: #196f3d; border: 1px solid #1e8449; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s; grid-column: span 2;">🏆 엔딩 빅토리 화면</button>
+                    <button class="debug-btn" onclick="previewScreen('VICTORY')" style="background: #196f3d; border: 1px solid #1e8449; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">🏆 엔딩 빅토리 화면</button>
                 </div>
             </div>
 
@@ -2697,6 +2698,10 @@
             const advUltSel = document.getElementById('advMaxUltCapSelect');
             if (advUltSel) setSelectClosest(advUltSel, maxUltimateCapConfig);
             document.getElementById('difficultyModal').style.display = 'flex';
+            
+            // 디버그 플로팅 버튼 z-index 기본값 복구
+            const floatBtn = document.getElementById('debugFloatingReturnBtn');
+            if (floatBtn) floatBtn.style.zIndex = '350';
         }
 
         function closeDifficultyModal() {
@@ -2816,13 +2821,24 @@
             isFadingToVictory = false;
             screenFadeAlpha = 0;
 
-            const overlays = ['menuOverlay', 'prologueOverlay', 'launchOverlay', 'gameOverOverlay', 'victoryOverlay'];
+            const overlays = ['initSplashOverlay', 'menuOverlay', 'prologueOverlay', 'launchOverlay', 'gameOverOverlay', 'victoryOverlay'];
             overlays.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.style.display = 'none';
             });
 
-            if (type === 'SPLASH') {
+            // 디버그 플로팅 버튼 z-index 기본값 복구
+            const floatBtn = document.getElementById('debugFloatingReturnBtn');
+            if (floatBtn) floatBtn.style.zIndex = '350';
+
+            if (type === 'INIT_SPLASH') {
+                stopBGM();
+                gameState = "MENU";
+                const initSplash = document.getElementById('initSplashOverlay');
+                if (initSplash) initSplash.style.display = 'flex';
+                if (floatBtn) floatBtn.style.zIndex = '10000000'; // 스플래시 화면보다 위로 노출
+                updateUIVisibility();
+            } else if (type === 'SPLASH') {
                 stopBGM();
                 gameState = "MENU";
                 document.getElementById('menuOverlay').style.display = 'flex';
