@@ -1409,6 +1409,16 @@
                         id="bombFreqVal">20%</span></label><input type="range" id="bombFreqSlider" min="0" max="100"
                     step="5" value="20"></div>
 
+            <!-- 🛠️ 디버그 프리뷰 화면 테스트 제어 구역 -->
+            <div class="section-divider" style="color: #00d2d3; margin-top: 15px; border-top: 1px dashed rgba(0, 210, 211, 0.3); padding-top: 10px;">🛠️ 디버그 프리뷰 화면 선택</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 5px;">
+                <button class="debug-btn" onclick="previewScreen('SPLASH')" style="background: #2c3e50; border: 1px solid #34495e; color: #fff; padding: 8px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">🌐 초기 대기화면</button>
+                <button class="debug-btn" onclick="previewScreen('PROLOGUE')" style="background: #2c3e50; border: 1px solid #34495e; color: #fff; padding: 8px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">📖 프롤로그 화면</button>
+                <button class="debug-btn" onclick="previewScreen('SCRAMBLE')" style="background: #2c3e50; border: 1px solid #34495e; color: #fff; padding: 8px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">🚀 스크램블(런칭)</button>
+                <button class="debug-btn" onclick="previewScreen('BOSS_DEATH')" style="background: #78281f; border: 1px solid #922b21; color: #fff; padding: 8px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">💥 보스 처치 화면</button>
+                <button class="debug-btn" onclick="previewScreen('VICTORY')" style="background: #196f3d; border: 1px solid #1e8449; color: #fff; padding: 8px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s; grid-column: span 2;">🏆 엔딩 빅토리 화면</button>
+            </div>
+
             <button
                 style="background: #10ac84; border: none; color: #fff; width: 100%; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px;"
                 onclick="closeSettingsModal()">💾 설정 저장 및 닫기</button>
@@ -2305,6 +2315,74 @@
         function closeSettingsModal() {
             if (audioCtx) playUpgradeSound();
             document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        function previewScreen(type) {
+            closeSettingsModal();
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+                countdownInterval = null;
+            }
+            victoryStage = 0;
+            isFadingToVictory = false;
+            screenFadeAlpha = 0;
+
+            const overlays = ['menuOverlay', 'prologueOverlay', 'launchOverlay', 'gameOverOverlay', 'victoryOverlay'];
+            overlays.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+
+            if (type === 'SPLASH') {
+                stopBGM();
+                gameState = "MENU";
+                document.getElementById('menuOverlay').style.display = 'flex';
+                updateUIVisibility();
+            } else if (type === 'PROLOGUE') {
+                stopBGM();
+                gameState = "MENU";
+                document.getElementById('prologueOverlay').style.display = 'flex';
+                updateUIVisibility();
+            } else if (type === 'SCRAMBLE') {
+                stopBGM();
+                gameState = "MENU";
+                confirmStartGameFromPrologue();
+            } else if (type === 'BOSS_DEATH') {
+                stopBGM();
+                gameState = "PLAYING";
+                isPaused = false;
+                updateUIVisibility();
+                player.x = 270; player.targetX = 270;
+                player.y = 590; player.targetY = 590;
+                player.hp = player.maxHp;
+                enemies = [];
+                bullets = [];
+                enemyLasers = [];
+                droppedItems = [];
+                particles = [];
+                
+                const boss = {
+                    x: canvas.width / 2,
+                    y: 200,
+                    hp: 0,
+                    maxHp: 35100,
+                    speed: 0,
+                    radius: 80,
+                    isBoss: true,
+                    isFinalBoss: true,
+                    bossType: 9,
+                    flashTimer: 0,
+                    animFrame: 0,
+                    deathTimer: 420,
+                    isDying: false,
+                    isEliminated: false
+                };
+                enemies.push(boss);
+                eliminateEnemy(boss);
+            } else if (type === 'VICTORY') {
+                stopBGM();
+                triggerVictory();
+            }
         }
 
         const DIFFICULTY_PRESETS = {
