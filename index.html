@@ -1891,7 +1891,7 @@
         const imgAllyDrone = new Image(); imgAllyDrone.src = `assets/support_drone_gold.png?v=${GAME_VERSION}`;
 
         const imgAlienTypes = [];
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < 10; i++) {
             const img = new Image();
             img.src = `assets/alien_${i}.png?v=${GAME_VERSION}`;
             imgAlienTypes.push(img);
@@ -2726,7 +2726,7 @@
                 // 🔥 스테이지 레벨이 높을수록 중간보스 등장 시 함께 강림하는 초기 호위 잡몹 (Stage 1: 3기 ~ Stage 4: 7기, Stage 5: 9기!)
                 const initialMinions = Math.floor(2 + stageLevel * 1.4);
                 for (let k = 0; k < initialMinions; k++) {
-                    const aType = Math.floor(Math.random() * 12);
+                    const aType = Math.floor(Math.random() * 10);
                     const spawnX = 35 + Math.random() * (canvas.width - 70);
                     enemies.push({
                         x: spawnX, y: 50 - (k * 32), radius: 18,
@@ -2743,7 +2743,7 @@
             } else {
                 // All Minion Aliens spawn scattered individually across top screen and charge towards player!
                 for (let i = 0; i < zCount; i++) {
-                    const aType = Math.floor(Math.random() * 12);
+                    const aType = Math.floor(Math.random() * 10);
                     const spawnX = 35 + Math.random() * (canvas.width - 70);
                     const spawnY = 50 - (i * 38);
                     enemies.push({
@@ -2967,7 +2967,7 @@
                             : Math.max(3, Math.floor((2 + stageLevel * 0.8) * diffMultiplier * _mbMinionMult));
 
                         for (let k = 0; k < swarmCount; k++) {
-                            const aType = Math.floor(Math.random() * 12);
+                            const aType = Math.floor(Math.random() * 10);
                             const hpBase = Math.floor((3 + stageLevel * 1.2) * diffMultiplier);
                             
                             // 스폰 위치: 상단 및 좌우 측면에서 랜덤 대형으로 다각도 출격
@@ -3043,7 +3043,7 @@
                     const spawnCount = Math.max(3, Math.floor(3 * diffMultiplier));
                     const hpBase = 3;
                     for (let k = 0; k < spawnCount; k++) {
-                        const aType = Math.floor(Math.random() * 12);
+                        const aType = Math.floor(Math.random() * 10);
                         const spawnX = 30 + Math.random() * (canvas.width - 60);
                         const spawnY = -20 - (k * 32);
                         const trajPattern = Math.floor(Math.random() * 4);
