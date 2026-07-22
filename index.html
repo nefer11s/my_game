@@ -1652,7 +1652,7 @@
             }
         };
 
-        let currentLang = 'ko'; // 기본값 한국어
+        let currentLang = 'en'; // 기본값 영어
 
         function initLanguage() {
             try {
@@ -1660,16 +1660,25 @@
                 if (saved && (saved === 'ko' || saved === 'en')) {
                     currentLang = saved;
                 } else {
-                    // 브라우저 기본 언어 감지
+                    currentLang = 'en';
                     const navLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
-                    if (navLang.startsWith('en')) {
-                        currentLang = 'en';
+                    if (navLang.startsWith('ko')) {
+                        const ask = confirm("시스템 언어가 한국어로 감지되었습니다. 한국어로 변경하시겠습니까?\nSystem language detected as Korean. Would you like to switch the language to Korean?");
+                        if (ask) {
+                            currentLang = 'ko';
+                            localStorage.setItem("hy_game_lang", 'ko');
+                        } else {
+                            localStorage.setItem("hy_game_lang", 'en');
+                        }
                     } else {
-                        currentLang = 'ko';
+                        localStorage.setItem("hy_game_lang", 'en');
                     }
                 }
             } catch (e) {
-                currentLang = 'ko';
+                currentLang = 'en';
+                try {
+                    localStorage.setItem("hy_game_lang", 'en');
+                } catch (err) {}
             }
             applyLanguage(currentLang);
         }
