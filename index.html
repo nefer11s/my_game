@@ -4233,6 +4233,22 @@
             // 미리보기용 activeAnnihilationEffect 객체 활성화 (프레임 65)
             activeAnnihilationEffect = { type: effIdx, life: 65, maxLife: 65, color: color };
             
+            // ☄️ 모달을 반투명하게 만들어 뒷배경의 화려한 연출이 투명하게 보이도록 함!
+            const modal = document.getElementById('difficultyModal');
+            if (modal) {
+                modal.style.background = "rgba(8, 10, 16, 0.15)";
+                modal.style.backdropFilter = "none";
+                modal.style.webkitBackdropFilter = "none";
+                
+                // 1.1초(65프레임 상당) 후 원래 상태로 복구
+                if (window.previewRestoreTimeout) clearTimeout(window.previewRestoreTimeout);
+                window.previewRestoreTimeout = setTimeout(() => {
+                    modal.style.background = "rgba(8, 10, 16, 0.94)";
+                    modal.style.backdropFilter = "blur(10px)";
+                    modal.style.webkitBackdropFilter = "blur(10px)";
+                }, 1100);
+            }
+            
             // 미리보기 텍스트 팝업 띄우기
             const isEn = (currentLang === 'en');
             const effNames = isEn ? [
@@ -4769,7 +4785,41 @@
                 if (eff.life <= 0) activeAnnihilationEffect = null;
             }
 
-            if (gameState === "MENU") return;
+            if (gameState === "MENU") {
+                if (activeAnnihilationEffect) {
+                    // ☄️ 메뉴 상태의 필살기 미리보기 도중에 파티클과 플로팅 텍스트를 렌더링
+                    // 1. 파티클 렌더링
+                    for (let i = particles.length - 1; i >= 0; i--) {
+                        ctx.fillStyle = particles[i].color;
+                        ctx.globalAlpha = particles[i].alpha;
+                        ctx.beginPath();
+                        ctx.arc(particles[i].x, particles[i].y, particles[i].radius, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                    ctx.globalAlpha = 1.0;
+
+                    // 2. 미리보기 플로팅 텍스트 렌더링
+                    for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                        let t = floatingTexts[i];
+                        if (!t) continue;
+                        ctx.save();
+                        ctx.shadowBlur = 0;
+                        ctx.filter = 'none';
+                        const alpha = t.life < 30 ? (t.life / 30) : 1.0;
+                        ctx.globalAlpha = alpha;
+                        const fSize = t.fontSize || 13;
+                        ctx.font = `bold ${fSize}px sans-serif`;
+                        ctx.textAlign = 'center';
+                        ctx.strokeStyle = '#000000';
+                        ctx.lineWidth = 4;
+                        ctx.strokeText(t.text, t.x, t.y);
+                        ctx.fillStyle = t.color || '#ffffff';
+                        ctx.fillText(t.text, t.x, t.y);
+                        ctx.restore();
+                    }
+                }
+                return;
+            }
 
             // Enforce Strict Gameplay Area Clipping (y: 54px ~ canvas.height)
             // Prevents any enemy ship, projectile, overhead HP bar, or particle from bleeding into the top HUD status bar!
