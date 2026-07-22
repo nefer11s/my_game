@@ -1651,7 +1651,7 @@
                 try {
                     const userLang = navigator.language || navigator.userLanguage || '';
                     if (userLang.toLowerCase().startsWith('ko')) {
-                        const ask = confirm("시스템 언어가 한국어로 감지되었습니다. 한국어로 변경하시겠습니까?\nSystem language detected as Korean. Would you like to switch the language to Korean?");
+                        const ask = confirm("시스템 언어가 한국어로 감지되었습니다. 한국어로 변경하시겠습니까? (Yes: 한국어, No: 영어 유지)\n\nSystem language detected as Korean. Would you like to switch the language to Korean? (Yes: Korean, No: Keep English)");
                         if (ask) {
                             currentLang = 'ko';
                             localStorage.setItem("hy_game_lang", 'ko');
