@@ -448,6 +448,45 @@
                     box-shadow: 0 0 30px rgba(0, 210, 211, 0.4);
                 }
             }
+            @keyframes alertShake {
+                0% {
+                    transform: translate(0, 0) scale(1.0);
+                    box-shadow: 0 0 20px rgba(255, 45, 85, 0.5);
+                }
+                10% {
+                    transform: translate(-1px, -1px) scale(1.01);
+                    box-shadow: 0 0 35px rgba(255, 45, 85, 0.7);
+                }
+                20% {
+                    transform: translate(1px, -1px) scale(1.0);
+                }
+                30% {
+                    transform: translate(-1px, 1px) scale(1.01);
+                }
+                40% {
+                    transform: translate(1px, -1px) scale(1.0);
+                }
+                50% {
+                    transform: translate(-1px, 1px) scale(1.02);
+                    box-shadow: 0 0 45px rgba(255, 45, 85, 0.9);
+                }
+                60% {
+                    transform: translate(1px, 1px) scale(1.0);
+                }
+                70% {
+                    transform: translate(-1px, -1px) scale(1.01);
+                }
+                80% {
+                    transform: translate(1px, -1px) scale(1.0);
+                }
+                90% {
+                    transform: translate(-1px, 1px) scale(1.01);
+                }
+                100% {
+                    transform: translate(0, 0) scale(1.0);
+                    box-shadow: 0 0 20px rgba(255, 45, 85, 0.5);
+                }
+            }
             @keyframes splashPulse {
                 0% {
                     box-shadow: 0 0 0 0 rgba(255, 159, 67, 0.7);
@@ -751,7 +790,7 @@
             </div>
 
             <div
-                style="border: 3px solid #00d2d3; border-radius: 16px; overflow: hidden; margin-bottom: 14px; box-shadow: 0 0 25px rgba(0, 210, 211, 0.5); max-width: 320px; width: 90%; background: #000;">
+                style="border: 3px solid #ff2d55; border-radius: 16px; overflow: hidden; margin-bottom: 14px; box-shadow: 0 0 25px rgba(255, 45, 85, 0.5); max-width: 320px; width: 90%; background: #000; animation: alertShake 0.5s ease-in-out infinite;">
                 <img src="assets/abduction_story.png?v=11.9.1" alt="Abduction Story Scene"
                     style="width: 100%; height: auto; max-height: 220px; object-fit: cover; display: block;">
             </div>
