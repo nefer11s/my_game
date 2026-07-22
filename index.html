@@ -1000,42 +1000,8 @@
             </div>
             <button
                 style="background: linear-gradient(135deg, #00d2d3, #0984e3); border: none; color: #fff; width: 100%; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 14px; box-shadow: 0 0 20px rgba(0, 210, 211, 0.5);"
-                onclick="closeInfoModal()" data-i18n="btn_close">✖ 닫기</button>>
-                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💥 <b
-                                        style="color:#f1c40f;">DAMAGE_X2</b><br><span
-                                        style="color:#a4b0be; font-size:10px;">주력 화력 200% 증가</span></div>
-                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💣 <b
-                                        style="color:#ff6b6b;">BOMBARD</b><br><span
-                                        style="color:#a4b0be; font-size:10px;">공중 융단 폭격 지원</span></div>
-                            </div>
-                        </div>
-
-                        <!-- 4. 아군 지원 & 필살기 계열 -->
-                        <div
-                            style="background: rgba(255, 56, 56, 0.08); border: 1px solid rgba(255, 56, 56, 0.35); border-radius: 10px; padding: 10px;">
-                            <div style="color: #ff3838; font-weight: 900; font-size: 13px; margin-bottom: 6px;">🤖 지원 드론
-                                & 필살기</div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; font-size: 11px;">
-                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">✈️ <b
-                                        style="color:#54a0ff;">ALLY</b><br><span
-                                        style="color:#a4b0be; font-size:10px;">호위 드론 출격</span></div>
-                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💣 <b
-                                        style="color:#ff3838;">BOMB</b><br><span
-                                        style="color:#a4b0be; font-size:10px;">전면 소각 폭탄</span></div>
-                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💥 <b
-                                        style="color:#ff3838;">ULTIMATE</b><br><span
-                                        style="color:#a4b0be; font-size:10px;">태양 필살기 +1</span></div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <button
-                style="background: linear-gradient(135deg, #00d2d3, #0984e3); border: none; color: #fff; width: 100%; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 14px; box-shadow: 0 0 20px rgba(0, 210, 211, 0.5);"
-                onclick="closeInfoModal()">✖ 닫기</button>
+                onclick="closeInfoModal()" data-i18n="btn_close">✖ 닫기</button>
         </div>
-    </div>
     </div>
 
     <div id="sidebarPanel" style="display: none;">
@@ -1072,7 +1038,6 @@
                 <span class="hotkey-badge">B</span> BGM 배경음악 토글
             </div>
         </div>
-    </div>
     </div>
 
     <!-- 일시중지(P) 전술 아이템 셀렉터 및 조작법/도감 팝업 모달 -->
@@ -1204,95 +1169,6 @@
                     style="flex: 1; background: rgba(255, 56, 56, 0.2); border: 1px solid #ff3838; color: #ff3838; padding: 10px 4px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;"
                     onclick="restartCurrentGame()" data-i18n="btn_restart">🔄 재작전</button>
             </div>
-        </div>
-    </div>
-    <div id="infoModal"
-        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 200; justify-content: center; align-items: center;">
-        <div
-            style="background: #141822; border: 2px solid #00d2d3; border-radius: 12px; padding: 20px; width: 440px; max-height: 85vh; overflow-y: auto; box-shadow: 0 0 30px rgba(0, 210, 211, 0.5); display: flex; flex-direction: column; gap: 14px; box-sizing: border-box;">
-
-            <!-- 사운드 섹션 -->
-            <div id="infoAudioSec" style="display: none;">
-                <div
-                    style="font-size: 16px; font-weight: bold; color: #10ac84; border-bottom: 1px solid #2c3e50; padding-bottom: 8px; text-align: center; margin-bottom: 12px;">
-                    🎵 사운드 & 배경음악(BGM) 설정</div>
-                <div
-                    style="background: rgba(16, 172, 132, 0.15); border: 1px solid #10ac84; padding: 14px; border-radius: 8px;">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <span style="font-size: 13px;">BGM 스위치: <span id="bgmStateVal"
-                                style="color: #10ac84; font-weight: bold;">ON</span></span>
-                        <button id="bgmToggleBtn"
-                            style="background:#10ac84; border:none; color:#fff; padding:6px 12px; border-radius:4px; cursor:pointer; font-weight:bold; font-size:12px;"
-                            onclick="toggleBGM()">🎵 BGM ON/OFF (단축키: B)</button>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 13px;">BGM 음량: <span id="bgmVolVal"
-                                style="color: #ff9f43; font-weight: bold;">50%</span></span>
-                        <input type="range" id="bgmVolSlider" min="0" max="100" step="5" value="50"
-                            style="flex: 1; accent-color: #10ac84;" oninput="updateBGMVolume(this.value)">
-                    </div>
-                </div>
-            </div>
-
-            <!-- 조작법 섹션 -->
-            <div id="infoControlSec" style="display: none;">
-                <div
-                    style="font-size: 16px; font-weight: bold; color: #00d2d3; border-bottom: 1px solid #2c3e50; padding-bottom: 8px; text-align: center; margin-bottom: 12px;">
-                    ⌨️ 전술 조작법 및 단축키 안내</div>
-                <div
-                    style="background: rgba(44, 62, 80, 0.5); border: 1px solid #34495e; padding: 14px; border-radius: 8px; font-size: 13px; color: #cbd5e1; line-height: 1.8;">
-                    <span class="hotkey-badge">📱 모바일 조작</span> 화면 아무 곳이나 터치 후 드래그하면 손가락이 비행기를 가리지 않고 상대적으로 기동합니다.<br>
-                    <span class="hotkey-badge">💥 모바일 필살기</span> 화면에 **두 손가락 동시 터치/탭**<br>
-                    <span class="hotkey-badge">⏸️ 모바일 일시정지</span> 화면에 **세 손가락 동시 터치/탭**<br>
-                    <hr style="border: 0; border-top: 1px solid #2c3e50; margin: 8px 0;">
-                    <span class="hotkey-badge">PC 무빙</span> 마우스 커서 이동 및 W,A,S,D 방향키 조작<br>
-                    <span class="hotkey-badge">SPACE / X / E</span> 💥 전술 섬멸 필살기<br>
-                    <span class="hotkey-badge">P</span> 전투 일시중지 & 재개<br>
-                    <span class="hotkey-badge">B</span> BGM 배경음악 토글
-                </div>
-            </div>
-
-            <!-- 아이템 도감 섹션 -->
-            <div id="infoItemSec" style="display: none;">
-                <div
-                    style="font-size: 16px; font-weight: bold; color: #f1c40f; border-bottom: 1px solid #2c3e50; padding-bottom: 8px; text-align: center; margin-bottom: 12px;">
-                    🎁 전술 획득 아이템 도감 및 효과</div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; color: #cbd5e1;">
-                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">💚 <span
-                            style="color:#1cfc03; font-weight:bold;">메디컬 킷</span><br>HP 25 즉시 회복 / 만피시 최대HP 확장</div>
-                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">❤️ <span
-                            style="color:#ff2d55; font-weight:bold;">목숨 하트</span><br>잔여 목숨 +1 보충</div>
-                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">⚡ <span
-                            style="color:#00d2d3; font-weight:bold;">플라즈마 레이저</span><br>관통형 고출력 빔</div>
-                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">🔫 <span
-                            style="color:#ffd32c; font-weight:bold;">3연장 개틀링</span><br>3열 고속 속사</div>
-                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">🚀 <span
-                            style="color:#fa8231; font-weight:bold;">헤비 로켓</span><br>광범위 폭발 로켓</div>
-                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">🔥 <span
-                            style="color:#ff4d4d; font-weight:bold;">열압력 미사일</span><br>자동 유도 미사일</div>
-                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">💥 <span
-                            style="color:#ff9f43; font-weight:bold;">2배 화력</span><br>전 무기 화력 2배 증폭</div>
-                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">🔮 <span
-                            style="color:#e056fd; font-weight:bold;">스플래시 범주</span><br>폭발 범위 확장</div>
-                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">☄️ <span
-                            style="color:#ff3838; font-weight:bold;">전술 폭격</span><br>위성 궤도 정밀 폭격</div>
-                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">🛡️ <span
-                            style="color:#10ac84; font-weight:bold;">나노 방어막</span><br>7초간 완전 무적</div>
-                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">🔩 <span
-                            style="color:#a4b0be; font-weight:bold;">중장갑 아머</span><br>피격 피해 50% 감쇄</div>
-                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">🪖 <span
-                            style="color:#2e86de; font-weight:bold;">아군 지원</span><br>드론 기동 대원 합류</div>
-                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">💣 <span
-                            style="color:#ff5252; font-weight:bold;">전술 폭탄</span><br>화면 전체 적 폭파</div>
-                    <div style="background:rgba(255,255,255,0.04); padding:6px 8px; border-radius:4px;">💥 <span
-                            style="color:#ff3838; font-weight:bold;">필살기 충전</span><br>전술 필살기 +1 보충</div>
-                </div>
-            </div>
-
-            <button
-                style="background: #00d2d3; border: none; color: #141822; width: 100%; padding: 12px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 10px;"
-                onclick="closeInfoModal()">닫기</button>
         </div>
     </div>
 
@@ -3833,9 +3709,6 @@
             if (enemy.isBoss) {
                 addFloatingText(enemy.x, enemy.y - 40, "💥 중간 보스 격파!", '#ff9f43', 20);
             }
-            if (enemy.hasItem) {
-                addFloatingText(enemy.x, enemy.y - 25, "🎁 아이템 획득 확정!", '#ffd32c', 16);
-            }
             spawnDroppedItem(enemy.x, enemy.y, enemy.isBoss, enemy.hasItem);
             // Defer minion removal to main loop end to preserve loop index stability
         }
@@ -3860,27 +3733,34 @@
 
             if (pool.length === 0) pool.push("HEAL");
 
+            const isEn = (currentLang === 'en');
+
             // Bosses drop configurable items (default 2) in a scattering loot fountain!
             const dropCount = isBoss ? bossDropCountConfig : 1;
             for (let d = 0; d < dropCount; d++) {
                 const chosen = pool[Math.floor(Math.random() * pool.length)];
                 let lbl = "";
                 let color = "#ffffff";
-                if (chosen === "DOUBLE") { lbl = "⚡ 2줄"; color = "#ffd32c"; }
-                else if (chosen === "TRIPLE") { lbl = "⚡ 3줄"; color = "#ff9f43"; }
-                else if (chosen === "HOMING") { lbl = "🎯 유도"; color = "#00d2d3"; }
-                else if (chosen === "MISSILE") { lbl = "🚀 미사일"; color = "#ff3838"; }
-                else if (chosen === "LASER") { lbl = "⚡ 레이저"; color = "#00d2d3"; }
-                else if (chosen === "DAMAGE_X2") { lbl = "💥 2X"; color = "#ff9f43"; }
-                else if (chosen === "SPLASH_RANGE") { lbl = "🔮 SP"; color = "#e056fd"; }
-                else if (chosen === "BOMBARD") { lbl = "☄️ BB"; color = "#ff3838"; }
-                else if (chosen === "NANO_SHIELD") { lbl = "🛡️ NS"; color = "#10ac84"; }
-                else if (chosen === "HEAVY_ARMOR") { lbl = "🔩 HA"; color = "#a4b0be"; }
-                else if (chosen === "HEAL") { lbl = "💚 HP"; color = "#1cfc03"; }
-                else if (chosen === "ALLY") { lbl = "🪖 AL"; color = "#2e86de"; }
-                else if (chosen === "BOMB") { lbl = "💣 BM"; color = "#ff5252"; }
-                else if (chosen === "ULTIMATE") { lbl = "💥 ULT"; color = "#ff3838"; }
-                else if (chosen === "LIFE") { lbl = "❤️ LIFE"; color = "#ff2d55"; }
+                let itemName = "";
+                if (chosen === "DOUBLE") { lbl = isEn ? "⚡ 2-Way" : "⚡ 2줄"; color = "#ffd32c"; itemName = "2줄 직진탄"; }
+                else if (chosen === "TRIPLE") { lbl = isEn ? "⚡ 3-Way" : "⚡ 3줄"; color = "#ff9f43"; itemName = "3줄 확산탄"; }
+                else if (chosen === "HOMING") { lbl = isEn ? "🎯 Homing" : "🎯 유도"; color = "#00d2d3"; itemName = "적 추적 유도탄"; }
+                else if (chosen === "MISSILE") { lbl = isEn ? "🚀 Missile" : "🚀 미사일"; color = "#ff3838"; itemName = "10배 중장갑 미사일(파편)"; }
+                else if (chosen === "LASER") { lbl = isEn ? "⚡ Laser" : "⚡ 레이저"; color = "#00d2d3"; itemName = "20배 고출력 관통레이저"; }
+                else if (chosen === "DAMAGE_X2") { lbl = isEn ? "💥 2X DMG" : "💥 2X"; color = "#ff9f43"; itemName = "피해량 2배"; }
+                else if (chosen === "SPLASH_RANGE") { lbl = isEn ? "🔮 Splash" : "🔮 SP"; color = "#e056fd"; itemName = "스플래시 폭발탄"; }
+                else if (chosen === "BOMBARD") { lbl = isEn ? "☄️ Bombard" : "☄️ BB"; color = "#ff3838"; itemName = "공중 무차별폭격"; }
+                else if (chosen === "NANO_SHIELD") { lbl = isEn ? "🛡️ Shield" : "🛡️ NS"; color = "#10ac84"; itemName = "완전 나노무적"; }
+                else if (chosen === "HEAVY_ARMOR") { lbl = isEn ? "🔩 Armor" : "🔩 HA"; color = "#a4b0be"; itemName = "중장갑 피해반감"; }
+                else if (chosen === "HEAL") { lbl = isEn ? "💚 HP" : "💚 HP"; color = "#1cfc03"; itemName = "메디컬 키트"; }
+                else if (chosen === "ALLY") { lbl = isEn ? "🪖 Drone" : "🪖 AL"; color = "#2e86de"; itemName = "아군 대원"; }
+                else if (chosen === "BOMB") { lbl = isEn ? "💣 Bomb" : "💣 BM"; color = "#ff5252"; itemName = "전술 폭탄"; }
+                else if (chosen === "ULTIMATE") { lbl = isEn ? "💥 Ultimate" : "💥 ULT"; color = "#ff3838"; itemName = "필살기 충전"; }
+                else if (chosen === "LIFE") { lbl = isEn ? "❤️ Life" : "❤️ LIFE"; color = "#ff2d55"; itemName = "목숨 추가"; }
+
+                if (hasItem && !isBoss) {
+                    addFloatingText(x, y - 25, `🎁 ${itemName} 획득 확정!`, '#ffd32c', 16);
+                }
 
                 const angle = isBoss ? ((d - (dropCount - 1) / 2) / (dropCount - 1)) * (Math.PI * 0.6) - (Math.PI / 2) : 0;
                 const speed = isBoss ? (Math.random() * 2 + 4.5) : (Math.random() * 1.5 + 1);
@@ -4089,6 +3969,28 @@
         function translateDynamicText(text) {
             if (currentLang !== 'en') return text;
             let t = text;
+            // 아이템 및 부품 한글 명칭 영문 치환
+            t = t.replace(/2줄 직진탄/g, "Double Straight Fire");
+            t = t.replace(/3줄 확산탄/g, "Triple Spread Fire");
+            t = t.replace(/적 추적 유도탄/g, "Homing Missile");
+            t = t.replace(/10배 중장갑 미사일\(파편\)/g, "HE Shrapnel Missile");
+            t = t.replace(/20배 고출력 관통레이저/g, "High-Power Piercing Laser");
+            t = t.replace(/속사 개틀링/g, "Rapid Gatling");
+            t = t.replace(/전술 로켓/g, "Tactical Rocket");
+            t = t.replace(/피해량 2배/g, "Double Damage");
+            t = t.replace(/공중 무차별폭격/g, "Air Bombardment");
+            t = t.replace(/스플래시 폭발탄/g, "Splash Explosive");
+            t = t.replace(/완전 나노무적/g, "Invulnerable Shield");
+            t = t.replace(/중장갑 피해반감/g, "Heavy Armor Defense");
+            t = t.replace(/메디컬 키트/g, "Medical Kit");
+            t = t.replace(/아군 대원/g, "Support Drone");
+            t = t.replace(/전술 폭탄/g, "Tactical Bomb");
+            t = t.replace(/필살기 충전/g, "Ultimate Charge");
+            t = t.replace(/목숨 추가/g, "Extra Life");
+            t = t.replace(/돌격병/g, "Rifleman");
+            t = t.replace(/저격수/g, "Sniper");
+            t = t.replace(/중화기병/g, "Heavy Weaponry");
+
             t = t.replace(/👑 \[최종 마왕 강림\] \((.+?) HP\) 5초 무적 결계!/, "👑 [FINAL DEMON LORD DESCENDS] ($1 HP) 5s Invulnerable!");
             t = t.replace(/⚠️ STAGE 5 마왕 호위보스 \((.+?)\) & 호위부대 (.+?)기 강림!/, "⚠️ STAGE 5 Demon Guard ($1) & $2 Escorts Scrambled!");
             t = t.replace(/⚠️ STAGE (.+?) 중간 보스 \((.+?)\) & 호위부대 (.+?)기 강림!/, "⚠️ STAGE $1 Midboss ($2) & $3 Escorts Scrambled!");
@@ -4108,6 +4010,7 @@
             t = t.replace(/🔥 \[FINAL PHASE 3\] 폭주 오버드라이브! 전면 결전 사격!/, "🔥 [FINAL PHASE 3] Berserk Overdrive! Total Showdown Fire!");
             t = t.replace(/💥 \[마왕 격파! 7초 화염 대폭발 & 히어로 돌파\]/, "💥 [DEMON DEFEATED! 7s Exploding Finish]");
             t = t.replace(/💥 중간 보스 격파!/, "💥 Midboss Defeated!");
+            t = t.replace(/🎁 (.+?) 획득 확정!/, "🎁 $1 Drop Confirmed!");
             t = t.replace(/🎁 아이템 획득 확정!/, "🎁 Drop Item Confirmed!");
             t = t.replace(/⚠️ 필살기 수량 부족! \((.+?)\)/, "⚠️ No Ultimate Stock! ($1)");
             t = t.replace(/💣 전술 폭탄 작동! 전면 소각!/, "💣 Tactical Bomb Activated! Incinerate All!");
@@ -4842,9 +4745,19 @@
             }
 
             // 2. Active Equipment & Tactical Ultimate Status (ROW 2)
-            let wName = player.weaponType === "NORMAL" ? "기본화기" : player.weaponType === "GATLING" ? "개틀링" : player.weaponType === "LASER" ? "레이저" : player.weaponType === "MISSILE" ? "미사일" : "고폭로켓";
-            let bName = player.buffType === "NONE" ? "일반" : player.buffType === "DAMAGE_X2" ? "피해2배" : player.buffType === "BOMBARD" ? "융단폭격" : "스플래시";
-            let dName = player.defenseType === "NONE" ? "일반" : player.defenseType === "NANO_SHIELD" ? "나노무적" : "중장갑";
+            let wName = "";
+            let bName = "";
+            let dName = "";
+
+            if (isEn) {
+                wName = player.weaponType === "NORMAL" ? "Normal" : player.weaponType === "GATLING" ? "Gatling" : player.weaponType === "LASER" ? "Laser" : player.weaponType === "MISSILE" ? "Missile" : "HE Rocket";
+                bName = player.buffType === "NONE" ? "Normal" : player.buffType === "DAMAGE_X2" ? "2X DMG" : player.buffType === "BOMBARD" ? "Bombard" : "Splash";
+                dName = player.defenseType === "NONE" ? "Normal" : player.defenseType === "NANO_SHIELD" ? "Nano Shield" : "Heavy Armor";
+            } else {
+                wName = player.weaponType === "NORMAL" ? "기본화기" : player.weaponType === "GATLING" ? "개틀링" : player.weaponType === "LASER" ? "레이저" : player.weaponType === "MISSILE" ? "미사일" : "고폭로켓";
+                bName = player.buffType === "NONE" ? "일반" : player.buffType === "DAMAGE_X2" ? "피해2배" : player.buffType === "BOMBARD" ? "융단폭격" : "스플래시";
+                dName = player.defenseType === "NONE" ? "일반" : player.defenseType === "NANO_SHIELD" ? "나노무적" : "중장갑";
+            }
 
             ctx.save();
             ctx.textAlign = 'left';

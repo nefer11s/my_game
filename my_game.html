@@ -1102,7 +1102,6 @@
                 onclick="closeInfoModal()" data-i18n="btn_close">✖ 닫기</button>
         </div>
     </div>
-    </div>
 
     <div id="sidebarPanel" style="display: none;">
         <div id="controlDashboard">
@@ -1138,7 +1137,6 @@
                 <span class="hotkey-badge">B</span> BGM 배경음악 토글
             </div>
         </div>
-    </div>
     </div>
 
     <!-- 일시중지(P) 전술 아이템 셀렉터 및 조작법/도감 팝업 모달 -->
@@ -4051,6 +4049,8 @@
 
             if (pool.length === 0) pool.push("HEAL");
 
+            const isEn = (currentLang === 'en');
+
             // Bosses drop configurable items (default 2) in a scattering loot fountain!
             const dropCount = isBoss ? bossDropCountConfig : 1;
             for (let d = 0; d < dropCount; d++) {
@@ -4058,21 +4058,21 @@
                 let lbl = "";
                 let color = "#ffffff";
                 let itemName = "";
-                if (chosen === "DOUBLE") { lbl = "⚡ 2줄"; color = "#ffd32c"; itemName = "2줄 직진탄"; }
-                else if (chosen === "TRIPLE") { lbl = "⚡ 3줄"; color = "#ff9f43"; itemName = "3줄 확산탄"; }
-                else if (chosen === "HOMING") { lbl = "🎯 유도"; color = "#00d2d3"; itemName = "적 추적 유도탄"; }
-                else if (chosen === "MISSILE") { lbl = "🚀 미사일"; color = "#ff3838"; itemName = "10배 중장갑 미사일(파편)"; }
-                else if (chosen === "LASER") { lbl = "⚡ 레이저"; color = "#00d2d3"; itemName = "20배 고출력 관통레이저"; }
-                else if (chosen === "DAMAGE_X2") { lbl = "💥 2X"; color = "#ff9f43"; itemName = "피해량 2배"; }
-                else if (chosen === "SPLASH_RANGE") { lbl = "🔮 SP"; color = "#e056fd"; itemName = "스플래시 폭발탄"; }
-                else if (chosen === "BOMBARD") { lbl = "☄️ BB"; color = "#ff3838"; itemName = "공중 무차별폭격"; }
-                else if (chosen === "NANO_SHIELD") { lbl = "🛡️ NS"; color = "#10ac84"; itemName = "완전 나노무적"; }
-                else if (chosen === "HEAVY_ARMOR") { lbl = "🔩 HA"; color = "#a4b0be"; itemName = "중장갑 피해반감"; }
-                else if (chosen === "HEAL") { lbl = "💚 HP"; color = "#1cfc03"; itemName = "메디컬 키트"; }
-                else if (chosen === "ALLY") { lbl = "🪖 AL"; color = "#2e86de"; itemName = "아군 대원"; }
-                else if (chosen === "BOMB") { lbl = "💣 BM"; color = "#ff5252"; itemName = "전술 폭탄"; }
-                else if (chosen === "ULTIMATE") { lbl = "💥 ULT"; color = "#ff3838"; itemName = "필살기 충전"; }
-                else if (chosen === "LIFE") { lbl = "❤️ LIFE"; color = "#ff2d55"; itemName = "목숨 추가"; }
+                if (chosen === "DOUBLE") { lbl = isEn ? "⚡ 2-Way" : "⚡ 2줄"; color = "#ffd32c"; itemName = "2줄 직진탄"; }
+                else if (chosen === "TRIPLE") { lbl = isEn ? "⚡ 3-Way" : "⚡ 3줄"; color = "#ff9f43"; itemName = "3줄 확산탄"; }
+                else if (chosen === "HOMING") { lbl = isEn ? "🎯 Homing" : "🎯 유도"; color = "#00d2d3"; itemName = "적 추적 유도탄"; }
+                else if (chosen === "MISSILE") { lbl = isEn ? "🚀 Missile" : "🚀 미사일"; color = "#ff3838"; itemName = "10배 중장갑 미사일(파편)"; }
+                else if (chosen === "LASER") { lbl = isEn ? "⚡ Laser" : "⚡ 레이저"; color = "#00d2d3"; itemName = "20배 고출력 관통레이저"; }
+                else if (chosen === "DAMAGE_X2") { lbl = isEn ? "💥 2X DMG" : "💥 2X"; color = "#ff9f43"; itemName = "피해량 2배"; }
+                else if (chosen === "SPLASH_RANGE") { lbl = isEn ? "🔮 Splash" : "🔮 SP"; color = "#e056fd"; itemName = "스플래시 폭발탄"; }
+                else if (chosen === "BOMBARD") { lbl = isEn ? "☄️ Bombard" : "☄️ BB"; color = "#ff3838"; itemName = "공중 무차별폭격"; }
+                else if (chosen === "NANO_SHIELD") { lbl = isEn ? "🛡️ Shield" : "🛡️ NS"; color = "#10ac84"; itemName = "완전 나노무적"; }
+                else if (chosen === "HEAVY_ARMOR") { lbl = isEn ? "🔩 Armor" : "🔩 HA"; color = "#a4b0be"; itemName = "중장갑 피해반감"; }
+                else if (chosen === "HEAL") { lbl = isEn ? "💚 HP" : "💚 HP"; color = "#1cfc03"; itemName = "메디컬 키트"; }
+                else if (chosen === "ALLY") { lbl = isEn ? "🪖 Drone" : "🪖 AL"; color = "#2e86de"; itemName = "아군 대원"; }
+                else if (chosen === "BOMB") { lbl = isEn ? "💣 Bomb" : "💣 BM"; color = "#ff5252"; itemName = "전술 폭탄"; }
+                else if (chosen === "ULTIMATE") { lbl = isEn ? "💥 Ultimate" : "💥 ULT"; color = "#ff3838"; itemName = "필살기 충전"; }
+                else if (chosen === "LIFE") { lbl = isEn ? "❤️ Life" : "❤️ LIFE"; color = "#ff2d55"; itemName = "목숨 추가"; }
 
                 if (hasItem && !isBoss) {
                     addFloatingText(x, y - 25, `🎁 ${itemName} 획득 확정!`, '#ffd32c', 16);
@@ -5075,9 +5075,19 @@
             }
 
             // 2. Active Equipment & Tactical Ultimate Status (ROW 2)
-            let wName = player.weaponType === "NORMAL" ? "기본화기" : player.weaponType === "GATLING" ? "개틀링" : player.weaponType === "LASER" ? "레이저" : player.weaponType === "MISSILE" ? "미사일" : "고폭로켓";
-            let bName = player.buffType === "NONE" ? "일반" : player.buffType === "DAMAGE_X2" ? "피해2배" : player.buffType === "BOMBARD" ? "융단폭격" : "스플래시";
-            let dName = player.defenseType === "NONE" ? "일반" : player.defenseType === "NANO_SHIELD" ? "나노무적" : "중장갑";
+            let wName = "";
+            let bName = "";
+            let dName = "";
+
+            if (isEn) {
+                wName = player.weaponType === "NORMAL" ? "Normal" : player.weaponType === "GATLING" ? "Gatling" : player.weaponType === "LASER" ? "Laser" : player.weaponType === "MISSILE" ? "Missile" : "HE Rocket";
+                bName = player.buffType === "NONE" ? "Normal" : player.buffType === "DAMAGE_X2" ? "2X DMG" : player.buffType === "BOMBARD" ? "Bombard" : "Splash";
+                dName = player.defenseType === "NONE" ? "Normal" : player.defenseType === "NANO_SHIELD" ? "Nano Shield" : "Heavy Armor";
+            } else {
+                wName = player.weaponType === "NORMAL" ? "기본화기" : player.weaponType === "GATLING" ? "개틀링" : player.weaponType === "LASER" ? "레이저" : player.weaponType === "MISSILE" ? "미사일" : "고폭로켓";
+                bName = player.buffType === "NONE" ? "일반" : player.buffType === "DAMAGE_X2" ? "피해2배" : player.buffType === "BOMBARD" ? "융단폭격" : "스플래시";
+                dName = player.defenseType === "NONE" ? "일반" : player.defenseType === "NANO_SHIELD" ? "나노무적" : "중장갑";
+            }
 
             ctx.save();
             ctx.textAlign = 'left';
