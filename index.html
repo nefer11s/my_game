@@ -3502,7 +3502,44 @@
 
             if (player.buffType === "BOMBARD" && globalAnimTick % 12 === 0) {
                 let bx = Math.random() * canvas.width, by = Math.random() * (canvas.height - 250);
-                createAdvancedExplosion(bx, by, '#ff3838', 12, 1.4); playExplosionSound(false);
+                
+                // ☄️ 무차별 폭격: 하늘에서 낙하하는 유성 궤적 파티클 연출
+                for (let i = 0; i < 6; i++) {
+                    particles.push({
+                        x: bx - (5 - i) * 6,
+                        y: by - (5 - i) * 20,
+                        vx: 1.8,
+                        vy: 6,
+                        radius: 2.5 + i * 0.5,
+                        alpha: 0.95,
+                        color: '#ff3838',
+                        gravity: 0
+                    });
+                }
+                
+                // 💥 지면 폭발: 다채롭고 밝은 대규모 파편 파티클(35개) 생성
+                const bombColors = ['#ff3838', '#ff9f43', '#ffd32c', '#ffffff'];
+                for (let i = 0; i < 35; i++) {
+                    let angle = Math.random() * Math.PI * 2;
+                    let spd = Math.random() * 4.5 + 1.5;
+                    let col = bombColors[Math.floor(Math.random() * bombColors.length)];
+                    particles.push({
+                        x: bx,
+                        y: by,
+                        vx: Math.cos(angle) * spd,
+                        vy: Math.sin(angle) * spd - 0.8,
+                        radius: Math.random() * 4.5 + 1.5,
+                        alpha: 0.9,
+                        color: col,
+                        gravity: 0.08
+                    });
+                }
+
+                // 타격감을 위한 화면 흔들림 효과
+                shakeTimer = 6;
+                shakeIntensity = 3.5;
+
+                playExplosionSound(false);
                 for (let j = enemies.length - 1; j >= 0; j--) {
                     let enemy = enemies[j];
                     if (!enemy || enemy.isDying) continue;
@@ -5169,7 +5206,24 @@
                     ctx.restore();
                 });
 
-                bullets.forEach(b => { ctx.fillStyle = '#ffd32c'; ctx.fillRect(b.x - 1.5, b.y, 3, 10); });
+                bullets.forEach(b => {
+                    if (b.bType === "HOMING") {
+                        // 유도탄: HSL 기반 다채로운 무지개 빛 색상 순환
+                        const hue = (globalAnimTick * 6 + b.y * 0.5) % 360;
+                        ctx.save();
+                        ctx.fillStyle = `hsl(${hue}, 100%, 65%)`;
+                        ctx.shadowColor = `hsl(${hue}, 100%, 65%)`;
+                        ctx.shadowBlur = 8;
+                        ctx.beginPath();
+                        ctx.arc(b.x, b.y, 4.5, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.restore();
+                    } else {
+                        // 일반 총알
+                        ctx.fillStyle = '#ffd32c';
+                        ctx.fillRect(b.x - 1.5, b.y, 3, 10);
+                    }
+                });
                 for (let i = particles.length - 1; i >= 0; i--) { ctx.fillStyle = particles[i].color; ctx.globalAlpha = particles[i].alpha; ctx.beginPath(); ctx.arc(particles[i].x, particles[i].y, particles[i].radius, 0, Math.PI * 2); ctx.fill(); }
 
                 // Crisp, Sharp Floating Combat Text without ANY Blur/Glow Effects
