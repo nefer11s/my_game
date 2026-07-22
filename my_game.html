@@ -512,107 +512,107 @@
         </div>
 
         <div id="gameOverOverlay" style="display: none;">
-            <div class="go-title">MISSION OVERRUN</div>
-            <div id="goScore">최종 스코어: 0 PTS</div>
+            <div class="go-title" data-i18n="go_title">MISSION OVERRUN</div>
+            <div id="goScore" data-i18n="go_score">최종 스코어: 0 PTS</div>
             <div style="margin: 14px 0 18px 0; display: flex; align-items: center; gap: 8px; justify-content: center;">
-                <span style="font-size: 13px; color: #00d2d3; font-weight: bold;">👤 지휘관명 (최대 10자):</span>
+                <span style="font-size: 13px; color: #00d2d3; font-weight: bold;" data-i18n="go_name_label">👤 지휘관명 (최대 10자):</span>
                 <input type="text" id="goNameInput" maxlength="10" value="지휘관"
                     style="background: rgba(20, 26, 38, 0.85); border: 1px solid #00d2d3; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 13px; width: 130px; text-align: center; outline: none; box-shadow: 0 0 10px rgba(0, 210, 211, 0.3);">
             </div>
-            <button id="restartBtn" onclick="saveHighScore(null, null, true); handleRestartClick();">💾 명예의 전당 등록 및 복귀</button>
+            <button id="restartBtn" onclick="saveHighScore(null, null, true); handleRestartClick();" data-i18n="btn_save_hall">💾 명예의 전당 등록 및 복귀</button>
         </div>
 
         <!-- 🛠️ 세부 전술 파라미터 설정 전용 모달 (고급) -->
         <div id="difficultyModal"
             style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 10, 16, 0.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 270; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; text-align: center;">
-            <div style="font-size: 20px; font-weight: 900; color: #e056fd; text-shadow: 0 0 15px rgba(224, 86, 253, 0.8); margin-bottom: 4px; letter-spacing: 2px;">
+            <div style="font-size: 20px; font-weight: 900; color: #e056fd; text-shadow: 0 0 15px rgba(224, 86, 253, 0.8); margin-bottom: 4px; letter-spacing: 2px;" data-i18n="settings_title">
                 🛠️ 세부 전술 파라미터 설정
             </div>
-            <div style="font-size: 13px; color: #a4b0be; font-weight: bold; margin-bottom: 16px;">
+            <div style="font-size: 13px; color: #a4b0be; font-weight: bold; margin-bottom: 16px;" data-i18n="settings_desc">
                 5대 전술 파라미터를 난이도 프리셋과 별개로 세밀하게 조정합니다.
             </div>
 
             <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(224, 86, 253, 0.35); border-radius: 16px; padding: 18px 16px; width: 100%; max-width: 440px; box-sizing: border-box; margin-bottom: 18px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
 
                 <!-- 2. 🛠️ 커스텀 상세 전술 옵션 GRID -->
-                <div style="font-size: 14px; color: #00d2d3; margin-bottom: 12px; font-weight: 900; text-shadow: 0 0 10px rgba(0, 210, 211, 0.6); letter-spacing: 1px;">
+                <div style="font-size: 14px; color: #00d2d3; margin-bottom: 12px; font-weight: 900; text-shadow: 0 0 10px rgba(0, 210, 211, 0.6); letter-spacing: 1px;" data-i18n="settings_option_title">
                     🛠️ 세부 전술 옵션 설정 (5대 파라미터)
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
                     <!-- 중간보스 체력 -->
                     <div style="display: flex; flex-direction: column; gap: 3px; font-size: 11px; text-align: left;">
-                        <span style="color: #ff9f43; font-weight: bold;">⚔️ 중간보스 체력</span>
+                        <span style="color: #ff9f43; font-weight: bold;" data-i18n="settings_midboss_hp">⚔️ 중간보스 체력</span>
                         <select id="midBossHpSelect" onchange="midBossHpMultiplier = parseFloat(this.value)"
                             style="background: rgba(15, 20, 30, 0.85); color: #ff9f43; border: 1px solid rgba(255, 159, 67, 0.4); padding: 5px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
-                            <option value="0.6">약함 (0.6x)</option>
-                            <option value="1.0" selected>보통 (1.0x)</option>
-                            <option value="1.6">강함 (1.6x)</option>
-                            <option value="2.5">악마 (2.5x)</option>
+                            <option value="0.6" data-i18n="opt_weak">약함 (0.6x)</option>
+                            <option value="1.0" selected data-i18n="opt_normal">보통 (1.0x)</option>
+                            <option value="1.6" data-i18n="opt_strong">강함 (1.6x)</option>
+                            <option value="2.5" data-i18n="opt_demon">악마 (2.5x)</option>
                         </select>
                     </div>
 
                     <!-- 잡몹 밀도 & 체력 -->
                     <div style="display: flex; flex-direction: column; gap: 3px; font-size: 11px; text-align: left;">
-                        <span style="color: #00d2d3; font-weight: bold;">👾 잡몹 밀도/체력</span>
+                        <span style="color: #00d2d3; font-weight: bold;" data-i18n="settings_minion_hp">👾 잡몹 밀도/체력</span>
                         <select id="minionHpSelect" onchange="minionHpMultiplier = parseFloat(this.value)"
                             style="background: rgba(15, 20, 30, 0.85); color: #00d2d3; border: 1px solid rgba(0, 210, 211, 0.4); padding: 5px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
-                            <option value="0.6">소형 (0.6x)</option>
-                            <option value="1.0" selected>보통 (1.0x)</option>
-                            <option value="1.5">대형 (1.5x)</option>
-                            <option value="2.2">군단 (2.2x)</option>
+                            <option value="0.6" data-i18n="opt_small">소형 (0.6x)</option>
+                            <option value="1.0" selected data-i18n="opt_normal">보통 (1.0x)</option>
+                            <option value="1.5" data-i18n="opt_large">대형 (1.5x)</option>
+                            <option value="2.2" data-i18n="opt_swarm">군단 (2.2x)</option>
                         </select>
                     </div>
 
                     <!-- 마왕 체력 -->
                     <div style="display: flex; flex-direction: column; gap: 3px; font-size: 11px; text-align: left;">
-                        <span style="color: #ff3838; font-weight: bold;">👑 마왕(최종보스) 체력</span>
+                        <span style="color: #ff3838; font-weight: bold;" data-i18n="settings_finalboss_hp">👑 마왕(최종보스) 체력</span>
                         <select id="finalBossHpSelect" onchange="finalBossHpMultiplier = parseFloat(this.value)"
                             style="background: rgba(15, 20, 30, 0.85); color: #ff3838; border: 1px solid rgba(255, 56, 56, 0.4); padding: 5px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
-                            <option value="0.7">쉬움 (0.7x)</option>
-                            <option value="1.0" selected>보통 (1.0x)</option>
-                            <option value="1.5">어려움 (1.5x)</option>
-                            <option value="2.5">악몽 (2.5x)</option>
+                            <option value="0.7" data-i18n="opt_easy">쉬움 (0.7x)</option>
+                            <option value="1.0" selected data-i18n="opt_normal">보통 (1.0x)</option>
+                            <option value="1.5" data-i18n="opt_hard">어려움 (1.5x)</option>
+                            <option value="2.5" data-i18n="opt_nightmare">악몽 (2.5x)</option>
                         </select>
                     </div>
 
                     <!-- 아이템 드롭율 -->
                     <div style="display: flex; flex-direction: column; gap: 3px; font-size: 11px; text-align: left;">
-                        <span style="color: #f1c40f; font-weight: bold;">🎁 아이템 드롭율</span>
+                        <span style="color: #f1c40f; font-weight: bold;" data-i18n="settings_item_drop">🎁 아이템 드롭율</span>
                         <select id="itemDropSelect" onchange="allyWeight = parseInt(this.value)"
                             style="background: rgba(15, 20, 30, 0.85); color: #f1c40f; border: 1px solid rgba(241, 196, 15, 0.4); padding: 5px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
-                            <option value="50">풍부함 (50%)</option>
-                            <option value="30">보통 (30%)</option>
-                            <option value="15" selected>조절됨 (15%)</option>
+                            <option value="50" data-i18n="opt_rich">풍부함 (50%)</option>
+                            <option value="30" data-i18n="opt_normal">보통 (30%)</option>
+                            <option value="15" selected data-i18n="opt_adj">조절됨 (15%)</option>
                         </select>
                     </div>
                 </div>
 
                 <!-- 5. 🔥 신규: 중간보스 호위잡몹 밀도 설정 (단독 가로 100% 배치) -->
                 <div style="display: flex; flex-direction: column; gap: 3px; font-size: 11px; text-align: left; margin-top: 4px;">
-                    <span style="color: #e056fd; font-weight: bold;">🛸 중간보스 호위잡몹 밀도 (신규)</span>
+                    <span style="color: #e056fd; font-weight: bold;" data-i18n="settings_escort_minion">🛸 중간보스 호위잡몹 밀도 (신규)</span>
                     <select id="midBossMinionSelect" onchange="midBossMinionMultiplier = parseFloat(this.value)"
                         style="background: rgba(15, 20, 30, 0.85); color: #e056fd; border: 1px solid rgba(224, 86, 253, 0.4); padding: 5px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
-                        <option value="0.0">없음 (0기 - 보스 단독)</option>
-                        <option value="0.5">적음 (0.5x 밀도)</option>
-                        <option value="1.0" selected>보통 (1.0x 기본 밀도)</option>
-                        <option value="1.5">많음 (1.5x 집중 스웜)</option>
-                        <option value="2.2">극악 (2.2x 대규모 군단)</option>
+                        <option value="0.0" data-i18n="opt_none">없음 (0기 - 보스 단독)</option>
+                        <option value="0.5" data-i18n="opt_few">적음 (0.5x 밀도)</option>
+                        <option value="1.0" selected data-i18n="opt_normal">보통 (1.0x 기본 밀도)</option>
+                        <option value="1.5" data-i18n="opt_many">많음 (1.5x 집중 스웜)</option>
+                        <option value="2.2" data-i18n="opt_extreme">극악 (2.2x 대규모 군단)</option>
                     </select>
                 </div>
             </div>
 
             <!-- 🎵 사운드(BGM) 설정 -->
             <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(16, 172, 132, 0.35); border-radius: 16px; padding: 14px 16px; width: 100%; max-width: 440px; box-sizing: border-box; margin-bottom: 14px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
-                <div style="font-size: 14px; color: #10ac84; margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 10px rgba(16, 172, 132, 0.6); letter-spacing: 1px;">
+                <div style="font-size: 14px; color: #10ac84; margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 10px rgba(16, 172, 132, 0.6); letter-spacing: 1px;" data-i18n="settings_sound_title">
                     🎵 사운드 & 배경음악(BGM) 설정
                 </div>
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px;">
-                    <span style="color: #10ac84; font-weight: bold; font-size: 12px;">BGM 스위치</span>
+                    <span style="color: #10ac84; font-weight: bold; font-size: 12px;" data-i18n="settings_bgm_switch">BGM 스위치</span>
                     <button id="advBgmToggleBtn" onclick="toggleBGM(); updateAdvBgmUI();"
-                        style="background: rgba(16, 172, 132, 0.25); border: 1px solid #10ac84; color: #10ac84; font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 6px; cursor: pointer;">ON</button>
+                        style="background: rgba(16, 172, 132, 0.25); border: 1px solid #10ac84; color: #10ac84; font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 6px; cursor: pointer;" data-i18n="opt_bgm_on">ON</button>
                 </div>
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="color: #a4b0be; font-weight: bold; font-size: 11px; min-width: 55px;">음량:</span>
+                    <span style="color: #a4b0be; font-weight: bold; font-size: 11px; min-width: 55px;" data-i18n="settings_bgm_vol">음량:</span>
                     <input type="range" id="advBgmVolSlider" min="0" max="100" step="5" value="50"
                         style="flex: 1; accent-color: #10ac84; cursor: pointer; height: 5px;"
                         oninput="updateBGMVolume(this.value); document.getElementById('advBgmVolDisp').innerText=this.value+'%';">
@@ -622,30 +622,45 @@
 
             <!-- 💥 필살기 소지 한도 설정 -->
             <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(255, 56, 56, 0.35); border-radius: 16px; padding: 14px 16px; width: 100%; max-width: 440px; box-sizing: border-box; margin-bottom: 18px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
-                <div style="font-size: 14px; color: #ff3838; margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 10px rgba(255, 56, 56, 0.6); letter-spacing: 1px;">
+                <div style="font-size: 14px; color: #ff3838; margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 10px rgba(255, 56, 56, 0.6); letter-spacing: 1px;" data-i18n="settings_ult_title">
                     💥 필살기 설정
                 </div>
                 <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #a4b0be;">
-                    <span style="font-weight: bold;">💣 필살기 폭탄 소지 한도</span>
+                    <span style="font-weight: bold;" data-i18n="settings_ult_limit">💣 필살기 폭탄 소지 한도</span>
                     <select id="advMaxUltCapSelect" onchange="maxUltimateCapConfig=parseInt(this.value)"
                         style="background: rgba(15, 20, 30, 0.85); color: #ff3838; border: 1px solid rgba(255, 56, 56, 0.4); padding: 5px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
-                        <option value="3">3개 (제한적)</option>
-                        <option value="5" selected>5개 (기본 표준)</option>
-                        <option value="7">7개 (여유)</option>
-                        <option value="10">10개 (무제한급)</option>
+                        <option value="3" data-i18n="opt_ult_3">3개 (제한적)</option>
+                        <option value="5" selected data-i18n="opt_ult_5">5개 (기본 표준)</option>
+                        <option value="7" data-i18n="opt_ult_7">7개 (여유)</option>
+                        <option value="10" data-i18n="opt_ult_10">10개 (무제한급)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 🌐 언어 설정 (Language Settings) -->
+            <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(0, 210, 211, 0.35); border-radius: 16px; padding: 14px 16px; width: 100%; max-width: 440px; box-sizing: border-box; margin-bottom: 18px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
+                <div style="font-size: 14px; color: #00d2d3; margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 10px rgba(0, 210, 211, 0.6); letter-spacing: 1px;" data-i18n="settings_lang_title">
+                    🌐 언어 설정 / Language Settings
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #a4b0be;">
+                    <span style="font-weight: bold;" data-i18n="settings_lang_select">선택 (Select Language)</span>
+                    <select id="advLanguageSelect" onchange="changeLanguage(this.value)"
+                        style="background: rgba(15, 20, 30, 0.85); color: #00d2d3; border: 1px solid rgba(0, 210, 211, 0.4); padding: 5px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
+                        <option value="ko">한국어 (Korean)</option>
+                        <option value="en">English (영어)</option>
                     </select>
                 </div>
             </div>
 
             <button style="font-size: 16px; padding: 12px 36px; border-radius: 30px; background: linear-gradient(135deg, #00d2d3, #0984e3); border: 2px solid #fff; color: #fff; font-weight: 900; cursor: pointer; box-shadow: 0 0 20px rgba(0, 210, 211, 0.6);"
-                onclick="closeDifficultyModal()">💾 설정 저장 및 완료</button>
+                onclick="closeDifficultyModal()" data-i18n="settings_save">💾 설정 저장 및 완료</button>
         </div>
         <div id="prologueOverlay"
             style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 10, 16, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 280; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; text-align: center;">
-            <div style="font-size: 20px; font-weight: 900; color: #ff2d55; text-shadow: 0 0 15px rgba(255, 45, 85, 0.8); margin-bottom: 6px; letter-spacing: 2px;">
+            <div style="font-size: 20px; font-weight: 900; color: #ff2d55; text-shadow: 0 0 15px rgba(255, 45, 85, 0.8); margin-bottom: 6px; letter-spacing: 2px;" data-i18n="prologue_title">
                 🚨 [긴급 작전 시나리오]
             </div>
-            <div style="font-size: 15px; font-weight: 900; color: #ffd32c; text-shadow: 0 0 10px rgba(255, 211, 44, 0.6); margin-bottom: 12px;">
+            <div style="font-size: 15px; font-weight: 900; color: #ffd32c; text-shadow: 0 0 10px rgba(255, 211, 44, 0.6); margin-bottom: 12px;" data-i18n="prologue_subtitle">
                 "외계 마왕 함선 침공 & 현우엄마 납치 사건!"
             </div>
 
@@ -654,23 +669,23 @@
             </div>
 
             <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(0, 210, 211, 0.4); border-radius: 12px; padding: 12px 16px; color: #dcdde1; font-weight: bold; font-size: 12px; margin-bottom: 18px; max-width: 440px; line-height: 1.6; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.4);">
-                <div style="color: #ff3838; font-weight: 900; margin-bottom: 4px;">🛸 외계 마왕의 기습 침공:</div>
-                평화롭던 지구 마을에 정체불명의 외계 마왕 함선이 출현하여 견인 광선으로 현우 엄마를 납치해 우주 저편으로 달아났습니다!<br>
-                <div style="color: #00d2d3; font-weight: 900; margin-top: 6px;">🚀 현우 지휘관의 출격 명령:</div>
-                세라믹 비행기 <b style="color:#ffd32c;">'Fire Ceramic Fighter'</b>에 즉시 탑승하여 외계 함대를 궤멸시키고 엄마를 무사히 구출하십시오!
+                <div style="color: #ff3838; font-weight: 900; margin-bottom: 4px;" data-i18n="prologue_inv_title">🛸 외계 마왕의 기습 침공:</div>
+                <span data-i18n="prologue_inv_desc">평화롭던 지구 마을에 정체불명의 외계 마왕 함선이 출현하여 견인 광선으로 현우 엄마를 납치해 우주 저편으로 달아났습니다!</span><br>
+                <div style="color: #00d2d3; font-weight: 900; margin-top: 6px;" data-i18n="prologue_cmd_title">🚀 현우 지휘관의 출격 명령:</div>
+                <span data-i18n="prologue_cmd_desc">세라믹 비행기 <b style="color:#ffd32c;">'Fire Ceramic Fighter'</b>에 즉시 탑승하여 외계 함대를 궤멸시키고 엄마를 무사히 구출하십시오!</span>
             </div>
 
             <button style="font-size: 16px; padding: 13px 30px; border-radius: 30px; background: linear-gradient(135deg, #ff2d55, #ff9f43); border: 2px solid #fff; color: #fff; font-weight: 900; cursor: pointer; box-shadow: 0 0 25px rgba(255, 45, 85, 0.7); animation: splashPulse 1.5s infinite;"
-                onclick="confirmStartGameFromPrologue()">🔥 출격! 외계 함대 격퇴 및 엄마 구출 작전 개시</button>
+                onclick="confirmStartGameFromPrologue()" data-i18n="btn_scramble">🔥 출격! 외계 함대 격퇴 및 엄마 구출 작전 개시</button>
         </div>
 
         <!-- 히어로 전투기 긴급 발진 & 3, 2, 1 카운트다운 모달 -->
         <div id="launchOverlay"
             style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 10, 16, 0.94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 290; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; text-align: center;">
-            <div style="font-size: 20px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 15px rgba(0, 210, 211, 0.8); margin-bottom: 6px; letter-spacing: 2px;">
+            <div style="font-size: 20px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 15px rgba(0, 210, 211, 0.8); margin-bottom: 6px; letter-spacing: 2px;" data-i18n="launch_title">
                 🚀 [현우 지휘관 출격!]
             </div>
-            <div style="font-size: 15px; font-weight: 900; color: #ffd32c; text-shadow: 0 0 10px rgba(255, 211, 44, 0.6); margin-bottom: 12px;">
+            <div style="font-size: 15px; font-weight: 900; color: #ffd32c; text-shadow: 0 0 10px rgba(255, 211, 44, 0.6); margin-bottom: 12px;" data-i18n="launch_subtitle">
                 "Fire Ceramic Fighter 긴급 발진 부스터 온!"
             </div>
 
@@ -683,7 +698,7 @@
                 3
             </div>
 
-            <div style="font-size: 13px; color: #00d2d3; font-weight: bold; text-shadow: 0 0 8px rgba(0, 210, 211, 0.5);">
+            <div style="font-size: 13px; color: #00d2d3; font-weight: bold; text-shadow: 0 0 8px rgba(0, 210, 211, 0.5);" data-i18n="launch_target">
                 ⚔️ 목표: 외계 마왕 함대 소각 및 엄마 구출
             </div>
             <style>
@@ -694,10 +709,10 @@
         <div id="victoryOverlay"
             style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 10, 16, 0.68); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 250; justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box; text-align: center;">
             <div
-                style="font-size: 32px; font-weight: 900; color: #1cfc03; text-shadow: 0 0 25px rgba(28, 252, 3, 0.8); margin-bottom: 8px; letter-spacing: 3px;">
+                style="font-size: 32px; font-weight: 900; color: #1cfc03; text-shadow: 0 0 25px rgba(28, 252, 3, 0.8); margin-bottom: 8px; letter-spacing: 3px;" data-i18n="vic_title">
                 🎉 MISSION VICTORY!</div>
             <div
-                style="font-size: 17px; color: #f1c40f; font-weight: bold; margin-bottom: 12px; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);">
+                style="font-size: 17px; color: #f1c40f; font-weight: bold; margin-bottom: 12px; text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);" data-i18n="vic_subtitle">
                 "외계인에게 잡혀간 현우엄마 구출 작전 완벽 성공!"</div>
 
             <div
@@ -707,19 +722,19 @@
             </div>
 
             <div
-                style="background: rgba(28, 252, 3, 0.12); border: 1px solid #1cfc03; border-radius: 8px; padding: 10px 18px; color: #1cfc03; font-weight: bold; font-size: 13px; margin-bottom: 15px; max-width: 380px; line-height: 1.5; text-shadow: 0 0 5px rgba(28,252,3,0.3);">
+                style="background: rgba(28, 252, 3, 0.12); border: 1px solid #1cfc03; border-radius: 8px; padding: 10px 18px; color: #1cfc03; font-weight: bold; font-size: 13px; margin-bottom: 15px; max-width: 380px; line-height: 1.5; text-shadow: 0 0 5px rgba(28,252,3,0.3);" data-i18n="vic_comment">
                 💬 "현우엄마를 무사히 구출해 은하계에 다시 평화가 찾아왔습니다! 현우 지휘관님과 승리의 기쁨을 나눕니다."
             </div>
 
-            <div id="victoryScore" style="font-size: 15px; color: #ffffff; margin-bottom: 12px;">최종 전과 스코어: 0 PTS</div>
+            <div id="victoryScore" style="font-size: 15px; color: #ffffff; margin-bottom: 12px;" data-i18n="go_score">최종 전과 스코어: 0 PTS</div>
             <div style="margin-bottom: 18px; display: flex; align-items: center; gap: 8px; justify-content: center;">
-                <span style="font-size: 13px; color: #1cfc03; font-weight: bold;">👤 지휘관명 (최대 10자):</span>
+                <span style="font-size: 13px; color: #1cfc03; font-weight: bold;" data-i18n="go_name_label">👤 지휘관명 (최대 10자):</span>
                 <input type="text" id="victoryNameInput" maxlength="10" value="지휘관"
                     style="background: rgba(20, 26, 38, 0.85); border: 1px solid #1cfc03; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 13px; width: 130px; text-align: center; outline: none; box-shadow: 0 0 10px rgba(28, 252, 3, 0.3);">
             </div>
             <button
                 style="font-size: 18px; padding: 12px 40px; border-radius: 30px; background: linear-gradient(135deg, #10ac84, #1cfc03); border: 2px solid #fff; color: #141822; font-weight: 900; cursor: pointer; box-shadow: 0 0 20px rgba(28, 252, 3, 0.5);"
-                onclick="saveHighScore(null, null, true); returnToMainMenu();">💾 명예의 전당 등록 및 복귀</button>
+                onclick="saveHighScore(null, null, true); returnToMainMenu();" data-i18n="btn_save_hall">💾 명예의 전당 등록 및 복귀</button>
         </div>
 
         <!-- (환경설정 모달 삭제됨: 모든 설정 옵션이 초기 화면 전술 패널로 통합) -->
@@ -730,7 +745,7 @@
             <div
                 style="width: 98%; max-width: 520px; background: rgba(16, 20, 30, 0.95); border: 2px solid #00d2d3; border-radius: 16px; padding: 18px 16px 16px 16px; box-sizing: border-box; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(0, 210, 211, 0.4);">
                 <div id="infoModalTitle"
-                    style="font-size: 22px; font-weight: 900; color: #00d2d3; margin-bottom: 12px; text-align: center; text-shadow: 0 0 10px rgba(0, 210, 211, 0.6);">
+                    style="font-size: 22px; font-weight: 900; color: #00d2d3; margin-bottom: 12px; text-align: center; text-shadow: 0 0 10px rgba(0, 210, 211, 0.6);" data-i18n="info_control_title">
                     📖 조작법 가이드</div>
                 <div id="infoAudioSec" style="display: none;">
                     <h3 style="color: #10ac84; margin-top:0;">🎵 오디오 및 배경음 설정</h3>
@@ -774,6 +789,46 @@
                         </div>
                     </div>
                 </div>
+
+                <div id="infoControlSec_en" style="display: none;">
+                    <h3
+                        style="color: #00d2d3; margin-top:0; border-bottom: 1px solid rgba(0, 210, 211, 0.3); padding-bottom: 8px; font-size: 17px; text-align: center;">
+                        ⌨️ Tactical Maneuvers & Smart Controls Guide</h3>
+
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 14px; text-align: left;">
+                        <!-- Smartphone -->
+                        <div
+                            style="background: rgba(0, 210, 211, 0.08); border: 1px solid rgba(0, 210, 211, 0.35); border-radius: 12px; padding: 12px;">
+                            <div
+                                style="color: #00d2d3; font-weight: 900; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                                📱 Smartphone (Mobile)</div>
+                            <div
+                                style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: #dcdde1; line-height: 1.5;">
+                                <div>👉 <b style="color:#fff;">1-Finger Drag:</b> Move fighter relatively without covering it</div>
+                                <div>💥 <b style="color:#ff3838;">2-Finger Touch:</b> 💥 Trigger Solar Ultimate Attack</div>
+                                <div>⏸️ <b style="color:#f1c40f;">3-Finger Touch:</b> ⏸️ Pause / Tactical Arsenal Menu</div>
+                            </div>
+                        </div>
+
+                        <!-- PC -->
+                        <div
+                            style="background: rgba(9, 132, 227, 0.08); border: 1px solid rgba(9, 132, 227, 0.35); border-radius: 12px; padding: 12px;">
+                            <div
+                                style="color: #74b9ff; font-weight: 900; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                                💻 PC (Computer)</div>
+                            <div
+                                style="display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: #dcdde1; line-height: 1.5;">
+                                <div>🎮 <b style="color:#fff;">W, A, S, D / Arrows / Mouse:</b> Move fighter freely</div>
+                                <div>💥 <b style="color:#ff3838;">SPACE / X / E:</b> 💥 Trigger Solar Ultimate Attack</div>
+                                <div>⏸️ <b style="color:#f1c40f;">P Key:</b> ⏸️ Pause / Tactical Arsenal Menu</div>
+                                <div>🎵 <b style="color:#10ac84;">B Key:</b> 🎵 BGM Music ON / OFF</div>
+                                <div>🏠 <b style="color:#a4b0be;">M Key:</b> 🏠 Return to Command Menu</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="infoItemSec" style="display: none;">
                     <h3
                         style="color: #f1c40f; margin-top:0; border-bottom: 1px solid rgba(241, 196, 15, 0.3); padding-bottom: 8px; font-size: 16px; text-align: center;">
@@ -852,10 +907,86 @@
 
                     </div>
                 </div>
+
+                <div id="infoItemSec_en" style="display: none;">
+                    <h3
+                        style="color: #f1c40f; margin-top:0; border-bottom: 1px solid rgba(241, 196, 15, 0.3); padding-bottom: 8px; font-size: 16px; text-align: center;">
+                        🎁 Tactical Drop Items Encyclopedia</h3>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; text-align: left; margin-top: 10px;">
+
+                        <!-- 1. Weapons -->
+                        <div
+                            style="background: rgba(0, 210, 211, 0.08); border: 1px solid rgba(0, 210, 211, 0.35); border-radius: 10px; padding: 10px;">
+                            <div style="color: #00d2d3; font-weight: 900; font-size: 13px; margin-bottom: 6px;">⚔️ Primary Weapons</div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px;">
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">⚡ <b
+                                        style="color:#00d2d3;">LASER</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">Piercing Laser</span></div>
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">🔫 <b
+                                        style="color:#00d2d3;">GATLING</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">Gatling Cannon</span></div>
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">🚀 <b
+                                        style="color:#ff9f43;">ROCKET</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">HE Splash Rocket</span></div>
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">🎯 <b
+                                        style="color:#ff7675;">MISSILE</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">Homing Missile</span></div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Survivability -->
+                        <div
+                            style="background: rgba(46, 213, 115, 0.08); border: 1px solid rgba(46, 213, 115, 0.35); border-radius: 10px; padding: 10px;">
+                            <div style="color: #2ed573; font-weight: 900; font-size: 13px; margin-bottom: 6px;">🛡️ Survival & HP</div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px;">
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💚 <b
+                                        style="color:#2ed573;">HEAL</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">HP Heal & Cap Up</span></div>
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">🛡️ <b
+                                        style="color:#1cfc03;">NANO_SHIELD</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">Invulnerable Shield</span></div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Buffs -->
+                        <div
+                            style="background: rgba(255, 159, 67, 0.08); border: 1px solid rgba(255, 159, 67, 0.35); border-radius: 10px; padding: 10px;">
+                            <div style="color: #ff9f43; font-weight: 900; font-size: 13px; margin-bottom: 6px;">💥 Tactical Buffs</div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px;">
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💥 <b
+                                        style="color:#f1c40f;">DAMAGE_X2</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">Damage +100%</span></div>
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💣 <b
+                                        style="color:#ff6b6b;">BOMBARD</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">Air Bombard Support</span></div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Support -->
+                        <div
+                            style="background: rgba(255, 56, 56, 0.08); border: 1px solid rgba(255, 56, 56, 0.35); border-radius: 10px; padding: 10px;">
+                            <div style="color: #ff3838; font-weight: 900; font-size: 13px; margin-bottom: 6px;">🤖 Drone & Ult</div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; font-size: 11px;">
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">✈️ <b
+                                        style="color:#54a0ff;">ALLY</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">Support Drone</span></div>
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💣 <b
+                                        style="color:#ff3838;">BOMB</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">Solar Bomb</span></div>
+                                <div style="background: rgba(0,0,0,0.35); padding: 5px 6px; border-radius: 6px;">💥 <b
+                                        style="color:#ff3838;">ULTIMATE</b><br><span
+                                        style="color:#a4b0be; font-size:10px;">Solar Ult Stock +1</span></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
             <button
                 style="background: linear-gradient(135deg, #00d2d3, #0984e3); border: none; color: #fff; width: 100%; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 900; cursor: pointer; margin-top: 14px; box-shadow: 0 0 20px rgba(0, 210, 211, 0.5);"
-                onclick="closeInfoModal()">✖ 닫기</button>
+                onclick="closeInfoModal()" data-i18n="btn_close">✖ 닫기</button>
         </div>
     </div>
     </div>
@@ -897,93 +1028,138 @@
     </div>
     </div>
 
-    <!-- 일시중지(P) 전술 아이템 셀렉터 팝업 모달 -->
+    <!-- 일시중지(P) 전술 아이템 셀렉터 및 조작법/도감 팝업 모달 -->
     <div id="pauseItemSelectorModal"
         style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 300; justify-content: center; align-items: center;">
         <div
-            style="background: #141822; border: 2px solid #f1c40f; border-radius: 12px; padding: 20px; width: 460px; max-height: 85vh; overflow-y: auto; box-shadow: 0 0 35px rgba(241, 196, 15, 0.5); display: flex; flex-direction: column; gap: 12px; box-sizing: border-box;">
+            style="background: #141822; border: 2px solid #f1c40f; border-radius: 12px; padding: 20px; width: 480px; max-height: 88vh; overflow-y: auto; box-shadow: 0 0 35px rgba(241, 196, 15, 0.5); display: flex; flex-direction: column; gap: 12px; box-sizing: border-box;">
             <div
-                style="font-size: 17px; font-weight: bold; color: #f1c40f; border-bottom: 1px solid #2c3e50; padding-bottom: 8px; text-align: center;">
-                ⏸️ 실시간 일시중지 - 전술 무기 & 아이템 변경 아스날</div>
-            <div style="font-size: 12px; color: #cbd5e1; text-align: center; margin-bottom: 4px;">원하는 아이템을 클릭하면 영구 적용 및
-                즉시 무장 변경됩니다!</div>
+                style="font-size: 17px; font-weight: bold; color: #f1c40f; border-bottom: 1px solid #2c3e50; padding-bottom: 8px; text-align: center;" data-i18n="pause_title">
+                ⏸️ 일시중지 - 전술 아스날 & 작전 지침서</div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                <button
-                    style="background: rgba(28, 252, 3, 0.15); border: 1px solid #1cfc03; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('HEAL')">💚 <span style="color:#1cfc03; font-weight:bold;">메디컬
-                        킷</span><br><span style="font-size:10px; color:#a4b0be;">HP 회복 / 만피 시 최대 HP 확장</span></button>
-                <button
-                    style="background: rgba(0, 210, 211, 0.15); border: 1px solid #00d2d3; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('LASER')">⚡ <span style="color:#00d2d3; font-weight:bold;">플라즈마
-                        레이저</span><br><span style="font-size:10px; color:#a4b0be;">영구 관통 고출력 빔</span></button>
-                <button
-                    style="background: rgba(255, 211, 44, 0.15); border: 1px solid #ffd32c; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('GATLING')">🔫 <span style="color:#ffd32c; font-weight:bold;">3연장
-                        개틀링</span><br><span style="font-size:10px; color:#a4b0be;">영구 3열 고속 속사 유탄</span></button>
-                <button
-                    style="background: rgba(250, 130, 49, 0.15); border: 1px solid #fa8231; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('ROCKET')">🚀 <span style="color:#fa8231; font-weight:bold;">헤비
-                        로켓</span><br><span style="font-size:10px; color:#a4b0be;">영구 스플래시 중로켓</span></button>
-                <button
-                    style="background: rgba(255, 77, 77, 0.15); border: 1px solid #ff4d4d; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('MISSILE')">🔥 <span style="color:#ff4d4d; font-weight:bold;">열압력
-                        미사일</span><br><span style="font-size:10px; color:#a4b0be;">영구 자동 유도 미사일</span></button>
-                <button
-                    style="background: rgba(255, 159, 67, 0.15); border: 1px solid #ff9f43; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('DAMAGE_X2')">💥 <span style="color:#ff9f43; font-weight:bold;">2배 화력
-                        버프</span><br><span style="font-size:10px; color:#a4b0be;">영구 공격력 2배 증폭</span></button>
-                <button
-                    style="background: rgba(224, 86, 253, 0.15); border: 1px solid #e056fd; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('SPLASH_RANGE')">🔮 <span style="color:#e056fd; font-weight:bold;">스플래시
-                        범주</span><br><span style="font-size:10px; color:#a4b0be;">영구 폭발 범위 확장</span></button>
-                <button
-                    style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('BOMBARD')">☄️ <span style="color:#ff3838; font-weight:bold;">전술 폭격
-                        지원</span><br><span style="font-size:10px; color:#a4b0be;">영구 위성 궤도 정밀 폭격</span></button>
-                <button
-                    style="background: rgba(16, 172, 132, 0.15); border: 1px solid #10ac84; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('NANO_SHIELD')">🛡️ <span style="color:#10ac84; font-weight:bold;">나노
-                        방어막</span><br><span style="font-size:10px; color:#a4b0be;">영구 나노 무적 방어막</span></button>
-                <button
-                    style="background: rgba(164, 176, 190, 0.15); border: 1px solid #a4b0be; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('HEAVY_ARMOR')">🔩 <span style="color:#a4b0be; font-weight:bold;">중장갑
-                        아머</span><br><span style="font-size:10px; color:#a4b0be;">영구 피격 피해 50% 감쇄</span></button>
-                <button
-                    style="background: rgba(46, 134, 222, 0.15); border: 1px solid #2e86de; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('ALLY')">🪖 <span style="color:#2e86de; font-weight:bold;">아군 대원
-                        지원</span><br><span style="font-size:10px; color:#a4b0be;">드론 대원 +1명 즉시 합류</span></button>
-                <button
-                    style="background: rgba(255, 82, 82, 0.15); border: 1px solid #ff5252; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('BOMB')">💣 <span style="color:#ff5252; font-weight:bold;">전술
-                        폭탄</span><br><span style="font-size:10px; color:#a4b0be;">화면 전체 적 일괄 폭파</span></button>
-                <button
-                    style="background: rgba(255, 45, 85, 0.15); border: 1px solid #ff2d55; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('LIFE')">❤️ <span style="color:#ff2d55; font-weight:bold;">목숨
-                        추가</span><br><span style="font-size:10px; color:#a4b0be;">잔여 목숨 +1 보충</span></button>
-                <button
-                    style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; color: #fff; padding: 10px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 12px;"
-                    onclick="selectPauseItem('ULTIMATE')">💥 <span style="color:#ff3838; font-weight:bold;">필살기
-                        충전</span><br><span style="font-size:10px; color:#a4b0be;">전술 필살기 +1 보충</span></button>
+            <!-- 일시정지 서브 탭 버튼 바 -->
+            <div style="display: flex; gap: 6px; justify-content: center; width: 100%;">
+                <button id="pTabBtnArsenal" class="pause-tab-btn active-pause-tab" onclick="switchPauseTab('ARSENAL')"
+                    style="flex: 1; background: rgba(241, 196, 15, 0.2); border: 1px solid #f1c40f; color: #f1c40f; padding: 7px 4px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer;" data-i18n="pause_tab_arsenal">⚡ 무장 변경</button>
+                <button id="pTabBtnControls" class="pause-tab-btn" onclick="switchPauseTab('CONTROLS')"
+                    style="flex: 1; background: rgba(0, 210, 211, 0.1); border: 1px solid #00d2d3; color: #00d2d3; padding: 7px 4px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer;" data-i18n="pause_tab_controls">⌨️ 조작법</button>
+                <button id="pTabBtnCodex" class="pause-tab-btn" onclick="switchPauseTab('CODEX')"
+                    style="flex: 1; background: rgba(224, 86, 253, 0.1); border: 1px solid #e056fd; color: #e056fd; padding: 7px 4px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer;" data-i18n="pause_tab_codex">🎁 아이템 도감</button>
+            </div>
+
+            <!-- 1. 무장 변경 아스날 탭 -->
+            <div id="pSecArsenal" style="display: block;">
+                <div style="font-size: 11px; color: #cbd5e1; text-align: center; margin-bottom: 8px;">원하는 아이템을 클릭하면 즉시 해당 무기로 장착 변경됩니다!</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <button style="background: rgba(28, 252, 3, 0.15); border: 1px solid #1cfc03; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('HEAL')">💚 <span style="color:#1cfc03; font-weight:bold;">메디컬 킷</span><br><span style="font-size:10px; color:#a4b0be;">HP 회복 / 만피 시 최대 HP 확장</span></button>
+                    <button style="background: rgba(0, 210, 211, 0.15); border: 1px solid #00d2d3; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('LASER')">⚡ <span style="color:#00d2d3; font-weight:bold;">플라즈마 레이저</span><br><span style="font-size:10px; color:#a4b0be;">관통 고출력 20배 빔</span></button>
+                    <button style="background: rgba(255, 211, 44, 0.15); border: 1px solid #ffd32c; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('GATLING')">🔫 <span style="color:#ffd32c; font-weight:bold;">3연장 개틀링</span><br><span style="font-size:10px; color:#a4b0be;">3열 고속 속사 유탄 연사</span></button>
+                    <button style="background: rgba(250, 130, 49, 0.15); border: 1px solid #fa8231; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('ROCKET')">🚀 <span style="color:#fa8231; font-weight:bold;">헤비 로켓</span><br><span style="font-size:10px; color:#a4b0be;">대형 광역 스플래시 로켓</span></button>
+                    <button style="background: rgba(255, 77, 77, 0.15); border: 1px solid #ff4d4d; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('MISSILE')">🔥 <span style="color:#ff4d4d; font-weight:bold;">열압력 미사일</span><br><span style="font-size:10px; color:#a4b0be;">자동 유도 파편 미사일</span></button>
+                    <button style="background: rgba(255, 159, 67, 0.15); border: 1px solid #ff9f43; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('DAMAGE_X2')">💥 <span style="color:#ff9f43; font-weight:bold;">2배 화력 버프</span><br><span style="font-size:10px; color:#a4b0be;">공격력 2배 증폭</span></button>
+                    <button style="background: rgba(224, 86, 253, 0.15); border: 1px solid #e056fd; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('SPLASH_RANGE')">🔮 <span style="color:#e056fd; font-weight:bold;">스플래시 범주</span><br><span style="font-size:10px; color:#a4b0be;">폭발 범위 확장 버프</span></button>
+                    <button style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('BOMBARD')">☄️ <span style="color:#ff3838; font-weight:bold;">전술 폭격 지원</span><br><span style="font-size:10px; color:#a4b0be;">위성 궤도 무차별 정밀 폭격</span></button>
+                    <button style="background: rgba(16, 172, 132, 0.15); border: 1px solid #10ac84; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('NANO_SHIELD')">🛡️ <span style="color:#10ac84; font-weight:bold;">나노 방어막</span><br><span style="font-size:10px; color:#a4b0be;">완전 나노 무적 방어막</span></button>
+                    <button style="background: rgba(164, 176, 190, 0.15); border: 1px solid #a4b0be; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('HEAVY_ARMOR')">🔩 <span style="color:#a4b0be; font-weight:bold;">중장갑 아머</span><br><span style="font-size:10px; color:#a4b0be;">피격 피해 50% 감쇄</span></button>
+                    <button style="background: rgba(46, 134, 222, 0.15); border: 1px solid #2e86de; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('ALLY')">🪖 <span style="color:#2e86de; font-weight:bold;">아군 대원 지원</span><br><span style="font-size:10px; color:#a4b0be;">드론 대원 +1명 즉시 합류</span></button>
+                    <button style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('ULTIMATE')">💥 <span style="color:#ff3838; font-weight:bold;">필살기 충전</span><br><span style="font-size:10px; color:#a4b0be;">전술 필살기 +1 보충</span></button>
+                </div>
+            </div>
+
+            <!-- English Arsenal Tab -->
+            <div id="pSecArsenal_en" style="display: none;">
+                <div style="font-size: 11px; color: #cbd5e1; text-align: center; margin-bottom: 8px;">Click an item below to immediately equip/change it!</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <button style="background: rgba(28, 252, 3, 0.15); border: 1px solid #1cfc03; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('HEAL')">💚 <span style="color:#1cfc03; font-weight:bold;">Medical Kit</span><br><span style="font-size:10px; color:#a4b0be;">Restore HP & Expand Cap</span></button>
+                    <button style="background: rgba(0, 210, 211, 0.15); border: 1px solid #00d2d3; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('LASER')">⚡ <span style="color:#00d2d3; font-weight:bold;">Plasma Laser</span><br><span style="font-size:10px; color:#a4b0be;">20x Piercing Laser Beam</span></button>
+                    <button style="background: rgba(255, 211, 44, 0.15); border: 1px solid #ffd32c; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('GATLING')">🔫 <span style="color:#ffd32c; font-weight:bold;">3-Way Gatling</span><br><span style="font-size:10px; color:#a4b0be;">6x Rapid Gatling Cannon</span></button>
+                    <button style="background: rgba(250, 130, 49, 0.15); border: 1px solid #fa8231; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('ROCKET')">🚀 <span style="color:#fa8231; font-weight:bold;">Heavy Rocket</span><br><span style="font-size:10px; color:#a4b0be;">15x Massive Splash Rocket</span></button>
+                    <button style="background: rgba(255, 77, 77, 0.15); border: 1px solid #ff4d4d; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('MISSILE')">🔥 <span style="color:#ff4d4d; font-weight:bold;">Homing Missile</span><br><span style="font-size:10px; color:#a4b0be;">15x Automated Homing Missile</span></button>
+                    <button style="background: rgba(255, 159, 67, 0.15); border: 1px solid #ff9f43; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('DAMAGE_X2')">💥 <span style="color:#ff9f43; font-weight:bold;">Damage X2</span><br><span style="font-size:10px; color:#a4b0be;">Double Weapon Firepower</span></button>
+                    <button style="background: rgba(224, 86, 253, 0.15); border: 1px solid #e056fd; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('SPLASH_RANGE')">🔮 <span style="color:#e056fd; font-weight:bold;">Splash Range</span><br><span style="font-size:10px; color:#a4b0be;">Double Explosion Range</span></button>
+                    <button style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('BOMBARD')">☄️ <span style="color:#ff3838; font-weight:bold;">Air Bombard</span><br><span style="font-size:10px; color:#a4b0be;">Satellite Precision Strike</span></button>
+                    <button style="background: rgba(16, 172, 132, 0.15); border: 1px solid #10ac84; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('NANO_SHIELD')">🛡️ <span style="color:#10ac84; font-weight:bold;">Nano Shield</span><br><span style="font-size:10px; color:#a4b0be;">10s Invulnerability Shield</span></button>
+                    <button style="background: rgba(164, 176, 190, 0.15); border: 1px solid #a4b0be; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('HEAVY_ARMOR')">🔩 <span style="color:#a4b0be; font-weight:bold;">Heavy Armor</span><br><span style="font-size:10px; color:#a4b0be;">Mitigate 50% Taken Damage</span></button>
+                    <button style="background: rgba(46, 134, 222, 0.15); border: 1px solid #2e86de; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('ALLY')">🪖 <span style="color:#2e86de; font-weight:bold;">Request Drone</span><br><span style="font-size:10px; color:#a4b0be;">Summon Escort Support Drone</span></button>
+                    <button style="background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; color: #fff; padding: 9px; border-radius: 6px; cursor: pointer; text-align: left; font-size: 11px;" onclick="selectPauseItem('ULTIMATE')">💥 <span style="color:#ff3838; font-weight:bold;">Ultimate Charge</span><br><span style="font-size:10px; color:#a4b0be;">Add +1 Solar Ultimate Stock</span></button>
+                </div>
+            </div>
+
+            <!-- 2. 조작법 가이드 탭 -->
+            <div id="pSecControls" style="display: none; background: rgba(20, 26, 38, 0.6); padding: 12px; border-radius: 8px; border: 1px solid #00d2d3;">
+                <div style="font-size: 13px; font-weight: bold; color: #00d2d3; margin-bottom: 8px;">🎮 전투 가이드 및 조작법</div>
+                <div style="font-size: 11px; color: #e2e8f0; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
+                    <div>🖱️ <b>기체 이동 (PC)</b>: 마우스 좌클릭 드래그 또는 마우스 커서 이동</div>
+                    <div>📱 <b>기체 이동 (모바일)</b>: 화면 터치 후 원하는 방향으로 상대 드래그 (손가락이 비행기를 가리지 않음)</div>
+                    <div>💥 <b>전술 필살기</b>: <code>Space</code> 키 클릭 또는 <b>2손가락 동시에 화면 터치</b></div>
+                    <div>⏸️ <b>일시정지 / 무장창</b>: <code>P</code> 키 클릭 또는 <b>3손가락 동시에 화면 터치</b></div>
+                </div>
+            </div>
+
+            <!-- English Controls Tab -->
+            <div id="pSecControls_en" style="display: none; background: rgba(20, 26, 38, 0.6); padding: 12px; border-radius: 8px; border: 1px solid #00d2d3;">
+                <div style="font-size: 13px; font-weight: bold; color: #00d2d3; margin-bottom: 8px;">🎮 Battle Guide & Controls</div>
+                <div style="font-size: 11px; color: #e2e8f0; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
+                    <div>🖱️ <b>Move (PC)</b>: Drag left-click or move mouse cursor</div>
+                    <div>📱 <b>Move (Mobile)</b>: Tap & drag relatively (doesn't cover the jet)</div>
+                    <div>💥 <b>Ultimate Attack</b>: Press <code>Space</code> key or <b>Double-finger tap</b></div>
+                    <div>⏸️ <b>Pause / Arsenal</b>: Press <code>P</code> key or <b>3-finger tap</b></div>
+                </div>
+            </div>
+
+            <!-- 3. 아이템 도감 탭 -->
+            <div id="pSecCodex" style="display: none; background: rgba(20, 26, 38, 0.6); padding: 12px; border-radius: 8px; border: 1px solid #e056fd;">
+                <div style="font-size: 13px; font-weight: bold; color: #e056fd; margin-bottom: 8px;">🎁 드롭 아이템 도감 백과</div>
+                <div style="font-size: 11px; color: #e2e8f0; line-height: 1.5; display: flex; flex-direction: column; gap: 5px;">
+                    <div>💚 <b style="color:#1cfc03;">메디컬 킷</b>: HP 회복 (만피 시 최대 HP 확장)</div>
+                    <div>⚡ <b style="color:#00d2d3;">플라즈마 레이저</b>: 20배 관통 광선 빔</div>
+                    <div>🔫 <b style="color:#ffd32c;">3연장 개틀링</b>: 3열 고속 폭풍 속사</div>
+                    <div>🚀 <b style="color:#fa8231;">헤비 로켓</b>: 광역 폭발 스플래시 로켓</div>
+                    <div>🔥 <b style="color:#ff4d4d;">열압력 미사일</b>: 자동 유도 미사일</div>
+                    <div>💥 <b style="color:#ff9f43;">2배 화력 버프</b>: 20초간 화력 2배 증폭</div>
+                    <div>🔮 <b style="color:#e056fd;">스플래시 범주</b>: 폭발 영향 범위 2배 확장</div>
+                    <div>🛡️ <b style="color:#10ac84;">나노 방어막</b>: 20초간 완전 나노 무적</div>
+                    <div>🔩 <b style="color:#a4b0be;">중장갑 아머</b>: 피격 피격 데미지 50% 감쇄</div>
+                    <div>🪖 <b style="color:#2e86de;">아군 대원</b>: 크로스파이어 드론 대원 합류</div>
+                    <div>💥 <b style="color:#ff3838;">필살기 충전</b>: 전 화면 소각 전술 폭탄 +1</div>
+                    <div>❤️ <b style="color:#ff2d55;">목숨 추가</b>: 잔여 생명 +1 증가</div>
+                </div>
+            </div>
+
+            <!-- English Codex Tab -->
+            <div id="pSecCodex_en" style="display: none; background: rgba(20, 26, 38, 0.6); padding: 12px; border-radius: 8px; border: 1px solid #e056fd;">
+                <div style="font-size: 13px; font-weight: bold; color: #e056fd; margin-bottom: 8px;">🎁 Drop Items Encyclopedia</div>
+                <div style="font-size: 11px; color: #e2e8f0; line-height: 1.5; display: flex; flex-direction: column; gap: 5px;">
+                    <div>💚 <b style="color:#1cfc03;">Medical Kit</b>: HP Restore (Expand Max HP)</div>
+                    <div>⚡ <b style="color:#00d2d3;">Plasma Laser</b>: 20x Penetrating Beam</div>
+                    <div>🔫 <b style="color:#ffd32c;">3-Way Gatling</b>: 3-Way Rapid Fire</div>
+                    <div>🚀 <b style="color:#fa8231;">Heavy Rocket</b>: High-explosive Rocket</div>
+                    <div>🔥 <b style="color:#ff4d4d;">Homing Missile</b>: Automated Homing Missile</div>
+                    <div>💥 <b style="color:#ff9f43;">Double Power</b>: Double Firepower for 20s</div>
+                    <div>🔮 <b style="color:#e056fd;">Splash Range</b>: Expand Area-of-Effect range</div>
+                    <div>🛡️ <b style="color:#10ac84;">Nano Shield</b>: Perfect Collision Shield for 20s</div>
+                    <div>🔩 <b style="color:#a4b0be;">Heavy Armor</b>: Mitigate 50% damage taken</div>
+                    <div>🪖 <b style="color:#2e86de;">Squad Drone</b>: Summon support drone to scramble</div>
+                    <div>💥 <b style="color:#ff3838;">Ultimate Charge</b>: Solar Bomb stock +1</div>
+                    <div>❤️ <b style="color:#ff2d55;">Life Stock</b>: Add +1 Life stock</div>
+                </div>
             </div>
 
             <!-- 일시중지 네비게이션 액션 버튼 바 -->
-            <div style="display: flex; gap: 6px; margin-top: 10px; width: 100%;">
+            <div style="display: flex; gap: 6px; margin-top: 6px; width: 100%;">
                 <button
-                    style="flex: 1; background: linear-gradient(135deg, #10ac84, #1cfc03); border: none; color: #141822; padding: 10px 4px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;"
-                    onclick="togglePauseState()">▶️ 전투계속</button>
-                <button
-                    style="flex: 1; background: rgba(20, 26, 38, 0.9); border: 1px solid #00d2d3; color: #00d2d3; padding: 10px 4px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;"
-                    onclick="openInfoModal('CONTROLS')">⌨️ 조작법</button>
+                    style="flex: 1.2; background: linear-gradient(135deg, #10ac84, #1cfc03); border: none; color: #141822; padding: 10px 4px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;"
+                    onclick="togglePauseState()" data-i18n="btn_resume">▶️ 전투계속</button>
                 <button
                     style="flex: 1; background: rgba(44, 62, 80, 0.9); border: 1px solid #f1c40f; color: #f1c40f; padding: 10px 4px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;"
-                    onclick="returnToMainMenu()">🏠 지휘소</button>
+                    onclick="returnToMainMenu()" data-i18n="btn_menu">🏠 지휘소</button>
                 <button
                     style="flex: 1; background: rgba(255, 56, 56, 0.2); border: 1px solid #ff3838; color: #ff3838; padding: 10px 4px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer;"
-                    onclick="restartCurrentGame()">🔄 재작전</button>
+                    onclick="restartCurrentGame()" data-i18n="btn_restart">🔄 재작전</button>
             </div>
         </div>
     </div>
+
     <div id="infoModal"
         style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); z-index: 200; justify-content: center; align-items: center;">
         <div
@@ -1208,6 +1384,246 @@
     </div>
 
     <script>
+        const LANG_DATA = {
+            ko: {
+                menu_title: "🔥 파이어 세라믹 파이터",
+                menu_subtitle: "Fire Ceramic Fighter (v11.9.1)",
+                difficulty_easy: "EASY (Lv.1)",
+                difficulty_normal: "NORMAL (Lv.2)",
+                difficulty_hard: "HARD (Lv.3)",
+                difficulty_expert: "EXPERT (Lv.4)",
+                difficulty_nightmare: "NIGHTMARE (Lv.5)",
+                dashboard_title: "🎛️ 빠른 전술 제어 센터",
+                ult_btn: "💥 전술 섬멸 필살기 [SPACE] (잔여: ",
+                guide_btn: "📖 전술 조작 가이드",
+                codex_btn: "🎁 아이템 도감",
+                hotkey_guide: "🎮 조작 및 단축키 가이드",
+                hotkey_mobile: "📱 모바일 조작 (스마트폰)",
+                hotkey_mobile_1: "1손가락 드래그 비행기 가림 없는 무빙",
+                hotkey_mobile_2: "2손가락 터치 💥 전술 필살기 발동",
+                hotkey_mobile_3: "3손가락 터치 ⏸️ 일시정지 및 아스날 메뉴",
+                hotkey_pc: "💻 PC 조작 (키보드)",
+                hotkey_pc_1: "W,A,S,D / 마우스 상하좌우 무빙 기동",
+                hotkey_pc_2: "SPACE / X / E 💥 필살기 발동",
+                hotkey_pc_3: "P ⏸️ 일시정지 및 아스날 메뉴",
+                hotkey_pc_4: "B BGM 배경음악 토글",
+                settings_title: "🛠️ 세부 전술 파라미터 설정",
+                settings_desc: "5대 전술 파라미터를 난이도 프리셋과 별개로 세밀하게 조정합니다.",
+                settings_option_title: "🛠️ 세부 전술 옵션 설정 (5대 파라미터)",
+                settings_midboss_hp: "⚔️ 중간보스 체력",
+                settings_minion_hp: "👾 잡몹 밀도/체력",
+                settings_finalboss_hp: "👑 마왕(최종보스) 체력",
+                settings_item_drop: "🎁 아이템 드롭율",
+                settings_escort_minion: "🛸 중간보스 호위잡몹 밀도 (신규)",
+                settings_sound_title: "🎵 사운드 & 배경음악(BGM) 설정",
+                settings_bgm_switch: "BGM 스위치",
+                settings_bgm_vol: "음량:",
+                settings_ult_title: "💥 필살기 설정",
+                settings_ult_limit: "💣 필살기 폭탄 소지 한도",
+                settings_lang_title: "🌐 언어 설정 / Language Settings",
+                settings_lang_select: "선택 (Select Language)",
+                settings_save: "💾 설정 저장 및 완료",
+                opt_weak: "약함 (0.6x)",
+                opt_normal: "보통 (1.0x)",
+                opt_strong: "강함 (1.6x)",
+                opt_demon: "악마 (2.5x)",
+                opt_small: "소형 (0.6x)",
+                opt_large: "대형 (1.5x)",
+                opt_swarm: "군단 (2.2x)",
+                opt_easy: "쉬움 (0.7x)",
+                opt_hard: "어려움 (1.5x)",
+                opt_nightmare: "악몽 (2.5x)",
+                opt_rich: "풍부함 (50%)",
+                opt_adj: "조절됨 (15%)",
+                opt_none: "없음 (0기 - 보스 단독)",
+                opt_few: "적음 (0.5x 밀도)",
+                opt_many: "많음 (1.5x 집중 스웜)",
+                opt_extreme: "극악 (2.2x 대규모 군단)",
+                opt_bgm_on: "ON",
+                opt_ult_3: "3개 (제한적)",
+                opt_ult_5: "5개 (기본 표준)",
+                opt_ult_7: "7개 (여유)",
+                opt_ult_10: "10개 (무제한급)",
+                go_title: "MISSION OVERRUN",
+                go_score: "최종 스코어: 0 PTS",
+                go_name_label: "👤 지휘관명 (최대 10자):",
+                btn_save_hall: "💾 명예의 전당 등록 및 복귀",
+                prologue_title: "🚨 [긴급 작전 시나리오]",
+                prologue_subtitle: "\"외계 마왕 함선 침공 & 현우엄마 납치 사건!\"",
+                prologue_inv_title: "🛸 외계 마왕의 기습 침공:",
+                prologue_inv_desc: "평화롭던 지구 마을에 정체불명의 외계 마왕 함선이 출현하여 견인 광선으로 현우 엄마를 납치해 우주 저편으로 달아났습니다!",
+                prologue_cmd_title: "🚀 현우 지휘관의 출격 명령:",
+                prologue_cmd_desc: "세라믹 비행기 'Fire Ceramic Fighter'에 즉시 탑승하여 외계 함대를 궤멸시키고 엄마를 무사히 구출하십시오!",
+                btn_scramble: "🔥 출격! 외계 함대 격퇴 및 엄마 구출 작전 개시",
+                launch_title: "🚀 [현우 지휘관 출격!]",
+                launch_subtitle: "\"Fire Ceramic Fighter 긴급 발진 부스터 온!\"",
+                launch_target: "⚔️ 목표: 외계 마왕 함대 소각 및 엄마 구출",
+                vic_title: "🎉 MISSION VICTORY!",
+                vic_subtitle: "\"외계인에게 잡혀간 현우엄마 구출 작전 완벽 성공!\"",
+                vic_comment: "💬 \"현우엄마를 무사히 구출해 은하계에 다시 평화가 찾아왔습니다! 현우 지휘관님과 승리의 기쁨을 나눕니다.\"",
+                btn_close: "✖ 닫기",
+                info_control_title: "📖 조작법 가이드",
+                info_codex_title: "🎁 전술 드롭 아이템 분류 도감",
+                katok_local_alert: "로컬 파일(file://) 실행 환경입니다. 웹 서버(http/https) 주소에서 접속 시 외부 브라우저 전환이 지원됩니다.",
+                katok_ios_alert: "💡 아이폰(iOS)은 카카오톡 보안 정책상 자동 브라우저 전환이 제한됩니다.\n\n우측 하단의 '...' (점 세 개) 버튼을 누른 후 '다른 브라우저에서 열기' (Safari)를 선택해 주세요! ↘️",
+                btn_resume: "▶️ 전투계속",
+                btn_menu: "🏠 지휘소",
+                btn_restart: "🔄 재작전",
+                pause_title: "⏸️ 일시중지 - 전술 아스날 & 작전 지침서",
+                pause_tab_arsenal: "⚡ 무장 변경",
+                pause_tab_controls: "⌨️ 조작법",
+                pause_tab_codex: "🎁 아이템 도감",
+                pause_desc: "원하는 아이템을 클릭하면 즉시 해당 무기로 장착 변경됩니다!",
+                hud_lv: "레벨: ",
+                hud_score: "점수: ",
+                hud_shield: "보스 쉴드: ",
+                hud_hp: "보스 체력: ",
+                hud_drones: "드론 편대: ",
+                hud_ult: "전술 필살기 [Space/X/E]: ",
+                hud_none: "없음"
+            },
+            en: {
+                menu_title: "🔥 FIRE CERAMIC FIGHTER",
+                menu_subtitle: "Fire Ceramic Fighter (v11.9.1)",
+                difficulty_easy: "EASY (Lv.1)",
+                difficulty_normal: "NORMAL (Lv.2)",
+                difficulty_hard: "HARD (Lv.3)",
+                difficulty_expert: "EXPERT (Lv.4)",
+                difficulty_nightmare: "NIGHTMARE (Lv.5)",
+                dashboard_title: "🎛️ Tactical Control Center",
+                ult_btn: "💥 Ultimate [SPACE] (Stock: ",
+                guide_btn: "📖 Tactical Guide",
+                codex_btn: "🎁 Item Codex",
+                hotkey_guide: "🎮 Controls & Hotkeys",
+                hotkey_mobile: "📱 Mobile Controls (Smartphone)",
+                hotkey_mobile_1: "1-finger drag: Relational move without covering",
+                hotkey_mobile_2: "2-finger touch: 💥 Trigger Solar Ultimate Attack",
+                hotkey_mobile_3: "3-finger touch: ⏸️ Pause / Arsenal Menu",
+                hotkey_pc: "💻 PC Controls (Keyboard)",
+                hotkey_pc_1: "W,A,S,D / Mouse: Move fighter freely",
+                hotkey_pc_2: "SPACE / X / E: 💥 Trigger Solar Ultimate Attack",
+                hotkey_pc_3: "P: ⏸️ Pause / Arsenal Menu",
+                hotkey_pc_4: "B: Toggle BGM Music",
+                settings_title: "🛠️ Tactical Parameters Setup",
+                settings_desc: "Fine-tune 5 tactical parameters independently from difficulty presets.",
+                settings_option_title: "🛠️ Fine Option Setup (5 Parameters)",
+                settings_midboss_hp: "⚔️ Midboss HP",
+                settings_minion_hp: "👾 Minion Density/HP",
+                settings_finalboss_hp: "👑 Final Boss HP",
+                settings_item_drop: "🎁 Item Drop Rate",
+                settings_escort_minion: "🛸 Escort Minion Density (New)",
+                settings_sound_title: "🎵 Audio & BGM Configuration",
+                settings_bgm_switch: "BGM Switch",
+                settings_bgm_vol: "Volume:",
+                settings_ult_title: "💥 Ultimate Config",
+                settings_ult_limit: "💣 Ultimate Max Cap Limit",
+                settings_lang_title: "🌐 Language Settings",
+                settings_lang_select: "Select Language",
+                settings_save: "💾 Save Parameters & Complete",
+                opt_weak: "Weak (0.6x)",
+                opt_normal: "Normal (1.0x)",
+                opt_strong: "Strong (1.6x)",
+                opt_demon: "Demon (2.5x)",
+                opt_small: "Small (0.6x)",
+                opt_large: "Large (1.5x)",
+                opt_swarm: "Swarm (2.2x)",
+                opt_easy: "Easy (0.7x)",
+                opt_hard: "Hard (1.5x)",
+                opt_nightmare: "Nightmare (2.5x)",
+                opt_rich: "Rich (50%)",
+                opt_adj: "Adjusted (15%)",
+                opt_none: "None (Solo Boss)",
+                opt_few: "Few (0.5x Density)",
+                opt_many: "Many (1.5x Swarm)",
+                opt_extreme: "Extreme (2.2x Legion)",
+                opt_bgm_on: "ON",
+                opt_ult_3: "3 Stocks",
+                opt_ult_5: "5 Stocks (Default)",
+                opt_ult_7: "7 Stocks (Relaxed)",
+                opt_ult_10: "10 Stocks (Unlimited)",
+                go_title: "MISSION OVERRUN",
+                go_score: "Final Score: 0 PTS",
+                go_name_label: "👤 Commander Name (Max 10):",
+                btn_save_hall: "💾 Register Hall of Fame & Return",
+                prologue_title: "🚨 [Tactical Emergency Scenario]",
+                prologue_subtitle: "\"Alien Invasion & Mother Abducted!\"",
+                prologue_inv_title: "🛸 Alien Lord Invasion:",
+                prologue_inv_desc: "A giant alien mothership emerged over earth and abducted commander's mother using tractor beam!",
+                prologue_cmd_title: "🚀 Scramble Launch Order:",
+                prologue_cmd_desc: "Board the ceramic starfighter 'Fire Ceramic Fighter' instantly to defeat alien fleet and rescue mother!",
+                btn_scramble: "🔥 SCRAMBLE! Launch Operation and Defeat Mothership",
+                launch_title: "🚀 [Scramble Launching!]",
+                launch_subtitle: "\"Fire Ceramic Fighter Scramble Booster ON!\"",
+                launch_target: "⚔️ Objective: Annihilate Alien Fleet & Save Mother",
+                vic_title: "🎉 MISSION VICTORY!",
+                vic_subtitle: "\"Successfully Rescued Mother from Aliens!\"",
+                vic_comment: "💬 \"Mother is rescued safely. Peace returned to the galaxy! Sharing the victory with Commander Hyunwoo.\"",
+                btn_close: "✖ Close",
+                info_control_title: "📖 Battle Guide & Controls",
+                info_codex_title: "🎁 Drop Items Encyclopedia",
+                katok_local_alert: "Local file environment. External browser redirection is supported under HTTP/HTTPS web server.",
+                katok_ios_alert: "💡 Automatically opening external browser on iPhone (iOS) is blocked due to KakaoTalk security policy.\n\nPlease tap '...' (three dots) on bottom right, and select 'Open in Safari'! ↘️",
+                btn_resume: "▶️ Resume Battle",
+                btn_menu: "🏠 Command HQ",
+                btn_restart: "🔄 Restart Scramble",
+                pause_title: "⏸️ Game Paused - Tactical Arsenal",
+                pause_tab_arsenal: "⚡ Weapons",
+                pause_tab_controls: "⌨️ Guide",
+                pause_tab_codex: "🎁 Codex",
+                pause_desc: "Select an item to change current weapon!",
+                hud_lv: "Level: ",
+                hud_score: "Score: ",
+                hud_shield: "Boss Shield: ",
+                hud_hp: "Boss HP: ",
+                hud_drones: "Drone Squadron: ",
+                hud_ult: "Ultimate [Space/X/E]: ",
+                hud_none: "NONE"
+            }
+        };
+
+        let currentLang = 'ko';
+
+        function initLanguage() {
+            const savedLang = localStorage.getItem("hy_game_lang");
+            if (savedLang) {
+                currentLang = savedLang;
+            } else {
+                const userLang = navigator.language || navigator.userLanguage;
+                currentLang = (userLang && userLang.startsWith('en')) ? 'en' : 'ko';
+            }
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            const langObj = LANG_DATA[currentLang] || LANG_DATA['ko'];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (langObj[key]) {
+                    if (el.tagName === 'INPUT' && el.type === 'button') {
+                        el.value = langObj[key];
+                    } else {
+                        el.innerText = langObj[key];
+                    }
+                }
+            });
+            const selectEl = document.getElementById('advLanguageSelect');
+            if (selectEl) {
+                selectEl.value = currentLang;
+            }
+            updateHighScoreUI();
+            updateUIVisibility();
+        }
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem("hy_game_lang", lang);
+            applyLanguage();
+        }
+
+        function getLocaleText(key) {
+            const langObj = LANG_DATA[currentLang] || LANG_DATA['ko'];
+            return langObj[key] || "";
+        }
         // KakaoTalk in-app browser redirect & iOS guidance
         function redirectToExternalBrowser() {
             const url = window.location.href;
@@ -1243,9 +1659,13 @@
                 if (gameWrapper) gameWrapper.style.display = '';
             }
         }
+        initLanguage();
         checkKakaoNotice();
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', checkKakaoNotice);
+            document.addEventListener('DOMContentLoaded', () => {
+                initLanguage();
+                checkKakaoNotice();
+            });
         }
 
         const canvas = document.getElementById('gameCanvas');
@@ -1644,12 +2064,13 @@
             const resumeBtn = document.getElementById('resumeBtn');
             const startBtn = document.getElementById('startBtn');
             if (resumeBtn && startBtn) {
+                const isEn = (currentLang === 'en');
                 if (isPaused && (gameState === "PAUSED" || gameState === "PLAYING")) {
                     resumeBtn.style.display = 'block';
-                    startBtn.innerText = '🚀 새 작전개시 (NEW GAME!)';
+                    startBtn.innerText = isEn ? '🚀 NEW GAME!' : '🚀 새 작전개시 (NEW GAME!)';
                 } else {
                     resumeBtn.style.display = 'none';
-                    startBtn.innerText = '🚀 작전개시 (START!)';
+                    startBtn.innerText = isEn ? '🚀 START GAME!' : '🚀 작전개시 (START!)';
                 }
             }
         }
@@ -1676,16 +2097,64 @@
             if (key === 'm' && (gameState === "PLAYING" || gameState === "GAMEOVER")) { stopBGM(); saveHighScore(null, null, false); isPaused = false; playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; updateUIVisibility(); }
         });
 
+        function switchPauseTab(tab) {
+            const isEn = (currentLang === 'en');
+            document.querySelectorAll('.pause-tab-btn').forEach(btn => {
+                btn.classList.remove('active-pause-tab');
+                btn.style.background = 'rgba(255, 255, 255, 0.05)';
+                btn.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+                btn.style.color = '#a4b0be';
+            });
+            
+            document.getElementById('pSecArsenal').style.display = 'none';
+            document.getElementById('pSecArsenal_en').style.display = 'none';
+            document.getElementById('pSecControls').style.display = 'none';
+            document.getElementById('pSecControls_en').style.display = 'none';
+            document.getElementById('pSecCodex').style.display = 'none';
+            document.getElementById('pSecCodex_en').style.display = 'none';
+            
+            if (tab === 'ARSENAL') {
+                const btn = document.getElementById('pTabBtnArsenal');
+                if (btn) {
+                    btn.classList.add('active-pause-tab');
+                    btn.style.background = 'rgba(241, 196, 15, 0.2)';
+                    btn.style.borderColor = '#f1c40f';
+                    btn.style.color = '#f1c40f';
+                }
+                document.getElementById(isEn ? 'pSecArsenal_en' : 'pSecArsenal').style.display = 'block';
+            } else if (tab === 'CONTROLS') {
+                const btn = document.getElementById('pTabBtnControls');
+                if (btn) {
+                    btn.classList.add('active-pause-tab');
+                    btn.style.background = 'rgba(0, 210, 211, 0.1)';
+                    btn.style.borderColor = '#00d2d3';
+                    btn.style.color = '#00d2d3';
+                }
+                document.getElementById(isEn ? 'pSecControls_en' : 'pSecControls').style.display = 'block';
+            } else if (tab === 'CODEX') {
+                const btn = document.getElementById('pTabBtnCodex');
+                if (btn) {
+                    btn.classList.add('active-pause-tab');
+                    btn.style.background = 'rgba(224, 86, 253, 0.1)';
+                    btn.style.borderColor = '#e056fd';
+                    btn.style.color = '#e056fd';
+                }
+                document.getElementById(isEn ? 'pSecCodex_en' : 'pSecCodex').style.display = 'block';
+            }
+        }
+
         function togglePauseState() {
             const pauseModal = document.getElementById('pauseItemSelectorModal');
-            if (pauseModal) pauseModal.style.display = 'none'; // 팝업 모달 제거!
 
             if (gameState === "PLAYING" || gameState === "PAUSED") {
                 isPaused = !isPaused;
                 if (isPaused) {
                     stopBGM();
                     gameState = "PAUSED";
-                    document.getElementById('menuOverlay').style.display = 'flex';
+                    if (pauseModal) {
+                        pauseModal.style.display = 'flex';
+                        switchPauseTab('ARSENAL');
+                    }
                     if (audioCtx) playUpgradeSound();
                 } else {
                     resumeGame();
@@ -1697,6 +2166,8 @@
         function resumeGame() {
             isPaused = false;
             gameState = "PLAYING";
+            const pauseModal = document.getElementById('pauseItemSelectorModal');
+            if (pauseModal) pauseModal.style.display = 'none';
             document.getElementById('menuOverlay').style.display = 'none';
             startBGM();
             if (audioCtx) playUpgradeSound();
@@ -1908,9 +2379,25 @@
         }
         function openInfoModal(sec) {
             if (audioCtx) playUpgradeSound();
+            const isEn = (currentLang === 'en');
             document.getElementById('infoAudioSec').style.display = sec === 'AUDIO' ? 'block' : 'none';
-            document.getElementById('infoControlSec').style.display = sec === 'CONTROLS' ? 'block' : 'none';
-            document.getElementById('infoItemSec').style.display = sec === 'ITEMS' ? 'block' : 'none';
+            
+            if (sec === 'CONTROLS') {
+                document.getElementById('infoControlSec').style.display = isEn ? 'none' : 'block';
+                document.getElementById('infoControlSec_en').style.display = isEn ? 'block' : 'none';
+            } else {
+                document.getElementById('infoControlSec').style.display = 'none';
+                document.getElementById('infoControlSec_en').style.display = 'none';
+            }
+            
+            if (sec === 'ITEMS') {
+                document.getElementById('infoItemSec').style.display = isEn ? 'none' : 'block';
+                document.getElementById('infoItemSec_en').style.display = isEn ? 'block' : 'none';
+            } else {
+                document.getElementById('infoItemSec').style.display = 'none';
+                document.getElementById('infoItemSec_en').style.display = 'none';
+            }
+            
             document.getElementById('infoModal').style.display = 'flex';
         }
         function closeInfoModal() {
@@ -3486,7 +3973,8 @@
             stopBGM();
             saveHighScore(null, null, false);
             if (audioCtx) playUpgradeSound();
-            document.getElementById('victoryScore').innerText = `최종 전과 스코어: ${score.toLocaleString()} PTS`;
+            const isEn = (currentLang === 'en');
+            document.getElementById('victoryScore').innerText = isEn ? `Final Score: ${score.toLocaleString()} PTS` : `최종 전과 스코어: ${score.toLocaleString()} PTS`;
             document.getElementById('victoryOverlay').style.display = 'flex';
             updateUIVisibility();
         }
@@ -3518,8 +4006,63 @@
             highScore = scores[0] ? scores[0].score : 0;
             updateHighScoreUI();
         }
-        function gameOver() { gameState = "GAMEOVER"; stopBGM(); saveHighScore(null, null, false); document.getElementById('goScore').innerText = `최종 전과 스코어: ${score.toLocaleString()} PTS`; document.getElementById('gameOverOverlay').style.display = 'flex'; }
-        function addFloatingText(x, y, text, color, fontSize = 12, life = 110, vy = -0.4) { floatingTexts.push({ x, y, text, color, life, vy, fontSize, scale: 1.4 }); }
+        function translateDynamicText(text) {
+            if (currentLang !== 'en') return text;
+            let t = text;
+            t = t.replace(/👑 \[최종 마왕 강림\] \((.+?) HP\) 5초 무적 결계!/, "👑 [FINAL DEMON LORD DESCENDS] ($1 HP) 5s Invulnerable!");
+            t = t.replace(/⚠️ STAGE 5 마왕 호위보스 \((.+?)\) & 호위부대 (.+?)기 강림!/, "⚠️ STAGE 5 Demon Guard ($1) & $2 Escorts Scrambled!");
+            t = t.replace(/⚠️ STAGE (.+?) 중간 보스 \((.+?)\) & 호위부대 (.+?)기 강림!/, "⚠️ STAGE $1 Midboss ($2) & $3 Escorts Scrambled!");
+            t = t.replace(/⚠️ \[최종 마왕 호위 부대\] 중간 보스 지원 출격! \((.+?)\)/, "⚠️ [Demon Lord Escort] Midboss Support Sortie! ($1)");
+            t = t.replace(/👾 \[마왕의 군단\] 잡몹 습격!/, "👾 [Legion of Demon] Swarm Scrambled!");
+            t = t.replace(/💥 360도 링 파동 탄막!/, "💥 360-Degree Ring Wave!");
+            t = t.replace(/⚡ 7방향 레이저 융단 폭격!/, "⚡ 7-Way Laser Barrage!");
+            t = t.replace(/💣 조준형 열압력 폭탄 탄막!/, "💣 Targeted Thermobaric Bomb!");
+            t = t.replace(/🌀 나선 회전 레이저 포화!/, "🌀 Spiral Rotating Laser!");
+            t = t.replace(/🔥 3중 주포 광선 & 분산포!/, "🔥 Triple Main Cannon & Scatter!");
+            t = t.replace(/🌌 🔮 디멘션 블랙홀 소용돌이 폭풍!/, "🌌 🔮 Dimension Blackhole Storm!");
+            t = t.replace(/⚔️ ⚡ 하이페리온 X자 메가 광선 포격!/, "⚔️ ⚡ Hyperion Mega X-Beam!");
+            t = t.replace(/레이저 피격 -(.+?) HP/, "Laser Hit -$1 HP");
+            t = t.replace(/❤️ 부활! \(남은 목숨: (.+?)개\)/, "❤️ Revived! ($1 Lives Left)");
+            t = t.replace(/대원 전사/, "Ally Defeated");
+            t = t.replace(/⚡ \[PHASE 2 OVERDRIVE\] 외곽 장갑 소각! 2단계 광역 레이저 전개!/, "⚡ [PHASE 2 OVERDRIVE] Outer Armor Melted! Wide Laser deployed!");
+            t = t.replace(/🔥 \[FINAL PHASE 3\] 폭주 오버드라이브! 전면 결전 사격!/, "🔥 [FINAL PHASE 3] Berserk Overdrive! Total Showdown Fire!");
+            t = t.replace(/💥 \[마왕 격파! 7초 화염 대폭발 & 히어로 돌파\]/, "💥 [DEMON DEFEATED! 7s Exploding Finish]");
+            t = t.replace(/💥 중간 보스 격파!/, "💥 Midboss Defeated!");
+            t = t.replace(/🎁 아이템 획득 확정!/, "🎁 Drop Item Confirmed!");
+            t = t.replace(/⚠️ 필살기 수량 부족! \((.+?)\)/, "⚠️ No Ultimate Stock! ($1)");
+            t = t.replace(/💣 전술 폭탄 작동! 전면 소각!/, "💣 Tactical Bomb Activated! Incinerate All!");
+            t = t.replace(/💚 최대 체력 확장! \((.+?) HP\)/, "💚 Max HP Expanded! ($1 HP)");
+            t = t.replace(/💚 \+(.+?) HP 회복!/, "💚 +$1 HP Healed!");
+            t = t.replace(/❤️ 목숨 \+1 보충! \(총 (.+?)개\)/, "❤️ Life +1 Stocked! ($1 total)");
+            t = t.replace(/⚠️ 목숨 보유 최대치\(9개\)!/, "⚠️ Max Lives Reached (9)!");
+            t = t.replace(/💥 전술 필살기 충전! \((.+?)\)/, "💥 Ultimate Charged! ($1)");
+            t = t.replace(/⚠️ 필살기 최대 보유\((.+?)개\)!/, "⚠️ Max Ultimate Reached ($1)!");
+            t = t.replace(/⚡ 20초 (.+?) 장착!/, "⚡ 20s $1 Equipped!");
+            t = t.replace(/💥 20초 (.+?) 활성!/, "💥 20s $1 Activated!");
+            t = t.replace(/🛡️ 20초 (.+?) 전개!/, "🛡️ 20s $1 Deployed!");
+            t = t.replace(/🪖 (.+?) 대원 합류!/, "🪖 Drone $1 Joined!");
+            t = t.replace(/⚠️ 편대 최대치\(21명\) 도달!/, "⚠️ Max Drone Squadron Reached (21)!");
+            t = t.replace(/일시 정지/, "GAME PAUSED");
+            t = t.replace(/레벨/, "Level");
+            t = t.replace(/점수/, "Score");
+            t = t.replace(/보스 쉴드/, "Boss Shield");
+            t = t.replace(/보스 체력/, "Boss HP");
+            return t;
+        }
+
+        function gameOver() { 
+            gameState = "GAMEOVER"; 
+            stopBGM(); 
+            saveHighScore(null, null, false); 
+            const isEn = (currentLang === 'en');
+            document.getElementById('goScore').innerText = isEn ? `Final Score: ${score.toLocaleString()} PTS` : `최종 스코어: ${score.toLocaleString()} PTS`; 
+            document.getElementById('gameOverOverlay').style.display = 'flex'; 
+        }
+
+        function addFloatingText(x, y, text, color, fontSize = 12, life = 110, vy = -0.4) { 
+            const transText = translateDynamicText(text);
+            floatingTexts.push({ x, y, text: transText, color, life, vy, fontSize, scale: 1.4 }); 
+        }
 
         function draw() {
             if (gameState === "MENU") return;
@@ -4109,15 +4652,24 @@
             ctx.shadowBlur = 8;
             ctx.fillStyle = '#c8d6e5';
             ctx.font = 'bold 11px sans-serif';
-            ctx.fillText(`${difficulty.split(" ")[0]} ${GAME_VERSION}`, 14, 18);
+            const isEn = (currentLang === 'en');
+            let diffText = difficulty.split(" ")[0];
+            if (isEn) {
+                if (diffText.includes("초보")) diffText = "EASY";
+                else if (diffText.includes("일반")) diffText = "NORMAL";
+                else if (diffText.includes("하드")) diffText = "HARD";
+                else if (diffText.includes("정예")) diffText = "EXPERT";
+                else if (diffText.includes("악몽")) diffText = "NIGHTMARE";
+            }
+            ctx.fillText(`${diffText} ${GAME_VERSION}`, 14, 18);
 
             let nextBossStr = "";
-            if (waveCount < 5) nextBossStr = `중간보스까지: ${5 - waveCount}W`;
-            else if (waveCount < 10) nextBossStr = `중간보스까지: ${10 - waveCount}W`;
-            else if (waveCount < 15) nextBossStr = `보스 연전중 (Stage 3)`;
-            else if (waveCount < 20) nextBossStr = `보스 연전중 (Stage 4)`;
-            else if (waveCount < 25) nextBossStr = `최종 마왕 결전까지: ${25 - waveCount}W`;
-            else nextBossStr = `🚨 [최종 마왕 결전 교전 중!]`;
+            if (waveCount < 5) nextBossStr = isEn ? `To Midboss: ${5 - waveCount}W` : `중간보스까지: ${5 - waveCount}W`;
+            else if (waveCount < 10) nextBossStr = isEn ? `To Midboss: ${10 - waveCount}W` : `중간보스까지: ${10 - waveCount}W`;
+            else if (waveCount < 15) nextBossStr = isEn ? `Boss Rush (Stage 3)` : `보스 연전중 (Stage 3)`;
+            else if (waveCount < 20) nextBossStr = isEn ? `Boss Rush (Stage 4)` : `보스 연전중 (Stage 4)`;
+            else if (waveCount < 25) nextBossStr = isEn ? `To Final Demon: ${25 - waveCount}W` : `최종 마왕 결전까지: ${25 - waveCount}W`;
+            else nextBossStr = isEn ? `🚨 [Final Showdown Combat!]` : `🚨 [최종 마왕 결전 교전 중!]`;
 
             ctx.fillStyle = waveCount >= 20 ? '#ff6b6b' : '#ff9f43';
             ctx.font = 'bold 11px sans-serif';
@@ -4247,7 +4799,7 @@
 
             ctx.shadowColor = '#f1c40f';
             ctx.fillStyle = '#f1c40f';
-            ctx.fillText(`🪖 드론 ${player.allies.length}기`, 252, bottomHUDY + 44);
+            ctx.fillText(isEn ? `🪖 Drone: ${player.allies.length}` : `🪖 드론 ${player.allies.length}기`, 252, bottomHUDY + 44);
             ctx.restore();
 
             // 3. Ultimate Skill Stock Badge (Right Aligned)
@@ -4260,7 +4812,7 @@
             ctx.shadowBlur = player.ultimateStock > 0 ? 8 : 0;
             ctx.fillStyle = ultColor;
             ctx.font = '900 12px sans-serif';
-            ctx.fillText(`💥 필살기: ${player.ultimateStock}/${maxUltBar} [SPACE]`, canvas.width - 14, bottomHUDY + 44);
+            ctx.fillText(isEn ? `💥 Ultimate: ${player.ultimateStock}/${maxUltBar} [SPACE]` : `💥 필살기: ${player.ultimateStock}/${maxUltBar} [SPACE]`, canvas.width - 14, bottomHUDY + 44);
             ctx.restore();
 
             ctx.restore();
