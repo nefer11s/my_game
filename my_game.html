@@ -521,9 +521,23 @@
                 90% {
                     transform: translate(-1px, 2px) scale(1.005);
                 }
+            }
+            @keyframes jetFlyAway {
+                0% {
+                    transform: translateY(0) scale(1.0);
+                    filter: brightness(1.0);
+                    box-shadow: 0 0 25px rgba(255, 159, 67, 0.8);
+                }
+                25% {
+                    transform: translateY(15px) scale(1.12);
+                    filter: brightness(1.5);
+                    box-shadow: 0 0 50px rgba(255, 159, 67, 1.0);
+                }
                 100% {
-                    transform: translate(0, 0) scale(1.0);
-                    box-shadow: 0 0 25px rgba(255, 159, 67, 0.6);
+                    transform: translateY(-800px) scale(0.2);
+                    filter: brightness(2.0);
+                    opacity: 0;
+                    box-shadow: 0 0 100px rgba(255, 159, 67, 1.0);
                 }
             }
             @keyframes splashPulse {
@@ -863,7 +877,7 @@
                 "Fire Ceramic Fighter 긴급 발진 부스터 온!"
             </div>
 
-            <div
+            <div id="launchJetContainer"
                 style="border: 3px solid #ff9f43; border-radius: 16px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 0 25px rgba(255, 159, 67, 0.5); max-width: 320px; width: 90%; background: #000; animation: boosterLaunch 0.15s linear infinite;">
                 <img src="assets/hero_launch.png?v=11.9.1" alt="Hero Jet Scramble Launch"
                     style="width: 100%; height: auto; max-height: 220px; object-fit: cover; display: block;">
@@ -2803,6 +2817,12 @@
             document.getElementById('prologueOverlay').style.display = 'none';
             document.getElementById('launchOverlay').style.display = 'flex';
 
+            const jetContainer = document.getElementById('launchJetContainer');
+            if (jetContainer) {
+                // 부스터 예열 고속 진동 복구
+                jetContainer.style.animation = 'boosterLaunch 0.15s linear infinite';
+            }
+
             let count = 3;
             const cntElem = document.getElementById('countdownNumber');
             cntElem.innerText = count;
@@ -2819,6 +2839,10 @@
                     cntElem.innerText = "START! 🔥";
                     cntElem.style.color = "#00d2d3";
                     if (audioCtx) playBombSound();
+                    if (jetContainer) {
+                        // 급가속 급상승 슝- 날아가 버리는 fly-away 연출 실행
+                        jetContainer.style.animation = 'jetFlyAway 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards';
+                    }
                 } else {
                     clearInterval(countdownInterval);
                     countdownInterval = null;
@@ -4168,24 +4192,26 @@
                 let lbl = "";
                 let color = "#ffffff";
                 let itemName = "";
-                if (chosen === "DOUBLE") { lbl = isEn ? "⚡ 2-Way" : "⚡ 2줄"; color = "#ffd32c"; itemName = "2줄 직진탄"; }
-                else if (chosen === "TRIPLE") { lbl = isEn ? "⚡ 3-Way" : "⚡ 3줄"; color = "#ff9f43"; itemName = "3줄 확산탄"; }
-                else if (chosen === "HOMING") { lbl = isEn ? "🎯 Homing" : "🎯 유도"; color = "#00d2d3"; itemName = "적 추적 유도탄"; }
-                else if (chosen === "MISSILE") { lbl = isEn ? "🚀 Missile" : "🚀 미사일"; color = "#ff3838"; itemName = "10배 중장갑 미사일(파편)"; }
-                else if (chosen === "LASER") { lbl = isEn ? "⚡ Laser" : "⚡ 레이저"; color = "#00d2d3"; itemName = "20배 고출력 관통레이저"; }
-                else if (chosen === "DAMAGE_X2") { lbl = isEn ? "💥 2X DMG" : "💥 2X"; color = "#ff9f43"; itemName = "피해량 2배"; }
-                else if (chosen === "SPLASH_RANGE") { lbl = isEn ? "🔮 Splash" : "🔮 SP"; color = "#e056fd"; itemName = "스플래시 폭발탄"; }
-                else if (chosen === "BOMBARD") { lbl = isEn ? "☄️ Bombard" : "☄️ BB"; color = "#ff3838"; itemName = "공중 무차별폭격"; }
-                else if (chosen === "NANO_SHIELD") { lbl = isEn ? "🛡️ Shield" : "🛡️ NS"; color = "#10ac84"; itemName = "완전 나노무적"; }
-                else if (chosen === "HEAVY_ARMOR") { lbl = isEn ? "🔩 Armor" : "🔩 HA"; color = "#a4b0be"; itemName = "중장갑 피해반감"; }
-                else if (chosen === "HEAL") { lbl = isEn ? "💚 HP" : "💚 HP"; color = "#1cfc03"; itemName = "메디컬 키트"; }
-                else if (chosen === "ALLY") { lbl = isEn ? "🪖 Drone" : "🪖 AL"; color = "#2e86de"; itemName = "아군 대원"; }
-                else if (chosen === "BOMB") { lbl = isEn ? "💣 Bomb" : "💣 BM"; color = "#ff5252"; itemName = "전술 폭탄"; }
-                else if (chosen === "ULTIMATE") { lbl = isEn ? "💥 Ultimate" : "💥 ULT"; color = "#ff3838"; itemName = "필살기 충전"; }
-                else if (chosen === "LIFE") { lbl = isEn ? "❤️ Life" : "❤️ LIFE"; color = "#ff2d55"; itemName = "목숨 추가"; }
+                if (chosen === "DOUBLE") { lbl = isEn ? "⚡ 2-Way" : "⚡ 2줄"; color = "#ffd32c"; itemName = isEn ? "Double Straight Fire" : "2줄 직진탄"; }
+                else if (chosen === "TRIPLE") { lbl = isEn ? "⚡ 3-Way" : "⚡ 3줄"; color = "#ff9f43"; itemName = isEn ? "Triple Spread Fire" : "3줄 확산탄"; }
+                else if (chosen === "HOMING") { lbl = isEn ? "🎯 Homing" : "🎯 유도"; color = "#00d2d3"; itemName = isEn ? "Homing Missile" : "적 추적 유도탄"; }
+                else if (chosen === "MISSILE") { lbl = isEn ? "🚀 Missile" : "🚀 미사일"; color = "#ff3838"; itemName = isEn ? "HE Shrapnel Missile" : "10배 중장갑 미사일(파편)"; }
+                else if (chosen === "LASER") { lbl = isEn ? "⚡ Laser" : "⚡ 레이저"; color = "#00d2d3"; itemName = isEn ? "High-Power Piercing Laser" : "20배 고출력 관통레이저"; }
+                else if (chosen === "GATLING") { lbl = isEn ? "⚡ Gatling" : "⚡ 개틀링"; color = "#ffd32c"; itemName = isEn ? "Rapid Gatling" : "속사 개틀링"; }
+                else if (chosen === "ROCKET") { lbl = isEn ? "⚡ Rocket" : "⚡ 로켓"; color = "#ffd32c"; itemName = isEn ? "Tactical Rocket" : "전술 로켓"; }
+                else if (chosen === "DAMAGE_X2") { lbl = isEn ? "💥 2X DMG" : "💥 2X"; color = "#ff9f43"; itemName = isEn ? "Double Damage" : "피해량 2배"; }
+                else if (chosen === "SPLASH_RANGE") { lbl = isEn ? "🔮 Splash" : "🔮 SP"; color = "#e056fd"; itemName = isEn ? "Splash Explosive" : "스플래시 폭발탄"; }
+                else if (chosen === "BOMBARD") { lbl = isEn ? "☄️ Bombard" : "☄️ BB"; color = "#ff3838"; itemName = isEn ? "Air Bombardment" : "공중 무차별폭격"; }
+                else if (chosen === "NANO_SHIELD") { lbl = isEn ? "🛡️ Shield" : "🛡️ NS"; color = "#10ac84"; itemName = isEn ? "Invulnerable Shield" : "완전 나노무적"; }
+                else if (chosen === "HEAVY_ARMOR") { lbl = isEn ? "🔩 Armor" : "🔩 HA"; color = "#a4b0be"; itemName = isEn ? "Heavy Armor Defense" : "중장갑 피해반감"; }
+                else if (chosen === "HEAL") { lbl = isEn ? "💚 HP" : "💚 HP"; color = "#1cfc03"; itemName = isEn ? "Medical Kit" : "메디컬 키트"; }
+                else if (chosen === "ALLY") { lbl = isEn ? "🪖 Drone" : "🪖 AL"; color = "#2e86de"; itemName = isEn ? "Support Drone" : "아군 대원"; }
+                else if (chosen === "BOMB") { lbl = isEn ? "💣 Bomb" : "💣 BM"; color = "#ff5252"; itemName = isEn ? "Tactical Bomb" : "전술 폭탄"; }
+                else if (chosen === "ULTIMATE") { lbl = isEn ? "💥 Ultimate" : "💥 ULT"; color = "#ff3838"; itemName = isEn ? "Ultimate Charge" : "필살기 충전"; }
+                else if (chosen === "LIFE") { lbl = isEn ? "❤️ Life" : "❤️ LIFE"; color = "#ff2d55"; itemName = isEn ? "Extra Life" : "목숨 추가"; }
 
                 if (hasItem && !isBoss) {
-                    addFloatingText(x, y - 25, `🎁 ${itemName} 획득 확정!`, '#ffd32c', 16);
+                    addFloatingText(x, y - 25, isEn ? `🎁 ${itemName} Drop Confirmed!` : `🎁 ${itemName} 획득 확정!`, '#ffd32c', 16);
                 }
 
                 const angle = isBoss ? ((d - (dropCount - 1) / 2) / (dropCount - 1)) * (Math.PI * 0.6) - (Math.PI / 2) : 0;
@@ -4290,22 +4316,23 @@
 
         function applyItemEffect(item) {
             const t = item.type;
+            const isEn = (currentLang === 'en');
             if (t === "HEAL") {
                 if (player.hp >= player.maxHp) {
                     player.maxHp += healAmount;
                     player.hp = player.maxHp;
-                    addFloatingText(player.x, player.y - 45, `💚 최대 체력 확장! (${player.maxHp} HP)`, '#1cfc03', 18);
+                    addFloatingText(player.x, player.y - 45, isEn ? `💚 Max HP Expanded! (${player.maxHp} HP)` : `💚 최대 체력 확장! (${player.maxHp} HP)`, '#1cfc03', 18);
                 } else {
                     player.hp = Math.min(player.maxHp, player.hp + healAmount);
-                    addFloatingText(player.x, player.y - 45, `💚 +${healAmount} HP 회복!`, '#1cfc03', 18);
+                    addFloatingText(player.x, player.y - 45, isEn ? `💚 +${healAmount} HP Healed!` : `💚 +${healAmount} HP 회복!`, '#1cfc03', 18);
                 }
             }
             else if (t === "LIFE") {
                 if (player.lives < 9) {
                     player.lives++;
-                    addFloatingText(player.x, player.y - 45, `❤️ 목숨 +1 보충! (총 ${player.lives}개)`, '#ff3838', 18);
+                    addFloatingText(player.x, player.y - 45, isEn ? `❤️ Life +1 Stocked! (${player.lives} total)` : `❤️ 목숨 +1 보충! (총 ${player.lives}개)`, '#ff3838', 18);
                 } else {
-                    addFloatingText(player.x, player.y - 45, `⚠️ 목숨 보유 최대치(9개)!`, '#ff9f43', 14);
+                    addFloatingText(player.x, player.y - 45, isEn ? `⚠️ Max Lives Reached (9)!` : `⚠️ 목숨 보유 최대치(9개)!`, '#ff9f43', 14);
                 }
             }
             else if (t === "ULTIMATE") {
@@ -4313,40 +4340,60 @@
                 if (player.ultimateStock < maxUlt) {
                     player.ultimateStock++;
                     updateUltimateUI();
-                    addFloatingText(player.x, player.y - 45, `💥 전술 필살기 충전! (${player.ultimateStock}/${maxUlt})`, '#ff3838', 16);
+                    addFloatingText(player.x, player.y - 45, isEn ? `💥 Ultimate Charged! (${player.ultimateStock}/${maxUlt})` : `💥 전술 필살기 충전! (${player.ultimateStock}/${maxUlt})`, '#ff3838', 16);
                 } else {
-                    addFloatingText(player.x, player.y - 45, `⚠️ 필살기 최대 보유(${maxUlt}개)!`, '#ff9f43', 14);
+                    addFloatingText(player.x, player.y - 45, isEn ? `⚠️ Max Ultimate Reached (${maxUlt})!` : `⚠️ 필살기 최대 보유(${maxUlt}개)!`, '#ff9f43', 14);
                 }
             }
             else if (["DOUBLE", "TRIPLE", "HOMING", "MISSILE", "LASER", "GATLING", "ROCKET"].includes(t)) {
                 player.weaponType = t;
                 player.weaponTimer = 1200;
-                let wName = t === "DOUBLE" ? "2줄 직진탄" : t === "TRIPLE" ? "3줄 확산탄" : t === "HOMING" ? "적 추적 유도탄" : t === "MISSILE" ? "10배 중장갑 미사일(파편)" : t === "LASER" ? "20배 고출력 관통레이저" : t === "GATLING" ? "속사 개틀링" : "전술 로켓";
-                addFloatingText(player.x, player.y - 45, `⚡ 20초 ${wName} 장착!`, '#ffd32c', 16);
+                let wName = "";
+                if (isEn) {
+                    wName = t === "DOUBLE" ? "Double Straight Fire" : t === "TRIPLE" ? "Triple Spread Fire" : t === "HOMING" ? "Homing Missile" : t === "MISSILE" ? "HE Shrapnel Missile" : t === "LASER" ? "High-Power Piercing Laser" : t === "GATLING" ? "Rapid Gatling" : "Tactical Rocket";
+                } else {
+                    wName = t === "DOUBLE" ? "2줄 직진탄" : t === "TRIPLE" ? "3줄 확산탄" : t === "HOMING" ? "적 추적 유도탄" : t === "MISSILE" ? "10배 중장갑 미사일(파편)" : t === "LASER" ? "20배 고출력 관통레이저" : t === "GATLING" ? "속사 개틀링" : "전술 로켓";
+                }
+                addFloatingText(player.x, player.y - 45, isEn ? `⚡ 20s ${wName} Equipped!` : `⚡ 20초 ${wName} 장착!`, '#ffd32c', 16);
             }
             else if (["DAMAGE_X2", "SPLASH_RANGE", "BOMBARD"].includes(t)) {
                 player.buffType = t;
                 player.buffTimer = 1200;
-                let bName = t === "DAMAGE_X2" ? "피해량 2배" : t === "BOMBARD" ? "공중 무차별폭격" : "스플래시 폭발탄";
-                addFloatingText(player.x, player.y - 45, `💥 20초 ${bName} 활성!`, '#ff9f43', 16);
+                let bName = "";
+                if (isEn) {
+                    bName = t === "DAMAGE_X2" ? "Double Damage" : t === "BOMBARD" ? "Air Bombardment" : "Splash Explosive";
+                } else {
+                    bName = t === "DAMAGE_X2" ? "피해량 2배" : t === "BOMBARD" ? "공중 무차별폭격" : "스플래시 폭발탄";
+                }
+                addFloatingText(player.x, player.y - 45, isEn ? `💥 20s ${bName} Activated!` : `💥 20초 ${bName} 활성!`, '#ff9f43', 16);
             }
             else if (["NANO_SHIELD", "HEAVY_ARMOR"].includes(t)) {
                 player.defenseType = t;
                 player.defenseTimer = 1200;
-                let dName = t === "NANO_SHIELD" ? "완전 나노무적" : "중장갑 피해반감";
-                addFloatingText(player.x, player.y - 45, `🛡️ 20초 ${dName} 전개!`, '#10ac84', 16);
+                let dName = "";
+                if (isEn) {
+                    dName = t === "NANO_SHIELD" ? "Invulnerable Shield" : "Heavy Armor Defense";
+                } else {
+                    dName = t === "NANO_SHIELD" ? "완전 나노무적" : "중장갑 피해반감";
+                }
+                addFloatingText(player.x, player.y - 45, isEn ? `🛡️ 20s ${dName} Deployed!` : `🛡️ 20초 ${dName} 전개!`, '#10ac84', 16);
             }
             else if (t === "ALLY") {
                 const classes = ['RIFLEMAN', 'SNIPER', 'HEAVY_WEAPON'];
                 const randomClass = classes[Math.floor(Math.random() * classes.length)];
-                let label = randomClass === 'RIFLEMAN' ? '돌격병' : randomClass === 'SNIPER' ? '저격수' : '중화기병';
+                let label = "";
+                if (isEn) {
+                    label = randomClass === 'RIFLEMAN' ? 'Rifleman' : randomClass === 'SNIPER' ? 'Sniper' : 'Heavy Weaponry';
+                } else {
+                    label = randomClass === 'RIFLEMAN' ? '돌격병' : randomClass === 'SNIPER' ? '저격수' : '중화기병';
+                }
                 let color = randomClass === 'RIFLEMAN' ? '#10ac84' : randomClass === 'SNIPER' ? '#20bf6b' : '#fa8231';
 
                 if (player.allies.length < 21) {
                     player.allies.push({ type: randomClass });
-                    addFloatingText(player.x, player.y - 45, `🪖 ${label} 대원 합류!`, color, 14);
+                    addFloatingText(player.x, player.y - 45, isEn ? `🪖 Drone ${label} Joined!` : `🪖 ${label} 대원 합류!`, color, 14);
                 } else {
-                    addFloatingText(player.x, player.y - 45, `⚠️ 편대 최대치(21명) 도달!`, '#ff9f43', 13);
+                    addFloatingText(player.x, player.y - 45, isEn ? `⚠️ Max Drone Squadron Reached (21)!` : `⚠️ 편대 최대치(21명) 도달!`, '#ff9f43', 13);
                 }
             }
             else if (t === "BOMB") {
