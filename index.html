@@ -4229,7 +4229,11 @@
 
             if (enemy.isFinalBoss) {
                 enemy.deathTimer = 420; // Exactly 7.0 seconds (420 frames @ 60fps) fireworks explosion sequence!
-                enemyLasers = []; // Clear enemy lasers on boss defeat
+                enemies = enemies.filter(e => e.isFinalBoss); // 최종 보스 외 모든 적들 제거
+                bullets = []; // 아군 총알 모두 제거
+                enemyLasers = []; // 적군 레이저 모두 제거
+                droppedItems = []; // 드롭 아이템 제거
+                particles = []; // 잔해 파티클 제거
                 playExplosionSound(true);
                 return;
             }
