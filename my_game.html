@@ -2194,6 +2194,7 @@
         const player = { x: 270, y: 590, radius: 17, speed: 0.28, targetX: 270, targetY: 590, allies: [], shootCooldown: 0, shootInterval: 10, hp: 100, maxHp: 100, lives: 3, weaponType: "NORMAL", buffType: "NONE", defenseType: "NONE", weaponTimer: 0, buffTimer: 0, defenseTimer: 0, ultimateStock: 3 };
         let bullets = [], enemies = [], enemyLasers = [], gates = [], trappedHero = null, particles = [], muzzleFlashes = [], floatingTexts = [], droppedItems = [];
         let activeAnnihilationEffect = null, annihilationCounter = 0;
+        let shakeTimer = 0, shakeIntensity = 0;
 
         // Sprite Assets Preloading
         const imgHero = new Image(); imgHero.src = `assets/hero_ship.png?v=${GAME_VERSION}`;
@@ -4510,7 +4511,7 @@
             const color = effColors[effIdx];
 
             addFloatingText(canvas.width / 2, canvas.height / 2 - 80, name, color, 18);
-            activeAnnihilationEffect = { type: effIdx, life: 45, maxLife: 45, color: color };
+            activeAnnihilationEffect = { type: effIdx, life: 65, maxLife: 65, color: color };
 
             const dmg = 350;
             for (let i = enemies.length - 1; i >= 0; i--) {
@@ -4810,24 +4811,190 @@
                 eff.life--;
                 const progress = 1 - (eff.life / eff.maxLife);
                 ctx.save();
-                ctx.globalAlpha = 0.15 * (1 - progress);
+                
+                // 빛번짐 효과를 위해 합성 모드를 'screen'으로 설정
+                ctx.globalCompositeOperation = 'screen';
+                
                 if (eff.type === 0) {
-                    const r = progress * canvas.width * 1.2;
-                    ctx.strokeStyle = '#ff3838'; ctx.lineWidth = 4 * (1 - progress);
-                    ctx.beginPath(); ctx.arc(canvas.width / 2, canvas.height / 2, r, 0, Math.PI * 2); ctx.stroke();
+                    // 💥 [태양 핵융합 소각]
+                    // 1. 전체 화면에 부드러운 붉은색 그라데이션 오버레이 적용
+                    let grad = ctx.createRadialGradient(canvas.width / 2, canvas.height / 2, 10, canvas.width / 2, canvas.height / 2, canvas.width * 0.8);
+                    grad.addColorStop(0, `rgba(255, 56, 56, ${0.45 * (1 - progress)})`);
+                    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    // 2. 외부로 팽창하며 사라지는 다중 태양광 충격 링
+                    ctx.shadowColor = '#ff3838';
+                    ctx.shadowBlur = 20;
+                    
+                    const r1 = progress * canvas.width * 1.5;
+                    ctx.strokeStyle = '#ff3838';
+                    ctx.lineWidth = 12 * (1 - progress);
+                    ctx.beginPath(); ctx.arc(canvas.width / 2, canvas.height / 2, r1, 0, Math.PI * 2); ctx.stroke();
+
+                    const r2 = progress * canvas.width * 1.1;
+                    ctx.strokeStyle = '#ff9f43';
+                    ctx.lineWidth = 8 * (1 - progress);
+                    ctx.beginPath(); ctx.arc(canvas.width / 2, canvas.height / 2, r2, 0, Math.PI * 2); ctx.stroke();
+
+                    const r3 = progress * canvas.width * 0.7;
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 4 * (1 - progress);
+                    ctx.beginPath(); ctx.arc(canvas.width / 2, canvas.height / 2, r3, 0, Math.PI * 2); ctx.stroke();
+
+                    // 3. 사방으로 날아가는 고온 태양 입자 효과
+                    ctx.fillStyle = '#ff4d4d';
+                    for (let i = 0; i < 30; i++) {
+                        let angle = (i * 12 + progress * 540) * Math.PI / 180;
+                        let dist = progress * canvas.width * (0.2 + (i % 6) * 0.15);
+                        let px = canvas.width / 2 + Math.cos(angle) * dist;
+                        let py = canvas.height / 2 + Math.sin(angle) * dist;
+                        ctx.beginPath(); ctx.arc(px, py, 5 * (1 - progress), 0, Math.PI * 2); ctx.fill();
+                    }
                 } else if (eff.type === 1) {
-                    ctx.fillStyle = '#00d2d3';
-                    for (let b = 0; b < 6; b++) { ctx.fillRect((canvas.width / 6) * b + 15, 0, 12, canvas.height); }
+                    // 🛰️ [궤도 위성 레이저]
+                    const numBeams = 6;
+                    ctx.shadowBlur = 25;
+                    for (let b = 0; b < numBeams; b++) {
+                        let bx = (canvas.width / numBeams) * b + (canvas.width / (numBeams * 2));
+                        // 빔 두께 진동 에너지 연출
+                        let beamW = (30 + Math.sin(progress * 50 + b) * 10) * (1 - progress);
+                        
+                        // 외부 청색 열선 실린더
+                        ctx.shadowColor = '#00d2d3';
+                        ctx.fillStyle = `rgba(0, 210, 211, ${0.45 * (1 - progress)})`;
+                        ctx.fillRect(bx - beamW / 2, 0, beamW, canvas.height);
+                        
+                        // 초고전압 순백 코어선
+                        ctx.fillStyle = `rgba(255, 255, 255, ${0.9 * (1 - progress)})`;
+                        ctx.fillRect(bx - beamW / 6, 0, beamW / 3, canvas.height);
+                        
+                        // 위쪽으로 튀어 오르는 이온 스파크 파티클
+                        ctx.fillStyle = '#00d2d3';
+                        for (let j = 0; j < 6; j++) {
+                            let py = canvas.height - ((progress * 1.7 * canvas.height + j * 100) % canvas.height);
+                            let px = bx + (Math.sin(py * 0.04 + b) * 20);
+                            ctx.beginPath(); ctx.arc(px, py, 4 * (1 - progress), 0, Math.PI * 2); ctx.fill();
+                        }
+                    }
                 } else if (eff.type === 2) {
-                    ctx.fillStyle = '#9b59b6';
-                    const r = Math.sin(progress * Math.PI) * 80;
-                    ctx.beginPath(); ctx.arc(canvas.width / 2, canvas.height / 2, r, 0, Math.PI * 2); ctx.fill();
+                    // 🕳️ [보이드 블랙홀]
+                    const cx = canvas.width / 2;
+                    const cy = canvas.height / 2;
+                    const maxR = 140 * Math.sin(progress * Math.PI);
+                    
+                    // 1. 소용돌이 형태 보라색 에너지 코어 생성
+                    ctx.shadowColor = '#9b59b6';
+                    ctx.shadowBlur = 30;
+                    let grad = ctx.createRadialGradient(cx, cy, 2, cx, cy, Math.max(10, maxR));
+                    grad.addColorStop(0, '#ffffff');
+                    grad.addColorStop(0.2, 'rgba(197, 108, 240, 0.95)');
+                    grad.addColorStop(0.5, 'rgba(155, 89, 182, 0.7)');
+                    grad.addColorStop(0.8, 'rgba(44, 62, 80, 0.4)');
+                    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                    ctx.fillStyle = grad;
+                    ctx.beginPath(); ctx.arc(cx, cy, Math.max(10, maxR), 0, Math.PI * 2); ctx.fill();
+                    
+                    // 2. 은하수 나선 흡입 궤적 연출
+                    ctx.strokeStyle = 'rgba(155, 89, 182, 0.6)';
+                    ctx.lineWidth = 2 * (1 - progress);
+                    for (let i = 0; i < 20; i++) {
+                        let angle = (i * 18 - progress * 500) * Math.PI / 180;
+                        let dist = (1 - progress) * canvas.width * 0.85 + (i % 5) * 15;
+                        if (dist > maxR) {
+                            let px = cx + Math.cos(angle) * dist;
+                            let py = cy + Math.sin(angle) * dist;
+                            ctx.beginPath();
+                            ctx.moveTo(px, py);
+                            ctx.lineTo(cx + Math.cos(angle + 0.25) * (dist - 40), cy + Math.sin(angle + 0.25) * (dist - 40));
+                            ctx.stroke();
+                        }
+                    }
+                    
+                    // 3. 후반부 붕괴 충격파 (보이드 디스차지)
+                    if (progress > 0.55) {
+                        let shockR = (progress - 0.55) * 2.6 * canvas.width;
+                        ctx.strokeStyle = '#ffffff';
+                        ctx.lineWidth = 6 * (1 - progress);
+                        ctx.beginPath(); ctx.arc(cx, cy, shockR, 0, Math.PI * 2); ctx.stroke();
+                    }
                 } else if (eff.type === 3) {
-                    ctx.strokeStyle = '#1cfc03'; ctx.lineWidth = 2;
-                    for (let l = 0; l < 4; l++) { ctx.beginPath(); ctx.moveTo(Math.random() * canvas.width, 0); ctx.lineTo(Math.random() * canvas.width, canvas.height); ctx.stroke(); }
+                    // ⚡ [크로노 시공 정지]
+                    // 1. 녹색 글리치 오버레이
+                    ctx.fillStyle = `rgba(28, 252, 3, ${0.15 * Math.sin(progress * 18) * (1 - progress)})`;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    // 2. 무작위 사선 절단 궤적 (차원 절단 효과)
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.shadowColor = '#1cfc03';
+                    ctx.shadowBlur = 20;
+                    
+                    const slashes = 10;
+                    for (let i = 0; i < slashes; i++) {
+                        let seed = Math.floor(progress * 40) + i;
+                        let sy = (seed * 157) % canvas.height;
+                        let sx = 0;
+                        let ex = canvas.width;
+                        let ey = sy + ((seed * 89) % 240 - 120);
+                        
+                        ctx.lineWidth = (4 + (seed % 4)) * (1 - progress);
+                        ctx.beginPath();
+                        ctx.moveTo(sx, sy);
+                        ctx.lineTo(ex, ey);
+                        ctx.stroke();
+                        
+                        // 절단면의 디지털 정방형 글리치 입자
+                        if (progress < 0.85) {
+                            ctx.fillStyle = 'rgba(28, 252, 3, 0.75)';
+                            let px = canvas.width / 2 + Math.sin(seed * 3) * 120;
+                            let py = sy + Math.cos(seed * 7) * 80;
+                            if (py > 54 && py < canvas.height - 56) {
+                                ctx.fillRect(px, py, 8, 8);
+                            }
+                        }
+                    }
                 } else if (eff.type === 4) {
-                    ctx.fillStyle = '#ff9f43'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    // 🌪️ [플라즈마 대폭풍]
+                    // 1. 번개 다발 연출 (무작위 프랙탈 꺾임 아크)
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.shadowColor = '#ff9f43';
+                    ctx.shadowBlur = 25;
+                    
+                    const numBolts = 5;
+                    for (let b = 0; b < numBolts; b++) {
+                        let seed = Math.floor(progress * 20) + b;
+                        let startX = (seed * 283) % canvas.width;
+                        ctx.lineWidth = (3 + (seed % 3)) * (1 - progress);
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(startX, 0);
+                        
+                        let curX = startX;
+                        const segments = 12;
+                        const segH = canvas.height / segments;
+                        
+                        for (let s = 1; s <= segments; s++) {
+                            let nextY = s * segH;
+                            let nextX = curX + ((seed * s * 53) % 70 - 35);
+                            ctx.lineTo(nextX, nextY);
+                            curX = nextX;
+                        }
+                        ctx.stroke();
+                        
+                        // 전도 폭발 스파크
+                        ctx.fillStyle = '#ff9f43';
+                        ctx.beginPath(); ctx.arc(curX, canvas.height, 8 * (1 - progress), 0, Math.PI * 2); ctx.fill();
+                    }
+                    
+                    // 2. 전체 대폭풍 에너지 방전 황금빛 그라데이션 오버레이
+                    let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                    grad.addColorStop(0, `rgba(255, 159, 67, ${0.35 * (1 - progress)})`);
+                    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                    ctx.fillStyle = grad;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
                 }
+                
                 ctx.restore();
                 if (eff.life <= 0) activeAnnihilationEffect = null;
             }
@@ -4839,6 +5006,22 @@
                 ctx.beginPath();
                 ctx.rect(0, 54, canvas.width, canvas.height - 54);
                 ctx.clip();
+
+                // 화면 흔들림 효과 적용 (게임 영역만)
+                let shakeX = 0;
+                let shakeY = 0;
+                if (activeAnnihilationEffect) {
+                    const intensity = 10 * (activeAnnihilationEffect.life / activeAnnihilationEffect.maxLife);
+                    shakeX = (Math.random() - 0.5) * intensity;
+                    shakeY = (Math.random() - 0.5) * intensity;
+                } else if (shakeTimer > 0) {
+                    shakeX = (Math.random() - 0.5) * shakeIntensity;
+                    shakeY = (Math.random() - 0.5) * shakeIntensity;
+                    shakeTimer--;
+                }
+                if (shakeX !== 0 || shakeY !== 0) {
+                    ctx.translate(shakeX, shakeY);
+                }
 
                 stars.forEach(s => {
                     s.y += s.speed;
