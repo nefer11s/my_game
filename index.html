@@ -3261,6 +3261,41 @@
                 }
             }
 
+            // ☄️ 최종 보스 전용 잡몹 스포너 (5초 단위(300프레임)로 2~3마리씩 확정 출동, 아이템 획득 지원)
+            const hasActiveFinalBoss = enemies.some(e => e.isFinalBoss && !e.isDying);
+            if (hasActiveFinalBoss) {
+                if (typeof window.finalBossMinionTimer === 'undefined') window.finalBossMinionTimer = 0;
+                window.finalBossMinionTimer++;
+                if (window.finalBossMinionTimer >= 300) {
+                    window.finalBossMinionTimer = 0;
+                    const spawnCount = Math.floor(Math.random() * 2) + 2; // 2~3마리 스폰
+                    for (let k = 0; k < spawnCount; k++) {
+                        const aType = Math.floor(Math.random() * 10);
+                        const hpBase = Math.floor((3 + stageLevel * 1.2) * diffMultiplier);
+                        const spawnX = 30 + Math.random() * (canvas.width - 60);
+                        const spawnY = -20 - (k * 25);
+                        const trajPattern = Math.floor(Math.random() * 4);
+
+                        enemies.push({
+                            x: spawnX,
+                            y: spawnY,
+                            radius: 18,
+                            hp: hpBase, maxHp: hpBase,
+                            speed: (2.2 + (stageLevel * 0.08)) * (diffMultiplier * 0.9),
+                            isBoss: false, alienType: aType, flashTimer: 0, animFrame: 0,
+                            hasItem: Math.random() < 0.70, // 70% 높은 확률로 아이템 보유하도록 하여 공급 원활화
+                            trajPattern: trajPattern,
+                            sineSeed: Math.random() * 100,
+                            sineAmp: 30 + Math.random() * 50,
+                            sineFreq: 0.04 + Math.random() * 0.04,
+                            swayDir: Math.random() < 0.5 ? 1 : -1
+                        });
+                    }
+                }
+            } else {
+                window.finalBossMinionTimer = 0;
+            }
+
             // 2. Mid-Boss Support Spawner during Final Boss Battle (Spawns Stage Mid-Boss every 10 seconds!)
             if (globalAnimTick % 600 === 0 && enemies.some(e => e.isFinalBoss && !e.isDying) && enemies.length < 80) {
                 const bType = Math.floor(Math.random() * 10);
