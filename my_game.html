@@ -2060,6 +2060,11 @@
         const GAME_VERSION = "v11.9.1";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
+        let victoryStage = 0; // 0: None, 1: Drones Assembling, 2: Escaping Upwards, 3: Completed
+        let victoryDrones = [];
+        let victoryTimer = 0;
+        let victoryBossX = 270;
+        let victoryBossY = 200;
         let fadeTimer = 0;
         let canvasShakeTimer = 0;
         let stageLevel = 1, waveCount = 0, diffMultiplier = 0.9;
@@ -3169,37 +3174,83 @@
             if (particles) particles = particles.filter(p => p && typeof p === 'object');
             if (player && player.allies) player.allies = player.allies.filter(a => a && typeof a === 'object');
 
-            if (isFadingToVictory) {
-                globalAnimTick++; // isFadingToVictory 중에도 파티클/이펙트 업데이트 유지
-                fadeTimer++;
-                // Hero Ship Autonomous Victory Fly-Through Thrust Upwards!
-                player.y -= 12;
-                player.targetY = player.y;
+            if (victoryStage > 0) {
+                globalAnimTick++;
+                victoryTimer++;
 
-                // Engine Thruster Boost Trail
-                if (globalAnimTick % 2 === 0) {
-                    particles.push({
-                        x: player.x + (Math.random() - 0.5) * 8,
-                        y: player.y + 25,
-                        vx: (Math.random() - 0.5) * 0.8,
-                        vy: Math.random() * 6 + 4,
-                        radius: Math.random() * 3.5 + 2,
-                        alpha: 0.9,
-                        color: Math.random() > 0.4 ? '#00d2d3' : '#ffffff',
-                        gravity: 0.1
+                if (victoryStage === 1) {
+                    // 드론들이 모여서 정렬
+                    victoryDrones.forEach(drone => {
+                        drone.x += (drone.targetX - drone.x) * 0.08;
+                        drone.y += (drone.targetY - drone.y) * 0.08;
+                        if (globalAnimTick % 4 === 0) {
+                            particles.push({
+                                x: drone.x, y: drone.y + 8,
+                                vx: (Math.random() - 0.5) * 0.5, vy: Math.random() * 2 + 2,
+                                radius: Math.random() * 2 + 1, alpha: 0.8, color: '#00d2d3', gravity: 0
+                            });
+                        }
                     });
+                    player.invulnerableTimer = 20;
+                    player.targetX = victoryBossX;
+                    player.targetY = victoryBossY + 180;
+                    player.x += (player.targetX - player.x) * player.speed;
+                    player.y += (player.targetY - player.y) * player.speed;
+
+                    if (victoryTimer >= 120) { // 2초 정렬 대기 후 상승 시작
+                        victoryStage = 2;
+                        victoryTimer = 0;
+                    }
+                } else if (victoryStage === 2) {
+                    // 히어로와 드론이 천천히 동반 상승
+                    const escSpeed = 2.2;
+                    player.y -= escSpeed;
+                    player.targetY = player.y;
+                    player.invulnerableTimer = 20;
+
+                    victoryDrones.forEach(drone => {
+                        drone.y -= escSpeed;
+                        if (globalAnimTick % 3 === 0) {
+                            particles.push({
+                                x: drone.x, y: drone.y + 8,
+                                vx: (Math.random() - 0.5) * 0.5, vy: Math.random() * 3 + 3,
+                                radius: Math.random() * 2 + 1, alpha: 0.8, color: '#00d2d3', gravity: 0
+                            });
+                        }
+                    });
+
+                    if (globalAnimTick % 2 === 0) {
+                        particles.push({
+                            x: player.x + (Math.random() - 0.5) * 12, y: player.y + 24,
+                            vx: (Math.random() - 0.5) * 0.8, vy: Math.random() * 5 + 4,
+                            radius: Math.random() * 3.5 + 2, alpha: 0.9, color: Math.random() > 0.4 ? '#00d2d3' : '#ffffff', gravity: 0.1
+                        });
+                    }
+
+                    screenFadeAlpha = Math.min(1.0, victoryTimer / 150); // 서서히 페이드 아웃
+
+                    if (player.y < -120) {
+                        victoryStage = 3;
+                        victoryTimer = 0;
+                        triggerVictory();
+                    }
+                } else if (victoryStage === 3) {
+                    screenFadeAlpha = 1.0;
+                    if (victoryTimer > 30) {
+                        victoryStage = 0;
+                        screenFadeAlpha = 0;
+                    }
                 }
 
-                if (fadeTimer <= 60) {
-                    screenFadeAlpha = fadeTimer / 60; // Smooth 1-second Fade-Out to Black as Hero flies UP
-                } else if (fadeTimer === 61) {
-                    triggerVictory();
-                } else if (fadeTimer <= 120) {
-                    screenFadeAlpha = 1 - ((fadeTimer - 60) / 60); // Smooth 1-second Fade-In to Victory Screen
-                } else {
-                    isFadingToVictory = false;
-                    screenFadeAlpha = 0;
+                // 파티클 업데이트 유지
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    let p = particles[i];
+                    p.x += p.vx || 0; p.y += p.vy || 0;
+                    if (p.gravity) p.vy += p.gravity;
+                    p.alpha -= p.sparkle ? 0.012 : 0.035;
+                    if (p.alpha <= 0) particles.splice(i, 1);
                 }
+                return;
             }
 
             if (gameState === "VICTORY") {
@@ -3767,12 +3818,12 @@
                     enemy.deathTimer--;
                     canvasShakeTimer = Math.max(canvasShakeTimer || 0, 7);
 
-                    // Hero Fly-by Booster Pass-Through Animation (Hero passes over exploding boss into upper screen)
+                    // 최종 보스가 폭사하는 동안 히어로는 보스 아래쪽 중앙에 정렬하여 대기
                     player.invulnerableTimer = 20;
-                    player.targetY -= 6.0; // Fast upward thrust
                     if (enemy && typeof enemy.x === 'number' && !isNaN(enemy.x)) {
-                        player.targetX += (enemy.x - player.targetX) * 0.05; // Smoothly align with boss center while passing through
+                        player.targetX = enemy.x;
                     }
+                    player.targetY = Math.min(player.y, enemy.y + 180);
                     if (isNaN(player.targetX)) player.targetX = canvas.width / 2;
                     if (isNaN(player.targetY)) player.targetY = canvas.height / 2;
                     if (isNaN(player.x)) player.x = player.targetX;
@@ -3841,8 +3892,24 @@
                         const isFinal = enemy.isFinalBoss;
                         enemies.splice(i, 1);
                         if (isFinal) {
-                            isFadingToVictory = true;
-                            fadeTimer = 0;
+                            victoryStage = 1;
+                            victoryTimer = 0;
+                            victoryBossX = enemy.x;
+                            victoryBossY = enemy.y;
+                            victoryDrones = [];
+                            // 12기의 드론 생성 (화면 외곽 스폰)
+                            for (let d = 0; d < 12; d++) {
+                                const angle = (d / 12) * Math.PI * 2;
+                                const startAngle = Math.random() * Math.PI * 2;
+                                const startDist = canvas.width;
+                                victoryDrones.push({
+                                    x: enemy.x + Math.cos(startAngle) * startDist,
+                                    y: enemy.y + Math.sin(startAngle) * startDist,
+                                    targetX: enemy.x + Math.cos(angle) * 75,
+                                    targetY: enemy.y + Math.sin(angle) * 75,
+                                    angle: angle
+                                });
+                            }
                         }
                     }
                     continue;
@@ -4231,7 +4298,7 @@
         }
 
         function triggerUltimateAnnihilation() {
-            if (gameState !== "PLAYING" || isPaused || isFadingToVictory) return;
+            if (gameState !== "PLAYING" || isPaused || isFadingToVictory || victoryStage > 0) return;
             if (enemies.some(e => e.isFinalBoss && e.isDying)) return;
 
             if (player.ultimateStock <= 0) {
@@ -4298,7 +4365,7 @@
         }
 
         function triggerTacticalBomb() {
-            if (gameState !== "PLAYING" || isPaused || isFadingToVictory) return;
+            if (gameState !== "PLAYING" || isPaused || isFadingToVictory || victoryStage > 0) return;
             if (enemies.some(e => e.isFinalBoss && e.isDying)) return;
 
             playExplosionSound(true);
@@ -4641,6 +4708,21 @@
                 }
                 ctx.restore();
 
+                // victoryStage가 1 또는 2일 때 연출용 드론 그리기
+                if (victoryStage === 1 || victoryStage === 2) {
+                    const cleanDroneCvs = getCleanTransparentSprite(imgAllyDrone);
+                    victoryDrones.forEach(drone => {
+                        ctx.save();
+                        ctx.translate(drone.x, drone.y);
+                        if (cleanDroneCvs) {
+                            ctx.drawImage(cleanDroneCvs, -14, -14, 28, 28);
+                        } else {
+                            ctx.fillStyle = '#54a0ff'; ctx.beginPath(); ctx.arc(0, 0, 10, 0, Math.PI * 2); ctx.fill();
+                        }
+                        ctx.restore();
+                    });
+                }
+
                 // Render Visible Defense Forcefield Shields around Player Hero Ship!
                 if (player.defenseType === "NANO_SHIELD") {
                     ctx.save();
@@ -4735,23 +4817,33 @@
                 });
 
                 enemies.forEach(enemy => {
-                    if (!enemy || (enemy.isDying && !enemy.isFinalBoss) || enemy.isEliminated) return;
+                    // 최종 보스는 사망(isEliminated) 판정 후에도 deathTimer가 남아있다면 계속 그리게 변경
+                    if (!enemy || (enemy.isEliminated && !(enemy.isFinalBoss && enemy.deathTimer > 0))) return;
                     if (enemy.isBoss) {
                         ctx.save();
                         const bImg = enemy.isFinalBoss ? imgBoss : (imgBossTypes.length > 0 ? imgBossTypes[(enemy.bossType || 0) % imgBossTypes.length] : null);
                         const cleanBossCvs = getCleanTransparentSprite(bImg) || getCleanTransparentSprite(imgBoss);
                         const bSize = enemy.isFinalBoss ? 180 : 104;
+                        
+                        // 사망 상태일 때 이미지 흔들림 오프셋 계산
+                        let drawX = enemy.x;
+                        let drawY = enemy.y;
+                        if (enemy.isFinalBoss && enemy.isDying) {
+                            drawX += (Math.random() - 0.5) * 12;
+                            drawY += (Math.random() - 0.5) * 12;
+                        }
+
                         if (cleanBossCvs) {
                             // 원형 클리핑으로 사각형 배경 제거
                             ctx.save();
                             ctx.beginPath();
-                            ctx.arc(enemy.x, enemy.y, bSize / 2, 0, Math.PI * 2);
+                            ctx.arc(drawX, drawY, bSize / 2, 0, Math.PI * 2);
                             ctx.clip();
-                            ctx.drawImage(cleanBossCvs, enemy.x - bSize / 2, enemy.y - bSize / 2, bSize, bSize);
+                            ctx.drawImage(cleanBossCvs, drawX - bSize / 2, drawY - bSize / 2, bSize, bSize);
                             ctx.restore();
                         } else {
                             const pal = BOSS_PALETTES[(enemy.bossType || 0) % BOSS_PALETTES.length] || BOSS_PALETTES[0];
-                            ctx.fillStyle = pal.body || '#4834d4'; ctx.beginPath(); ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2); ctx.fill();
+                            ctx.fillStyle = pal.body || '#4834d4'; ctx.beginPath(); ctx.arc(drawX, drawY, enemy.radius, 0, Math.PI * 2); ctx.fill();
                         }
                         if (enemy.isFinalBoss && enemy.spawnShieldTimer > 0) {
                             ctx.save();
@@ -5292,6 +5384,36 @@
             ctx.restore();
 
             ctx.restore();
+
+            // Draw Victory pulsing text during victory sequence
+            if (victoryStage === 1 || victoryStage === 2) {
+                ctx.save();
+                const baseScale = 1.0;
+                const pulseScale = Math.sin(globalAnimTick * 0.08) * 0.15; // 펄싱 효과
+                const finalScale = baseScale + pulseScale;
+                
+                ctx.translate(canvas.width / 2, canvas.height / 2 - 80);
+                ctx.scale(finalScale, finalScale);
+                
+                // 네온 그라디언트 텍스트 렌더링
+                const grad = ctx.createLinearGradient(-150, 0, 150, 0);
+                grad.addColorStop(0, '#ffd32c'); // 금빛
+                grad.addColorStop(0.5, '#ff3838'); // 네온 레드
+                grad.addColorStop(1, '#00d2d3'); // 네온 시안
+                
+                ctx.font = '900 48px "Outfit", "Segoe UI", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.shadowColor = 'rgba(255, 56, 56, 0.8)';
+                ctx.shadowBlur = 20;
+                ctx.fillStyle = grad;
+                ctx.fillText('VICTORY!', 0, 0);
+                
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1.5;
+                ctx.strokeText('VICTORY!', 0, 0);
+                ctx.restore();
+            }
 
             // Render Cinematic Screen Fade Overlay (Fade-Out to Black -> Fade-In to Victory)
             if (screenFadeAlpha > 0) {
