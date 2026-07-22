@@ -13,7 +13,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Fire Ceramic Fighter (HY Soft 제공) - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.9.0)</title>
+    <title>Fire Ceramic Fighter (HY Soft 제공) - 외계인에게 잡혀간 현우엄마를 구출하라! (v11.9.1)</title>
     <style>
         body {
             margin: 0;
@@ -392,7 +392,7 @@
     <div id="initSplashOverlay"
         style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #080a0f; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; padding: 20px; box-sizing: border-box;"
         onclick="document.getElementById('initSplashOverlay').style.display='none'; requestNativeFullscreenOnly(); initAudio();">
-        <img src="assets/splash_hero.png?v=11.9.0"
+        <img src="assets/splash_hero.png?v=11.9.1"
             style="width: 80%; max-width: 400px; border-radius: 20px; box-shadow: 0 0 30px rgba(0, 210, 211, 0.4); margin-bottom: 25px;"
             alt="Game Cover">
         <div
@@ -410,7 +410,7 @@
         </div>
         <div
             style="position: absolute; bottom: 12px; font-size: 11px; color: #636e72; opacity: 0.7; font-weight: bold; text-align: center;">
-                        v11.9.0 (배포 2026-07-22 00:36)
+                        v11.9.1 (배포 2026-07-22 11:15)
         </div>
         <style>
             @keyframes splashPulse {
@@ -500,7 +500,7 @@
                 <div
                     style="font-size: 11px; color: #636e72; opacity: 0.7; margin-top: 4px; text-align: center; font-weight: bold;">
 
-                                v11.9.0 (배포 2026-07-22 00:36)
+                                v11.9.1 (배포 2026-07-22 11:15)
                 </div>
             </div>
         </div>
@@ -513,7 +513,7 @@
                 <input type="text" id="goNameInput" maxlength="10" value="지휘관"
                     style="background: rgba(20, 26, 38, 0.85); border: 1px solid #00d2d3; color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 13px; width: 130px; text-align: center; outline: none; box-shadow: 0 0 10px rgba(0, 210, 211, 0.3);">
             </div>
-            <button id="restartBtn" onclick="saveHighScore(); handleRestartClick();">💾 명예의 전당 등록 및 복귀</button>
+            <button id="restartBtn" onclick="saveHighScore(null, null, true); handleRestartClick();">💾 명예의 전당 등록 및 복귀</button>
         </div>
 
         <!-- 🛠️ 세부 전술 파라미터 설정 전용 모달 (고급) -->
@@ -644,7 +644,7 @@
             </div>
 
             <div style="border: 3px solid #00d2d3; border-radius: 16px; overflow: hidden; margin-bottom: 14px; box-shadow: 0 0 25px rgba(0, 210, 211, 0.5); max-width: 320px; width: 90%; background: #000;">
-                <img src="assets/abduction_story.png?v=11.9.0" alt="Abduction Story Scene" style="width: 100%; height: auto; max-height: 220px; object-fit: cover; display: block;">
+                <img src="assets/abduction_story.png?v=11.9.1" alt="Abduction Story Scene" style="width: 100%; height: auto; max-height: 220px; object-fit: cover; display: block;">
             </div>
 
             <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(0, 210, 211, 0.4); border-radius: 12px; padding: 12px 16px; color: #dcdde1; font-weight: bold; font-size: 12px; margin-bottom: 18px; max-width: 440px; line-height: 1.6; text-align: left; box-shadow: 0 4px 15px rgba(0,0,0,0.4);">
@@ -669,7 +669,7 @@
             </div>
 
             <div style="border: 3px solid #ff9f43; border-radius: 16px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 0 25px rgba(255, 159, 67, 0.5); max-width: 320px; width: 90%; background: #000;">
-                <img src="assets/hero_launch.png?v=11.9.0" alt="Hero Jet Scramble Launch" style="width: 100%; height: auto; max-height: 220px; object-fit: cover; display: block;">
+                <img src="assets/hero_launch.png?v=11.9.1" alt="Hero Jet Scramble Launch" style="width: 100%; height: auto; max-height: 220px; object-fit: cover; display: block;">
             </div>
 
             <div id="countdownNumber"
@@ -696,7 +696,7 @@
 
             <div
                 style="border: 3px solid #1cfc03; border-radius: 12px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 0 20px rgba(28, 252, 3, 0.4); max-width: 240px; display: flex; align-items: center; justify-content: center; background: #000;">
-                <img src="assets/victory_photo.png?v=11.9.0" alt="Victory Photo"
+                <img src="assets/victory_photo.png?v=11.9.1" alt="Victory Photo"
                     style="width: 100%; max-height: 180px; object-fit: contain;">
             </div>
 
@@ -713,7 +713,7 @@
             </div>
             <button
                 style="font-size: 18px; padding: 12px 40px; border-radius: 30px; background: linear-gradient(135deg, #10ac84, #1cfc03); border: 2px solid #fff; color: #141822; font-weight: 900; cursor: pointer; box-shadow: 0 0 20px rgba(28, 252, 3, 0.5);"
-                onclick="saveHighScore(); returnToMainMenu();">💾 명예의 전당 등록 및 복귀</button>
+                onclick="saveHighScore(null, null, true); returnToMainMenu();">💾 명예의 전당 등록 및 복귀</button>
         </div>
 
         <!-- (환경설정 모달 삭제됨: 모든 설정 옵션이 초기 화면 전술 패널로 통합) -->
@@ -1255,7 +1255,7 @@
         const wpnFreqVal = document.getElementById('wpnFreqVal'), wpnDurVal = document.getElementById('wpnDurVal'), buffFreqVal = document.getElementById('buffFreqVal'), buffDurVal = document.getElementById('buffDurVal'), splashRangeVal = document.getElementById('splashRangeVal'), defFreqVal = document.getElementById('defFreqVal'), defDurVal = document.getElementById('defDurVal');
         const allyFreqVal = document.getElementById('allyFreqVal'), bombFreqVal = document.getElementById('bombFreqVal');
 
-        const GAME_VERSION = "v11.9.0";
+        const GAME_VERSION = "v11.9.1";
         let screenFadeAlpha = 0;
         let isFadingToVictory = false;
         let fadeTimer = 0;
@@ -1667,7 +1667,7 @@
             }
             if (key === 'p' && (gameState === "PLAYING" || gameState === "PAUSED")) { togglePauseState(); }
             if (key === 'b' && gameState === "PLAYING") { toggleBGM(); }
-            if (key === 'm' && (gameState === "PLAYING" || gameState === "GAMEOVER")) { stopBGM(); saveHighScore(); isPaused = false; playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; updateUIVisibility(); }
+            if (key === 'm' && (gameState === "PLAYING" || gameState === "GAMEOVER")) { stopBGM(); saveHighScore(null, null, false); isPaused = false; playUpgradeSound(); document.getElementById('gameOverOverlay').style.display = 'none'; document.getElementById('menuOverlay').style.display = 'flex'; gameState = "MENU"; updateUIVisibility(); }
         });
 
         function togglePauseState() {
@@ -1699,7 +1699,7 @@
 
         function returnToMainMenu() {
             stopBGM();
-            saveHighScore();
+            saveHighScore(null, null, false);
             isPaused = false;
             if (audioCtx) playUpgradeSound();
             const pauseModal = document.getElementById('pauseItemSelectorModal');
@@ -3436,14 +3436,14 @@
         function triggerVictory() {
             gameState = "VICTORY";
             stopBGM();
-            saveHighScore();
+            saveHighScore(null, null, false);
             if (audioCtx) playUpgradeSound();
             document.getElementById('victoryScore').innerText = `최종 전과 스코어: ${score.toLocaleString()} PTS`;
             document.getElementById('victoryOverlay').style.display = 'flex';
             updateUIVisibility();
         }
 
-        function saveHighScore(customName, customScore) {
+        function saveHighScore(customName, customScore, forceSave = false) {
             const sc = (typeof customScore === 'number') ? customScore : score;
             if (sc <= 0) return;
 
@@ -3459,16 +3459,18 @@
             try { localStorage.setItem("hy_last_commander_name", name); } catch (e) { }
 
             let scores = getScoreList();
-            scores.push({ name: name, score: sc });
-            scores.sort((a, b) => b.score - a.score);
-            scores = scores.slice(0, 10);
-            try {
-                localStorage.setItem("hy_fire_fighter_scores", JSON.stringify(scores));
-            } catch (e) { }
+            if (forceSave) {
+                scores.push({ name: name, score: sc });
+                scores.sort((a, b) => b.score - a.score);
+                scores = scores.slice(0, 3);
+                try {
+                    localStorage.setItem("hy_fire_fighter_scores", JSON.stringify(scores));
+                } catch (e) { }
+            }
             highScore = scores[0] ? scores[0].score : 0;
             updateHighScoreUI();
         }
-        function gameOver() { gameState = "GAMEOVER"; stopBGM(); saveHighScore(); document.getElementById('goScore').innerText = `최종 전과 스코어: ${score.toLocaleString()} PTS`; document.getElementById('gameOverOverlay').style.display = 'flex'; }
+        function gameOver() { gameState = "GAMEOVER"; stopBGM(); saveHighScore(null, null, false); document.getElementById('goScore').innerText = `최종 전과 스코어: ${score.toLocaleString()} PTS`; document.getElementById('gameOverOverlay').style.display = 'flex'; }
         function addFloatingText(x, y, text, color, fontSize = 12, life = 110, vy = -0.4) { floatingTexts.push({ x, y, text, color, life, vy, fontSize, scale: 1.4 }); }
 
         function draw() {
