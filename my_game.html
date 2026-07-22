@@ -4329,7 +4329,7 @@
             t = t.replace(/🎁 (.+?) 획득 확정!/, "🎁 $1 Drop Confirmed!");
             t = t.replace(/🎁 아이템 획득 확정!/, "🎁 Drop Item Confirmed!");
             t = t.replace(/⚠️ 필살기 수량 부족! \((.+?)\)/, "⚠️ No Ultimate Stock! ($1)");
-            t = t.replace(/💣 전술 폭탄 작동! 전면 소각!/, "💣 Tactical Bomb Activated! Incinerate All!");
+            t = t.replace(/💣?\s*전술 폭탄 작동.*전면 소각.*/, "💣 Tactical Bomb Activated! Incinerate All!");
             t = t.replace(/💚 최대 체력 확장! \((.+?) HP\)/, "💚 Max HP Expanded! ($1 HP)");
             t = t.replace(/💚 \+(.+?) HP 회복!/, "💚 +$1 HP Healed!");
             t = t.replace(/❤️ 목숨 \+1 보충! \(총 (.+?)개\)/, "❤️ Life +1 Stocked! ($1 total)");
