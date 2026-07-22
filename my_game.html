@@ -4235,7 +4235,9 @@
             if (enemies.some(e => e.isFinalBoss && e.isDying)) return;
 
             if (player.ultimateStock <= 0) {
-                addFloatingText(player.x, player.y - 50, "⚠️ 필살기 수량 부족! (0/5)", "#ff3838", 15);
+                const maxUlt = maxUltimateCapConfig || 5;
+                const isEn = (currentLang === 'en');
+                addFloatingText(player.x, player.y - 50, isEn ? `⚠️ Insufficient Ultimate! (0/${maxUlt})` : `⚠️ 필살기 수량 부족! (0/${maxUlt})`, "#ff3838", 15);
                 if (audioCtx) playHurtSound();
                 return;
             }
@@ -4256,7 +4258,14 @@
             playExplosionSound(true);
             enemyLasers = []; // Clear all enemy bullets
 
-            const effNames = [
+            const isEn = (currentLang === 'en');
+            const effNames = isEn ? [
+                "💥 [Solar Fusion Vaporization] Vaporize All!",
+                "🛰️ [Orbital Laser Strike] Incinerate!",
+                "🕳️ [Void Black Hole] Spacetime Collapse!",
+                "⚡ [Chrono Time Stop] Slash & Burn!",
+                "🌪️ [Plasma Superstorm] Annihilation!"
+            ] : [
                 "💥 [태양 핵융합 소각] 전면 기화!",
                 "🛰️ [궤도 위성 레이저] 융단소각!",
                 "🕳️ [보이드 블랙홀] 시공간 붕괴!",
@@ -4293,7 +4302,8 @@
             if (enemies.some(e => e.isFinalBoss && e.isDying)) return;
 
             playExplosionSound(true);
-            addFloatingText(player.x, player.y - 65, "💣 전술 폭탄 작동! 전면 소각!", "#ff3338", 16);
+            const isEn = (currentLang === 'en');
+            addFloatingText(player.x, player.y - 65, isEn ? "💣 Tactical Bomb Activated! Incinerate All!" : "💣 전술 폭탄 작동! 전면 소각!", "#ff3338", 16);
 
             createAdvancedExplosion(canvas.width / 2, canvas.height / 2, "#ff3838", 12, 1.0);
             createAdvancedExplosion(canvas.width / 2, canvas.height / 3, "#ff9f43", 10, 0.9);
