@@ -5562,22 +5562,61 @@
                 });
 
                 bullets.forEach(b => {
+                    ctx.save();
                     if (b.bType === "HOMING") {
-                        // 유도탄: HSL 기반 다채로운 무지개 빛 색상 순환
+                        // 🎯 유도탄: HSL 기반 무지개 네온 구체
                         const hue = (globalAnimTick * 6 + b.y * 0.5) % 360;
-                        ctx.save();
                         ctx.fillStyle = `hsl(${hue}, 100%, 65%)`;
                         ctx.shadowColor = `hsl(${hue}, 100%, 65%)`;
+                        ctx.shadowBlur = 10;
+                        ctx.beginPath();
+                        ctx.arc(b.x, b.y, 5, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (b.bType === "MISSILE") {
+                        // 🚀 중장갑 미사일: 크고 육중한 빨간 탄체와 추진 화염
+                        // 탄체 바디
+                        ctx.fillStyle = '#ff3838';
+                        ctx.shadowColor = '#ff3838';
                         ctx.shadowBlur = 8;
                         ctx.beginPath();
-                        ctx.arc(b.x, b.y, 4.5, 0, Math.PI * 2);
+                        // 둥근 탄두와 몸통
+                        ctx.arc(b.x, b.y - 8, 4, Math.PI, 0); // 윗부분 탄두
+                        ctx.rect(b.x - 4, b.y - 8, 8, 16); // 몸통
                         ctx.fill();
-                        ctx.restore();
+                        // 추진 화염 꼬리
+                        let grad = ctx.createLinearGradient(b.x, b.y + 8, b.x, b.y + 18);
+                        grad.addColorStop(0, '#ffd32c');
+                        grad.addColorStop(1, 'rgba(255, 56, 56, 0)');
+                        ctx.fillStyle = grad;
+                        ctx.fillRect(b.x - 2, b.y + 8, 4, 10);
+                    } else if (b.bType === "LASER") {
+                        // ⚡ 관통 레이저: 마젠타색 번쩍임이 있는 순백의 길쭉한 광선
+                        ctx.fillStyle = '#ffffff';
+                        ctx.shadowColor = '#e056fd';
+                        ctx.shadowBlur = 12;
+                        ctx.fillRect(b.x - 3, b.y - 20, 6, 40);
+                    } else if (b.bType === "DOUBLE") {
+                        // 🔫 2줄 직진탄: 예리한 연두색 형광 세로선
+                        ctx.fillStyle = '#1dd1a1';
+                        ctx.shadowColor = '#1dd1a1';
+                        ctx.shadowBlur = 5;
+                        ctx.fillRect(b.x - 1.5, b.y - 7, 3, 14);
+                    } else if (b.bType === "TRIPLE") {
+                        // 🔱 3줄 확산탄: 청명한 아쿠아 블루 침상형 탄체
+                        ctx.fillStyle = '#00d2d3';
+                        ctx.shadowColor = '#00d2d3';
+                        ctx.shadowBlur = 5;
+                        ctx.fillRect(b.x - 2, b.y - 6, 4, 12);
+                    } else if (b.bType === "GATLING") {
+                        // ⚙️ 속사 개틀링: 작고 날렵하며 촘촘한 황금색 입자
+                        ctx.fillStyle = '#ff9f43';
+                        ctx.fillRect(b.x - 1, b.y - 4, 2, 8);
                     } else {
-                        // 일반 총알
-                        ctx.fillStyle = '#ffd32c';
-                        ctx.fillRect(b.x - 1.5, b.y, 3, 10);
+                        // 🚀 기본탄 (NORMAL): 밝은 주황색 로켓형 세로선
+                        ctx.fillStyle = '#ff9f43';
+                        ctx.fillRect(b.x - 1.5, b.y - 5, 3, 10);
                     }
+                    ctx.restore();
                 });
                 for (let i = particles.length - 1; i >= 0; i--) { ctx.fillStyle = particles[i].color; ctx.globalAlpha = particles[i].alpha; ctx.beginPath(); ctx.arc(particles[i].x, particles[i].y, particles[i].radius, 0, Math.PI * 2); ctx.fill(); }
 
