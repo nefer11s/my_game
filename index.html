@@ -521,123 +521,134 @@
                 5대 전술 파라미터를 난이도 프리셋과 별개로 세밀하게 조정합니다.
             </div>
 
-            <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(224, 86, 253, 0.35); border-radius: 16px; padding: 18px 16px; width: 100%; max-width: 440px; box-sizing: border-box; margin-bottom: 18px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
-
+            <!-- ⚔️ 전술 옵션 & 필살기 설정 그룹 -->
+            <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(224, 86, 253, 0.35); border-radius: 16px; padding: 18px 16px; width: 100%; max-width: 440px; box-sizing: border-box; margin-bottom: 14px; box-shadow: 0 0 20px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 14px;">
                 <!-- 2. 🛠️ 커스텀 상세 전술 옵션 GRID -->
-                <div style="font-size: 14px; color: #00d2d3; margin-bottom: 12px; font-weight: 900; text-shadow: 0 0 10px rgba(0, 210, 211, 0.6); letter-spacing: 1px;" data-i18n="settings_option_title">
-                    🛠️ 세부 전술 옵션 설정 (5대 파라미터)
+                <div>
+                    <div style="font-size: 14px; color: #00d2d3; margin-bottom: 12px; font-weight: 900; text-shadow: 0 0 10px rgba(0, 210, 211, 0.6); letter-spacing: 1px;" data-i18n="settings_option_title">
+                        🛠️ 세부 전술 옵션 설정 (5대 파라미터)
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                        <!-- 중간보스 체력 -->
+                        <div style="display: flex; flex-direction: column; gap: 3px; font-size: 11px; text-align: left;">
+                            <span style="color: #ff9f43; font-weight: bold;" data-i18n="settings_midboss_hp">⚔️ 중간보스 체력</span>
+                            <select id="midBossHpSelect" onchange="midBossHpMultiplier = parseFloat(this.value)"
+                                style="background: rgba(15, 20, 30, 0.85); color: #ff9f43; border: 1px solid rgba(255, 159, 67, 0.4); padding: 5px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
+                                <option value="0.6" data-i18n="opt_weak">약함 (0.6x)</option>
+                                <option value="1.0" selected data-i18n="opt_normal">보통 (1.0x)</option>
+                                <option value="1.6" data-i18n="opt_strong">강함 (1.6x)</option>
+                                <option value="2.5" data-i18n="opt_demon">악마 (2.5x)</option>
+                            </select>
+                        </div>
+
+                        <!-- 잡몹 밀도 & 체력 -->
+                        <div style="display: flex; flex-direction: column; gap: 3px; font-size: 11px; text-align: left;">
+                            <span style="color: #00d2d3; font-weight: bold;" data-i18n="settings_minion_hp">👾 잡몹 밀도/체력</span>
+                            <select id="minionHpSelect" onchange="minionHpMultiplier = parseFloat(this.value)"
+                                style="background: rgba(15, 20, 30, 0.85); color: #00d2d3; border: 1px solid rgba(0, 210, 211, 0.4); padding: 5px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
+                                <option value="0.6" data-i18n="opt_small">소형 (0.6x)</option>
+                                <option value="1.0" selected data-i18n="opt_normal">보통 (1.0x)</option>
+                                <option value="1.5" data-i18n="opt_large">대형 (1.5x)</option>
+                                <option value="2.2" data-i18n="opt_swarm">군단 (2.2x)</option>
+                            </select>
+                        </div>
+
+                        <!-- 마왕 체력 -->
+                        <div style="display: flex; flex-direction: column; gap: 3px; font-size: 11px; text-align: left;">
+                            <span style="color: #ff3838; font-weight: bold;" data-i18n="settings_finalboss_hp">👑 마왕(최종보스) 체력</span>
+                            <select id="finalBossHpSelect" onchange="finalBossHpMultiplier = parseFloat(this.value)"
+                                style="background: rgba(15, 20, 30, 0.85); color: #ff3838; border: 1px solid rgba(255, 56, 56, 0.4); padding: 5px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
+                                <option value="0.7" data-i18n="opt_easy">쉬움 (0.7x)</option>
+                                <option value="1.0" selected data-i18n="opt_normal">보통 (1.0x)</option>
+                                <option value="1.5" data-i18n="opt_hard">어려움 (1.5x)</option>
+                                <option value="2.5" data-i18n="opt_nightmare">악몽 (2.5x)</option>
+                            </select>
+                        </div>
+
+                        <!-- 아이템 드롭율 -->
+                        <div style="display: flex; flex-direction: column; gap: 3px; font-size: 11px; text-align: left;">
+                            <span style="color: #f1c40f; font-weight: bold;" data-i18n="settings_item_drop">🎁 아이템 드롭율</span>
+                            <select id="itemDropSelect" onchange="allyWeight = parseInt(this.value)"
+                                style="background: rgba(15, 20, 30, 0.85); color: #f1c40f; border: 1px solid rgba(241, 196, 15, 0.4); padding: 5px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
+                                <option value="50" data-i18n="opt_rich">풍부함 (50%)</option>
+                                <option value="30" data-i18n="opt_normal">보통 (30%)</option>
+                                <option value="15" selected data-i18n="opt_adj">조절됨 (15%)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 5. 🔥 신규: 중간보스 호위잡몹 밀도 설정 (단독 가로 100% 배치) -->
+                    <div style="display: flex; flex-direction: column; gap: 3px; font-size: 11px; text-align: left; margin-top: 4px;">
+                        <span style="color: #e056fd; font-weight: bold;" data-i18n="settings_escort_minion">🛸 중간보스 호위잡몹 밀도 (신규)</span>
+                        <select id="midBossMinionSelect" onchange="midBossMinionMultiplier = parseFloat(this.value)"
+                            style="background: rgba(15, 20, 30, 0.85); color: #e056fd; border: 1px solid rgba(224, 86, 253, 0.4); padding: 5px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
+                            <option value="0.0" data-i18n="opt_none">없음 (0기 - 보스 단독)</option>
+                            <option value="0.5" data-i18n="opt_few">적음 (0.5x 밀도)</option>
+                            <option value="1.0" selected data-i18n="opt_normal">보통 (1.0x 기본 밀도)</option>
+                            <option value="1.5" data-i18n="opt_many">많음 (1.5x 집중 스웜)</option>
+                            <option value="2.2" data-i18n="opt_extreme">극악 (2.2x 대규모 군단)</option>
+                        </select>
+                    </div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
-                    <!-- 중간보스 체력 -->
-                    <div style="display: flex; flex-direction: column; gap: 3px; font-size: 11px; text-align: left;">
-                        <span style="color: #ff9f43; font-weight: bold;" data-i18n="settings_midboss_hp">⚔️ 중간보스 체력</span>
-                        <select id="midBossHpSelect" onchange="midBossHpMultiplier = parseFloat(this.value)"
-                            style="background: rgba(15, 20, 30, 0.85); color: #ff9f43; border: 1px solid rgba(255, 159, 67, 0.4); padding: 5px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
-                            <option value="0.6" data-i18n="opt_weak">약함 (0.6x)</option>
-                            <option value="1.0" selected data-i18n="opt_normal">보통 (1.0x)</option>
-                            <option value="1.6" data-i18n="opt_strong">강함 (1.6x)</option>
-                            <option value="2.5" data-i18n="opt_demon">악마 (2.5x)</option>
+
+                <!-- 구분선 -->
+                <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 4px 0;"></div>
+
+                <!-- 💥 필살기 소지 한도 설정 -->
+                <div>
+                    <div style="font-size: 14px; color: #ff3838; margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 10px rgba(255, 56, 56, 0.6); letter-spacing: 1px;" data-i18n="settings_ult_title">
+                        💥 필살기 설정
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #a4b0be;">
+                        <span style="font-weight: bold;" data-i18n="settings_ult_limit">💣 필살기 폭탄 소지 한도</span>
+                        <select id="advMaxUltCapSelect" onchange="maxUltimateCapConfig=parseInt(this.value)"
+                            style="background: rgba(15, 20, 30, 0.85); color: #ff3838; border: 1px solid rgba(255, 56, 56, 0.4); padding: 5px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
+                            <option value="3" data-i18n="opt_ult_3">3개 (제한적)</option>
+                            <option value="5" selected data-i18n="opt_ult_5">5개 (기본 표준)</option>
+                            <option value="7" data-i18n="opt_ult_7">7개 (여유)</option>
+                            <option value="10" data-i18n="opt_ult_10">10개 (무제한급)</option>
                         </select>
                     </div>
-
-                    <!-- 잡몹 밀도 & 체력 -->
-                    <div style="display: flex; flex-direction: column; gap: 3px; font-size: 11px; text-align: left;">
-                        <span style="color: #00d2d3; font-weight: bold;" data-i18n="settings_minion_hp">👾 잡몹 밀도/체력</span>
-                        <select id="minionHpSelect" onchange="minionHpMultiplier = parseFloat(this.value)"
-                            style="background: rgba(15, 20, 30, 0.85); color: #00d2d3; border: 1px solid rgba(0, 210, 211, 0.4); padding: 5px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
-                            <option value="0.6" data-i18n="opt_small">소형 (0.6x)</option>
-                            <option value="1.0" selected data-i18n="opt_normal">보통 (1.0x)</option>
-                            <option value="1.5" data-i18n="opt_large">대형 (1.5x)</option>
-                            <option value="2.2" data-i18n="opt_swarm">군단 (2.2x)</option>
-                        </select>
-                    </div>
-
-                    <!-- 마왕 체력 -->
-                    <div style="display: flex; flex-direction: column; gap: 3px; font-size: 11px; text-align: left;">
-                        <span style="color: #ff3838; font-weight: bold;" data-i18n="settings_finalboss_hp">👑 마왕(최종보스) 체력</span>
-                        <select id="finalBossHpSelect" onchange="finalBossHpMultiplier = parseFloat(this.value)"
-                            style="background: rgba(15, 20, 30, 0.85); color: #ff3838; border: 1px solid rgba(255, 56, 56, 0.4); padding: 5px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
-                            <option value="0.7" data-i18n="opt_easy">쉬움 (0.7x)</option>
-                            <option value="1.0" selected data-i18n="opt_normal">보통 (1.0x)</option>
-                            <option value="1.5" data-i18n="opt_hard">어려움 (1.5x)</option>
-                            <option value="2.5" data-i18n="opt_nightmare">악몽 (2.5x)</option>
-                        </select>
-                    </div>
-
-                    <!-- 아이템 드롭율 -->
-                    <div style="display: flex; flex-direction: column; gap: 3px; font-size: 11px; text-align: left;">
-                        <span style="color: #f1c40f; font-weight: bold;" data-i18n="settings_item_drop">🎁 아이템 드롭율</span>
-                        <select id="itemDropSelect" onchange="allyWeight = parseInt(this.value)"
-                            style="background: rgba(15, 20, 30, 0.85); color: #f1c40f; border: 1px solid rgba(241, 196, 15, 0.4); padding: 5px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
-                            <option value="50" data-i18n="opt_rich">풍부함 (50%)</option>
-                            <option value="30" data-i18n="opt_normal">보통 (30%)</option>
-                            <option value="15" selected data-i18n="opt_adj">조절됨 (15%)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- 5. 🔥 신규: 중간보스 호위잡몹 밀도 설정 (단독 가로 100% 배치) -->
-                <div style="display: flex; flex-direction: column; gap: 3px; font-size: 11px; text-align: left; margin-top: 4px;">
-                    <span style="color: #e056fd; font-weight: bold;" data-i18n="settings_escort_minion">🛸 중간보스 호위잡몹 밀도 (신규)</span>
-                    <select id="midBossMinionSelect" onchange="midBossMinionMultiplier = parseFloat(this.value)"
-                        style="background: rgba(15, 20, 30, 0.85); color: #e056fd; border: 1px solid rgba(224, 86, 253, 0.4); padding: 5px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; width: 100%; cursor: pointer;">
-                        <option value="0.0" data-i18n="opt_none">없음 (0기 - 보스 단독)</option>
-                        <option value="0.5" data-i18n="opt_few">적음 (0.5x 밀도)</option>
-                        <option value="1.0" selected data-i18n="opt_normal">보통 (1.0x 기본 밀도)</option>
-                        <option value="1.5" data-i18n="opt_many">많음 (1.5x 집중 스웜)</option>
-                        <option value="2.2" data-i18n="opt_extreme">극악 (2.2x 대규모 군단)</option>
-                    </select>
                 </div>
             </div>
 
-            <!-- 🎵 사운드(BGM) 설정 -->
-            <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(16, 172, 132, 0.35); border-radius: 16px; padding: 14px 16px; width: 100%; max-width: 440px; box-sizing: border-box; margin-bottom: 14px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
-                <div style="font-size: 14px; color: #10ac84; margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 10px rgba(16, 172, 132, 0.6); letter-spacing: 1px;" data-i18n="settings_sound_title">
-                    🎵 사운드 & 배경음악(BGM) 설정
+            <!-- 🎵 사운드 & 🌐 언어 설정 그룹 -->
+            <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(16, 172, 132, 0.35); border-radius: 16px; padding: 18px 16px; width: 100%; max-width: 440px; box-sizing: border-box; margin-bottom: 18px; box-shadow: 0 0 20px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 14px;">
+                <!-- 🎵 사운드(BGM) 설정 -->
+                <div>
+                    <div style="font-size: 14px; color: #10ac84; margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 10px rgba(16, 172, 132, 0.6); letter-spacing: 1px;" data-i18n="settings_sound_title">
+                        🎵 사운드 & 배경음악(BGM) 설정
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px;">
+                        <span style="color: #10ac84; font-weight: bold; font-size: 12px;" data-i18n="settings_bgm_switch">BGM 스위치</span>
+                        <button id="advBgmToggleBtn" onclick="toggleBGM(); updateAdvBgmUI();"
+                            style="background: rgba(16, 172, 132, 0.25); border: 1px solid #10ac84; color: #10ac84; font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 6px; cursor: pointer;" data-i18n="opt_bgm_on">ON</button>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="color: #a4b0be; font-weight: bold; font-size: 11px; min-width: 55px;" data-i18n="settings_bgm_vol">음량:</span>
+                        <input type="range" id="advBgmVolSlider" min="0" max="100" step="5" value="50"
+                            style="flex: 1; accent-color: #10ac84; cursor: pointer; height: 5px;"
+                            oninput="updateBGMVolume(this.value); document.getElementById('advBgmVolDisp').innerText=this.value+'%';">
+                        <span id="advBgmVolDisp" style="font-size: 11px; font-weight: bold; color: #ff9f43; min-width: 35px; text-align: right;">50%</span>
+                    </div>
                 </div>
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px;">
-                    <span style="color: #10ac84; font-weight: bold; font-size: 12px;" data-i18n="settings_bgm_switch">BGM 스위치</span>
-                    <button id="advBgmToggleBtn" onclick="toggleBGM(); updateAdvBgmUI();"
-                        style="background: rgba(16, 172, 132, 0.25); border: 1px solid #10ac84; color: #10ac84; font-size: 11px; font-weight: bold; padding: 4px 12px; border-radius: 6px; cursor: pointer;" data-i18n="opt_bgm_on">ON</button>
-                </div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="color: #a4b0be; font-weight: bold; font-size: 11px; min-width: 55px;" data-i18n="settings_bgm_vol">음량:</span>
-                    <input type="range" id="advBgmVolSlider" min="0" max="100" step="5" value="50"
-                        style="flex: 1; accent-color: #10ac84; cursor: pointer; height: 5px;"
-                        oninput="updateBGMVolume(this.value); document.getElementById('advBgmVolDisp').innerText=this.value+'%';">
-                    <span id="advBgmVolDisp" style="font-size: 11px; font-weight: bold; color: #ff9f43; min-width: 35px; text-align: right;">50%</span>
-                </div>
-            </div>
 
-            <!-- 💥 필살기 소지 한도 설정 -->
-            <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(255, 56, 56, 0.35); border-radius: 16px; padding: 14px 16px; width: 100%; max-width: 440px; box-sizing: border-box; margin-bottom: 18px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
-                <div style="font-size: 14px; color: #ff3838; margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 10px rgba(255, 56, 56, 0.6); letter-spacing: 1px;" data-i18n="settings_ult_title">
-                    💥 필살기 설정
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #a4b0be;">
-                    <span style="font-weight: bold;" data-i18n="settings_ult_limit">💣 필살기 폭탄 소지 한도</span>
-                    <select id="advMaxUltCapSelect" onchange="maxUltimateCapConfig=parseInt(this.value)"
-                        style="background: rgba(15, 20, 30, 0.85); color: #ff3838; border: 1px solid rgba(255, 56, 56, 0.4); padding: 5px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
-                        <option value="3" data-i18n="opt_ult_3">3개 (제한적)</option>
-                        <option value="5" selected data-i18n="opt_ult_5">5개 (기본 표준)</option>
-                        <option value="7" data-i18n="opt_ult_7">7개 (여유)</option>
-                        <option value="10" data-i18n="opt_ult_10">10개 (무제한급)</option>
-                    </select>
-                </div>
-            </div>
+                <!-- 구분선 -->
+                <div style="border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 4px 0;"></div>
 
-            <!-- 🌐 언어 설정 (Language Settings) -->
-            <div style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(0, 210, 211, 0.35); border-radius: 16px; padding: 14px 16px; width: 100%; max-width: 440px; box-sizing: border-box; margin-bottom: 18px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
-                <div style="font-size: 14px; color: #00d2d3; margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 10px rgba(0, 210, 211, 0.6); letter-spacing: 1px;" data-i18n="settings_lang_title">
-                    🌐 언어 설정 / Language Settings
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #a4b0be;">
-                    <span style="font-weight: bold;" data-i18n="settings_lang_select">선택 (Select Language)</span>
-                    <select id="advLanguageSelect" onchange="changeLanguage(this.value)"
-                        style="background: rgba(15, 20, 30, 0.85); color: #00d2d3; border: 1px solid rgba(0, 210, 211, 0.4); padding: 5px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
-                        <option value="ko">한국어 (Korean)</option>
-                        <option value="en">English (영어)</option>
-                    </select>
+                <!-- 🌐 언어 설정 (Language Settings) -->
+                <div>
+                    <div style="font-size: 14px; color: #00d2d3; margin-bottom: 10px; font-weight: 900; text-shadow: 0 0 10px rgba(0, 210, 211, 0.6); letter-spacing: 1px;" data-i18n="settings_lang_title">
+                        🌐 언어 설정 / Language Settings
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #a4b0be;">
+                        <span style="font-weight: bold;" data-i18n="settings_lang_select">선택 (Select Language)</span>
+                        <select id="advLanguageSelect" onchange="changeLanguage(this.value)"
+                            style="background: rgba(15, 20, 30, 0.85); color: #00d2d3; border: 1px solid rgba(0, 210, 211, 0.4); padding: 5px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
+                            <option value="ko">한국어 (Korean)</option>
+                            <option value="en">English (영어)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
