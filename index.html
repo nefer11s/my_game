@@ -392,6 +392,14 @@
     <div id="initSplashOverlay"
         style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #080a0f; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; padding: 20px; box-sizing: border-box;"
         onclick="document.getElementById('initSplashOverlay').style.display='none'; requestNativeFullscreenOnly(); initAudio();">
+        <!-- 🌐 초기 화면 우측 상단 언어 선택 (이벤트 버블링 방지) -->
+        <div style="position: absolute; top: 18px; right: 18px; z-index: 1000000;" onclick="event.stopPropagation();">
+            <select class="splash-lang-select" onchange="changeLanguage(this.value)"
+                style="background: rgba(15, 20, 30, 0.9); color: #00d2d3; border: 1.5px solid #00d2d3; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; outline: none; box-shadow: 0 0 12px rgba(0, 210, 211, 0.4); backdrop-filter: blur(4px); transition: all 0.2s ease;">
+                <option value="ko">🌐 한국어</option>
+                <option value="en">🌐 English</option>
+            </select>
+        </div>
         <img src="assets/splash_hero.png?v=11.9.1"
             style="width: 80%; max-width: 400px; border-radius: 20px; box-shadow: 0 0 30px rgba(0, 210, 211, 0.4); margin-bottom: 25px;"
             alt="Game Cover">
@@ -433,6 +441,14 @@
             <canvas id="gameCanvas" width="540" height="820"></canvas>
 
             <div id="menuOverlay" style="padding: 30px 20px; box-sizing: border-box; justify-content: space-between;">
+                <!-- 🌐 초기 대기화면 우측 상단 언어 선택 -->
+                <div style="position: absolute; top: 18px; right: 18px; z-index: 100;" onclick="event.stopPropagation();">
+                    <select class="splash-lang-select" onchange="changeLanguage(this.value)"
+                        style="background: rgba(15, 20, 30, 0.9); color: #00d2d3; border: 1.5px solid #00d2d3; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; outline: none; box-shadow: 0 0 12px rgba(0, 210, 211, 0.4); backdrop-filter: blur(4px); transition: all 0.2s ease;">
+                        <option value="ko">🌐 한국어</option>
+                        <option value="en">🌐 English</option>
+                    </select>
+                </div>
                 <div style="margin-top: 30px; display: flex; flex-direction: column; align-items: center; width: 100%;">
                     <div class="menu-title"
                         style="font-size: 32px; font-weight: 900; color: #00d2d3; text-shadow: 0 0 25px rgba(0, 210, 211, 0.7); margin-bottom: 6px; letter-spacing: 3px; text-align: center; line-height: 1.2;" data-i18n="menu_title">
@@ -1674,6 +1690,9 @@
             // 셀렉트 박스 동기화
             const selectEl = document.getElementById('advLanguageSelect');
             if (selectEl) selectEl.value = lang;
+            document.querySelectorAll('.splash-lang-select').forEach(sel => {
+                sel.value = lang;
+            });
 
             // 난이도 설정 텍스트 다국어 갱신
             const activeDisp = document.getElementById('activeDiffSummaryDisp');
