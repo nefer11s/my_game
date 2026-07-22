@@ -4315,7 +4315,6 @@
             if (enemy.isFinalBoss) {
                 enemy.deathTimer = 420; // Exactly 7.0 seconds (420 frames @ 60fps) fireworks explosion sequence!
                 enemyLasers = []; // Clear enemy lasers on boss defeat
-                addFloatingText(enemy.x, enemy.y - 70, "💥 [마왕 격파! 7초 화염 대폭발 & 히어로 돌파]", "#ff2d55", 22);
                 playExplosionSound(true);
                 return;
             }
