@@ -692,13 +692,25 @@
                 <div style="font-size: 13px; color: #00d2d3; margin-bottom: 8px; font-weight: 900; text-shadow: 0 0 10px rgba(0, 210, 211, 0.6); letter-spacing: 1px;">
                     🛠️ 디버그 프리뷰 화면 선택
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
                     <button class="debug-btn" onclick="previewScreen('INIT_SPLASH')" style="background: #7f8c8d; border: 1px solid #95a5a6; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">🌐 URL 진입 스플래시</button>
                     <button class="debug-btn" onclick="previewScreen('SPLASH')" style="background: #2c3e50; border: 1px solid #34495e; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">🌐 초기 대기화면</button>
                     <button class="debug-btn" onclick="previewScreen('PROLOGUE')" style="background: #2c3e50; border: 1px solid #34495e; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">📖 프롤로그 화면</button>
                     <button class="debug-btn" onclick="previewScreen('SCRAMBLE')" style="background: #2c3e50; border: 1px solid #34495e; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">🚀 스크램블(런칭)</button>
                     <button class="debug-btn" onclick="previewScreen('BOSS_DEATH')" style="background: #78281f; border: 1px solid #922b21; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">💥 보스 처치 화면</button>
                     <button class="debug-btn" onclick="previewScreen('VICTORY')" style="background: #196f3d; border: 1px solid #1e8449; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">🏆 엔딩 빅토리 화면</button>
+                </div>
+                
+                <!-- 💥 전술 필살기 연출 미리보기 구역 -->
+                <div style="font-size: 13px; color: #ff9f43; margin-bottom: 8px; font-weight: 900; text-shadow: 0 0 10px rgba(255, 159, 67, 0.6); letter-spacing: 1px; border-top: 1px solid rgba(255, 255, 255, 0.15); padding-top: 10px;" data-i18n="settings_preview_ult_title">
+                    💥 전술 필살기 연출 미리보기
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <button class="debug-btn" onclick="previewUltimate(0)" style="background: #78281f; border: 1px solid #c0392b; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;" data-i18n="btn_ult_prev_0">💥 태양 핵융합</button>
+                    <button class="debug-btn" onclick="previewUltimate(1)" style="background: #1f618d; border: 1px solid #2980b9; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;" data-i18n="btn_ult_prev_1">🛰️ 위성 레이저</button>
+                    <button class="debug-btn" onclick="previewUltimate(2)" style="background: #4a235a; border: 1px solid #8e44ad; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;" data-i18n="btn_ult_prev_2">🕳️ 보이드 블랙홀</button>
+                    <button class="debug-btn" onclick="previewUltimate(3)" style="background: #145a32; border: 1px solid #27ae60; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;" data-i18n="btn_ult_prev_3">⚡ 시공 정지</button>
+                    <button class="debug-btn" onclick="previewUltimate(4)" style="background: #7e5109; border: 1px solid #d35400; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s; grid-column: span 2;" data-i18n="btn_ult_prev_4">🌪️ 플라즈마 대폭풍</button>
                 </div>
             </div>
 
@@ -1759,6 +1771,12 @@
                 btn_controls: "⌨️ 조작법 가이드",
                 btn_items: "🎁 아이템 도감",
                 btn_settings: "🛠️ 고급 설정",
+                settings_preview_ult_title: "💥 전술 필살기 연출 미리보기",
+                btn_ult_prev_0: "💥 태양 핵융합",
+                btn_ult_prev_1: "🛰️ 위성 레이저",
+                btn_ult_prev_2: "🕳️ 보이드 블랙홀",
+                btn_ult_prev_3: "⚡ 시공 정지",
+                btn_ult_prev_4: "🌪️ 플라즈마 대폭풍",
                 difficulty_easy: "EASY (Lv.1)",
                 difficulty_normal: "NORMAL (Lv.2)",
                 difficulty_hard: "HARD (Lv.3)",
@@ -1872,6 +1890,12 @@
                 btn_controls: "⌨️ Controls Guide",
                 btn_items: "🎁 Item Codex",
                 btn_settings: "🛠️ Advanced Settings",
+                settings_preview_ult_title: "💥 Preview Ultimate Skill Effects",
+                btn_ult_prev_0: "💥 Solar Fusion",
+                btn_ult_prev_1: "🛰️ Orbital Laser",
+                btn_ult_prev_2: "🕳️ Void Black Hole",
+                btn_ult_prev_3: "⚡ Chrono Stop",
+                btn_ult_prev_4: "🌪️ Plasma Storm",
                 difficulty_easy: "EASY (Lv.1)",
                 difficulty_normal: "NORMAL (Lv.2)",
                 difficulty_hard: "HARD (Lv.3)",
@@ -4482,6 +4506,35 @@
             triggerAnnihilationEffect(effIdx);
         }
 
+        function previewUltimate(effIdx) {
+            // 필살기 효과음 재생
+            playExplosionSound(true);
+
+            const effColors = ["#ff3838", "#00d2d3", "#9b59b6", "#1cfc03", "#ff9f43"];
+            const color = effColors[effIdx];
+            
+            // 미리보기용 activeAnnihilationEffect 객체 활성화 (프레임 65)
+            activeAnnihilationEffect = { type: effIdx, life: 65, maxLife: 65, color: color };
+            
+            // 미리보기 텍스트 팝업 띄우기
+            const isEn = (currentLang === 'en');
+            const effNames = isEn ? [
+                "💥 [Solar Fusion] Preview",
+                "🛰️ [Orbital Laser] Preview",
+                "🕳️ [Void Black Hole] Preview",
+                "⚡ [Chrono Time Stop] Preview",
+                "🌪️ [Plasma Storm] Preview"
+            ] : [
+                "💥 [태양 핵융합] 미리보기",
+                "🛰️ [궤도 위성 레이저] 미리보기",
+                "🕳️ [보이드 블랙홀] 미리보기",
+                "⚡ [크로노 시공 정지] 미리보기",
+                "🌪️ [플라즈마 대폭풍] 미리보기"
+            ];
+            
+            addFloatingText(canvas.width / 2, canvas.height / 2 - 80, effNames[effIdx], color, 18);
+        }
+
         function updateUltimateUI() {
             const el = document.getElementById('ultCountDisp');
             if (el) el.innerText = player.ultimateStock;
@@ -4764,7 +4817,7 @@
         }
 
         function draw() {
-            if (gameState === "MENU") return;
+            if (gameState === "MENU" && !activeAnnihilationEffect) return;
             ctx.globalAlpha = 1.0;
             ctx.filter = 'none';
             ctx.shadowBlur = 0;
@@ -4998,6 +5051,8 @@
                 ctx.restore();
                 if (eff.life <= 0) activeAnnihilationEffect = null;
             }
+
+            if (gameState === "MENU") return;
 
             // Enforce Strict Gameplay Area Clipping (y: 54px ~ canvas.height)
             // Prevents any enemy ship, projectile, overhead HP bar, or particle from bleeding into the top HUD status bar!
