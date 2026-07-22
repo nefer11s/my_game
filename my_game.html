@@ -4575,6 +4575,36 @@
             // 미리보기용 activeAnnihilationEffect 객체 활성화 (프레임 65)
             activeAnnihilationEffect = { type: effIdx, life: 65, maxLife: 65, color: color };
             
+            // ☄️ 모달을 반투명하게 만들어 뒷배경의 화려한 연출이 투명하게 보이도록 함!
+            const modal = document.getElementById('difficultyModal');
+            if (modal) {
+                modal.style.background = "rgba(8, 10, 16, 0.15)";
+                modal.style.backdropFilter = "none";
+                modal.style.webkitBackdropFilter = "none";
+            }
+
+            // ☄️ 대기화면 오버레이(menuOverlay)도 일시적으로 투명화하여 캔버스가 완전히 노출되게 함!
+            const menu = document.getElementById('menuOverlay');
+            if (menu) {
+                menu.style.opacity = "0.0";
+                menu.style.pointerEvents = "none";
+                menu.style.transition = "opacity 0.2s ease";
+            }
+            
+            // 1.1초(65프레임 상당) 후 원래 상태로 복구
+            if (window.previewRestoreTimeout) clearTimeout(window.previewRestoreTimeout);
+            window.previewRestoreTimeout = setTimeout(() => {
+                if (modal) {
+                    modal.style.background = "rgba(8, 10, 16, 0.94)";
+                    modal.style.backdropFilter = "blur(10px)";
+                    modal.style.webkitBackdropFilter = "blur(10px)";
+                }
+                if (menu) {
+                    menu.style.opacity = "1.0";
+                    menu.style.pointerEvents = "auto";
+                }
+            }, 1100);
+            
             // 미리보기 텍스트 팝업 띄우기
             const isEn = (currentLang === 'en');
             const effNames = isEn ? [
