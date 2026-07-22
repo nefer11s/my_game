@@ -473,6 +473,45 @@
                     box-shadow: 0 0 20px rgba(255, 45, 85, 0.5);
                 }
             }
+            @keyframes boosterLaunch {
+                0% {
+                    transform: translate(0, 0) scale(1.0);
+                    box-shadow: 0 0 25px rgba(255, 159, 67, 0.6);
+                }
+                10% {
+                    transform: translate(-1px, -2px) scale(1.005);
+                    box-shadow: 0 0 40px rgba(255, 159, 67, 0.85);
+                }
+                20% {
+                    transform: translate(1px, 2px) scale(1.0);
+                }
+                30% {
+                    transform: translate(-2px, -1px) scale(1.005);
+                }
+                40% {
+                    transform: translate(2px, 1px) scale(1.0);
+                }
+                50% {
+                    transform: translate(-1px, -2px) scale(1.01);
+                    box-shadow: 0 0 50px rgba(255, 159, 67, 1.0);
+                }
+                60% {
+                    transform: translate(2px, 2px) scale(1.0);
+                }
+                70% {
+                    transform: translate(-2px, -1px) scale(1.005);
+                }
+                80% {
+                    transform: translate(1px, -2px) scale(1.0);
+                }
+                90% {
+                    transform: translate(-1px, 2px) scale(1.005);
+                }
+                100% {
+                    transform: translate(0, 0) scale(1.0);
+                    box-shadow: 0 0 25px rgba(255, 159, 67, 0.6);
+                }
+            }
             @keyframes splashPulse {
                 0% {
                     box-shadow: 0 0 0 0 rgba(255, 159, 67, 0.7);
@@ -758,7 +797,7 @@
                 "Fire Ceramic Fighter 긴급 발진 부스터 온!"
             </div>
 
-            <div style="border: 3px solid #ff9f43; border-radius: 16px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 0 25px rgba(255, 159, 67, 0.5); max-width: 320px; width: 90%; background: #000;">
+            <div style="border: 3px solid #ff9f43; border-radius: 16px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 0 25px rgba(255, 159, 67, 0.5); max-width: 320px; width: 90%; background: #000; animation: boosterLaunch 0.15s linear infinite;">
                 <img src="assets/hero_launch.png?v=11.9.1" alt="Hero Jet Scramble Launch" style="width: 100%; height: auto; max-height: 220px; object-fit: cover; display: block;">
             </div>
 
