@@ -1875,16 +1875,8 @@
 
         function replaceCustomNames(text) {
             if (!text) return text;
-            let commanderName = localStorage.getItem("custom_commander_name") || (currentLang === 'en' ? "Hyunwoo" : "현우");
-            let targetName = localStorage.getItem("custom_target_name") || (currentLang === 'en' ? "Mother" : "엄마");
-            
-            // '님' 중복 입력 방지 처리
-            if (commanderName.endsWith("님")) {
-                commanderName = commanderName.substring(0, commanderName.length - 1);
-            }
-            if (targetName.endsWith("님")) {
-                targetName = targetName.substring(0, targetName.length - 1);
-            }
+            const commanderName = localStorage.getItem("custom_commander_name") || (currentLang === 'en' ? "Hyunwoo" : "현우");
+            const targetName = localStorage.getItem("custom_target_name") || (currentLang === 'en' ? "Mother" : "엄마");
             
             let result = text;
             if (currentLang === 'en') {
@@ -1908,10 +1900,10 @@
                                .replace(/현우\s*지휘관의/g, `${commanderName} 지휘관님의`)
                                .replace(/현우\s*지휘관/g, `${commanderName} 지휘관님`)
                                
-                               // 개별 단어 치환 (엄마, 현우)
-                               .replace(/엄마를/g, `${targetName}님을`)
-                               .replace(/엄마/g, `${targetName}님`)
-                               .replace(/현우/g, commanderName);
+                               // 개별 단어 치환 (엄마, 현우) (부정형 전방탐색으로 중복 치환 방지)
+                               .replace(/엄마를(?!님)/g, `${targetName}님을`)
+                               .replace(/엄마(?!님)/g, `${targetName}님`)
+                               .replace(/현우(?! 지휘관)/g, commanderName);
             }
             return result;
         }
