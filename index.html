@@ -665,16 +665,16 @@
 
             <!-- 🛠️ 디버그 프리뷰 화면 테스트 제어 구역 (스크롤 필요 없도록 최상단 고정) -->
             <div id="debugPreviewArea" style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(0, 210, 211, 0.4); border-radius: 16px; padding: 14px 16px; width: 100%; max-width: 440px; box-sizing: border-box; margin-bottom: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.5);">
-                <div style="font-size: 13px; color: #00d2d3; margin-bottom: 8px; font-weight: 900; text-shadow: 0 0 10px rgba(0, 210, 211, 0.6); letter-spacing: 1px;">
+                <div style="font-size: 13px; color: #00d2d3; margin-bottom: 8px; font-weight: 900; text-shadow: 0 0 10px rgba(0, 210, 211, 0.6); letter-spacing: 1px;" data-i18n="settings_preview_title">
                     🛠️ 디버그 프리뷰 화면 선택
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
-                    <button class="debug-btn" onclick="previewScreen('INIT_SPLASH')" style="background: #7f8c8d; border: 1px solid #95a5a6; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">🌐 URL 진입 스플래시</button>
-                    <button class="debug-btn" onclick="previewScreen('SPLASH')" style="background: #2c3e50; border: 1px solid #34495e; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">🌐 초기 대기화면</button>
-                    <button class="debug-btn" onclick="previewScreen('PROLOGUE')" style="background: #2c3e50; border: 1px solid #34495e; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">📖 프롤로그 화면</button>
-                    <button class="debug-btn" onclick="previewScreen('SCRAMBLE')" style="background: #2c3e50; border: 1px solid #34495e; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">🚀 스크램블(런칭)</button>
-                    <button class="debug-btn" onclick="previewScreen('BOSS_DEATH')" style="background: #78281f; border: 1px solid #922b21; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">💥 보스 처치 화면</button>
-                    <button class="debug-btn" onclick="previewScreen('VICTORY')" style="background: #196f3d; border: 1px solid #1e8449; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;">🏆 엔딩 빅토리 화면</button>
+                    <button class="debug-btn" onclick="previewScreen('INIT_SPLASH')" style="background: #7f8c8d; border: 1px solid #95a5a6; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;" data-i18n="btn_prev_init_splash">🌐 URL 진입 스플래시</button>
+                    <button class="debug-btn" onclick="previewScreen('SPLASH')" style="background: #2c3e50; border: 1px solid #34495e; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;" data-i18n="btn_prev_splash">🌐 초기 대기화면</button>
+                    <button class="debug-btn" onclick="previewScreen('PROLOGUE')" style="background: #2c3e50; border: 1px solid #34495e; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;" data-i18n="btn_prev_prologue">📖 프롤로그 화면</button>
+                    <button class="debug-btn" onclick="previewScreen('SCRAMBLE')" style="background: #2c3e50; border: 1px solid #34495e; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;" data-i18n="btn_prev_scramble">🚀 스크램블(런칭)</button>
+                    <button class="debug-btn" onclick="previewScreen('BOSS_DEATH')" style="background: #78281f; border: 1px solid #922b21; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;" data-i18n="btn_prev_boss_death">💥 보스 처치 화면</button>
+                    <button class="debug-btn" onclick="previewScreen('VICTORY')" style="background: #196f3d; border: 1px solid #1e8449; color: #fff; padding: 6px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: bold; transition: all 0.2s;" data-i18n="btn_prev_victory">🏆 엔딩 빅토리 화면</button>
                 </div>
                 
                 <!-- 💥 전술 필살기 연출 미리보기 구역 -->
@@ -835,6 +835,60 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- 🌌 시나리오 커스텀 설정 그룹 -->
+            <div
+                style="background: rgba(20, 26, 38, 0.85); border: 1px solid rgba(0, 210, 211, 0.35); border-radius: 16px; padding: 18px 16px; width: 100%; max-width: 440px; box-sizing: border-box; margin-bottom: 18px; box-shadow: 0 0 20px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 14px;">
+                <div>
+                    <div style="font-size: 14px; color: #00d2d3; margin-bottom: 6px; font-weight: 900; text-shadow: 0 0 10px rgba(0, 210, 211, 0.6); letter-spacing: 1px;">
+                        🌌 시나리오 커스텀 설정
+                    </div>
+                    <div style="font-size: 11px; color: #a4b0be; margin-bottom: 12px; text-align: left; line-height: 1.4;">
+                        스토리 및 엔딩의 이름과 이미지를 변경하여 자신만의 커스텀 시나리오를 만들 수 있습니다.
+                    </div>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 10px; text-align: left;">
+                        <!-- 지휘관 이름 입력 -->
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <label style="font-size: 11px; color: #ff9f43; font-weight: bold;">👤 지휘관 이름 (Commander Name)</label>
+                            <input type="text" id="customCommanderInput" placeholder="예: 현우 (기본값)" maxlength="10"
+                                style="background: rgba(15, 20, 30, 0.85); border: 1px solid rgba(255, 159, 67, 0.4); color: #fff; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; outline: none; width: 100%; box-sizing: border-box;">
+                        </div>
+                        
+                        <!-- 구출 대상 이름 입력 -->
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <label style="font-size: 11px; color: #ff3838; font-weight: bold;">❤️ 구할 사람 이름 (Target Name)</label>
+                            <input type="text" id="customTargetInput" placeholder="예: 엄마 (기본값)" maxlength="10"
+                                style="background: rgba(15, 20, 30, 0.85); border: 1px solid rgba(255, 56, 56, 0.4); color: #fff; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; outline: none; width: 100%; box-sizing: border-box;">
+                        </div>
+                        
+                        <!-- 엔딩 이미지 업로드 -->
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <label style="font-size: 11px; color: #1cfc03; font-weight: bold;">🖼️ 엔딩 이미지 변경 (Ending Image)</label>
+                            <div style="display: flex; gap: 8px; align-items: center; width: 100%;">
+                                <input type="file" id="customEndingImgInput" accept="image/*" style="display: none;" onchange="handleImageUpload(this)">
+                                <button type="button" onclick="document.getElementById('customEndingImgInput').click()"
+                                    style="flex: 2; background: linear-gradient(135deg, rgba(28, 252, 3, 0.2), rgba(16, 172, 132, 0.3)); border: 1.5px dashed #1cfc03; color: #1cfc03; padding: 8px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s;">
+                                    📁 이미지 파일 선택
+                                </button>
+                                <button type="button" onclick="resetCustomEndingImage()"
+                                    style="flex: 1; background: rgba(255, 56, 56, 0.15); border: 1px solid #ff3838; color: #ff3838; padding: 8px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; transition: all 0.2s;">
+                                    🔄 초기화
+                                </button>
+                            </div>
+                            
+                            <!-- 업로드된 이미지 프리뷰 -->
+                            <div id="customEndingImgPreviewContainer" style="display: none; margin-top: 8px; text-align: center;">
+                                <div style="font-size: 10px; color: #a4b0be; margin-bottom: 4px;">업로드된 커스텀 이미지 프리뷰:</div>
+                                <div style="border: 2px solid #1cfc03; border-radius: 8px; overflow: hidden; display: inline-flex; max-width: 120px; background: #000; box-shadow: 0 0 10px rgba(28, 252, 3, 0.3);">
+                                    <img id="customEndingImgPreview" src="" style="width: 100%; height: auto; object-fit: contain; max-height: 80px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
             <button style="font-size: 16px; padding: 12px 36px; border-radius: 30px; background: linear-gradient(135deg, #00d2d3, #0984e3); border: 2px solid #fff; color: #fff; font-weight: 900; cursor: pointer; box-shadow: 0 0 20px rgba(0, 210, 211, 0.6);"
                 onclick="closeDifficultyModal()" data-i18n="settings_save">💾 설정 저장 및 완료</button>
@@ -1501,6 +1555,13 @@
                 btn_controls: "⌨️ 조작법 가이드",
                 btn_items: "🎁 아이템 도감",
                 btn_settings: "🛠️ 고급 설정",
+                settings_preview_title: "🛠️ 디버그 프리뷰 화면 선택",
+                btn_prev_init_splash: "🌐 URL 진입 스플래시",
+                btn_prev_splash: "🌐 초기 대기화면",
+                btn_prev_prologue: "📖 프롤로그 화면",
+                btn_prev_scramble: "🚀 스크램블(런칭)",
+                btn_prev_boss_death: "💥 보스 처치 화면",
+                btn_prev_victory: "🏆 엔딩 빅토리 화면",
                 settings_preview_ult_title: "💥 전술 필살기 연출 미리보기",
                 btn_ult_prev_0: "💥 태양 핵융합",
                 btn_ult_prev_1: "🛰️ 위성 레이저",
@@ -1624,6 +1685,13 @@
                 btn_controls: "⌨️ Controls Guide",
                 btn_items: "🎁 Item Codex",
                 btn_settings: "🛠️ Advanced Settings",
+                settings_preview_title: "🛠️ Select Debug Preview Screen",
+                btn_prev_init_splash: "🌐 URL Entry Splash",
+                btn_prev_splash: "🌐 Main Menu Screen",
+                btn_prev_prologue: "📖 Prologue Screen",
+                btn_prev_scramble: "🚀 Scramble (Launch)",
+                btn_prev_boss_death: "💥 Boss Defeat Screen",
+                btn_prev_victory: "🏆 Ending Victory Screen",
                 settings_preview_ult_title: "💥 Preview Ultimate Skill Effects",
                 btn_ult_prev_0: "💥 Solar Fusion",
                 btn_ult_prev_1: "🛰️ Orbital Laser",
@@ -1762,14 +1830,16 @@
 
         function applyLanguage(lang) {
             currentLang = lang;
+            const langObj = LANG_DATA[lang] || LANG_DATA['ko'];
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (LANG_DATA[lang] && LANG_DATA[lang][key]) {
-                    const rawText = LANG_DATA[lang][key];
-                    if (rawText.includes('<') && rawText.includes('>')) {
-                        el.innerHTML = rawText;
+                if (langObj[key]) {
+                    const rawText = langObj[key];
+                    const processedText = replaceCustomNames(rawText);
+                    if (processedText.includes('<') && processedText.includes('>')) {
+                        el.innerHTML = processedText;
                     } else {
-                        el.textContent = rawText;
+                        el.textContent = processedText;
                     }
                 }
             });
@@ -1787,6 +1857,13 @@
                 const localizedName = getLocaleText('btn_' + selectedDifficultyKey.toLowerCase());
                 activeDisp.innerText = `🎯 ${label}: [${localizedName}]`;
             }
+
+            // 엔딩 오버레이 이미지 동적 갱신
+            const savedImg = localStorage.getItem("custom_victory_image");
+            const vicPhoto = document.querySelector('#victoryOverlay img');
+            if (vicPhoto) {
+                vicPhoto.src = savedImg ? savedImg : "assets/victory_photo.png?v=11.9.1";
+            }
         }
 
         function changeLanguage(lang) {
@@ -1796,13 +1873,48 @@
             } catch (e) {}
         }
 
+        function replaceCustomNames(text) {
+            if (!text) return text;
+            const commanderName = localStorage.getItem("custom_commander_name") || (currentLang === 'en' ? "Hyunwoo" : "현우");
+            const targetName = localStorage.getItem("custom_target_name") || (currentLang === 'en' ? "Mother" : "엄마");
+            
+            let result = text;
+            if (currentLang === 'en') {
+                result = result.replace(/Hyun-woo's/g, `${commanderName}'s`)
+                               .replace(/Hyun-woo/g, commanderName)
+                               .replace(/Hyunwoo's/g, `${commanderName}'s`)
+                               .replace(/Hyunwoo/g, commanderName)
+                               .replace(/commander's mother/gi, `Commander ${commanderName}'s ${targetName}`)
+                               .replace(/commander's/gi, `Commander ${commanderName}'s`)
+                               .replace(/mother/gi, targetName);
+            } else {
+                // "현우엄마"와 관련된 다양한 조사 결합 치환 (띄어쓰기 포함)
+                result = result.replace(/현우\s*엄마를/g, `${targetName}님을`)
+                               .replace(/현우\s*엄마의/g, `${targetName}님의`)
+                               .replace(/현우\s*엄마/g, `${targetName}님`)
+                               .replace(/현우엄마를/g, `${targetName}님을`)
+                               .replace(/현우엄마/g, `${targetName}님`)
+                               
+                               // "현우 지휘관" 관련 조사 결합 치환 (지휘관님 호칭 통일)
+                               .replace(/현우\s*지휘관님과/g, `${commanderName} 지휘관님과`)
+                               .replace(/현우\s*지휘관의/g, `${commanderName} 지휘관님의`)
+                               .replace(/현우\s*지휘관/g, `${commanderName} 지휘관님`)
+                               
+                               // 개별 단어 치환 (엄마, 현우)
+                               .replace(/엄마를/g, `${targetName}님을`)
+                               .replace(/엄마/g, `${targetName}님`)
+                               .replace(/현우/g, commanderName);
+            }
+            return result;
+        }
+
         function getLocaleText(key) {
             if (LANG_DATA[currentLang] && LANG_DATA[currentLang][key]) {
-                return LANG_DATA[currentLang][key];
+                return replaceCustomNames(LANG_DATA[currentLang][key]);
             }
             // fallback ko
             if (LANG_DATA['ko'] && LANG_DATA['ko'][key]) {
-                return LANG_DATA['ko'][key];
+                return replaceCustomNames(LANG_DATA['ko'][key]);
             }
             return key;
         }
@@ -1954,7 +2066,7 @@
             if (top3.length > 1) html += `</div>`;
             container.innerHTML = html;
 
-            const lastName = localStorage.getItem("hy_last_commander_name") || "지휘관";
+            const lastName = localStorage.getItem("custom_commander_name") || localStorage.getItem("hy_last_commander_name") || "지휘관";
             ['goNameInput', 'victoryNameInput'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = lastName;
@@ -2564,15 +2676,83 @@
             setSelectClosest(document.getElementById('midBossMinionSelect'), midBossMinionMultiplier);
         }
 
+        function handleImageUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            if (file.size > 300 * 1024) {
+                alert(currentLang === 'en' ? "Image size must be less than 300KB!" : "이미지 용량은 300KB 이하여야 합니다!");
+                input.value = "";
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                try {
+                    localStorage.setItem("custom_victory_image", dataUrl);
+                    const previewImg = document.getElementById('customEndingImgPreview');
+                    const previewContainer = document.getElementById('customEndingImgPreviewContainer');
+                    if (previewImg && previewContainer) {
+                        previewImg.src = dataUrl;
+                        previewContainer.style.display = 'block';
+                    }
+                    const vicPhoto = document.querySelector('#victoryOverlay img');
+                    if (vicPhoto) {
+                        vicPhoto.src = dataUrl;
+                    }
+                } catch (err) {
+                    alert(currentLang === 'en' ? "Failed to save image. Storage limit might be exceeded." : "이미지 저장에 실패했습니다. 용량 초과일 수 있습니다.");
+                    console.error(err);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function resetCustomEndingImage() {
+            localStorage.removeItem("custom_victory_image");
+            const previewContainer = document.getElementById('customEndingImgPreviewContainer');
+            if (previewContainer) {
+                previewContainer.style.display = 'none';
+            }
+            const fileInput = document.getElementById('customEndingImgInput');
+            if (fileInput) {
+                fileInput.value = "";
+            }
+            const vicPhoto = document.querySelector('#victoryOverlay img');
+            if (vicPhoto) {
+                vicPhoto.src = "assets/victory_photo.png?v=11.9.1";
+            }
+            if (audioCtx) playUpgradeSound();
+        }
+
         function openDifficultyModal() {
             if (audioCtx) playUpgradeSound();
             updateSettingsUIFromVariables();
-            // 고급설정 모달 내 BGM/필살기 상태 동기화
             updateAdvBgmUI();
             const advUltSel = document.getElementById('advMaxUltCapSelect');
             if (advUltSel) setSelectClosest(advUltSel, maxUltimateCapConfig);
             const advStartUltSel = document.getElementById('advStartUltSelect');
             if (advStartUltSel) setSelectClosest(advStartUltSel, customStartUltStockConfig);
+            
+            // 커스텀 스토리 설정 동기화
+            const savedCommander = localStorage.getItem("custom_commander_name") || "";
+            const savedTarget = localStorage.getItem("custom_target_name") || "";
+            const customCmdInput = document.getElementById('customCommanderInput');
+            const customTgtInput = document.getElementById('customTargetInput');
+            if (customCmdInput) customCmdInput.value = savedCommander;
+            if (customTgtInput) customTgtInput.value = savedTarget;
+            
+            const savedImg = localStorage.getItem("custom_victory_image");
+            const previewImg = document.getElementById('customEndingImgPreview');
+            const previewContainer = document.getElementById('customEndingImgPreviewContainer');
+            if (savedImg && previewImg && previewContainer) {
+                previewImg.src = savedImg;
+                previewContainer.style.display = 'block';
+            } else if (previewContainer) {
+                previewContainer.style.display = 'none';
+            }
+
             document.getElementById('difficultyModal').style.display = 'flex';
             
             // 디버그 플로팅 버튼 z-index 기본값 복구
@@ -2620,6 +2800,29 @@
 
         function closeDifficultyModal() {
             if (audioCtx) playUpgradeSound();
+            
+            // 커스텀 스토리 설정 저장
+            const customCmdInput = document.getElementById('customCommanderInput');
+            const customTgtInput = document.getElementById('customTargetInput');
+            if (customCmdInput) {
+                const val = customCmdInput.value.trim();
+                if (val) {
+                    localStorage.setItem("custom_commander_name", val);
+                } else {
+                    localStorage.removeItem("custom_commander_name");
+                }
+            }
+            if (customTgtInput) {
+                const val = customTgtInput.value.trim();
+                if (val) {
+                    localStorage.setItem("custom_target_name", val);
+                } else {
+                    localStorage.removeItem("custom_target_name");
+                }
+            }
+            
+            applyLanguage(currentLang);
+            
             document.getElementById('difficultyModal').style.display = 'none';
         }
 
