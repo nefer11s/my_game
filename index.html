@@ -2540,6 +2540,8 @@
             if (type === 'INIT_SPLASH') {
                 stopBGM();
                 gameState = "MENU";
+                isPaused = false;
+                enemies = []; bullets = []; enemyLasers = []; droppedItems = []; particles = []; floatingTexts = [];
                 const initSplash = document.getElementById('initSplashOverlay');
                 if (initSplash) initSplash.style.display = 'flex';
                 if (floatBtn) floatBtn.style.zIndex = '10000000'; // 스플래시 화면보다 위로 노출
@@ -2547,11 +2549,15 @@
             } else if (type === 'SPLASH') {
                 stopBGM();
                 gameState = "MENU";
+                isPaused = false;
+                enemies = []; bullets = []; enemyLasers = []; droppedItems = []; particles = []; floatingTexts = [];
                 document.getElementById('menuOverlay').style.display = 'flex';
                 updateUIVisibility();
             } else if (type === 'PROLOGUE') {
                 stopBGM();
                 gameState = "MENU";
+                isPaused = false;
+                enemies = []; bullets = []; enemyLasers = []; droppedItems = []; particles = []; floatingTexts = [];
                 document.getElementById('prologueOverlay').style.display = 'flex';
                 updateUIVisibility();
             } else if (type === 'SCRAMBLE') {
