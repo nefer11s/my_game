@@ -1875,8 +1875,16 @@
 
         function replaceCustomNames(text) {
             if (!text) return text;
-            const commanderName = localStorage.getItem("custom_commander_name") || (currentLang === 'en' ? "Hyunwoo" : "현우");
-            const targetName = localStorage.getItem("custom_target_name") || (currentLang === 'en' ? "Mother" : "엄마");
+            let commanderName = localStorage.getItem("custom_commander_name") || (currentLang === 'en' ? "Hyunwoo" : "현우");
+            let targetName = localStorage.getItem("custom_target_name") || (currentLang === 'en' ? "Mother" : "엄마");
+            
+            // '님' 중복 입력 방지 처리
+            if (commanderName.endsWith("님")) {
+                commanderName = commanderName.substring(0, commanderName.length - 1);
+            }
+            if (targetName.endsWith("님")) {
+                targetName = targetName.substring(0, targetName.length - 1);
+            }
             
             let result = text;
             if (currentLang === 'en') {
