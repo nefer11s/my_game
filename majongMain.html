@@ -102,7 +102,7 @@
       justify-content: center;
       gap: 6px;
       height: 42px;
-      padding: 0 18px;
+      padding: 0 16px;
       border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, 0.9);
       cursor: pointer;
@@ -113,6 +113,40 @@
       backdrop-filter: blur(8px);
       box-shadow: 0 4px 14px rgba(24, 60, 44, 0.08);
       transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .diff-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 800;
+      color: #ffffff;
+      background: #2980b9;
+      box-shadow: 0 2px 6px rgba(41, 128, 185, 0.35);
+      letter-spacing: 0.5px;
+    }
+
+    .diff-select {
+      height: 42px;
+      padding: 0 12px;
+      border-radius: 14px;
+      border: 1.5px solid rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 13px;
+      color: #174232;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 14px rgba(24, 60, 44, 0.08);
+      outline: none;
+      transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .diff-select:hover {
+      background: #ffffff;
+      border-color: var(--accent-mint);
+      box-shadow: 0 6px 18px rgba(46, 167, 121, 0.2);
     }
 
     .btn:hover:not(:disabled) {
@@ -629,37 +663,51 @@
       }
 
       .status-bar {
-        padding: 6px 14px;
+        padding: 5px 8px;
         border-radius: 14px;
+        gap: 2px;
       }
 
       .stat-pill {
-        min-width: 50px;
+        min-width: 42px;
       }
 
       .stat-label {
-        font-size: 10px;
+        font-size: 9px;
       }
 
       .stat-val {
-        font-size: 17px;
+        font-size: 14px;
+      }
+
+      .diff-badge {
+        font-size: 11px;
+        padding: 1px 6px;
+        border-radius: 6px;
       }
 
       .controls-bar {
-        gap: 5px;
+        gap: 4px;
         flex-wrap: wrap;
       }
 
-      .btn {
-        height: 35px;
-        padding: 0 9px;
-        font-size: 12px;
+      .diff-select {
+        height: 34px;
+        padding: 0 6px;
+        font-size: 11px;
         border-radius: 10px;
-        gap: 4px;
+      }
+
+      .btn {
+        height: 34px;
+        padding: 0 8px;
+        font-size: 11px;
+        border-radius: 10px;
+        gap: 3px;
       }
 
       .btn-icon {
-        font-size: 14px;
+        font-size: 13px;
       }
 
       footer {
@@ -725,6 +773,14 @@
   <header>
     <div class="status-bar">
       <div class="stat-pill">
+        <span class="stat-label">진행 판수</span>
+        <span class="stat-val" id="stat-stage">1 / 5</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-label">난이도</span>
+        <span class="stat-val"><span class="diff-badge" id="stat-diff">보통</span></span>
+      </div>
+      <div class="stat-pill">
         <span class="stat-label">남은 패</span>
         <span class="stat-val" id="stat-tiles">0</span>
       </div>
@@ -739,6 +795,12 @@
     </div>
 
     <div class="controls-bar">
+      <select class="diff-select" id="select-difficulty" title="난이도 선택">
+        <option value="easy">🌱 쉬움 (15종)</option>
+        <option value="normal" selected>🌿 보통 (24종)</option>
+        <option value="hard">🔥 어려움 (34종)</option>
+        <option value="master">👑 달인 (46종)</option>
+      </select>
       <button class="btn" id="btn-fullscreen" title="전체화면 모드">
         <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
       </button>
@@ -1110,11 +1172,47 @@
             <text x="24" y="42" text-anchor="middle" font-size="36" font-weight="900" fill="#1e3a2b" font-family="'Noto Serif KR', 'Songti SC', 'Batang', serif">${char}</text>
           </svg>
         `;
+      },
+
+      // 사군자 꽃패 (Flowers)
+      flower(hanzi, color, sub) {
+        return `
+          <svg class="tile-svg" viewBox="0 0 48 60">
+            <circle cx="24" cy="27" r="15" fill="${color}" opacity="0.14"/>
+            <circle cx="24" cy="27" r="14" fill="none" stroke="${color}" stroke-width="1.5" stroke-dasharray="2.5,2"/>
+            <text x="24" y="35" text-anchor="middle" font-size="27" font-weight="900" fill="${color}" font-family="'Noto Serif KR', 'Songti SC', 'Batang', serif">${hanzi}</text>
+            <text x="24" y="51" text-anchor="middle" font-size="9.5" font-weight="800" fill="${color}">${sub}</text>
+          </svg>
+        `;
+      },
+
+      // 사계절 계절패 (Seasons)
+      season(hanzi, color, sub) {
+        return `
+          <svg class="tile-svg" viewBox="0 0 48 60">
+            <rect x="8" y="9" width="32" height="34" rx="6" fill="${color}" opacity="0.12"/>
+            <rect x="8" y="9" width="32" height="34" rx="6" fill="none" stroke="${color}" stroke-width="1.8"/>
+            <text x="24" y="34" text-anchor="middle" font-size="26" font-weight="900" fill="${color}" font-family="'Noto Serif KR', 'Songti SC', 'Batang', serif">${hanzi}</text>
+            <text x="24" y="51" text-anchor="middle" font-size="9.5" font-weight="800" fill="${color}">${sub}</text>
+          </svg>
+        `;
+      },
+
+      // 사신수 영수패 (Mythic Beasts)
+      myth(hanzi, color, sub) {
+        return `
+          <svg class="tile-svg" viewBox="0 0 48 60">
+            <polygon points="24,7 39,26 24,44 9,26" fill="${color}" opacity="0.15"/>
+            <polygon points="24,7 39,26 24,44 9,26" fill="none" stroke="${color}" stroke-width="2"/>
+            <text x="24" y="34" text-anchor="middle" font-size="24" font-weight="900" fill="${color}" font-family="'Noto Serif KR', 'Songti SC', 'Batang', serif">${hanzi}</text>
+            <text x="24" y="52" text-anchor="middle" font-size="9" font-weight="900" fill="${color}">${sub}</text>
+          </svg>
+        `;
       }
     };
 
     /**
-     * 마작 패 데이터 목록
+     * 마작 패 데이터 목록 (총 46종)
      */
     const TILE_DEFINITIONS = [
       // 만수 (1-9)
@@ -1159,8 +1257,50 @@
       { id: 'de', suit: 'wind', val: 'east', label: '東風', badge: '東', render: () => SvgFactory.wind('東') },
       { id: 'ds', suit: 'wind', val: 'south', label: '南風', badge: '南', render: () => SvgFactory.wind('南') },
       { id: 'dw', suit: 'wind', val: 'west', label: '西風', badge: '西', render: () => SvgFactory.wind('西') },
-      { id: 'dn', suit: 'wind', val: 'north', label: '北風', badge: '北', render: () => SvgFactory.wind('北') }
+      { id: 'dn', suit: 'wind', val: 'north', label: '北風', badge: '北', render: () => SvgFactory.wind('北') },
+
+      // 화패 / 사군자 (Flowers 8종) - 고급/마스터 전용 그림셋
+      { id: 'f_mei', suit: 'flower', val: 'mei', label: '梅花', badge: '梅', render: () => SvgFactory.flower('梅', '#d81b60', '매화') },
+      { id: 'f_lan', suit: 'flower', val: 'lan', label: '蘭草', badge: '蘭', render: () => SvgFactory.flower('蘭', '#8e24aa', '난초') },
+      { id: 'f_zhu', suit: 'flower', val: 'zhu', label: '竹葉', badge: '竹', render: () => SvgFactory.flower('竹', '#2e7d32', '대나무') },
+      { id: 'f_ju', suit: 'flower', val: 'ju', label: '菊花', badge: '菊', render: () => SvgFactory.flower('菊', '#f57f17', '국화') },
+      { id: 'f_chun', suit: 'flower', val: 'chun', label: '春陽', badge: '春', render: () => SvgFactory.season('春', '#e53935', '봄') },
+      { id: 'f_xia', suit: 'flower', val: 'xia', label: '夏荷', badge: '夏', render: () => SvgFactory.season('夏', '#0288d1', '여름') },
+      { id: 'f_qiu', suit: 'flower', val: 'qiu', label: '秋楓', badge: '秋', render: () => SvgFactory.season('秋', '#e65100', '가을') },
+      { id: 'f_dong', suit: 'flower', val: 'dong', label: '冬雪', badge: '冬', render: () => SvgFactory.season('冬', '#3949ab', '겨울') },
+
+      // 사신수 영수패 (Mythic 4종) - 마스터 전용 그림셋
+      { id: 'm_dragon', suit: 'myth', val: 'dragon', label: '靑龍', badge: '龍', render: () => SvgFactory.myth('龍', '#00897b', '청룡') },
+      { id: 'm_tiger', suit: 'myth', val: 'tiger', label: '白虎', badge: '虎', render: () => SvgFactory.myth('虎', '#546e7a', '백호') },
+      { id: 'm_phoenix', suit: 'myth', val: 'phoenix', label: '朱雀', badge: '雀', render: () => SvgFactory.myth('雀', '#c2185b', '주작') },
+      { id: 'm_turtle', suit: 'myth', val: 'turtle', label: '玄武', badge: '武', render: () => SvgFactory.myth('武', '#283593', '현무') }
     ];
+
+    /**
+     * 난이도 설정 (패 종류 수 및 그림셋 확장)
+     */
+    const DIFFICULTY_CONFIG = {
+      easy: {
+        name: '쉬움',
+        badgeColor: '#2ea779',
+        filter: (def) => (def.suit === 'wan' && def.val <= 6) || (def.suit === 'tong' && def.val <= 6) || (def.suit === 'tiao' && def.val <= 3) // 15종 풀
+      },
+      normal: {
+        name: '보통',
+        badgeColor: '#2980b9',
+        filter: (def) => (def.suit === 'wan') || (def.suit === 'tong') || (def.suit === 'tiao' && def.val <= 6) // 24종 풀
+      },
+      hard: {
+        name: '어려움',
+        badgeColor: '#d35400',
+        filter: (def) => ['wan', 'tong', 'tiao', 'honor', 'wind'].includes(def.suit) // 34종 전체 정통 마작패 풀
+      },
+      master: {
+        name: '달인',
+        badgeColor: '#8e44ad',
+        filter: () => true // 46종 전체 (꽃패 8종 + 사신수 4종 총출동)
+      }
+    };
 
     /**
      * 3단 입체 피라미드 보드 레이아웃 (총 54개 슬롯, 27쌍)
@@ -1225,6 +1365,11 @@
         this.isAutoClearing = false;
         this.autoClearTimeouts = [];
 
+        // 난이도 및 판수(스테이지) 설정
+        this.difficulty = 'normal';
+        this.currentStage = 1;
+        this.totalStages = 5;
+
         this.bindEvents();
         this.startNewGame();
       }
@@ -1237,16 +1382,42 @@
         document.addEventListener('fullscreenchange', () => this.updateFullscreenUI());
         document.addEventListener('webkitfullscreenchange', () => this.updateFullscreenUI());
 
+        // 난이도 셀렉트 박스 이벤트
+        const diffSelect = document.getElementById('select-difficulty');
+        if (diffSelect) {
+          diffSelect.addEventListener('change', (e) => {
+            this.setDifficulty(e.target.value);
+          });
+        }
+
         document.getElementById('btn-fullscreen').addEventListener('click', () => this.toggleFullscreen());
         document.getElementById('btn-undo').addEventListener('click', () => this.undo());
         document.getElementById('btn-hint').addEventListener('click', () => this.showHint());
         document.getElementById('btn-shuffle').addEventListener('click', () => this.shuffleRemain());
-        document.getElementById('btn-restart').addEventListener('click', () => this.startNewGame());
-
-        document.getElementById('modal-confirm-btn').addEventListener('click', () => {
-          document.getElementById('modal').classList.remove('active');
+        document.getElementById('btn-restart').addEventListener('click', () => {
+          this.currentStage = 1;
           this.startNewGame();
         });
+
+        // 모달에서 '다음 판 시작' 클릭 시 다음 스테이지로 진행
+        document.getElementById('modal-confirm-btn').addEventListener('click', () => {
+          document.getElementById('modal').classList.remove('active');
+          if (this.currentStage < this.totalStages) {
+            this.currentStage++;
+          } else {
+            this.currentStage = 1; // 5판 정복 후 다시 1판부터
+          }
+          this.startNewGame();
+        });
+      }
+
+      setDifficulty(diffKey) {
+        if (!DIFFICULTY_CONFIG[diffKey]) return;
+        this.difficulty = diffKey;
+        this.currentStage = 1; // 난이도 변경 시 1판부터 시작
+        const selectEl = document.getElementById('select-difficulty');
+        if (selectEl) selectEl.value = diffKey;
+        this.startNewGame();
       }
 
       startNewGame() {
@@ -1295,18 +1466,23 @@
 
       /**
        * 100% 클리어 가능 보장 역생성(Reverse Solvable Generation) 알고리즘
+       * 난이도에 따른 필터링된 패 라이브러리(availablePool)에서 27쌍 추출
        */
       buildSolvableBoard() {
         const slots = createBoardLayout();
         const numPairs = slots.length / 2;
 
+        const diffCfg = DIFFICULTY_CONFIG[this.difficulty] || DIFFICULTY_CONFIG.normal;
+        const availablePool = TILE_DEFINITIONS.filter(diffCfg.filter);
+
         const chosenDefs = [];
-        const availablePool = [...TILE_DEFINITIONS];
+        const poolCopy = [...availablePool];
+
         for (let i = 0; i < numPairs; i++) {
-          const randIdx = Math.floor(Math.random() * availablePool.length);
-          chosenDefs.push(availablePool[randIdx]);
-          if (availablePool.length > numPairs - i) {
-            availablePool.splice(randIdx, 1);
+          const randIdx = Math.floor(Math.random() * poolCopy.length);
+          chosenDefs.push(poolCopy[randIdx]);
+          if (poolCopy.length > numPairs - i) {
+            poolCopy.splice(randIdx, 1);
           }
         }
 
@@ -1816,12 +1992,7 @@
           this.sound.playWin();
           this.isClear = true;
           clearInterval(this.timerId);
-
-          document.getElementById('modal-title').textContent = '승리 완료!';
-          document.getElementById('modal-desc').textContent = '멋진 실력으로 보드를 완벽하게 격파했습니다!';
-          document.getElementById('modal-time').textContent = this.formatTime(this.timerSeconds);
-          document.getElementById('modal-score').textContent = this.score;
-          document.getElementById('modal').classList.add('active');
+          this.showVictoryModal();
         }, 950);
         this.autoClearTimeouts.push(winTimer);
       }
@@ -1832,16 +2003,43 @@
           this.isClear = true;
           clearInterval(this.timerId);
           this.sound.playWin();
-
-          document.getElementById('modal-time').textContent = this.formatTime(this.timerSeconds);
-          document.getElementById('modal-score').textContent = this.score;
-          document.getElementById('modal').classList.add('active');
+          this.showVictoryModal();
         }
+      }
+
+      showVictoryModal() {
+        const diffCfg = DIFFICULTY_CONFIG[this.difficulty] || DIFFICULTY_CONFIG.normal;
+        const modalTitle = document.getElementById('modal-title');
+        const modalDesc = document.getElementById('modal-desc');
+        const confirmBtn = document.getElementById('modal-confirm-btn');
+
+        if (this.currentStage < this.totalStages) {
+          modalTitle.textContent = `제 ${this.currentStage}판 클리어!`;
+          modalDesc.textContent = `[${diffCfg.name}] 모드 ${this.currentStage}판을 돌파했습니다! 다음 판에 도전하세요.`;
+          confirmBtn.textContent = `다음 판 진행 (${this.currentStage + 1} / ${this.totalStages}판)`;
+        } else {
+          modalTitle.textContent = `🏆 전 스테이지(${this.totalStages}판) 완전 정복!`;
+          modalDesc.textContent = `[${diffCfg.name}] 난이도의 전 판을 완벽하게 격파했습니다! 진정한 마작의 달인입니다!`;
+          confirmBtn.textContent = `1판부터 다시 시작`;
+        }
+
+        document.getElementById('modal-time').textContent = this.formatTime(this.timerSeconds);
+        document.getElementById('modal-score').textContent = this.score;
+        document.getElementById('modal').classList.add('active');
       }
 
       updateHeaderUI() {
         document.getElementById('stat-score').textContent = this.score;
         document.getElementById('btn-undo').disabled = this.undoStack.length === 0;
+
+        const diffCfg = DIFFICULTY_CONFIG[this.difficulty] || DIFFICULTY_CONFIG.normal;
+        const stageEl = document.getElementById('stat-stage');
+        const diffEl = document.getElementById('stat-diff');
+        if (stageEl) stageEl.textContent = `${this.currentStage} / ${this.totalStages}`;
+        if (diffEl) {
+          diffEl.textContent = diffCfg.name;
+          diffEl.style.backgroundColor = diffCfg.badgeColor;
+        }
       }
 
       formatTime(sec) {
