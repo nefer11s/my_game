@@ -565,6 +565,51 @@
       }
     }
 
+    /* 10개 남았을 때 피날레 자동 클리어 전용 매칭 애니메이션 (2배 여유롭고 화려한 연출) */
+    .tile.finale-matching {
+      pointer-events: none;
+      animation: finaleMatchSuccess 0.82s forwards cubic-bezier(0.18, 0.89, 0.32, 1.2);
+      z-index: 1000 !important;
+    }
+
+    @keyframes finaleMatchSuccess {
+      0% {
+        transform: translate3d(var(--tx), var(--ty), calc(var(--tz) + 20px)) scale(1);
+        opacity: 1;
+      }
+      42% {
+        transform: translate3d(var(--tx), calc(var(--ty) - 26px), calc(var(--tz) + 65px)) scale(1.18);
+        filter: brightness(1.35) drop-shadow(0 0 16px rgba(243, 156, 18, 0.85));
+        opacity: 0.95;
+      }
+      100% {
+        transform: translate3d(var(--tx), calc(var(--ty) - 45px), calc(var(--tz) + 110px)) scale(0.35);
+        opacity: 0;
+      }
+    }
+
+    /* 게임 시작 시 타일 차곡차곡 쌓임(Stacking Deal) 애니메이션 */
+    .tile.dealing {
+      pointer-events: none !important;
+      animation: tileStackDrop 0.44s cubic-bezier(0.22, 1, 0.36, 1.15) both;
+    }
+
+    @keyframes tileStackDrop {
+      0% {
+        transform: translate3d(var(--tx), calc(var(--ty) - 110px), calc(var(--tz) + 140px)) scale(1.14);
+        opacity: 0;
+        box-shadow: 0 25px 35px rgba(10, 35, 22, 0.4);
+      }
+      72% {
+        transform: translate3d(var(--tx), calc(var(--ty) + 2.5px), calc(var(--tz) + 4px)) scale(0.985);
+        opacity: 0.96;
+      }
+      100% {
+        transform: translate3d(var(--tx), var(--ty), var(--tz)) scale(1);
+        opacity: 1;
+      }
+    }
+
     /* 하단 안내 바 */
     footer {
       width: 100%;
@@ -1553,6 +1598,28 @@
         osc.stop(now + 0.13);
       }
 
+      // 패 안착 및 쌓임 효과음: 맑고 둔탁한 도자기 패 딱 소리
+      playTileStack(layer = 0) {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        const baseFreq = 300 + layer * 55;
+        osc.frequency.setValueAtTime(baseFreq, now);
+        osc.frequency.exponentialRampToValueAtTime(70, now + 0.05);
+
+        gain.gain.setValueAtTime(0.16, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.06);
+      }
+
       // 매칭 성공음: 맑고 영롱한 힐링 차임벨 (2화음 펜타토닉)
       playMatch() {
         this.init();
@@ -2325,6 +2392,8 @@
         this.isClear = false;
         this.isAutoClearing = false;
         this.autoClearTimeouts = [];
+        this.isDealing = false;
+        this.dealAnimationTimeouts = [];
         this.hasStarted = false; // 최초 스플래시 화면 대기 플래그
 
         // 레이아웃 동적 관리 및 화면 크기
@@ -2392,7 +2461,7 @@
             this.sound.playSelect();
             if (splashEl) splashEl.classList.remove('active');
             this.hasStarted = true;
-            this.startTimer();
+            this.startNewGame();
           });
         }
 
@@ -2657,6 +2726,12 @@
         }
         this.autoClearTimeouts = [];
 
+        if (this.dealAnimationTimeouts) {
+          this.dealAnimationTimeouts.forEach(t => clearTimeout(t));
+        }
+        this.dealAnimationTimeouts = [];
+        this.isDealing = false;
+
         // 화면 효과 및 파편/배너 초기화
         this.viewportEl.classList.remove('shaking');
         const oldNotice = document.getElementById('finale-notice');
@@ -2860,6 +2935,7 @@
 
       /**
        * DOM 렌더링 및 동적 바운딩 박스 위치 스타일 적용
+       * 판 시작 시 패가 아래층부터 입체적으로 차곡차곡 쌓이는 3D 스택 애니메이션 적용
        */
       renderBoard() {
         this.boardEl.innerHTML = '';
@@ -2874,9 +2950,12 @@
           return a.x - b.x;
         });
 
+        this.isDealing = true;
+        let maxDelay = 0;
+
         sorted.forEach(tile => {
           const el = document.createElement('div');
-          el.className = `tile layer-${tile.z}`;
+          el.className = `tile layer-${tile.z} dealing`;
           if (tile.isCovered) el.classList.add('face-down');
           if (tile.isRevealed) el.classList.add('revealed');
           el.id = tile.id;
@@ -2897,6 +2976,13 @@
           el.style.setProperty('--tz', `${finalZ}px`);
           el.style.transform = `translate3d(${finalX}px, ${finalY}px, ${finalZ}px)`;
           el.style.zIndex = tile.z * 100 + tile.y * 10 + tile.x;
+
+          // 패가 층별로 차곡차곡 쌓여 올라가는 딜레이 (층별 130ms + 위치별 캐스케이드)
+          const relX = tile.x - bounds.minX;
+          const relY = tile.y - bounds.minY;
+          const delay = tile.z * 130 + (relX + relY) * 8;
+          if (delay > maxDelay) maxDelay = delay;
+          el.style.animationDelay = `${delay}ms`;
 
           el.innerHTML = `
             <div class="tile-inner">
@@ -2921,6 +3007,28 @@
           this.boardEl.appendChild(el);
           tile.el = el;
         });
+
+        // 층별로 패가 안착할 때 도자기 마작 패 딱! 소리 연출
+        const maxZ = bounds.maxZ !== undefined ? bounds.maxZ : 2;
+        for (let z = 0; z <= maxZ; z++) {
+          const sTimer = setTimeout(() => {
+            if (this.sound) this.sound.playTileStack(z);
+          }, z * 130 + 120);
+          this.dealAnimationTimeouts.push(sTimer);
+        }
+
+        // 전체 쌓임 애니메이션 완료 후 dealing 정리 및 정상 인터랙션 복원
+        const endTimer = setTimeout(() => {
+          this.isDealing = false;
+          this.tiles.forEach(t => {
+            if (t.el) {
+              t.el.classList.remove('dealing');
+              t.el.style.animationDelay = '';
+            }
+          });
+          this.updateTileStates();
+        }, maxDelay + 440);
+        this.dealAnimationTimeouts.push(endTimer);
 
         this.updateTileStates();
       }
@@ -2964,7 +3072,7 @@
       }
 
       handleTileClick(tile) {
-        if (this.isGameOver || this.isAutoClearing || tile.removed || !this.isTileFree(tile)) {
+        if (this.isGameOver || this.isAutoClearing || this.isDealing || tile.removed || !this.isTileFree(tile)) {
           return;
         }
 
@@ -3302,17 +3410,17 @@
           pairsToClear.push([unassigned.pop(), unassigned.pop()]);
         }
 
-        // 3) 연속 고속 매칭 연출 실행 (0.16초 간격)
+        // 3) 연속 매칭 연출 실행 (기존 대비 2배 완만하고 여유로운 피날레 연출, 약 0.35초 간격)
         pairsToClear.forEach(([t1, t2], idx) => {
           const tId = setTimeout(() => {
             if (!this.isAutoClearing) return;
             if (t1 && t1.el) {
               t1.el.classList.add('revealed');
-              t1.el.classList.add('matching');
+              t1.el.classList.add('finale-matching');
             }
             if (t2 && t2.el) {
               t2.el.classList.add('revealed');
-              t2.el.classList.add('matching');
+              t2.el.classList.add('finale-matching');
             }
             if (t1) t1.removed = true;
             if (t2) t2.removed = true;
@@ -3328,13 +3436,13 @@
             setTimeout(() => {
               if (t1 && t1.el) t1.el.style.display = 'none';
               if (t2 && t2.el) t2.el.style.display = 'none';
-            }, 360);
-          }, idx * 170 + 250);
+            }, 800);
+          }, idx * 350 + 400);
           this.autoClearTimeouts.push(tId);
         });
 
         // 4) 패 제거가 모두 완료된 후 판 깨짐 및 WIN 연출
-        const shatterDelay = pairsToClear.length * 170 + 650;
+        const shatterDelay = pairsToClear.length * 350 + 1100;
         const shatterTimer = setTimeout(() => {
           if (!this.isAutoClearing) return;
           if (notice) notice.classList.remove('active');
