@@ -859,6 +859,151 @@
       margin: 0;
     }
 
+    /* 목숨 표시 및 대미지 플래시 */
+    .heart-icon {
+      display: inline-block;
+      transition: transform 0.25s cubic-bezier(0.17, 0.89, 0.32, 1.49), opacity 0.25s ease;
+      filter: drop-shadow(0 1px 2px rgba(231, 76, 60, 0.4));
+    }
+    .heart-icon.lost {
+      filter: grayscale(1) opacity(0.3);
+      transform: scale(0.85);
+    }
+    @keyframes heartShake {
+      0%, 100% { transform: scale(1); }
+      20% { transform: scale(1.4) rotate(-10deg); }
+      50% { transform: scale(0.8) rotate(10deg); }
+      80% { transform: scale(1.1); }
+    }
+    .heart-damaged {
+      animation: heartShake 0.45s ease-out;
+    }
+
+    /* 화면 피해 붉은 플래시 */
+    .damage-flash {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle, rgba(231, 76, 60, 0.24) 0%, rgba(192, 57, 43, 0.42) 100%);
+      pointer-events: none;
+      z-index: 8000;
+      opacity: 0;
+      transition: opacity 0.3s ease-out;
+    }
+    .damage-flash.active {
+      opacity: 1;
+    }
+
+    /* 스플래시 명예의 전당 버튼 */
+    .splash-btn-rank {
+      width: 100%;
+      height: 44px;
+      border-radius: 12px;
+      background: #fff8e7;
+      color: #b7791f;
+      font-size: 15px;
+      font-weight: 800;
+      border: 1.5px solid #f6e05e;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s ease, transform 0.15s ease;
+    }
+    .splash-btn-rank:hover {
+      background: #fefcbf;
+      transform: translateY(-1px);
+    }
+
+    /* 명예의 전당 모달 */
+    .rank-card {
+      max-width: 500px;
+      width: 92%;
+      padding: 24px 20px;
+      text-align: center;
+    }
+    .rank-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      border-bottom: 1.5px solid #edf2f7;
+      padding-bottom: 10px;
+    }
+    .rank-table-wrap {
+      max-height: 44vh;
+      overflow-y: auto;
+      margin-bottom: 16px;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      background: #fafbfc;
+    }
+    .rank-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .rank-table th {
+      background: #edf2f7;
+      color: #4a5568;
+      font-weight: 800;
+      padding: 8px 6px;
+      position: sticky;
+      top: 0;
+      font-size: 12px;
+    }
+    .rank-table td {
+      padding: 9px 6px;
+      border-bottom: 1px solid #edf2f7;
+      color: #2d3748;
+      font-weight: 600;
+    }
+    .rank-table tr:hover {
+      background: #f7fafc;
+    }
+    .rank-medal {
+      font-size: 15px;
+      font-weight: 900;
+    }
+    .rank-score {
+      font-weight: 800;
+      color: #2b6cb0;
+    }
+
+    /* 랭킹 등록 폼 */
+    .rank-input-wrap {
+      display: flex;
+      gap: 8px;
+      margin: 14px 0 16px;
+    }
+    .rank-input {
+      flex: 1;
+      height: 42px;
+      border-radius: 10px;
+      border: 1.5px solid #cbd5e0;
+      padding: 0 12px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .rank-input:focus {
+      border-color: #2ea779;
+    }
+    .rank-submit-btn {
+      height: 42px;
+      padding: 0 16px;
+      border-radius: 10px;
+      background: #2ea779;
+      color: white;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
     /* 화면 흔들림 및 판 파괴 애니메이션 */
     @keyframes screenShake {
       0%, 100% { transform: translate(0, 0) rotate(0deg); }
@@ -1081,6 +1226,10 @@
         <span class="stat-val"><span class="diff-badge" id="stat-diff">보통</span></span>
       </div>
       <div class="stat-pill">
+        <span class="stat-label">남은 목숨</span>
+        <span class="stat-val" id="stat-lives" style="font-size: 15px; letter-spacing: 2px;">❤️❤️❤️</span>
+      </div>
+      <div class="stat-pill">
         <span class="stat-label">남은 패</span>
         <span class="stat-val" id="stat-tiles">0</span>
       </div>
@@ -1104,6 +1253,9 @@
       <button class="btn" id="btn-rules-header" title="게임 방법 보기">
         <span class="btn-icon">❓</span> 방법
       </button>
+      <button class="btn" id="btn-rank-header" title="명예의 전당">
+        <span class="btn-icon">🏆</span> 랭킹
+      </button>
       <button class="btn" id="btn-fullscreen" title="전체화면 모드">
         <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
       </button>
@@ -1121,6 +1273,9 @@
       </button>
     </div>
   </header>
+
+  <!-- 피해 화면 플래시 -->
+  <div class="damage-flash" id="damage-flash"></div>
 
   <!-- 메인 게임 필드 -->
   <main class="game-viewport" id="viewport">
@@ -1175,6 +1330,9 @@
           <button class="splash-btn-rules" id="btn-splash-rules">
             <span class="btn-icon">📜</span> 게임 방법
           </button>
+          <button class="splash-btn-rank" id="btn-splash-rank">
+            <span class="btn-icon">🏆</span> 명예의 전당
+          </button>
         </div>
       </div>
     </div>
@@ -1205,19 +1363,86 @@
         <div class="rule-item">
           <div class="rule-num">3</div>
           <div class="rule-text">
-            <strong>블라인드 패 시스템 (신규)</strong>
-            <p>난이도에 따라 상단 패들이 뒤집혀 안 보입니다. 터치하면 앞면이 보이며, 다른 뒤집힌 패를 터치하면 이전 패는 다시 뒤집혀 숨겨집니다. 같은 패를 찾으면 즉시 매칭 제거됩니다!</p>
+            <strong>목숨 시스템 (랜덤 3~5개)</strong>
+            <p>판마다 3~5개의 목숨으로 시작합니다. 짝이 맞지 않는 패를 매칭 시도하면 목숨이 1개 줄어들며, 모두 소진 시 게임 오버됩니다!</p>
           </div>
         </div>
         <div class="rule-item">
           <div class="rule-num">4</div>
           <div class="rule-text">
-            <strong>도움 기능 활용</strong>
-            <p>막혔을 땐 <strong>[💡 힌트]</strong>로 짝을 찾고, 더 이상 맞출 패가 없으면 <strong>[🔀 셔플]</strong>, 실수는 <strong>[↩ 되돌리기]</strong>를 사용하세요.</p>
+            <strong>블라인드 패 시스템</strong>
+            <p>난이도에 따라 상단 패들이 뒤집혀 안 보입니다. 터치하면 앞면이 보이며, 다른 뒤집힌 패를 터치하면 이전 패는 다시 뒤집혀 숨겨집니다. 같은 패를 찾으면 즉시 매칭 제거됩니다!</p>
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-num">5</div>
+          <div class="rule-text">
+            <strong>도움 기능 & 명예의 전당</strong>
+            <p>막혔을 땐 [💡 힌트]나 [🔀 셔플]을 활용하세요. 높은 점수를 달성해 [🏆 명예의 전당]에 이름을 올려보세요!</p>
           </div>
         </div>
       </div>
       <button class="modal-btn" id="btn-rules-close">확인 완료</button>
+    </div>
+  </div>
+
+  <!-- 명예의 전당 모달 -->
+  <div class="modal-overlay" id="rank-modal">
+    <div class="modal-card rank-card">
+      <div class="rank-header">
+        <span style="font-size: 28px;">🏆</span>
+        <h2 class="modal-title" style="margin-bottom: 0; font-size: 23px;">명예의 전당</h2>
+      </div>
+      <p style="font-size: 13px; color: #698d7b; margin-bottom: 12px;">최고의 마작 솔리테어 달인 기록</p>
+      
+      <div class="rank-table-wrap">
+        <table class="rank-table">
+          <thead>
+            <tr>
+              <th style="width: 14%;">순위</th>
+              <th style="width: 28%;">플레이어</th>
+              <th style="width: 20%;">난이도</th>
+              <th style="width: 16%;">판수</th>
+              <th style="width: 22%;">점수</th>
+            </tr>
+          </thead>
+          <tbody id="rank-table-body">
+            <!-- 동적 랭킹 렌더링 -->
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <button class="modal-btn" style="background: #e2e8f0; color: #4a5568;" id="btn-rank-clear">기록 초기화</button>
+        <button class="modal-btn" id="btn-rank-close">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 게임 오버 모달 -->
+  <div class="modal-overlay" id="gameover-modal">
+    <div class="modal-card">
+      <div style="font-size: 48px; margin-bottom: 8px;">💔</div>
+      <h2 class="modal-title" style="color: #c53030;">게임 오버</h2>
+      <p class="modal-desc" style="color: #718096; margin-bottom: 14px;">모든 목숨을 소진했습니다!<br>명예의 전당에 당신의 기록을 남겨보세요.</p>
+      
+      <div class="modal-stats" style="background: #fff5f5; border: 1px solid #fed7d7;">
+        <div class="modal-stat-item">
+          <span class="modal-stat-label">도달 판수</span>
+          <span class="modal-stat-val" id="go-stage" style="color: #c53030;">1판</span>
+        </div>
+        <div class="modal-stat-item">
+          <span class="modal-stat-label">최종 점수</span>
+          <span class="modal-stat-val" id="go-score" style="color: #c53030;">0</span>
+        </div>
+      </div>
+
+      <div class="rank-input-wrap">
+        <input type="text" class="rank-input" id="go-player-name" placeholder="플레이어 닉네임" maxlength="8">
+        <button class="rank-submit-btn" id="go-submit-rank">기록 등록</button>
+      </div>
+
+      <button class="modal-btn" id="go-restart-btn">다시 시작하기</button>
     </div>
   </div>
 
@@ -1387,6 +1612,48 @@
           osc.start(t);
           osc.stop(t + 0.18);
         }
+      }
+
+      // 목숨 차감음 (매칭 불일치 경고)
+      playMiss() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(240, now);
+        osc.frequency.exponentialRampToValueAtTime(120, now + 0.18);
+
+        gain.gain.setValueAtTime(0.28, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.19);
+      }
+
+      // 게임 오버 하강 멜로디
+      playGameOver() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const notes = [392, 349.23, 311.13, 261.63]; // G4 F4 Eb4 C4
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const t = now + idx * 0.18;
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, t);
+          gain.gain.setValueAtTime(0.28, t);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.55);
+        });
       }
     }
 
@@ -1782,6 +2049,11 @@
         this.autoClearTimeouts = [];
         this.hasStarted = false; // 최초 스플래시 화면 대기 플래그
 
+        // 목숨 시스템 (3~5개 랜덤)
+        this.maxLives = 3;
+        this.lives = 3;
+        this.isGameOver = false;
+
         // 난이도 및 무한 판수(스테이지) 설정
         this.difficulty = 'normal';
         this.currentStage = 1;
@@ -1801,10 +2073,19 @@
         // 스플래시 화면 이벤트
         const splashEl = document.getElementById('splash-screen');
         const rulesModal = document.getElementById('rules-modal');
+        const rankModal = document.getElementById('rank-modal');
+        const gameoverModal = document.getElementById('gameover-modal');
+
         const btnSplashStart = document.getElementById('btn-splash-start');
         const btnSplashRules = document.getElementById('btn-splash-rules');
+        const btnSplashRank = document.getElementById('btn-splash-rank');
         const btnRulesClose = document.getElementById('btn-rules-close');
         const btnRulesHeader = document.getElementById('btn-rules-header');
+        const btnRankHeader = document.getElementById('btn-rank-header');
+        const btnRankClose = document.getElementById('btn-rank-close');
+        const btnRankClear = document.getElementById('btn-rank-clear');
+        const goSubmitRank = document.getElementById('go-submit-rank');
+        const goRestartBtn = document.getElementById('go-restart-btn');
 
         if (btnSplashStart) {
           btnSplashStart.addEventListener('click', () => {
@@ -1822,6 +2103,14 @@
           });
         }
 
+        if (btnSplashRank) {
+          btnSplashRank.addEventListener('click', () => {
+            this.sound.playSelect();
+            this.renderHallOfFame();
+            if (rankModal) rankModal.classList.add('active');
+          });
+        }
+
         if (btnRulesHeader) {
           btnRulesHeader.addEventListener('click', () => {
             this.sound.playSelect();
@@ -1829,10 +2118,51 @@
           });
         }
 
+        if (btnRankHeader) {
+          btnRankHeader.addEventListener('click', () => {
+            this.sound.playSelect();
+            this.renderHallOfFame();
+            if (rankModal) rankModal.classList.add('active');
+          });
+        }
+
         if (btnRulesClose) {
           btnRulesClose.addEventListener('click', () => {
             this.sound.playSelect();
             if (rulesModal) rulesModal.classList.remove('active');
+          });
+        }
+
+        if (btnRankClose) {
+          btnRankClose.addEventListener('click', () => {
+            this.sound.playSelect();
+            if (rankModal) rankModal.classList.remove('active');
+          });
+        }
+
+        if (btnRankClear) {
+          btnRankClear.addEventListener('click', () => {
+            this.sound.playSelect();
+            this.clearHallOfFame();
+          });
+        }
+
+        if (goSubmitRank) {
+          goSubmitRank.addEventListener('click', () => {
+            const inputEl = document.getElementById('go-player-name');
+            const name = inputEl ? inputEl.value : '';
+            this.saveScoreToHallOfFame(name);
+            if (gameoverModal) gameoverModal.classList.remove('active');
+            if (rankModal) rankModal.classList.add('active');
+          });
+        }
+
+        if (goRestartBtn) {
+          goRestartBtn.addEventListener('click', () => {
+            if (gameoverModal) gameoverModal.classList.remove('active');
+            this.currentStage = 1;
+            this.hasStarted = true;
+            this.startNewGame();
           });
         }
 
@@ -1880,6 +2210,127 @@
         }, 1000);
       }
 
+      updateLivesUI() {
+        const livesEl = document.getElementById('stat-lives');
+        if (!livesEl) return;
+        let html = '';
+        for (let i = 0; i < this.maxLives; i++) {
+          if (i < this.lives) {
+            html += '<span class="heart-icon">❤️</span>';
+          } else {
+            html += '<span class="heart-icon lost">🖤</span>';
+          }
+        }
+        livesEl.innerHTML = html;
+      }
+
+      loseLife() {
+        if (this.lives <= 0 || this.isGameOver || this.isClear) return;
+        this.lives--;
+        this.sound.playMiss();
+        this.updateLivesUI();
+
+        // 하트 흔들림 효과
+        const livesEl = document.getElementById('stat-lives');
+        if (livesEl) {
+          livesEl.classList.remove('heart-damaged');
+          void livesEl.offsetWidth;
+          livesEl.classList.add('heart-damaged');
+        }
+
+        // 화면 붉은 플래시
+        const flashEl = document.getElementById('damage-flash');
+        if (flashEl) {
+          flashEl.classList.add('active');
+          setTimeout(() => flashEl.classList.remove('active'), 280);
+        }
+
+        if (this.lives <= 0) {
+          setTimeout(() => this.triggerGameOver(), 360);
+        }
+      }
+
+      triggerGameOver() {
+        this.isGameOver = true;
+        clearInterval(this.timerId);
+        this.sound.playGameOver();
+        this.clearHints();
+
+        const goStage = document.getElementById('go-stage');
+        const goScore = document.getElementById('go-score');
+        if (goStage) goStage.textContent = `${this.currentStage}판`;
+        if (goScore) goScore.textContent = this.score.toLocaleString();
+
+        const goModal = document.getElementById('gameover-modal');
+        if (goModal) goModal.classList.add('active');
+      }
+
+      getHallOfFame() {
+        try {
+          const raw = localStorage.getItem('siyeon_mahjong_hall_of_fame');
+          if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        return [
+          { name: '시연마스터', diff: '달인', stage: 5, score: 4850, date: '2026.09.01' },
+          { name: '옥빛비취', diff: '어려움', stage: 4, score: 3600, date: '2026.09.02' },
+          { name: '천리안', diff: '보통', stage: 3, score: 2750, date: '2026.09.03' },
+          { name: '대나무바람', diff: '보통', stage: 2, score: 1900, date: '2026.09.03' },
+          { name: '초보탈출', diff: '쉬움', stage: 1, score: 1200, date: '2026.09.03' }
+        ];
+      }
+
+      saveScoreToHallOfFame(name) {
+        const playerName = (name || '익명 달인').trim().slice(0, 8) || '익명 달인';
+        const diffCfg = DIFFICULTY_CONFIG[this.difficulty] || DIFFICULTY_CONFIG.normal;
+        const record = {
+          name: playerName,
+          diff: diffCfg.name,
+          stage: this.currentStage,
+          score: this.score,
+          date: new Date().toLocaleDateString('ko-KR')
+        };
+        const list = this.getHallOfFame();
+        list.push(record);
+        list.sort((a, b) => b.score - a.score);
+        const top10 = list.slice(0, 10);
+        try {
+          localStorage.setItem('siyeon_mahjong_hall_of_fame', JSON.stringify(top10));
+        } catch (e) {}
+        this.renderHallOfFame();
+      }
+
+      renderHallOfFame() {
+        const list = this.getHallOfFame();
+        const tbody = document.getElementById('rank-table-body');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        list.forEach((item, idx) => {
+          const tr = document.createElement('tr');
+          let medal = `${idx + 1}`;
+          if (idx === 0) medal = '🥇 1';
+          else if (idx === 1) medal = '🥈 2';
+          else if (idx === 2) medal = '🥉 3';
+
+          tr.innerHTML = `
+            <td class="rank-medal">${medal}</td>
+            <td style="font-weight: 800; color: #1a4230;">${item.name}</td>
+            <td><span class="diff-badge" style="font-size: 11px; padding: 2px 6px;">${item.diff}</span></td>
+            <td>${item.stage}판</td>
+            <td class="rank-score">${item.score.toLocaleString()}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      clearHallOfFame() {
+        if (confirm("명예의 전당 모든 기록을 초기화하시겠습니까?")) {
+          try {
+            localStorage.removeItem('siyeon_mahjong_hall_of_fame');
+          } catch (e) {}
+          this.renderHallOfFame();
+        }
+      }
+
       startNewGame() {
         this.sound.init();
         clearInterval(this.timerId);
@@ -1890,6 +2341,15 @@
         this.selectedTile = null;
         this.isClear = false;
         this.isAutoClearing = false;
+        this.isGameOver = false;
+
+        // 목숨 3~5개 랜덤 설정
+        this.maxLives = Math.floor(Math.random() * 3) + 3;
+        this.lives = this.maxLives;
+        this.updateLivesUI();
+
+        const goModal = document.getElementById('gameover-modal');
+        if (goModal) goModal.classList.remove('active');
 
         if (this.autoClearTimeouts) {
           this.autoClearTimeouts.forEach(t => clearTimeout(t));
@@ -2174,7 +2634,7 @@
       }
 
       handleTileClick(tile) {
-        if (this.isAutoClearing || tile.removed || !this.isTileFree(tile)) {
+        if (this.isGameOver || this.isAutoClearing || tile.removed || !this.isTileFree(tile)) {
           return;
         }
 
@@ -2242,7 +2702,8 @@
               }
             }, 380);
           } else {
-            // 짝 불일치: 다른 뒤집힌 패 클릭 시 이전 패 다시 뒤집혀 안보이게
+            // 짝 불일치: 목숨 1 차감 및 이전 패 다시 뒤집혀 안보이게
+            this.loseLife();
             if (first.isCovered) {
               this.flipTileBack(first);
             } else {
@@ -2302,8 +2763,8 @@
             }
           }, 380);
         } else {
-          // 불일치: 기존 뒤집힌 패였다면 다시 뒤집힘
-          this.sound.playSelect();
+          // 불일치: 목숨 1 차감 및 이전 패 선택 해제/재은닉
+          this.loseLife();
           if (first.isCovered) {
             this.flipTileBack(first);
           } else {
@@ -2642,12 +3103,20 @@
         const modalDesc = document.getElementById('modal-desc');
         const confirmBtn = document.getElementById('modal-confirm-btn');
 
+        // 판 클리어 보너스 점수 및 목숨 1 회복
+        const clearBonus = this.currentStage * 500;
+        this.score += clearBonus;
+        if (this.lives < this.maxLives) {
+          this.lives++;
+          this.updateLivesUI();
+        }
+
         modalTitle.textContent = `제 ${this.currentStage}판 클리어!`;
-        modalDesc.textContent = `[${diffCfg.name}] 난이도 제 ${this.currentStage}판을 완벽하게 격파했습니다! 다음 판에 도전하세요.`;
+        modalDesc.textContent = `[${diffCfg.name}] 난이도 제 ${this.currentStage}판 격파 완료! (보너스 +${clearBonus}점, 목숨 +1 회복)`;
         confirmBtn.textContent = `다음 판 시작 (제 ${this.currentStage + 1}판) ➔`;
 
         document.getElementById('modal-time').textContent = this.formatTime(this.timerSeconds);
-        document.getElementById('modal-score').textContent = this.score;
+        document.getElementById('modal-score').textContent = this.score.toLocaleString();
         document.getElementById('modal').classList.add('active');
       }
 
