@@ -774,7 +774,7 @@
     <div class="status-bar">
       <div class="stat-pill">
         <span class="stat-label">진행 판수</span>
-        <span class="stat-val" id="stat-stage">1 / 5</span>
+        <span class="stat-val" id="stat-stage">1판</span>
       </div>
       <div class="stat-pill">
         <span class="stat-label">난이도</span>
@@ -1365,10 +1365,9 @@
         this.isAutoClearing = false;
         this.autoClearTimeouts = [];
 
-        // 난이도 및 판수(스테이지) 설정
+        // 난이도 및 무한 판수(스테이지) 설정
         this.difficulty = 'normal';
         this.currentStage = 1;
-        this.totalStages = 5;
 
         this.bindEvents();
         this.startNewGame();
@@ -1399,14 +1398,10 @@
           this.startNewGame();
         });
 
-        // 모달에서 '다음 판 시작' 클릭 시 다음 스테이지로 진행
+        // 모달에서 '다음 판 시작' 클릭 시 무한정 다음 판으로 계속 진행
         document.getElementById('modal-confirm-btn').addEventListener('click', () => {
           document.getElementById('modal').classList.remove('active');
-          if (this.currentStage < this.totalStages) {
-            this.currentStage++;
-          } else {
-            this.currentStage = 1; // 5판 정복 후 다시 1판부터
-          }
+          this.currentStage++;
           this.startNewGame();
         });
       }
@@ -2013,15 +2008,9 @@
         const modalDesc = document.getElementById('modal-desc');
         const confirmBtn = document.getElementById('modal-confirm-btn');
 
-        if (this.currentStage < this.totalStages) {
-          modalTitle.textContent = `제 ${this.currentStage}판 클리어!`;
-          modalDesc.textContent = `[${diffCfg.name}] 모드 ${this.currentStage}판을 돌파했습니다! 다음 판에 도전하세요.`;
-          confirmBtn.textContent = `다음 판 진행 (${this.currentStage + 1} / ${this.totalStages}판)`;
-        } else {
-          modalTitle.textContent = `🏆 전 스테이지(${this.totalStages}판) 완전 정복!`;
-          modalDesc.textContent = `[${diffCfg.name}] 난이도의 전 판을 완벽하게 격파했습니다! 진정한 마작의 달인입니다!`;
-          confirmBtn.textContent = `1판부터 다시 시작`;
-        }
+        modalTitle.textContent = `제 ${this.currentStage}판 클리어!`;
+        modalDesc.textContent = `[${diffCfg.name}] 난이도 제 ${this.currentStage}판을 완벽하게 격파했습니다! 다음 판에 도전하세요.`;
+        confirmBtn.textContent = `다음 판 시작 (제 ${this.currentStage + 1}판) ➔`;
 
         document.getElementById('modal-time').textContent = this.formatTime(this.timerSeconds);
         document.getElementById('modal-score').textContent = this.score;
@@ -2035,7 +2024,7 @@
         const diffCfg = DIFFICULTY_CONFIG[this.difficulty] || DIFFICULTY_CONFIG.normal;
         const stageEl = document.getElementById('stat-stage');
         const diffEl = document.getElementById('stat-diff');
-        if (stageEl) stageEl.textContent = `${this.currentStage} / ${this.totalStages}`;
+        if (stageEl) stageEl.textContent = `${this.currentStage}판`;
         if (diffEl) {
           diffEl.textContent = diffCfg.name;
           diffEl.style.backgroundColor = diffCfg.badgeColor;
