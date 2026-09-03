@@ -1363,22 +1363,22 @@
         <div class="rule-item">
           <div class="rule-num">3</div>
           <div class="rule-text">
-            <strong>목숨 시스템 (랜덤 3~5개)</strong>
-            <p>판마다 3~5개의 목숨으로 시작합니다. 짝이 맞지 않는 패를 매칭 시도하면 목숨이 1개 줄어들며, 모두 소진 시 게임 오버됩니다!</p>
+            <strong>목숨(하트) 소진 규칙 (랜덤 3~5개 시작)</strong>
+            <p>판마다 3~5개의 목숨으로 시작합니다. <strong>[🔀 셔플] 사용 시 하트 1개가 소진</strong>되며, <strong>뒤집힌 패 매칭 실패 3회 누적 시 하트 1개가 소진</strong>됩니다. (일반 패 오선택은 목숨이 깎이지 않습니다.)</p>
           </div>
         </div>
         <div class="rule-item">
           <div class="rule-num">4</div>
           <div class="rule-text">
             <strong>블라인드 패 시스템</strong>
-            <p>난이도에 따라 상단 패들이 뒤집혀 안 보입니다. 터치하면 앞면이 보이며, 다른 뒤집힌 패를 터치하면 이전 패는 다시 뒤집혀 숨겨집니다. 같은 패를 찾으면 즉시 매칭 제거됩니다!</p>
+            <p>난이도에 따라 상단 패들이 뒤집혀 안 보입니다. 터치하면 앞면이 보이며, 다른 뒤집힌 패를 터치하면 이전 패는 다시 뒤집혀 숨겨집니다. 짝을 찾지 못하고 3회 실패할 때마다 목숨 1개가 차감됩니다.</p>
           </div>
         </div>
         <div class="rule-item">
           <div class="rule-num">5</div>
           <div class="rule-text">
-            <strong>도움 기능 & 명예의 전당</strong>
-            <p>막혔을 땐 [💡 힌트]나 [🔀 셔플]을 활용하세요. 높은 점수를 달성해 [🏆 명예의 전당]에 이름을 올려보세요!</p>
+            <strong>도움 기능 & 클리어 회복</strong>
+            <p>막혔을 땐 [💡 힌트]를 확인하세요. 각 판을 클리어하면 목숨 1개가 회복되며, 높은 점수를 기록해 [🏆 명예의 전당]에 도전해보세요!</p>
           </div>
         </div>
       </div>
@@ -2053,6 +2053,7 @@
         this.maxLives = 3;
         this.lives = 3;
         this.isGameOver = false;
+        this.blindMismatchCount = 0; // 뒤집기 3회 실패 카운터
 
         // 난이도 및 무한 판수(스테이지) 설정
         this.difficulty = 'normal';
@@ -2342,6 +2343,7 @@
         this.isClear = false;
         this.isAutoClearing = false;
         this.isGameOver = false;
+        this.blindMismatchCount = 0;
 
         // 목숨 3~5개 랜덤 설정
         this.maxLives = Math.floor(Math.random() * 3) + 3;
@@ -2614,7 +2616,7 @@
 
         if (availablePairs.length === 0 && activeTiles.length > 0) {
           setTimeout(() => {
-            if (!this.isClear && confirm("더 이상 맞출 수 있는 패가 없습니다!\n패를 섞으시겠습니까?")) {
+            if (!this.isClear && confirm("더 이상 맞출 수 있는 패가 없습니다!\n패를 섞으시겠습니까? (하트 1개 소진)")) {
               this.shuffleRemain();
             }
           }, 300);
@@ -2674,7 +2676,8 @@
           // 이전에 선택된 패(first)가 있는 상태에서 뒤집힌 패를 클릭함
           const first = this.selectedTile;
           if (first.def.id === tile.def.id) {
-            // 짝이 일치: 매칭 성공!
+            // 짝이 일치: 매칭 성공! (실패 누적 카운트 리셋)
+            this.blindMismatchCount = 0;
             this.sound.playMatch();
             first.el.classList.remove('selected');
             this.selectedTile = null;
@@ -2702,8 +2705,15 @@
               }
             }, 380);
           } else {
-            // 짝 불일치: 목숨 1 차감 및 이전 패 다시 뒤집혀 안보이게
-            this.loseLife();
+            // 짝 불일치: 3회 실패 시에만 목숨 1개 소진
+            this.blindMismatchCount++;
+            if (this.blindMismatchCount >= 3) {
+              this.blindMismatchCount = 0;
+              this.loseLife();
+            } else {
+              this.sound.playMiss();
+            }
+
             if (first.isCovered) {
               this.flipTileBack(first);
             } else {
@@ -2763,8 +2773,8 @@
             }
           }, 380);
         } else {
-          // 불일치: 목숨 1 차감 및 이전 패 선택 해제/재은닉
-          this.loseLife();
+          // 일반 패 불일치: 목숨 차감 없음, 선택 변경만 수행
+          this.sound.playSelect();
           if (first.isCovered) {
             this.flipTileBack(first);
           } else {
@@ -2857,9 +2867,13 @@
       }
 
       shuffleRemain() {
-        if (this.isAutoClearing) return;
+        if (this.isAutoClearing || this.isGameOver) return;
         const activeTiles = this.tiles.filter(t => !t.removed);
         if (activeTiles.length === 0) return;
+
+        // 셔플 시 하트 1개 소진
+        this.loseLife();
+        if (this.isGameOver) return;
 
         this.sound.playShuffle();
         this.clearHints();
