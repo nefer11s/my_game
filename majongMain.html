@@ -201,18 +201,13 @@
       border-radius: var(--tile-radius);
       cursor: pointer;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(165deg, #ffffff 0%, #fdfbf7 55%, #f6efe2 100%);
-      border-top: 1.5px solid rgba(255, 255, 255, 0.95);
-      border-left: 1.5px solid rgba(255, 255, 255, 0.85);
-      border-right: 1px solid rgba(210, 195, 175, 0.5);
-      border-bottom: 1px solid rgba(190, 175, 155, 0.6);
       transition: transform 0.22s cubic-bezier(0.2, 0.9, 0.4, 1.1),
                   filter 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
       will-change: transform, filter, box-shadow;
       outline: none;
+      perspective: 800px;
       transform-style: preserve-3d;
 
       /* 정밀 3D 적층 두께: 1~3px 백색 상아 본체층 + 4~8px 에메랄드 비취 바닥층 */
@@ -230,14 +225,89 @@
         6px 10px 16px rgba(10, 35, 22, 0.26);
     }
 
-    /* 타일 표면 빛 반사(Specular Sheen) 오버레이 */
-    .tile::before {
+    /* 3D 플립 카드 이너 래퍼 */
+    .tile-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: var(--tile-radius);
+      transform-style: preserve-3d;
+      transition: transform 0.36s cubic-bezier(0.2, 0.9, 0.35, 1.1);
+    }
+
+    /* 뒤집힌 패(Face-down) 기본 상태: 180도 회전하여 뒷면 노출 */
+    .tile.face-down .tile-inner {
+      transform: rotateY(180deg);
+    }
+
+    /* 터치하여 일시 공개(revealed)된 패: 0도로 회전하여 앞면 노출 */
+    .tile.face-down.revealed .tile-inner {
+      transform: rotateY(0deg);
+    }
+
+    /* 타일 앞면 (Front) */
+    .tile-front {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--tile-radius);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(165deg, #ffffff 0%, #fdfbf7 55%, #f6efe2 100%);
+      border-top: 1.5px solid rgba(255, 255, 255, 0.95);
+      border-left: 1.5px solid rgba(255, 255, 255, 0.85);
+      border-right: 1px solid rgba(210, 195, 175, 0.5);
+      border-bottom: 1px solid rgba(190, 175, 155, 0.6);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform: rotateY(0deg);
+      overflow: hidden;
+    }
+
+    /* 타일 앞면 빛 반사(Specular Sheen) 오버레이 */
+    .tile-front::before {
       content: '';
       position: absolute;
       inset: 0;
       border-radius: var(--tile-radius);
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.1) 40%, rgba(0, 0, 0, 0.02) 100%);
       pointer-events: none;
+    }
+
+    /* 타일 뒷면 (Back): 최고급 에메랄드 비취 & 골드 전통 길조 문양 */
+    .tile-back {
+      position: absolute;
+      inset: 0;
+      border-radius: var(--tile-radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 45% 35%, #2a7e58 0%, #1a573b 55%, #0f3925 100%);
+      border: 1.8px solid #d4af37;
+      box-shadow:
+        inset 0 0 10px rgba(0, 0, 0, 0.6),
+        inset 0 0 4px rgba(255, 235, 160, 0.5);
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      transform: rotateY(180deg);
+      overflow: hidden;
+    }
+
+    /* 타일 뒷면 섬세한 격자 펄 광택 오버레이 */
+    .tile-back::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(0, 0, 0, 0.3) 100%);
+      pointer-events: none;
+    }
+
+    /* 타일 뒷면 SVG 그래픽 */
+    .tile-back-svg {
+      width: 52px;
+      height: 72px;
+      filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.45));
     }
 
     /* 층(Layer 0, 1, 2)별 차등 입체감 및 높이 그림자 */
@@ -364,9 +434,7 @@
     /* 잠긴 타일: 100% 완전 불투명(비침 방지) + 상위 패 그늘에 가려진 은은한 앰비언트 쉐이딩 */
     .tile.blocked {
       cursor: default;
-      background: linear-gradient(165deg, #e2e8e4 0%, #d5ded8 65%, #c8d3cc 100%);
       filter: brightness(0.89) contrast(0.94);
-      opacity: 1; /* 투명 비침 완전 제거 */
       box-shadow:
         1px 1px 0 #c7d5cd,
         2px 2px 0 #b7c7be,
@@ -377,8 +445,26 @@
         3px 6px 12px rgba(15, 45, 30, 0.2);
     }
 
+    .tile.blocked .tile-front {
+      background: linear-gradient(165deg, #e2e8e4 0%, #d5ded8 65%, #c8d3cc 100%);
+    }
+
+    .tile.blocked .tile-back {
+      filter: brightness(0.72) contrast(0.9);
+      border-color: #8c7324;
+    }
+
     .tile.blocked .tile-graphic-wrap {
       filter: grayscale(0.25) brightness(0.82);
+    }
+
+    /* 자유로운 뒤집힌 패 호버 시 신비로운 골드 글로우 */
+    .tile.free.face-down:hover .tile-back {
+      border-color: #ffe066;
+      box-shadow:
+        inset 0 0 14px rgba(0, 0, 0, 0.6),
+        inset 0 0 6px rgba(255, 235, 160, 0.8),
+        0 0 14px rgba(212, 175, 55, 0.6);
     }
 
     /* 선택된 타일: 공중에 떠오른 3D 리프팅 + 비취 에메랄드 오라 */
@@ -796,10 +882,10 @@
 
     <div class="controls-bar">
       <select class="diff-select" id="select-difficulty" title="난이도 선택">
-        <option value="easy">🌱 쉬움 (15종)</option>
-        <option value="normal" selected>🌿 보통 (24종)</option>
-        <option value="hard">🔥 어려움 (34종)</option>
-        <option value="master">👑 달인 (46종)</option>
+        <option value="easy">🌱 쉬움 (15종 · 공개)</option>
+        <option value="normal" selected>🌿 보통 (24종 · 블라인드 4개)</option>
+        <option value="hard">🔥 어려움 (34종 · 블라인드 10개)</option>
+        <option value="master">👑 달인 (46종 · 블라인드 16개)</option>
       </select>
       <button class="btn" id="btn-fullscreen" title="전체화면 모드">
         <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
@@ -893,6 +979,28 @@
         gain.connect(this.ctx.destination);
         osc.start(now);
         osc.stop(now + 0.08);
+      }
+
+      // 패 플립음: 마작패가 테이블에서 착 뒤집히는 맑고 경쾌한 3D 회전 마찰음
+      playFlip() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(780, now + 0.05);
+        osc.frequency.exponentialRampToValueAtTime(260, now + 0.12);
+
+        gain.gain.setValueAtTime(0.26, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.13);
       }
 
       // 매칭 성공음: 맑고 영롱한 힐링 차임벨 (2화음 펜타토닉)
@@ -1005,6 +1113,28 @@
      * OS 폰트 글리프 의존성을 0%로 만들어 모든 기기에서 쨍하고 선명하게 렌더링
      */
     const SvgFactory = {
+      // 블라인드 타일 뒷면 (Jade & Gold Pattern)
+      tileBack() {
+        return `
+          <svg class="tile-back-svg" viewBox="0 0 48 64">
+            <!-- 외곽 골드 더블 프레임 -->
+            <rect x="3" y="3" width="42" height="58" rx="5" fill="none" stroke="#d4af37" stroke-width="1.2" opacity="0.9"/>
+            <rect x="6" y="6" width="36" height="52" rx="3.5" fill="none" stroke="#f5d77f" stroke-width="0.7" opacity="0.6"/>
+            <!-- 4각 코너 전통 길조 문양 -->
+            <path d="M 6 13 L 13 13 L 13 6" fill="none" stroke="#d4af37" stroke-width="1"/>
+            <path d="M 42 13 L 35 13 L 35 6" fill="none" stroke="#d4af37" stroke-width="1"/>
+            <path d="M 6 51 L 13 51 L 13 58" fill="none" stroke="#d4af37" stroke-width="1"/>
+            <path d="M 42 51 L 35 51 L 35 58" fill="none" stroke="#d4af37" stroke-width="1"/>
+            <!-- 중앙 다이아몬드 마작 엠블럼 -->
+            <polygon points="24,18 36,32 24,46 12,32" fill="none" stroke="#d4af37" stroke-width="1.2" opacity="0.85"/>
+            <polygon points="24,22 32,32 24,42 16,32" fill="none" stroke="#f5d77f" stroke-width="0.8" opacity="0.65"/>
+            <!-- 중앙 원형 옥빛 엠블럼 & 미스터리 마크 -->
+            <circle cx="24" cy="32" r="7" fill="#0f3925" stroke="#d4af37" stroke-width="1"/>
+            <text x="24" y="36.5" text-anchor="middle" font-size="12" font-weight="900" fill="#f5d77f" font-family="'Noto Serif KR', serif">?</text>
+          </svg>
+        `;
+      },
+
       // 만수 (Wan 1-9): 위쪽 붉은 한자 숫자 + 아래쪽 萬
       wan(numStr, hanzi) {
         return `
@@ -1283,21 +1413,25 @@
       easy: {
         name: '쉬움',
         badgeColor: '#2ea779',
+        blindCount: 0, // 블라인드 없음 (전체 공개)
         filter: (def) => (def.suit === 'wan' && def.val <= 6) || (def.suit === 'tong' && def.val <= 6) || (def.suit === 'tiao' && def.val <= 3) // 15종 풀
       },
       normal: {
         name: '보통',
         badgeColor: '#2980b9',
+        blindCount: 4, // 최상단 Layer 2 (4개) 블라인드
         filter: (def) => (def.suit === 'wan') || (def.suit === 'tong') || (def.suit === 'tiao' && def.val <= 6) // 24종 풀
       },
       hard: {
         name: '어려움',
         badgeColor: '#d35400',
+        blindCount: 10, // 최상단 Layer 2 (4개) + Layer 1 (6개) 블라인드
         filter: (def) => ['wan', 'tong', 'tiao', 'honor', 'wind'].includes(def.suit) // 34종 전체 정통 마작패 풀
       },
       master: {
         name: '달인',
         badgeColor: '#8e44ad',
+        blindCount: 16, // Layer 2 (4개) + Layer 1 (12개 전원) = 상위 2개 층 블라인드
         filter: () => true // 46종 전체 (꽃패 8종 + 사신수 4종 총출동)
       }
     };
@@ -1534,7 +1668,29 @@
           }
         }
 
+        // 난이도에 따른 상단 레이어 블라인드(Face-down) 패 지정
+        const blindCount = diffCfg.blindCount || 0;
+
+        // z값이 높은 순(Layer 2 -> Layer 1 -> Layer 0), 중심에 가까운 패 우선
+        const sortedForBlind = [...resultTiles].sort((a, b) => {
+          if (b.z !== a.z) return b.z - a.z;
+          const distA = Math.hypot(a.x - 9, a.y - 5);
+          const distB = Math.hypot(b.x - 9, b.y - 5);
+          return distA - distB;
+        });
+
+        resultTiles.forEach(t => {
+          t.isCovered = false;
+          t.isRevealed = false;
+        });
+
+        for (let i = 0; i < Math.min(blindCount, sortedForBlind.length); i++) {
+          sortedForBlind[i].isCovered = true;
+          sortedForBlind[i].isRevealed = false;
+        }
+
         this.tiles = resultTiles;
+        this.lastFlippedBlindTile = null;
       }
 
       isSlotFree(slot, slotList) {
@@ -1584,6 +1740,9 @@
       /**
        * DOM 렌더링 및 위치 스타일 적용
        */
+      /**
+       * DOM 렌더링 및 위치 스타일 적용
+       */
       renderBoard() {
         this.boardEl.innerHTML = '';
 
@@ -1596,6 +1755,8 @@
         sorted.forEach(tile => {
           const el = document.createElement('div');
           el.className = `tile layer-${tile.z}`;
+          if (tile.isCovered) el.classList.add('face-down');
+          if (tile.isRevealed) el.classList.add('revealed');
           el.id = tile.id;
           el.dataset.layer = tile.z;
 
@@ -1616,11 +1777,18 @@
           el.style.zIndex = tile.z * 100 + tile.y * 10 + tile.x;
 
           el.innerHTML = `
-            <span class="tile-corner-badge">${tile.def.badge}</span>
-            <div class="tile-graphic-wrap">
-              ${tile.def.render()}
+            <div class="tile-inner">
+              <div class="tile-front">
+                <span class="tile-corner-badge">${tile.def.badge}</span>
+                <div class="tile-graphic-wrap">
+                  ${tile.def.render()}
+                </div>
+                <span class="tile-sub-label">${tile.def.label}</span>
+              </div>
+              <div class="tile-back">
+                ${SvgFactory.tileBack()}
+              </div>
             </div>
-            <span class="tile-sub-label">${tile.def.label}</span>
           `;
 
           el.addEventListener('click', (e) => {
@@ -1661,6 +1829,18 @@
         }
       }
 
+      /**
+       * 열려있는 뒤집힌 패를 다시 뒷면으로 뒤집는 헬퍼
+       */
+      flipTileBack(tile) {
+        if (!tile || !tile.isCovered || !tile.isRevealed) return;
+        tile.isRevealed = false;
+        if (tile.el) {
+          tile.el.classList.remove('revealed');
+          tile.el.classList.remove('selected');
+        }
+      }
+
       handleTileClick(tile) {
         if (this.isAutoClearing || tile.removed || !this.isTileFree(tile)) {
           return;
@@ -1668,28 +1848,105 @@
 
         this.clearHints();
 
-        // 1) 이미 선택된 패 재클릭 시 선택 취소
+        // 1) 클릭한 패가 이미 열려있는 동일한 선택 패인 경우 -> 선택 취소 및 뒤집힌 패라면 다시 닫기
         if (this.selectedTile && this.selectedTile.id === tile.id) {
-          this.sound.playSelect();
-          tile.el.classList.remove('selected');
+          if (tile.isCovered && tile.isRevealed) {
+            this.sound.playFlip();
+            this.flipTileBack(tile);
+            this.lastFlippedBlindTile = null;
+          } else {
+            this.sound.playSelect();
+            tile.el.classList.remove('selected');
+          }
           this.selectedTile = null;
           return;
         }
 
-        // 2) 첫 번째 패 선택
+        // 2) 클릭한 패가 뒤집혀 있는 상태(아직 안 열림)인 경우
+        if (tile.isCovered && !tile.isRevealed) {
+          this.sound.playFlip();
+          tile.isRevealed = true;
+          tile.el.classList.add('revealed');
+
+          // 이전에 선택된 패가 없는 경우
+          if (!this.selectedTile) {
+            if (this.lastFlippedBlindTile && this.lastFlippedBlindTile.id !== tile.id) {
+              this.flipTileBack(this.lastFlippedBlindTile);
+            }
+            this.selectedTile = tile;
+            this.lastFlippedBlindTile = tile;
+            tile.el.classList.add('selected');
+            return;
+          }
+
+          // 이전에 선택된 패(first)가 있는 상태에서 뒤집힌 패를 클릭함
+          const first = this.selectedTile;
+          if (first.def.id === tile.def.id) {
+            // 짝이 일치: 매칭 성공!
+            this.sound.playMatch();
+            first.el.classList.remove('selected');
+            this.selectedTile = null;
+            this.lastFlippedBlindTile = null;
+
+            first.el.classList.add('matching');
+            tile.el.classList.add('matching');
+
+            first.removed = true;
+            tile.removed = true;
+
+            this.undoStack.push([first, tile]);
+            this.score += 150; // 블라인드 매칭 보너스 점수
+
+            setTimeout(() => {
+              if (first.el) first.el.style.display = 'none';
+              if (tile.el) tile.el.style.display = 'none';
+              this.updateTileStates();
+
+              const remain = this.tiles.filter(t => !t.removed).length;
+              if (remain > 0 && remain <= 10 && !this.isAutoClearing) {
+                this.triggerAutoClearFinale();
+              } else {
+                this.checkWinCondition();
+              }
+            }, 380);
+          } else {
+            // 짝 불일치: 다른 뒤집힌 패 클릭 시 이전 패 다시 뒤집혀 안보이게
+            if (first.isCovered) {
+              this.flipTileBack(first);
+            } else {
+              first.el.classList.remove('selected');
+            }
+            if (this.lastFlippedBlindTile && this.lastFlippedBlindTile.id !== tile.id && this.lastFlippedBlindTile.id !== first.id) {
+              this.flipTileBack(this.lastFlippedBlindTile);
+            }
+            this.selectedTile = tile;
+            this.lastFlippedBlindTile = tile;
+            tile.el.classList.add('selected');
+          }
+          this.updateHeaderUI();
+          return;
+        }
+
+        // 3) 클릭한 패가 일반 패(또는 이미 열려있는 패)인 경우
         if (!this.selectedTile) {
+          if (this.lastFlippedBlindTile && this.lastFlippedBlindTile.id !== tile.id) {
+            this.flipTileBack(this.lastFlippedBlindTile);
+            this.lastFlippedBlindTile = null;
+          }
           this.sound.playSelect();
           this.selectedTile = tile;
           tile.el.classList.add('selected');
           return;
         }
 
-        // 3) 두 번째 패 선택: 일치 여부 확인
+        // 4) 기존 선택된 패가 있는 상태에서 일반 패를 클릭한 경우
         const first = this.selectedTile;
         if (first.def.id === tile.def.id) {
+          // 매칭 성공!
           this.sound.playMatch();
           first.el.classList.remove('selected');
           this.selectedTile = null;
+          this.lastFlippedBlindTile = null;
 
           first.el.classList.add('matching');
           tile.el.classList.add('matching');
@@ -1698,7 +1955,7 @@
           tile.removed = true;
 
           this.undoStack.push([first, tile]);
-          this.score += 100;
+          this.score += (first.isCovered ? 150 : 100);
 
           setTimeout(() => {
             if (first.el) first.el.style.display = 'none';
@@ -1712,12 +1969,17 @@
               this.checkWinCondition();
             }
           }, 380);
-
         } else {
+          // 불일치: 기존 뒤집힌 패였다면 다시 뒤집힘
           this.sound.playSelect();
-          first.el.classList.remove('selected');
+          if (first.isCovered) {
+            this.flipTileBack(first);
+          } else {
+            first.el.classList.remove('selected');
+          }
           this.selectedTile = tile;
           tile.el.classList.add('selected');
+          this.lastFlippedBlindTile = null;
         }
 
         this.updateHeaderUI();
@@ -1763,8 +2025,16 @@
         this.sound.playSelect();
         this.clearHints();
         if (this.selectedTile) {
-          this.selectedTile.el.classList.remove('selected');
+          if (this.selectedTile.isCovered) {
+            this.flipTileBack(this.selectedTile);
+          } else {
+            this.selectedTile.el.classList.remove('selected');
+          }
           this.selectedTile = null;
+        }
+        if (this.lastFlippedBlindTile) {
+          this.flipTileBack(this.lastFlippedBlindTile);
+          this.lastFlippedBlindTile = null;
         }
 
         const [t1, t2] = this.undoStack.pop();
@@ -1775,6 +2045,18 @@
         t2.el.style.display = 'flex';
         t1.el.classList.remove('matching');
         t2.el.classList.remove('matching');
+
+        // 블라인드 패였던 경우 다시 닫힌 상태로 복원
+        if (t1.isCovered) {
+          t1.isRevealed = false;
+          t1.el.classList.add('face-down');
+          t1.el.classList.remove('revealed');
+        }
+        if (t2.isCovered) {
+          t2.isRevealed = false;
+          t2.el.classList.add('face-down');
+          t2.el.classList.remove('revealed');
+        }
 
         this.score = Math.max(0, this.score - 50);
         this.updateHeaderUI();
@@ -1789,8 +2071,16 @@
         this.sound.playShuffle();
         this.clearHints();
         if (this.selectedTile) {
-          this.selectedTile.el.classList.remove('selected');
+          if (this.selectedTile.isCovered) {
+            this.flipTileBack(this.selectedTile);
+          } else {
+            this.selectedTile.el.classList.remove('selected');
+          }
           this.selectedTile = null;
+        }
+        if (this.lastFlippedBlindTile) {
+          this.flipTileBack(this.lastFlippedBlindTile);
+          this.lastFlippedBlindTile = null;
         }
 
         const activeDefs = activeTiles.map(t => t.def).sort(() => Math.random() - 0.5);
@@ -1805,6 +2095,12 @@
           if (badgeEl) badgeEl.textContent = tile.def.badge;
           if (wrapEl) wrapEl.innerHTML = tile.def.render();
           if (subEl) subEl.textContent = tile.def.label;
+
+          // 셔플 후 뒤집힌 패는 다시 뒷면으로 닫힘
+          if (tile.isCovered) {
+            tile.isRevealed = false;
+            tile.el.classList.remove('revealed');
+          }
 
           tile.el.style.transition = 'transform 0.25s ease';
           tile.el.style.transform += ' scale(0.92)';
@@ -1875,8 +2171,14 @@
         pairsToClear.forEach(([t1, t2], idx) => {
           const tId = setTimeout(() => {
             if (!this.isAutoClearing) return;
-            if (t1 && t1.el) t1.el.classList.add('matching');
-            if (t2 && t2.el) t2.el.classList.add('matching');
+            if (t1 && t1.el) {
+              t1.el.classList.add('revealed');
+              t1.el.classList.add('matching');
+            }
+            if (t2 && t2.el) {
+              t2.el.classList.add('revealed');
+              t2.el.classList.add('matching');
+            }
             if (t1) t1.removed = true;
             if (t2) t2.removed = true;
 
