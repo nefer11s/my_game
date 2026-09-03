@@ -525,6 +525,102 @@
       box-shadow: 0 8px 22px rgba(32, 135, 92, 0.45);
     }
 
+    /* 화면 흔들림 및 판 파괴 애니메이션 */
+    @keyframes screenShake {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      15% { transform: translate(-8px, 6px) rotate(-1deg); }
+      30% { transform: translate(7px, -6px) rotate(1.2deg); }
+      45% { transform: translate(-6px, -4px) rotate(-0.8deg); }
+      60% { transform: translate(5px, 5px) rotate(0.6deg); }
+      75% { transform: translate(-3px, 2px) rotate(-0.3deg); }
+      90% { transform: translate(2px, -1px) rotate(0.1deg); }
+    }
+
+    .shaking {
+      animation: screenShake 0.55s ease-out !important;
+    }
+
+    /* 판 깨짐 파편 컨테이너 및 조각 */
+    .board-shatter-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1500;
+      overflow: hidden;
+    }
+
+    .shatter-piece {
+      position: absolute;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(210, 240, 225, 0.8));
+      border: 1.5px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 6px 20px rgba(10, 40, 25, 0.28);
+      transition: transform 0.75s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.75s ease;
+      will-change: transform, opacity;
+      backdrop-filter: blur(2px);
+      border-radius: 4px;
+    }
+
+    /* 대형 WIN 배너 애니메이션 */
+    .big-win-banner {
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.2);
+      font-size: clamp(52px, 14vw, 92px);
+      font-weight: 900;
+      color: #ffd700;
+      text-shadow:
+        0 0 12px rgba(255, 215, 0, 0.85),
+        0 0 30px rgba(255, 140, 0, 0.8),
+        0 6px 20px rgba(0, 0, 0, 0.45);
+      z-index: 1800;
+      pointer-events: none;
+      opacity: 0;
+      letter-spacing: 6px;
+      animation: bigWinPop 0.85s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      white-space: nowrap;
+    }
+
+    @keyframes bigWinPop {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.2) rotate(-8deg);
+      }
+      50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.18) rotate(2deg);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+      }
+    }
+
+    /* 피날레 알림 배지 */
+    .finale-notice {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-30px);
+      background: linear-gradient(135deg, #f39c12, #e67e22);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 8px 22px;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
+      z-index: 1600;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      white-space: nowrap;
+    }
+
+    .finale-notice.active {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
     /* 모바일 반응형 최적화 (보드 영역 극대화 및 터치 조작 최적화) */
     @media (max-width: 680px) {
       header {
@@ -804,6 +900,41 @@
           osc.start(t);
           osc.stop(t + 0.85);
         });
+      }
+
+      // 판 파괴 및 유리/도자기 깨짐 효과음
+      playShatter() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+
+        // 1) 묵직한 충격파 (피치 다운)
+        const subOsc = this.ctx.createOscillator();
+        const subGain = this.ctx.createGain();
+        subOsc.type = 'triangle';
+        subOsc.frequency.setValueAtTime(140, now);
+        subOsc.frequency.exponentialRampToValueAtTime(28, now + 0.36);
+        subGain.gain.setValueAtTime(0.45, now);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.36);
+        subOsc.connect(subGain);
+        subGain.connect(this.ctx.destination);
+        subOsc.start(now);
+        subOsc.stop(now + 0.38);
+
+        // 2) 쨍그랑 유리 파편 흩어지는 고음 클러스터
+        for (let i = 0; i < 7; i++) {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const t = now + 0.03 + i * 0.035;
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(1600 + Math.random() * 2600, t);
+          gain.gain.setValueAtTime(0.18, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.18);
+        }
       }
     }
 
@@ -1091,6 +1222,8 @@
         this.timerSeconds = 0;
         this.timerId = null;
         this.isClear = false;
+        this.isAutoClearing = false;
+        this.autoClearTimeouts = [];
 
         this.bindEvents();
         this.startNewGame();
@@ -1124,6 +1257,30 @@
         this.undoStack = [];
         this.selectedTile = null;
         this.isClear = false;
+        this.isAutoClearing = false;
+
+        if (this.autoClearTimeouts) {
+          this.autoClearTimeouts.forEach(t => clearTimeout(t));
+        }
+        this.autoClearTimeouts = [];
+
+        // 화면 효과 및 파편/배너 초기화
+        this.viewportEl.classList.remove('shaking');
+        const oldNotice = document.getElementById('finale-notice');
+        if (oldNotice) oldNotice.remove();
+        const oldShatter = document.getElementById('shatter-container');
+        if (oldShatter) oldShatter.remove();
+        const oldBanner = document.getElementById('big-win-banner');
+        if (oldBanner) oldBanner.remove();
+
+        this.boardEl.style.opacity = '1';
+        this.boardEl.style.display = 'block';
+        this.boardEl.style.filter = '';
+        this.boardEl.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.8, 0.3, 1)';
+
+        document.getElementById('btn-undo').disabled = true;
+        document.getElementById('btn-shuffle').disabled = false;
+        document.getElementById('btn-hint').disabled = false;
 
         this.updateHeaderUI();
         this.buildSolvableBoard();
@@ -1334,7 +1491,7 @@
       }
 
       handleTileClick(tile) {
-        if (tile.removed || !this.isTileFree(tile)) {
+        if (this.isAutoClearing || tile.removed || !this.isTileFree(tile)) {
           return;
         }
 
@@ -1376,7 +1533,13 @@
             if (first.el) first.el.style.display = 'none';
             if (tile.el) tile.el.style.display = 'none';
             this.updateTileStates();
-            this.checkWinCondition();
+
+            const remain = this.tiles.filter(t => !t.removed).length;
+            if (remain > 0 && remain <= 10 && !this.isAutoClearing) {
+              this.triggerAutoClearFinale();
+            } else {
+              this.checkWinCondition();
+            }
           }, 380);
 
         } else {
@@ -1404,6 +1567,7 @@
       }
 
       showHint() {
+        if (this.isAutoClearing) return;
         this.clearHints();
         const pairs = this.getAvailablePairs();
         if (pairs.length > 0) {
@@ -1424,7 +1588,7 @@
       }
 
       undo() {
-        if (this.undoStack.length === 0) return;
+        if (this.isAutoClearing || this.undoStack.length === 0) return;
         this.sound.playSelect();
         this.clearHints();
         if (this.selectedTile) {
@@ -1447,6 +1611,7 @@
       }
 
       shuffleRemain() {
+        if (this.isAutoClearing) return;
         const activeTiles = this.tiles.filter(t => !t.removed);
         if (activeTiles.length === 0) return;
 
@@ -1478,6 +1643,187 @@
         });
 
         this.updateTileStates();
+      }
+
+      /**
+       * 패가 10개 이하일 때 발동하는 자동 피날레 클리어 연출
+       */
+      triggerAutoClearFinale() {
+        if (this.isAutoClearing) return;
+        this.isAutoClearing = true;
+        this.clearHints();
+
+        if (this.selectedTile) {
+          this.selectedTile.el.classList.remove('selected');
+          this.selectedTile = null;
+        }
+
+        // 조작 컨트롤 버튼 비활성화
+        document.getElementById('btn-undo').disabled = true;
+        document.getElementById('btn-shuffle').disabled = true;
+        document.getElementById('btn-hint').disabled = true;
+
+        const remainCount = this.tiles.filter(t => !t.removed).length;
+
+        // 1) 피날레 알림 배지 표시
+        let notice = document.getElementById('finale-notice');
+        if (!notice) {
+          notice = document.createElement('div');
+          notice.id = 'finale-notice';
+          notice.className = 'finale-notice';
+          this.viewportEl.appendChild(notice);
+        }
+        notice.textContent = `⚡ 남은 패 ${remainCount}개 피날레! 자동 클리어 발동`;
+        notice.classList.add('active');
+
+        // 2) 남은 활성 패들을 짝(Pair)으로 구성
+        const activeTiles = this.tiles.filter(t => !t.removed);
+        const groups = {};
+        activeTiles.forEach(t => {
+          if (!groups[t.def.id]) groups[t.def.id] = [];
+          groups[t.def.id].push(t);
+        });
+
+        const pairsToClear = [];
+        Object.values(groups).forEach(list => {
+          while (list.length >= 2) {
+            pairsToClear.push([list.pop(), list.pop()]);
+          }
+        });
+
+        // 짝이 홀수로 남은 경우 처리
+        const unassigned = [];
+        Object.values(groups).forEach(list => {
+          while (list.length > 0) unassigned.push(list.pop());
+        });
+        while (unassigned.length >= 2) {
+          pairsToClear.push([unassigned.pop(), unassigned.pop()]);
+        }
+
+        // 3) 연속 고속 매칭 연출 실행 (0.16초 간격)
+        pairsToClear.forEach(([t1, t2], idx) => {
+          const tId = setTimeout(() => {
+            if (!this.isAutoClearing) return;
+            if (t1 && t1.el) t1.el.classList.add('matching');
+            if (t2 && t2.el) t2.el.classList.add('matching');
+            if (t1) t1.removed = true;
+            if (t2) t2.removed = true;
+
+            this.sound.playMatch();
+            this.score += 100;
+            this.updateHeaderUI();
+
+            const curActive = this.tiles.filter(t => !t.removed).length;
+            document.getElementById('stat-tiles').textContent = curActive;
+            document.getElementById('stat-moves').textContent = Math.floor(curActive / 2);
+
+            setTimeout(() => {
+              if (t1 && t1.el) t1.el.style.display = 'none';
+              if (t2 && t2.el) t2.el.style.display = 'none';
+            }, 360);
+          }, idx * 170 + 250);
+          this.autoClearTimeouts.push(tId);
+        });
+
+        // 4) 패 제거가 모두 완료된 후 판 깨짐 및 WIN 연출
+        const shatterDelay = pairsToClear.length * 170 + 650;
+        const shatterTimer = setTimeout(() => {
+          if (!this.isAutoClearing) return;
+          if (notice) notice.classList.remove('active');
+          this.triggerBoardShatter();
+        }, shatterDelay);
+        this.autoClearTimeouts.push(shatterTimer);
+      }
+
+      /**
+       * 판이 깨지고 WIN 표시가 터져 나오는 피날레 연출
+       */
+      triggerBoardShatter() {
+        this.sound.playShatter();
+
+        // 1) 화면 지진/흔들림 효과
+        this.viewportEl.classList.remove('shaking');
+        void this.viewportEl.offsetWidth;
+        this.viewportEl.classList.add('shaking');
+        setTimeout(() => this.viewportEl.classList.remove('shaking'), 600);
+
+        // 2) 판(보드) 파편 분할 및 사방 비산 연출
+        const shatterContainer = document.createElement('div');
+        shatterContainer.className = 'board-shatter-container';
+        shatterContainer.id = 'shatter-container';
+        this.viewportEl.appendChild(shatterContainer);
+
+        const boardRect = this.boardEl.getBoundingClientRect();
+        const viewportRect = this.viewportEl.getBoundingClientRect();
+
+        const originLeft = boardRect.left - viewportRect.left;
+        const originTop = boardRect.top - viewportRect.top;
+        const width = boardRect.width;
+        const height = boardRect.height;
+
+        const rows = 4;
+        const cols = 4;
+        const pieceW = width / cols;
+        const pieceH = height / rows;
+
+        const pieces = [];
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const piece = document.createElement('div');
+            piece.className = 'shatter-piece';
+            piece.style.width = `${pieceW}px`;
+            piece.style.height = `${pieceH}px`;
+            piece.style.left = `${originLeft + c * pieceW}px`;
+            piece.style.top = `${originTop + r * pieceH}px`;
+            shatterContainer.appendChild(piece);
+            pieces.push({ el: piece, r, c });
+          }
+        }
+
+        // 보드 본체 페이드아웃 & 폭발
+        this.boardEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        this.boardEl.style.opacity = '0';
+        this.boardEl.style.transform += ' scale(1.08)';
+
+        // 파편 조각들 사방으로 폭발하며 회전 비산
+        requestAnimationFrame(() => {
+          pieces.forEach(({ el, r, c }) => {
+            const angle = Math.atan2(r - rows / 2, c - cols / 2) + (Math.random() - 0.5) * 0.6;
+            const dist = 200 + Math.random() * 240;
+            const dx = Math.cos(angle) * dist;
+            const dy = Math.sin(angle) * dist + 130; // 중력 낙하
+            const rot = (Math.random() - 0.5) * 480;
+            const scale = 0.25 + Math.random() * 0.4;
+
+            el.style.transform = `translate(${dx}px, ${dy}px) rotate(${rot}deg) scale(${scale})`;
+            el.style.opacity = '0';
+          });
+        });
+
+        // 3) 대형 황금 WIN 배너 팝업
+        const oldBanner = document.getElementById('big-win-banner');
+        if (oldBanner) oldBanner.remove();
+
+        const winBanner = document.createElement('div');
+        winBanner.className = 'big-win-banner';
+        winBanner.id = 'big-win-banner';
+        winBanner.innerHTML = '🏆 WIN!';
+        this.viewportEl.appendChild(winBanner);
+
+        // 4) 최종 승리 모달 활성화
+        const winTimer = setTimeout(() => {
+          this.sound.playWin();
+          this.isClear = true;
+          clearInterval(this.timerId);
+
+          document.getElementById('modal-title').textContent = '승리 완료!';
+          document.getElementById('modal-desc').textContent = '멋진 실력으로 보드를 완벽하게 격파했습니다!';
+          document.getElementById('modal-time').textContent = this.formatTime(this.timerSeconds);
+          document.getElementById('modal-score').textContent = this.score;
+          document.getElementById('modal').classList.add('active');
+        }, 950);
+        this.autoClearTimeouts.push(winTimer);
       }
 
       checkWinCondition() {
