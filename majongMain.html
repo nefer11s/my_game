@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>시연 마작 솔리테어 (Si-Yeon Mahjong Solitaire)</title>
   <style>
     :root {
@@ -32,6 +32,7 @@
     body {
       width: 100vw;
       height: 100vh;
+      height: 100dvh;
       overflow: hidden;
       font-family: var(--font-family);
       background: radial-gradient(circle at center 30%, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
@@ -40,6 +41,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
+      touch-action: manipulation;
     }
 
     /* 상단 헤더 UI */
@@ -150,8 +152,8 @@
 
     .game-board {
       position: absolute;
-      width: 800px;
-      height: 590px;
+      width: 730px;
+      height: 545px;
       transform-origin: center center;
       transform-style: preserve-3d;
       transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.3, 1);
@@ -255,18 +257,18 @@
         12px 20px 30px rgba(8, 30, 18, 0.48);
     }
 
-    /* 타일 상단 코너 배지 (숫자/기호) */
+    /* 타일 상단 코너 배지 (숫자/기호) - 가독성 강화 */
     .tile-corner-badge {
       position: absolute;
       top: 3px;
       left: 5px;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 900;
-      color: #617069;
+      color: #3b5046;
       line-height: 1;
       pointer-events: none;
       letter-spacing: -0.2px;
-      text-shadow: 0.5px 0.5px 0 rgba(255, 255, 255, 0.8);
+      text-shadow: 0 0 2px rgba(255, 255, 255, 0.95), 1px 1px 0 rgba(255, 255, 255, 0.9);
       z-index: 2;
     }
 
@@ -274,12 +276,12 @@
       position: absolute;
       bottom: 4px;
       right: 5px;
-      font-size: 10px;
-      font-weight: 800;
-      color: #6d7f76;
+      font-size: 11px;
+      font-weight: 900;
+      color: #4a6356;
       line-height: 1;
       pointer-events: none;
-      text-shadow: 0.5px 0.5px 0 rgba(255, 255, 255, 0.8);
+      text-shadow: 0 0 2px rgba(255, 255, 255, 0.95), 1px 1px 0 rgba(255, 255, 255, 0.9);
       z-index: 2;
     }
 
@@ -290,15 +292,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 6px;
+      padding: 3px 2px 4px;
       pointer-events: none;
       position: relative;
       z-index: 1;
     }
 
     .tile-svg {
-      width: 48px;
-      height: 60px;
+      width: 52px;
+      height: 64px;
       overflow: visible;
       /* 실물 마작패 특유의 음각 파임 효과 (하단 하이라이트 + 내부 음영) */
       filter: drop-shadow(0.7px 0.8px 0px rgba(255, 255, 255, 0.85)) drop-shadow(-0.5px -0.5px 0.5px rgba(0, 0, 0, 0.22));
@@ -522,6 +524,102 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 22px rgba(32, 135, 92, 0.45);
     }
+
+    /* 모바일 반응형 최적화 (보드 영역 극대화 및 터치 조작 최적화) */
+    @media (max-width: 680px) {
+      header {
+        padding: 6px 10px 4px;
+        gap: 6px;
+      }
+
+      .status-bar {
+        padding: 6px 14px;
+        border-radius: 14px;
+      }
+
+      .stat-pill {
+        min-width: 50px;
+      }
+
+      .stat-label {
+        font-size: 10px;
+      }
+
+      .stat-val {
+        font-size: 17px;
+      }
+
+      .controls-bar {
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        height: 35px;
+        padding: 0 9px;
+        font-size: 12px;
+        border-radius: 10px;
+        gap: 4px;
+      }
+
+      .btn-icon {
+        font-size: 14px;
+      }
+
+      footer {
+        padding: 4px 10px 6px;
+        font-size: 11px;
+      }
+
+      .moves-badge {
+        padding: 4px 10px;
+        font-size: 11px;
+      }
+    }
+
+    /* 화면이 가로일 때(Landscape) 모바일 상하 여백 극소화 */
+    @media (max-height: 520px) {
+      header {
+        padding: 3px 8px 2px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 99%;
+        gap: 6px;
+      }
+
+      .status-bar {
+        padding: 3px 10px;
+        border-radius: 12px;
+      }
+
+      .stat-pill {
+        min-width: 44px;
+      }
+
+      .stat-label {
+        font-size: 9px;
+      }
+
+      .stat-val {
+        font-size: 14px;
+      }
+
+      .controls-bar {
+        gap: 4px;
+      }
+
+      .btn {
+        height: 30px;
+        padding: 0 8px;
+        font-size: 11px;
+        border-radius: 8px;
+      }
+
+      footer {
+        display: none; /* 가로 모드 시 보드 높이 최대 확보를 위해 푸터 숨김 */
+      }
+    }
   </style>
 </head>
 
@@ -545,6 +643,9 @@
     </div>
 
     <div class="controls-bar">
+      <button class="btn" id="btn-fullscreen" title="전체화면 모드">
+        <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
+      </button>
       <button class="btn" id="btn-undo" title="되돌리기">
         <span class="btn-icon">↩</span> 되돌리기
       </button>
@@ -997,7 +1098,13 @@
 
       bindEvents() {
         window.addEventListener('resize', () => this.handleResize());
+        window.addEventListener('orientationchange', () => {
+          setTimeout(() => this.handleResize(), 150);
+        });
+        document.addEventListener('fullscreenchange', () => this.updateFullscreenUI());
+        document.addEventListener('webkitfullscreenchange', () => this.updateFullscreenUI());
 
+        document.getElementById('btn-fullscreen').addEventListener('click', () => this.toggleFullscreen());
         document.getElementById('btn-undo').addEventListener('click', () => this.undo());
         document.getElementById('btn-hint').addEventListener('click', () => this.showHint());
         document.getElementById('btn-shuffle').addEventListener('click', () => this.shuffleRemain());
@@ -1165,8 +1272,8 @@
           el.dataset.layer = tile.z;
 
           // 그리드 간격 (가로: 35px, 세로: 43px)
-          const posX = tile.x * 35 + 30;
-          const posY = tile.y * 43 + 20;
+          const posX = tile.x * 35 + 16;
+          const posY = tile.y * 43 + 12;
 
           // 층(z: 0, 1, 2)별 상단-좌측 시차 오프셋 (아이소메트릭 단차감 강조)
           const zStep = 6;
@@ -1397,19 +1504,72 @@
         return `${m}:${s}`;
       }
 
+      toggleFullscreen() {
+        const doc = document;
+        const docEl = document.documentElement;
+        const isFull = !!(doc.fullscreenElement || doc.webkitFullscreenElement);
+
+        if (!isFull) {
+          if (docEl.requestFullscreen) {
+            docEl.requestFullscreen().catch(() => {});
+          } else if (docEl.webkitRequestFullscreen) {
+            docEl.webkitRequestFullscreen();
+          }
+        } else {
+          if (doc.exitFullscreen) {
+            doc.exitFullscreen().catch(() => {});
+          } else if (doc.webkitExitFullscreen) {
+            doc.webkitExitFullscreen();
+          }
+        }
+      }
+
+      updateFullscreenUI() {
+        const isFull = !!(document.fullscreenElement || document.webkitFullscreenElement);
+        const btnFsText = document.getElementById('btn-fs-text');
+        const btnFs = document.getElementById('btn-fullscreen');
+        if (btnFsText) {
+          btnFsText.textContent = isFull ? '창모드' : '전체화면';
+        }
+        if (btnFs) {
+          const icon = btnFs.querySelector('.btn-icon');
+          if (icon) icon.textContent = isFull ? '🗗' : '⛶';
+        }
+        setTimeout(() => this.handleResize(), 100);
+      }
+
       handleResize() {
         if (!this.viewportEl || !this.boardEl) return;
         const vw = this.viewportEl.clientWidth;
         const vh = this.viewportEl.clientHeight;
 
-        const boardW = 780;
-        const boardH = 590;
+        const boardW = 730;
+        const boardH = 545;
 
-        const scaleX = (vw - 32) / boardW;
-        const scaleY = (vh - 32) / boardH;
-        const scale = Math.min(1.15, Math.min(scaleX, scaleY));
+        const isMobile = vw < 680;
+        const isPortrait = vw < vh;
 
-        this.boardEl.style.transform = `rotateX(13deg) scale(${Math.max(0.45, scale)})`;
+        // 모바일/태블릿 여백 축소로 보드 표시 영역 극대화
+        const marginX = isMobile ? 8 : (vw < 960 ? 16 : 28);
+        const marginY = isMobile ? (vh < 600 ? 6 : 14) : 24;
+
+        const scaleX = (vw - marginX) / boardW;
+        const scaleY = (vh - marginY) / boardH;
+
+        // 기본 비율 맞춤
+        let scale = Math.min(scaleX, scaleY);
+
+        // 모바일 세로 모드(portrait)일 때 가로폭을 채우도록 스케일 보정
+        if (isMobile && isPortrait) {
+          scale = Math.min(scaleX * 0.99, scaleY);
+        }
+
+        // 최대 1.35배 확대, 최소 0.48 보장
+        scale = Math.min(1.35, Math.max(0.48, scale));
+
+        // 3D 틸트: 세로모드에서는 왜곡과 축소를 방지하기 위해 7도로 완화
+        const tiltX = (isMobile && isPortrait) ? 7 : 12;
+        this.boardEl.style.transform = `rotateX(${tiltX}deg) scale(${scale.toFixed(3)})`;
       }
     }
 
