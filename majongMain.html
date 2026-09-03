@@ -644,7 +644,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 2000;
+      z-index: 10000;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s ease;
@@ -2750,8 +2750,8 @@
         document.getElementById('btn-shuffle').disabled = false;
         document.getElementById('btn-hint').disabled = false;
 
-        this.updateHeaderUI();
         this.buildSolvableBoard();
+        this.updateHeaderUI();
         this.renderBoard();
         this.handleResize();
 
@@ -3654,14 +3654,13 @@
 
         let scale;
         if (isMobile && isPortrait) {
-          // 모바일 세로 모드: 가로폭을 96% 밀착 채우면서 상하 여백도 균형 맞춤
+          // 모바일 세로 모드: 가로폭 및 세로 여백을 화면 안에 100% 안전하게 피팅 (양옆 타일 클리핑 방지)
           scale = Math.min(scaleX * 0.98, scaleY);
-          // 최소 스케일을 높여서 모바일에서도 타일이 큼직하게 유지됨
-          scale = Math.min(1.45, Math.max(0.65, scale));
+          scale = Math.min(1.45, Math.max(0.42, scale));
         } else {
           // 데스크톱 및 가로 모드
           scale = Math.min(scaleX, scaleY);
-          scale = Math.min(1.35, Math.max(0.52, scale));
+          scale = Math.min(1.35, Math.max(0.45, scale));
         }
 
         // 3D 틸트 각도: 모바일에서는 시야각 왜곡을 방지하기 위해 5도로 완화
