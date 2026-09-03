@@ -1356,7 +1356,7 @@
       <button class="btn" id="btn-shuffle" title="패 섞기">
         <span class="btn-icon">🔀</span> 셔플
       </button>
-      <button class="btn" id="btn-restart" title="새 게임">
+      <button class="btn" id="btn-restart" title="현재 판 다시 시작">
         <span class="btn-icon">🔄</span> 다시 시작
       </button>
     </div>
@@ -2384,6 +2384,9 @@
         this.sound = new SoundFX();
 
         this.tiles = [];
+        this.initialTiles = [];
+        this.stageStartScore = 0;
+        this.initialLives = 3;
         this.selectedTile = null;
         this.undoStack = [];
         this.score = 0;
@@ -2529,9 +2532,8 @@
         if (goRestartBtn) {
           goRestartBtn.addEventListener('click', () => {
             if (gameoverModal) gameoverModal.classList.remove('active');
-            this.currentStage = 1;
             this.hasStarted = true;
-            this.startNewGame();
+            this.restartCurrentGame();
           });
         }
 
@@ -2548,9 +2550,8 @@
         document.getElementById('btn-hint').addEventListener('click', () => this.showHint());
         document.getElementById('btn-shuffle').addEventListener('click', () => this.shuffleRemain());
         document.getElementById('btn-restart').addEventListener('click', () => {
-          this.currentStage = 1;
           this.hasStarted = true;
-          this.startNewGame();
+          this.restartCurrentGame();
         });
 
         // 모달에서 '다음 판 시작' 클릭 시 무한정 다음 판으로 계속 진행
@@ -2558,7 +2559,7 @@
           document.getElementById('modal').classList.remove('active');
           this.currentStage++;
           this.hasStarted = true;
-          this.startNewGame();
+          this.startNewGame(true);
         });
       }
 
@@ -2700,12 +2701,15 @@
         }
       }
 
-      startNewGame() {
+      startNewGame(keepScore = false) {
         this.sound.init();
         clearInterval(this.timerId);
         this.timerSeconds = 0;
         document.getElementById('stat-time').textContent = '00:00';
-        this.score = 0;
+        if (!keepScore) {
+          this.score = 0;
+        }
+        this.stageStartScore = this.score;
         this.undoStack = [];
         this.selectedTile = null;
         this.isClear = false;
@@ -2716,6 +2720,7 @@
         // 목숨 3~5개 랜덤 설정
         this.maxLives = Math.floor(Math.random() * 3) + 3;
         this.lives = this.maxLives;
+        this.initialLives = this.lives;
         this.updateLivesUI();
 
         const goModal = document.getElementById('gameover-modal');
@@ -2751,11 +2756,82 @@
         document.getElementById('btn-hint').disabled = false;
 
         this.buildSolvableBoard();
+        this.initialTiles = JSON.parse(JSON.stringify(this.tiles));
         this.updateHeaderUI();
         this.renderBoard();
         this.handleResize();
 
         // 사용자가 스플래시에서 게임 시작을 누른 이후에만 타이머 진행
+        if (this.hasStarted) {
+          this.startTimer();
+        }
+      }
+
+      /**
+       * 해당 판을 처음부터 다시 시작 (레이아웃, 초기 패 배치, 현재 스테이지 번호 유지)
+       */
+      restartCurrentGame() {
+        this.sound.init();
+        clearInterval(this.timerId);
+        this.timerSeconds = 0;
+        document.getElementById('stat-time').textContent = '00:00';
+        this.score = this.stageStartScore || 0;
+        this.undoStack = [];
+        this.selectedTile = null;
+        this.isClear = false;
+        this.isAutoClearing = false;
+        this.isGameOver = false;
+        this.blindMismatchCount = 0;
+        this.lastFlippedBlindTile = null;
+
+        // 목숨을 해당 판 시작 시점으로 복원
+        this.lives = this.initialLives || this.maxLives;
+        this.updateLivesUI();
+
+        const goModal = document.getElementById('gameover-modal');
+        if (goModal) goModal.classList.remove('active');
+
+        if (this.autoClearTimeouts) {
+          this.autoClearTimeouts.forEach(t => clearTimeout(t));
+        }
+        this.autoClearTimeouts = [];
+
+        if (this.dealAnimationTimeouts) {
+          this.dealAnimationTimeouts.forEach(t => clearTimeout(t));
+        }
+        this.dealAnimationTimeouts = [];
+        this.isDealing = false;
+
+        // 화면 효과 및 파편/배너 초기화
+        this.viewportEl.classList.remove('shaking');
+        const oldNotice = document.getElementById('finale-notice');
+        if (oldNotice) oldNotice.remove();
+        const oldShatter = document.getElementById('shatter-container');
+        if (oldShatter) oldShatter.remove();
+        const oldBanner = document.getElementById('big-win-banner');
+        if (oldBanner) oldBanner.remove();
+
+        this.boardEl.style.opacity = '1';
+        this.boardEl.style.display = 'block';
+        this.boardEl.style.filter = '';
+        this.boardEl.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.8, 0.3, 1)';
+
+        document.getElementById('btn-undo').disabled = true;
+        document.getElementById('btn-shuffle').disabled = false;
+        document.getElementById('btn-hint').disabled = false;
+
+        // 해당 판의 초기 타일 배치 복원
+        if (this.initialTiles && this.initialTiles.length > 0) {
+          this.tiles = JSON.parse(JSON.stringify(this.initialTiles));
+        } else {
+          this.buildSolvableBoard();
+          this.initialTiles = JSON.parse(JSON.stringify(this.tiles));
+        }
+
+        this.updateHeaderUI();
+        this.renderBoard();
+        this.handleResize();
+
         if (this.hasStarted) {
           this.startTimer();
         }
