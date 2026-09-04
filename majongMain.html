@@ -1896,7 +1896,7 @@
           </button>
           <div class="settings-divider"></div>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.12
+            Si-Yeon Mahjong Solitaire v1.4.13
           </div>
         </div>
       </div>
@@ -1928,7 +1928,7 @@
     <div class="splash-card">
       <div class="splash-img-wrap">
         <img src="assets/mahjong_splash.jpg" alt="시연 그림맞추기" class="splash-hero-img">
-        <div class="splash-version-badge">v1.4.12</div>
+        <div class="splash-version-badge">v1.4.13</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연 그림맞추기</h1>
@@ -2223,6 +2223,41 @@
         });
       }
 
+      // 화려한 축하 폭죽 파열음 (묵직한 펑 + 경쾌한 스파크)
+      playFirework() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+
+        // 1) 묵직한 펑! 발사 및 파열 저음
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(260, now);
+        osc.frequency.exponentialRampToValueAtTime(32, now + 0.26);
+        gain.gain.setValueAtTime(0.32, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.28);
+
+        // 2) 팡팡 터지는 고주파 스파크 파열음
+        for (let i = 0; i < 4; i++) {
+          const sOsc = this.ctx.createOscillator();
+          const sGain = this.ctx.createGain();
+          const t = now + 0.04 + i * 0.04;
+          sOsc.type = 'sine';
+          sOsc.frequency.setValueAtTime(1400 + Math.random() * 1800, t);
+          sGain.gain.setValueAtTime(0.16, t);
+          sGain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+          sOsc.connect(sGain);
+          sGain.connect(this.ctx.destination);
+          sOsc.start(t);
+          sOsc.stop(t + 0.14);
+        }
+      }
+
       // 판 파괴 및 유리/도자기 깨짐 효과음
       playShatter() {
         this.init();
@@ -2298,6 +2333,153 @@
           osc.start(t);
           osc.stop(t + 0.55);
         });
+      }
+    }
+
+    /**
+     * 화려한 2D 캔버스 불꽃놀이 & 축하 폭죽 엔진 (Fireworks & Confetti Cannon)
+     */
+    class FireworksEffect {
+      constructor(sound) {
+        this.sound = sound;
+        this.canvas = null;
+        this.ctx = null;
+        this.particles = [];
+        this.isRunning = false;
+        this.animId = null;
+        this.autoLaunchTimer = null;
+        this.colors = [
+          '#ffd700', '#ff4757', '#2ea779', '#1e90ff', 
+          '#ff6b81', '#7bed9f', '#eccc68', '#a55eea', '#ffa502'
+        ];
+        this.initCanvas();
+      }
+
+      initCanvas() {
+        let canvas = document.getElementById('fireworks-canvas');
+        if (!canvas) {
+          canvas = document.createElement('canvas');
+          canvas.id = 'fireworks-canvas';
+          canvas.style.cssText = `
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1050;
+            display: none;
+          `;
+          document.body.appendChild(canvas);
+        }
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.resize();
+        window.addEventListener('resize', () => this.resize());
+      }
+
+      resize() {
+        if (!this.canvas) return;
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+      }
+
+      start() {
+        if (this.isRunning) return;
+        this.isRunning = true;
+        this.resize();
+        this.canvas.style.display = 'block';
+        this.particles = [];
+
+        // 시작하자마자 화려하게 좌/중/우 3연발 동시 폭죽 발사!
+        const w = this.canvas.width;
+        const h = this.canvas.height;
+        this.burst(w * 0.5, h * 0.32, 80);
+        setTimeout(() => this.burst(w * 0.25, h * 0.38, 70), 220);
+        setTimeout(() => this.burst(w * 0.75, h * 0.38, 70), 420);
+
+        // 0.45초 간격으로 무작위 위치에서 지속 폭죽 발사
+        this.autoLaunchTimer = setInterval(() => {
+          if (!this.isRunning) return;
+          const targetX = w * (0.15 + Math.random() * 0.7);
+          const targetY = h * (0.15 + Math.random() * 0.4);
+          this.burst(targetX, targetY, 50 + Math.floor(Math.random() * 30));
+        }, 450);
+
+        this.loop();
+      }
+
+      burst(x, y, count = 60) {
+        if (this.sound && this.sound.playFirework) {
+          this.sound.playFirework();
+        }
+        const baseColor = this.colors[Math.floor(Math.random() * this.colors.length)];
+        for (let i = 0; i < count; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 2.5 + Math.random() * 8.5;
+          const color = Math.random() < 0.35 
+            ? '#ffffff' 
+            : (Math.random() < 0.6 ? baseColor : this.colors[Math.floor(Math.random() * this.colors.length)]);
+
+          this.particles.push({
+            x: x,
+            y: y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            size: 2.2 + Math.random() * 3.2,
+            alpha: 1.0,
+            decay: 0.012 + Math.random() * 0.016,
+            color: color,
+            gravity: 0.14,
+            friction: 0.965,
+            twinkle: Math.random() > 0.5
+          });
+        }
+      }
+
+      loop() {
+        if (!this.isRunning) return;
+
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // 파티클 렌더링 및 물리 연산
+        for (let i = this.particles.length - 1; i >= 0; i--) {
+          const p = this.particles[i];
+          p.vx *= p.friction;
+          p.vy *= p.friction;
+          p.vy += p.gravity;
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha -= p.decay;
+
+          if (p.alpha <= 0) {
+            this.particles.splice(i, 1);
+            continue;
+          }
+
+          this.ctx.save();
+          this.ctx.globalAlpha = p.twinkle ? (p.alpha * (0.6 + Math.random() * 0.4)) : p.alpha;
+          this.ctx.fillStyle = p.color;
+          this.ctx.shadowBlur = 8;
+          this.ctx.shadowColor = p.color;
+
+          this.ctx.beginPath();
+          this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          this.ctx.fill();
+          this.ctx.restore();
+        }
+
+        this.animId = requestAnimationFrame(() => this.loop());
+      }
+
+      stop() {
+        this.isRunning = false;
+        if (this.autoLaunchTimer) clearInterval(this.autoLaunchTimer);
+        if (this.animId) cancelAnimationFrame(this.animId);
+        if (this.ctx && this.canvas) {
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+          this.canvas.style.display = 'none';
+        }
+        this.particles = [];
       }
     }
 
@@ -2942,6 +3124,7 @@
         this.boardEl = document.getElementById('board');
         this.viewportEl = document.getElementById('viewport');
         this.sound = new SoundFX();
+        this.fireworks = new FireworksEffect(this.sound);
 
         this.tiles = [];
         this.initialTiles = [];
@@ -3218,6 +3401,7 @@
 
         // 모달에서 '다음 판 시작' 클릭 시 무한정 다음 판으로 계속 진행
         document.getElementById('modal-confirm-btn').addEventListener('click', () => {
+          if (this.fireworks) this.fireworks.stop();
           document.getElementById('modal').classList.remove('active');
           this.currentStage++;
           this.hasStarted = true;
@@ -3406,7 +3590,8 @@
         this.dealAnimationTimeouts = [];
         this.isDealing = false;
 
-        // 화면 효과 및 파편/배너 초기화
+        // 화면 효과 및 파편/배너/폭죽 초기화
+        if (this.fireworks) this.fireworks.stop();
         this.viewportEl.classList.remove('shaking');
         const oldNotice = document.getElementById('finale-notice');
         if (oldNotice) oldNotice.remove();
@@ -3500,7 +3685,8 @@
         this.dealAnimationTimeouts = [];
         this.isDealing = false;
 
-        // 화면 효과 및 파편/배너 초기화
+        // 화면 효과 및 파편/배너/폭죽 초기화
+        if (this.fireworks) this.fireworks.stop();
         this.viewportEl.classList.remove('shaking');
         const oldNotice = document.getElementById('finale-notice');
         if (oldNotice) oldNotice.remove();
@@ -4799,6 +4985,11 @@
         this.isClear = true;
         clearInterval(this.timerId);
         this.sound.playWin();
+
+        // 화려한 불꽃놀이 폭죽 연출 발동
+        if (this.fireworks) {
+          this.fireworks.start();
+        }
 
         const oldBanner = document.getElementById('big-win-banner');
         if (oldBanner) oldBanner.remove();
