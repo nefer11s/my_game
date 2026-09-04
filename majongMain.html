@@ -42,6 +42,7 @@
       align-items: center;
       justify-content: space-between;
       touch-action: manipulation;
+      overscroll-behavior: none;
       padding: 6px 12px 6px;
     }
 
@@ -385,6 +386,7 @@
       perspective: 1100px;
       perspective-origin: 50% 38%;
       touch-action: none;
+      overscroll-behavior: none;
       user-select: none;
       -webkit-user-select: none;
       cursor: grab;
@@ -413,7 +415,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      touch-action: none;
+      touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
       -webkit-user-select: none;
@@ -674,20 +676,22 @@
       cursor: pointer;
     }
 
-    .tile.free:hover {
-      transform: translate3d(var(--tx), calc(var(--ty) - 8px), calc(var(--tz) + 20px)) !important;
-      box-shadow:
-        inset 1px 1px 1.5px rgba(255, 255, 255, 1),
-        1px 1px 0 #f2ece0,
-        2px 2px 0 #e4dbca,
-        3px 3px 0 #d4c8b2,
-        4px 4px 0 #34a374,
-        5px 5px 0 #288b61,
-        6px 6px 0 #1f724e,
-        7px 7px 0 #17593c,
-        8px 8px 0 #10412b,
-        4px 8px 12px rgba(0, 0, 0, 0.2),
-        10px 22px 28px rgba(35, 120, 80, 0.38);
+    @media (hover: hover) {
+      .tile.free:hover {
+        transform: translate3d(var(--tx), calc(var(--ty) - 8px), calc(var(--tz) + 20px)) !important;
+        box-shadow:
+          inset 1px 1px 1.5px rgba(255, 255, 255, 1),
+          1px 1px 0 #f2ece0,
+          2px 2px 0 #e4dbca,
+          3px 3px 0 #d4c8b2,
+          4px 4px 0 #34a374,
+          5px 5px 0 #288b61,
+          6px 6px 0 #1f724e,
+          7px 7px 0 #17593c,
+          8px 8px 0 #10412b,
+          4px 8px 12px rgba(0, 0, 0, 0.2),
+          10px 22px 28px rgba(35, 120, 80, 0.38);
+      }
     }
 
     /* 잠긴 타일: 100% 완전 불투명(비침 방지) + 상위 패 그늘에 가려진 은은한 앰비언트 쉐이딩 */
@@ -3744,33 +3748,28 @@
             </div>
           `;
 
-          // 고반응 터치/포인터 이벤트 리스너
-          let startX = 0, startY = 0, pointerValid = false;
+          // 고반응 터치 및 클릭 이벤트 리스너
+          let touchStartX = 0, touchStartY = 0;
 
-          el.addEventListener('pointerdown', (e) => {
-            if (e.pointerType === 'mouse' && e.button !== 0) return;
-            startX = e.clientX;
-            startY = e.clientY;
-            pointerValid = true;
-          });
-
-          el.addEventListener('pointerup', (e) => {
-            if (!pointerValid) return;
-            pointerValid = false;
-            if (this.isPanning) return; // 두 손가락 핀치 줌 제스처 중에만 클릭 무시
-            const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
-            if (dist < 32) {
-              e.stopPropagation();
-              this.handleTileClick(tile);
+          el.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+              touchStartX = e.touches[0].clientX;
+              touchStartY = e.touches[0].clientY;
             }
-          });
+          }, { passive: true });
 
-          el.addEventListener('pointercancel', () => {
-            pointerValid = false;
-          });
+          el.addEventListener('touchend', (e) => {
+            if (e.changedTouches.length === 1) {
+              const dx = e.changedTouches[0].clientX - touchStartX;
+              const dy = e.changedTouches[0].clientY - touchStartY;
+              const dist = Math.hypot(dx, dy);
+              if (dist < 45) {
+                this.handleTileClick(tile);
+              }
+            }
+          }, { passive: true });
 
           el.addEventListener('click', (e) => {
-            if (this.isPanning) return;
             e.stopPropagation();
             this.handleTileClick(tile);
           });
@@ -3882,7 +3881,10 @@
        * 타일 클릭: 보드에서 빈 슬롯(트레이)으로 이동
        */
       handleTileClick(tile) {
-        if (this.isGameOver || this.isAutoClearing || this.isDealing || tile.removed || this.isPanning) {
+        if (this.isGameOver || this.isAutoClearing || this.isDealing || tile.removed) {
+          return;
+        }
+        if (this.gestureCooldownUntil && Date.now() < this.gestureCooldownUntil) {
           return;
         }
 
@@ -4642,98 +4644,67 @@
       }
 
       /**
-       * 뷰포트 터치 제스처 (핀치 줌, 빈 바탕 드래그 팬, 마우스 휠 줌) 시스템
-       * 타일 터치는 순수 타일 클릭으로 격리하여 터치 시 화면 커짐/씹힘 원천 방지
+       * 뷰포트 터치 제스처: 오직 두 손가락(2-finger) 핀치 줌인/줌아웃 및 이동만 지원
+       * 한 손가락 터치는 100% 타일 선택/조작 전용으로 격리
        */
       initViewportGestures() {
         if (!this.viewportEl) return;
 
-        const activePointers = new Map();
-        let lastPinchDist = 0;
-        let lastCenter = { x: 0, y: 0 };
-        let dragStartX = 0;
-        let dragStartY = 0;
-        let initialPanX = 0;
-        let initialPanY = 0;
-        let totalDragDistance = 0;
+        let initialDist = 0;
+        let initialZoom = 1.0;
+        let initialCenter = { x: 0, y: 0 };
+        let initialPan = { x: 0, y: 0 };
 
         // 브라우저 기본 더블클릭 줌 방지
         this.viewportEl.addEventListener('dblclick', (e) => e.preventDefault());
 
-        const onPointerDown = (e) => {
-          // 모달, 배너 등 클릭 시 제스처 제외
-          if (e.target.closest('.big-win-banner') || e.target.closest('.modal-card')) {
-            return;
-          }
-
-          activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-
-          // 오직 두 손가락 이상일 때만 핀치 줌/이동 활성화 (한 손가락은 100% 타일 클릭 전용)
-          if (activePointers.size === 2) {
-            try {
-              this.viewportEl.setPointerCapture(e.pointerId);
-            } catch (err) {}
-            const pts = Array.from(activePointers.values());
-            lastPinchDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
-            lastCenter = {
-              x: (pts[0].x + pts[1].x) / 2,
-              y: (pts[0].y + pts[1].y) / 2
+        // 오직 두 손가락(2-finger)일 때만 동작하는 터치 핀치 줌 & 팬
+        this.viewportEl.addEventListener('touchstart', (e) => {
+          if (e.touches.length === 2) {
+            const t1 = e.touches[0];
+            const t2 = e.touches[1];
+            initialDist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
+            initialZoom = this.zoomLevel;
+            initialCenter = {
+              x: (t1.clientX + t2.clientX) / 2,
+              y: (t1.clientY + t2.clientY) / 2
             };
-            this.isPanning = true;
+            initialPan = { x: this.panX, y: this.panY };
+          } else {
+            initialDist = 0;
           }
-        };
+        }, { passive: true });
 
-        const onPointerMove = (e) => {
-          if (!activePointers.has(e.pointerId)) return;
-          const ptr = activePointers.get(e.pointerId);
-          ptr.x = e.clientX;
-          ptr.y = e.clientY;
-
-          // 오직 두 손가락(2-finger)일 때만 줌인/줌아웃 및 이동 실행 (한 손가락은 절대 반응하지 않음!)
-          if (activePointers.size === 2) {
-            const pts = Array.from(activePointers.values());
-            const currentDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+        this.viewportEl.addEventListener('touchmove', (e) => {
+          if (e.touches.length === 2 && initialDist > 0) {
+            const t1 = e.touches[0];
+            const t2 = e.touches[1];
+            const currentDist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
             const currentCenter = {
-              x: (pts[0].x + pts[1].x) / 2,
-              y: (pts[0].y + pts[1].y) / 2
+              x: (t1.clientX + t2.clientX) / 2,
+              y: (t1.clientY + t2.clientY) / 2
             };
 
-            if (lastPinchDist > 0 && currentDist > 0) {
-              const zoomFactor = currentDist / lastPinchDist;
-              this.zoomLevel = Math.min(3.2, Math.max(0.7, this.zoomLevel * zoomFactor));
+            const scaleChange = currentDist / initialDist;
+            this.zoomLevel = Math.min(3.2, Math.max(0.7, initialZoom * scaleChange));
 
-              // 두 손가락 중심점 이동도 팬에 반영
-              this.panX += currentCenter.x - lastCenter.x;
-              this.panY += currentCenter.y - lastCenter.y;
+            this.panX = initialPan.x + (currentCenter.x - initialCenter.x);
+            this.panY = initialPan.y + (currentCenter.y - initialCenter.y);
 
-              this.applyBoardTransform(false);
-            }
-
-            lastPinchDist = currentDist;
-            lastCenter = currentCenter;
+            this.applyBoardTransform(false);
+            if (e.cancelable) e.preventDefault();
           }
+        }, { passive: false });
+
+        const endTouch = () => {
+          if (initialDist > 0) {
+            this.gestureCooldownUntil = Date.now() + 200;
+          }
+          initialDist = 0;
         };
 
-        const onPointerUp = (e) => {
-          if (activePointers.has(e.pointerId)) {
-            try {
-              this.viewportEl.releasePointerCapture(e.pointerId);
-            } catch (err) {}
-            activePointers.delete(e.pointerId);
-          }
-
-          if (activePointers.size < 2) {
-            lastPinchDist = 0;
-            setTimeout(() => {
-              this.isPanning = false;
-            }, 60);
-          }
-        };
-
-        this.viewportEl.addEventListener('pointerdown', onPointerDown);
-        this.viewportEl.addEventListener('pointermove', onPointerMove);
-        this.viewportEl.addEventListener('pointerup', onPointerUp);
-        this.viewportEl.addEventListener('pointercancel', onPointerUp);
+        this.viewportEl.addEventListener('touchend', endTouch, { passive: true });
+        this.viewportEl.addEventListener('touchcancel', endTouch, { passive: true });
 
         // 데스크톱 마우스 휠 줌
         this.viewportEl.addEventListener('wheel', (e) => {
