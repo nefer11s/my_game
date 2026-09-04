@@ -1662,7 +1662,7 @@
           <div class="rule-num">4</div>
           <div class="rule-text">
             <strong>블라인드 패 시스템</strong>
-            <p>난이도에 따라 상단 패들이 뒤집혀 있습니다. 터치하여 슬롯으로 가져오면 앞면이 공개되며 보너스 점수(+150점)를 얻습니다.</p>
+            <p>난이도에 따라 상단 패들이 뒤집혀 있습니다. <strong>1회 터치 시 보드에서 뒤집혀 앞면이 공개</strong>되며, <strong>2회 터치 시 슬롯으로 이동</strong>합니다. (블라인드 패 매칭 시 보너스 +150점)</p>
           </div>
         </div>
         <div class="rule-item">
@@ -3430,6 +3430,19 @@
 
         this.clearHints();
 
+        // 1) 뒤집힌 타일인 경우: 1회 클릭 시 먼저 보드에서 뒤집혀 앞면 공개 후 대기
+        if (tile.isCovered && !tile.isRevealed) {
+          this.sound.playFlip();
+          tile.isRevealed = true;
+          if (tile.el) {
+            tile.el.classList.add('revealed');
+            tile.el.classList.remove('face-down');
+          }
+          this.updateTileStates();
+          return;
+        }
+
+        // 2) 두 번째 클릭 (또는 원래 앞면인 일반 타일): 슬롯(트레이)으로 이동
         // 슬롯 수용 가능 여부 체크
         // 만약 슬롯이 꽉 찼더라도, 슬롯 내에 같은 종류의 패가 있어서 들어가자마자 매치될 수 있다면 수용 가능!
         const willMatchImmediately = this.trayTiles.some(t => t.def.id === tile.def.id);
@@ -3447,8 +3460,6 @@
 
         // 블라인드 패였는지 기록
         const wasCovered = tile.isCovered;
-        tile.isCovered = false;
-        tile.isRevealed = true;
 
         // 보드에서 패 숨김 및 제거 플래그 (아래에 가려진 패들이 즉시 열림!)
         tile.removed = true;
