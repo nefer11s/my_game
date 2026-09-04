@@ -3415,8 +3415,8 @@
         if (!tile || !tile.isCovered || !tile.isRevealed) return;
         tile.isRevealed = false;
         if (tile.el) {
-          tile.el.classList.remove('revealed');
-          tile.el.classList.remove('selected');
+          tile.el.classList.add('face-down');
+          tile.el.classList.remove('revealed', 'selected');
         }
       }
 
@@ -3432,11 +3432,17 @@
 
         // 1) 뒤집힌 타일인 경우: 1회 클릭 시 먼저 보드에서 뒤집혀 앞면 공개 후 대기
         if (tile.isCovered && !tile.isRevealed) {
+          // 이미 앞면이 공개되어 있던 다른 뒤집힌 패들은 모두 다시 뒷면으로 뒤집음
+          this.tiles.forEach(t => {
+            if (t !== tile && t.isCovered && t.isRevealed && !t.removed) {
+              this.flipTileBack(t);
+            }
+          });
+
           this.sound.playFlip();
           tile.isRevealed = true;
           if (tile.el) {
-            tile.el.classList.add('revealed');
-            tile.el.classList.remove('face-down');
+            tile.el.classList.add('face-down', 'revealed');
           }
           this.updateTileStates();
           return;
@@ -3465,7 +3471,7 @@
         tile.removed = true;
         if (tile.el) {
           tile.el.style.display = 'none';
-          tile.el.classList.remove('selected', 'face-down');
+          tile.el.classList.remove('selected', 'face-down', 'revealed');
         }
 
         // 보드 상태 즉시 갱신 (자유 패 및 가능한 수 재계산)
