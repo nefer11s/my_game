@@ -532,6 +532,17 @@
       animation: hintPulse 1.1s infinite alternate ease-in-out;
     }
 
+    .tray-tile.hinted {
+      box-shadow: 0 0 16px 4px var(--accent-gold) !important;
+      border: 2px solid var(--accent-gold) !important;
+      animation: trayHintPulse 1.1s infinite alternate ease-in-out;
+    }
+
+    @keyframes trayHintPulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.08); }
+    }
+
     @keyframes hintPulse {
       0% {
         box-shadow: 0 0 0 2px var(--accent-gold), 4px 6px 14px rgba(15, 45, 30, 0.3);
@@ -1576,7 +1587,7 @@
   <!-- 하단 상태 바 -->
   <footer>
     <div class="moves-badge">
-      <span>가능한 조합:</span>
+      <span>즉시 매치 가능:</span>
       <strong id="stat-moves">0</strong>
     </div>
     <div style="font-size:12px; opacity:0.8;">Si-Yeon Mahjong Solitaire</div>
@@ -3382,6 +3393,35 @@
         this.updateTileStates();
       }
 
+      /**
+       * 진정한 교착 상태(더 이상 진행할 수 없는 상태) 판정
+       * - 슬롯에 빈자리가 있다면, 플레이어가 자유 패를 슬롯에 담아 아래층 패를 열 수 있으므로 절대 교착이 아님!
+       * - 슬롯이 꽉 찼을 때 보드의 자유 패 중 슬롯의 패와 즉시 매치되는 패가 0개이거나, 보드에 자유 패가 0개일 때만 교착.
+       */
+      isDeadlocked() {
+        if (this.isClear || this.isGameOver || this.isDealing || this.isAutoClearing) return false;
+        const activeTiles = this.tiles.filter(t => !t.removed);
+        if (activeTiles.length === 0) return false;
+
+        const freeTiles = activeTiles.filter(t => this.isTileFree(t));
+
+        // 1) 보드에 남은 패가 있는데 자유 패가 1개도 없는 비정상 고립 상태
+        if (freeTiles.length === 0) return true;
+
+        // 2) 슬롯에 빈자리가 남아있는 경우:
+        //    플레이어가 자유 패를 슬롯에 담아 아래 패를 열 수 있으므로 절대 교착이 아님!
+        if (this.trayTiles.length < this.maxSlots) return false;
+
+        // 3) 슬롯이 가득 찬 경우 (trayTiles.length >= maxSlots):
+        //    보드의 자유 패 중 슬롯의 패와 일치하여 즉시 매치 가능한 패가 1개라도 있는지 검사
+        const hasMatchingMove = freeTiles.some(ft =>
+          this.trayTiles.some(trayItem => trayItem.def.id === ft.def.id)
+        );
+
+        // 즉시 매치 가능한 패조차 없다면 더 이상 패를 슬롯에 넣을 수 없으므로 교착 상태!
+        return !hasMatchingMove;
+      }
+
       updateTileStates() {
         const activeTiles = this.tiles.filter(t => !t.removed);
 
@@ -3399,12 +3439,16 @@
         document.getElementById('stat-tiles').textContent = activeTiles.length;
         document.getElementById('btn-undo').disabled = this.undoStack.length === 0;
 
-        if (availablePairs.length === 0 && activeTiles.length > 0) {
+        // 슬롯이 비어있거나 여유가 있을 때는 절대로 팝업이 뜨지 않으며,
+        // 슬롯이 꽉 차서 더 이상 둘 수 있는 수가 없는 진정한 교착 상태일 때만 셔플 확인
+        if (this.isDeadlocked()) {
           setTimeout(() => {
-            if (!this.isClear && confirm("더 이상 맞출 수 있는 패가 없습니다!\n패를 섞으시겠습니까? (하트 1개 소진)")) {
-              this.shuffleRemain();
+            if (this.isDeadlocked() && !this.isClear && !this.isGameOver) {
+              if (confirm("더 이상 진행할 수 있는 수가 없습니다!\n(슬롯 가득 참 / 이동 가능한 패 없음)\n패를 섞으시겠습니까? (하트 1개 소진)")) {
+                this.shuffleRemain();
+              }
             }
-          }, 300);
+          }, 350);
         }
       }
 
@@ -3661,14 +3705,41 @@
         if (this.isAutoClearing) return;
         this.clearHints();
         const pairs = this.getAvailablePairs();
+
         if (pairs.length > 0) {
           this.sound.playSelect();
           const [t1, t2] = pairs[0];
-          if (t1.el && !t1.removed) t1.el.classList.add('hinted');
-          if (t2.el && !t2.removed) t2.el.classList.add('hinted');
+          if (t1 && t1.el && !t1.removed) t1.el.classList.add('hinted');
+          if (t2 && t2.el && !t2.removed) t2.el.classList.add('hinted');
+
+          // 슬롯 내에 존재하는 패가 있다면 슬롯 엘리먼트에도 힌트 효과 적용
+          const trayTilesDom = document.querySelectorAll('#tray-slots .tray-tile');
+          this.trayTiles.forEach((item, idx) => {
+            if (t1 && item.id === t1.id && trayTilesDom[idx]) trayTilesDom[idx].classList.add('hinted');
+            if (t2 && item.id === t2.id && trayTilesDom[idx]) trayTilesDom[idx].classList.add('hinted');
+          });
+
           setTimeout(() => this.clearHints(), 3200);
         } else {
-          alert("현재 맞출 수 있는 패가 없습니다. 셔플을 눌러주세요.");
+          // 즉시 매치되는 패가 없는 경우
+          const activeTiles = this.tiles.filter(t => !t.removed);
+          const freeTiles = activeTiles.filter(t => this.isTileFree(t));
+
+          if (this.trayTiles.length < this.maxSlots && freeTiles.length > 0) {
+            this.sound.playSelect();
+            // 아래층 패를 가리고 있는 자유 패 우선 추천
+            const candidate = freeTiles.find(t => {
+              return activeTiles.some(under => under.z < t.z && Math.abs(under.x - t.x) < 2 && Math.abs(under.y - t.y) < 2);
+            }) || freeTiles[0];
+
+            if (candidate && candidate.el) {
+              candidate.el.classList.add('hinted');
+              setTimeout(() => this.clearHints(), 3200);
+            }
+            alert("현재 즉시 맞는 짝은 없지만 슬롯에 여유가 있습니다!\n빛나는 패를 슬롯에 담아 아래층 패를 열어보세요.");
+          } else {
+            alert("현재 진행할 수 있는 수가 없습니다. 패를 섞거나(셔플) 되돌리기를 사용하세요.");
+          }
         }
       }
 
@@ -3676,6 +3747,8 @@
         this.tiles.forEach(t => {
           if (t.el) t.el.classList.remove('hinted');
         });
+        const trayTilesDom = document.querySelectorAll('#tray-slots .tray-tile');
+        trayTilesDom.forEach(el => el.classList.remove('hinted'));
       }
 
       undo() {
@@ -3699,6 +3772,7 @@
           this.score = Math.max(0, this.score - ((t1.wasCovered || t2.wasCovered) ? 150 : 100));
           this.renderTray();
           this.updateHeaderUI();
+          this.updateTileStates();
         } else if (Array.isArray(lastAction)) {
           lastAction.forEach(tile => {
             tile.removed = false;
