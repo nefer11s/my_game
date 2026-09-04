@@ -3763,7 +3763,7 @@
               const dx = e.changedTouches[0].clientX - touchStartX;
               const dy = e.changedTouches[0].clientY - touchStartY;
               const dist = Math.hypot(dx, dy);
-              if (dist < 45) {
+              if (dist < 40) {
                 // 터치 조작 시 브라우저 합성 click(Ghost Click)으로 인한 하위 타일 관통 방지
                 if (e.cancelable) e.preventDefault();
                 this.lastTouchHandledTime = performance.now();
@@ -3774,8 +3774,8 @@
 
           el.addEventListener('click', (e) => {
             e.stopPropagation();
-            // 최근 터치 조작 직후 발생하는 고스트 클릭 무시
-            if (this.lastTouchHandledTime && (performance.now() - this.lastTouchHandledTime < 500)) {
+            // 최근 터치 조작 직후 발생하는 고스트 클릭 무시 (순수 마우스 클릭만 허용)
+            if (this.lastTouchHandledTime && (performance.now() - this.lastTouchHandledTime < 350)) {
               return;
             }
             this.handleTileClick(tile);
@@ -3896,19 +3896,19 @@
         }
 
         const now = performance.now();
-        // 전역 클릭 디바운스 (상위 타일 제거 직후 하위 타일의 연속 선택 관통 방지)
-        if (this.lastGlobalTileClickTime && (now - this.lastGlobalTileClickTime < 200)) {
+        // 전역 클릭 디바운스 (상위 타일 제거 직후 하위 타일의 연속 관통만 방지: 150ms)
+        if (this.lastGlobalTileClickTime && (now - this.lastGlobalTileClickTime < 150)) {
           return;
         }
 
-        // 터치 디바운스 (동일 타일의 160ms 이내 중복 연타 방지)
-        if (tile._lastClickTime && (now - tile._lastClickTime < 160)) {
+        // 터치 디바운스 (동일 타일의 120ms 이내 중복 연타 방지)
+        if (tile._lastClickTime && (now - tile._lastClickTime < 120)) {
           return;
         }
         tile._lastClickTime = now;
         this.lastGlobalTileClickTime = now;
 
-        // 잠긴 타일인 경우: 시각적 흔들림(wiggle)과 미스 사운드로 잠김 상태 명확 피드백
+        // 잠긴 타일인 경우: 시각적 흔들림(wiggle)과 미스 사운드로 잠김 상태 피드백
         if (!this.isTileFree(tile)) {
           if (this.sound && this.sound.playMiss) this.sound.playMiss();
           if (tile.el) {
@@ -3922,83 +3922,14 @@
 
         this.clearHints();
 
-        // 1) 현재 보드에 앞면이 공개되어 대기 중인 다른 뒤집힌(블라인드) 타일 탐색
-        const prevRevealed = this.tiles.find(t => t !== tile && t.isCovered && t.isRevealed && !t.removed);
-
-        // [신규 기능]: 앞면이 공개된 뒤집힌 타일이 있을 때 다른 타일을 클릭한 경우
-        if (prevRevealed) {
-          // 클릭한 타일과 공개된 타일이 동일한 종류인 경우!
-          if (tile.def.id === prevRevealed.def.id) {
-            // 새로 클릭한 타일도 뒤집힌 상태라면 앞면 공개 연출
-            if (tile.isCovered && !tile.isRevealed) {
-              tile.isRevealed = true;
-              if (tile.el) tile.el.classList.add('face-down', 'revealed');
-              this.sound.playFlip();
-            }
-
-            // 두 타일을 보드에서 제거
-            prevRevealed.removed = true;
-            if (prevRevealed.el) {
-              prevRevealed.el.style.display = 'none';
-              prevRevealed.el.classList.remove('selected', 'face-down', 'revealed');
-            }
-
-            tile.removed = true;
-            if (tile.el) {
-              tile.el.style.display = 'none';
-              tile.el.classList.remove('selected', 'face-down', 'revealed');
-            }
-
-            this.updateTileStates();
-
-            // 두 타일을 슬롯으로 차례대로 자동 이동시켜 즉시 매치 제거!
-            const item1 = {
-              tile: prevRevealed,
-              def: prevRevealed.def,
-              id: prevRevealed.id,
-              wasCovered: true
-            };
-            const item2 = {
-              tile: tile,
-              def: tile.def,
-              id: tile.id,
-              wasCovered: tile.isCovered
-            };
-
-            this.trayTiles.push(item1, item2);
-            this.sound.playSelect();
-            this.renderTray();
-
-            // 슬롯 내 2개 짝(매칭) 즉시 판정 및 소멸
-            this.checkTrayMatch(item2);
-            return;
-
-          } else if (tile.isCovered && !tile.isRevealed) {
-            // 다른 뒤집힌 패를 클릭한 경우: 기존에 열려있던 패는 다시 뒷면으로 뒤집음
-            this.flipTileBack(prevRevealed);
-          }
-        }
-
-        // 2) 뒤집힌 타일인 경우: 1회 클릭 시 먼저 보드에서 뒤집혀 앞면 공개 후 대기
+        // 1) 블라인드(뒤집힌) 패를 클릭한 경우에도 즉시 앞면 공개 처리
         if (tile.isCovered && !tile.isRevealed) {
-          this.tiles.forEach(t => {
-            if (t !== tile && t.isCovered && t.isRevealed && !t.removed) {
-              this.flipTileBack(t);
-            }
-          });
-
-          this.sound.playFlip();
           tile.isRevealed = true;
-          if (tile.el) {
-            tile.el.classList.add('face-down', 'revealed');
-          }
-          this.updateTileStates();
-          return;
+          this.sound.playFlip();
         }
 
-        // 3) 일반 타일(또는 이미 공개된 뒤집힌 타일의 재클릭): 슬롯(트레이)으로 이동
-        // 슬롯 수용 가능 여부 체크
-        // 만약 슬롯이 꽉 찼더라도, 슬롯 내에 같은 종류의 패가 있어서 들어가자마자 매치될 수 있다면 수용 가능!
+        // 2) 자유 타일 슬롯(트레이)으로 즉시 이동 (원터치 이동)
+        // 슬롯 수용 가능 여부 체크 (슬롯이 꽉 찼더라도 즉시 매치 가능하면 허용)
         const willMatchImmediately = this.trayTiles.some(t => t.def.id === tile.def.id);
         if (this.trayTiles.length >= this.maxSlots && !willMatchImmediately) {
           // 슬롯이 가득 차서 더 이상 넣을 수 없음
