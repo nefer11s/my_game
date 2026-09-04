@@ -417,6 +417,7 @@
       justify-content: center;
       touch-action: none !important;
       -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none !important;
       user-select: none;
       -webkit-user-select: none;
       transition: transform 0.22s cubic-bezier(0.2, 0.9, 0.4, 1.1),
@@ -430,6 +431,7 @@
     /* 타일 내부 모든 자식 엘리먼트의 포인터 가로챔 원천 차단 (타일 본체로 단일 수신) */
     .tile * {
       pointer-events: none !important;
+      -webkit-touch-callout: none !important;
     }
 
       /* 정밀 3D 적층 두께: 1~3px 백색 상아 본체층 + 4~8px 에메랄드 비취 바닥층 */
@@ -986,8 +988,18 @@
       align-items: center;
       justify-content: center;
       position: relative;
+      touch-action: none !important;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none !important;
+      user-select: none;
+      -webkit-user-select: none;
       transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.2s ease;
       animation: trayTileEnter 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .tray-tile * {
+      pointer-events: none !important;
+      -webkit-touch-callout: none !important;
     }
 
     @keyframes trayTileEnter {
@@ -3538,9 +3550,24 @@
               <div class="tile-graphic-wrap">${item.def.render()}</div>
               <span class="tile-sub-label">${item.def.label}</span>
             `;
-            tileDiv.addEventListener('click', (e) => {
+            let trayHandled = false;
+            const handleTrayAction = (e) => {
+              if (trayHandled) return;
+              trayHandled = true;
               e.stopPropagation();
+              if (e && e.cancelable) e.preventDefault();
               this.returnTileFromTray(i);
+              setTimeout(() => { trayHandled = false; }, 250);
+            };
+
+            tileDiv.addEventListener('pointerdown', (e) => {
+              if (e.pointerType === 'touch') {
+                handleTrayAction(e);
+              }
+            }, { passive: false });
+
+            tileDiv.addEventListener('click', (e) => {
+              handleTrayAction(e);
             });
             box.appendChild(tileDiv);
           }
@@ -3786,31 +3813,83 @@
             </div>
           `;
 
-          // 고반응 정밀 포인터 이벤트 (마우스/터치 통합 0ms 반응 및 고스트 클릭 원천 차단)
+          // 방안 A + B 하이브리드 고반응 초정밀 터치/클릭 엔진
           let pDownX = 0, pDownY = 0, pDownTime = 0;
+          let isHandled = false;
+
+          const executeTileAction = (e) => {
+            if (isHandled) return;
+            isHandled = true;
+            if (e && e.cancelable) e.preventDefault();
+            this.handleTileClick(tile);
+            // 더블 클릭/고스트 방지용 250ms 후 플래그 초기화
+            setTimeout(() => { isHandled = false; }, 250);
+          };
 
           el.addEventListener('pointerdown', (e) => {
             if (e.button !== undefined && e.button !== 0) return;
             pDownX = e.clientX;
             pDownY = e.clientY;
             pDownTime = performance.now();
-          });
+            isHandled = false;
+
+            // 두 손가락 제스처 쿨다운 중에는 터치 차단
+            if (this.gestureCooldownUntil && Date.now() < this.gestureCooldownUntil) return;
+
+            // [방안 A] 포인터 캡처로 모바일 터치 타겟 이탈 방지
+            try {
+              if (el.setPointerCapture && e.pointerId) {
+                el.setPointerCapture(e.pointerId);
+              }
+            } catch (err) {}
+
+            // [방안 B] 모바일 터치 환경: 손가락이 닿는 순간 즉시 0ms 네이티브급 반응 실행!
+            if (e.pointerType === 'touch') {
+              executeTileAction(e);
+            }
+          }, { passive: false });
 
           el.addEventListener('pointerup', (e) => {
             if (e.button !== undefined && e.button !== 0) return;
+            try {
+              if (el.releasePointerCapture && e.pointerId) {
+                el.releasePointerCapture(e.pointerId);
+              }
+            } catch (err) {}
+
+            if (isHandled) return;
+
+            // [방안 A] PC 마우스 또는 pointerdown에서 처리되지 않은 터치 구제 (기준: 30px 이내, 750ms 미만)
             const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
             const duration = performance.now() - pDownTime;
 
-            // 화면 드래그 제스처가 아닌 탭/클릭(25px 이내, 500ms 미만)인 경우 즉시 실행
-            if (dist < 25 && duration < 500) {
-              if (e.cancelable) e.preventDefault();
-              this.handleTileClick(tile);
+            if (dist < 30 && duration < 750) {
+              executeTileAction(e);
+            }
+          });
+
+          // [방안 A] pointercancel 발생 시에도 미세 이동(25px 이내)인 경우 정상 탭으로 즉시 구제
+          el.addEventListener('pointercancel', (e) => {
+            try {
+              if (el.releasePointerCapture && e.pointerId) {
+                el.releasePointerCapture(e.pointerId);
+              }
+            } catch (err) {}
+
+            if (isHandled) return;
+
+            const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
+            if (dist < 25) {
+              executeTileAction(e);
             }
           });
 
           // 브라우저 기본 합성 click 이벤트의 중복 발화 및 버블링 차단
           el.addEventListener('click', (e) => {
             e.stopPropagation();
+            if (isHandled && e.cancelable) {
+              e.preventDefault();
+            }
           });
 
           this.boardEl.appendChild(el);
