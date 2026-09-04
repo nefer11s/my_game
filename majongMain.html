@@ -3222,6 +3222,9 @@
           this.hasStarted = true;
           this.startNewGame(true);
         });
+
+        // 스마트 기하학적 레이캐스팅 엔진 초기화
+        this.initBoardRaycastEngine();
       }
 
       setDifficulty(diffKey) {
@@ -3855,11 +3858,11 @@
           let pDownX = 0, pDownY = 0, pDownTime = 0;
           let isHandled = false;
 
-          const executeTileAction = (e) => {
+          const executeTileAction = (e, clientX, clientY) => {
             if (isHandled) return;
             isHandled = true;
             if (e && e.cancelable) e.preventDefault();
-            this.handleTileClick(tile);
+            this.handleTileClick(tile, clientX, clientY);
             // 더블 클릭/고스트 방지용 250ms 후 플래그 초기화
             setTimeout(() => { isHandled = false; }, 250);
           };
@@ -3883,7 +3886,7 @@
 
             // [방안 B] 모바일 터치 환경: 손가락이 닿는 순간 즉시 0ms 네이티브급 반응 실행!
             if (e.pointerType === 'touch') {
-              executeTileAction(e);
+              executeTileAction(e, e.clientX, e.clientY);
             }
           }, { passive: false });
 
@@ -3902,7 +3905,7 @@
             const duration = performance.now() - pDownTime;
 
             if (dist < 30 && duration < 750) {
-              executeTileAction(e);
+              executeTileAction(e, e.clientX, e.clientY);
             }
           });
 
@@ -3918,7 +3921,7 @@
 
             const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
             if (dist < 25) {
-              executeTileAction(e);
+              executeTileAction(e, e.clientX, e.clientY);
             }
           });
 
@@ -3997,9 +4000,9 @@
           if (tile.el) {
             tile.el.classList.toggle('free', free);
             tile.el.classList.toggle('blocked', !free);
-            // 자유 패는 잠긴 패보다 z-index를 +150 대폭 높여 3D 시차 및 경계면 터치 시 무조건 우선권 부여
+            // 자유 패는 층수와 무관하게 모든 잠긴 패(최대 ~400)를 압도하는 절대 우선권(1000+) 부여
             const baseZ = tile.z * 100 + tile.y * 10 + tile.x;
-            tile.el.style.zIndex = free ? (baseZ + 150) : baseZ;
+            tile.el.style.zIndex = free ? (baseZ + 1000) : baseZ;
           }
         });
 
@@ -4022,6 +4025,83 @@
       }
 
       /**
+       * 스마트 기하학적 레이캐스팅 (Smart Geometric Raycasting)
+       * - 0층 바닥 패가 윗층 잠긴 패의 3D 단차/그림자에 가려지거나 2~3px 빗나갔을 때
+       *   터치 지점 반경 38px 이내의 활성 자유 패를 수학적으로 탐지하여 자동 스냅(Snap)
+       */
+      findNearbyFreeTile(clientX, clientY, maxDist = 38) {
+        if (!this.tiles) return null;
+        const activeFreeTiles = this.tiles.filter(t => !t.removed && t.el && this.isTileFree(t));
+        if (activeFreeTiles.length === 0) return null;
+
+        let bestTile = null;
+        let minCenterDist = Infinity;
+
+        activeFreeTiles.forEach(tile => {
+          const rect = tile.el.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+
+          // 터치 좌표와 타일 사각 경계선 간의 최단 거리 계산
+          const dx = Math.max(rect.left - clientX, 0, clientX - rect.right);
+          const dy = Math.max(rect.top - clientY, 0, clientY - rect.bottom);
+          const edgeDist = Math.hypot(dx, dy);
+
+          // 타일 내부를 터치했거나, 테두리 외곽 maxDist 이내로 인접한 경우
+          if (edgeDist <= maxDist) {
+            const centerDist = Math.hypot(clientX - centerX, clientY - centerY);
+            if (centerDist < minCenterDist) {
+              minCenterDist = centerDist;
+              bestTile = tile;
+            }
+          }
+        });
+
+        return bestTile;
+      }
+
+      /**
+       * 보드 컨테이너 레벨 단일 위임 레이캐스팅 리스너
+       * - 타일 사이 틈새나 보드 빈 공간을 빗나가게 터치해도 가장 가까운 자유 패로 유도
+       */
+      initBoardRaycastEngine() {
+        if (!this.boardEl) return;
+
+        let bDownX = 0, bDownY = 0, bDownTime = 0;
+
+        this.boardEl.addEventListener('pointerdown', (e) => {
+          if (e.button !== undefined && e.button !== 0) return;
+          if (e.target && e.target.closest('.tile')) return; // 타일 직접 터치는 타일 리스너가 우선 수신
+          bDownX = e.clientX;
+          bDownY = e.clientY;
+          bDownTime = performance.now();
+
+          if (e.pointerType === 'touch') {
+            const nearbyTile = this.findNearbyFreeTile(e.clientX, e.clientY, 36);
+            if (nearbyTile) {
+              if (e.cancelable) e.preventDefault();
+              this.handleTileClick(nearbyTile, e.clientX, e.clientY);
+            }
+          }
+        }, { passive: false });
+
+        this.boardEl.addEventListener('pointerup', (e) => {
+          if (e.button !== undefined && e.button !== 0) return;
+          if (e.target && e.target.closest('.tile')) return;
+          const dist = Math.hypot(e.clientX - bDownX, e.clientY - bDownY);
+          const duration = performance.now() - bDownTime;
+
+          if (dist < 30 && duration < 650) {
+            const nearbyTile = this.findNearbyFreeTile(e.clientX, e.clientY, 36);
+            if (nearbyTile) {
+              if (e.cancelable) e.preventDefault();
+              this.handleTileClick(nearbyTile, e.clientX, e.clientY);
+            }
+          }
+        });
+      }
+
+      /**
        * 열려있는 뒤집힌 패를 다시 뒷면으로 뒤집는 헬퍼
        */
       flipTileBack(tile) {
@@ -4035,8 +4115,9 @@
 
       /**
        * 타일 클릭: 보드에서 빈 슬롯(트레이)으로 이동
+       * hitX, hitY: 터치 시점의 클라이언트 좌표 (잠긴 패 오인 시 스마트 스냅 지원)
        */
-      handleTileClick(tile) {
+      handleTileClick(tile, hitX, hitY) {
         if (this.isGameOver || this.isAutoClearing || this.isDealing || tile.removed) {
           return;
         }
@@ -4045,8 +4126,18 @@
         }
 
         const now = performance.now();
-        // 잠긴 타일인 경우: 시각적 흔들림(wiggle)과 미스 사운드로 잠김 상태 피드백
+
+        // 잠긴 타일인 경우: 3D 단차로 인해 윗층 패가 터치를 가로챘을 가능성이 있으므로
+        // 터치 좌표 주변(38px)에 유저가 의도했던 바닥(0층) 자유 패가 있는지 스마트 스냅 검사!
         if (!this.isTileFree(tile)) {
+          if (hitX !== undefined && hitY !== undefined) {
+            const nearbyFree = this.findNearbyFreeTile(hitX, hitY, 38);
+            if (nearbyFree && nearbyFree.id !== tile.id) {
+              // 윗층 잠긴 패를 무시하고 실제 의도였던 자유 패로 즉각 전환!
+              this.handleTileClick(nearbyFree, hitX, hitY);
+              return;
+            }
+          }
           if (this.sound && this.sound.playMiss) this.sound.playMiss();
           if (tile.el) {
             tile.el.classList.remove('wiggle');
@@ -4142,10 +4233,11 @@
         }
 
         // 3) 일반 자유 패(또는 이미 공개된 블라인드 패의 재클릭): 슬롯(트레이)으로 이동
-        // 상위 타일 제거 직후 하위 타일로의 고스트 관통 터치만 차단 (150ms)
-        if (this.lastGlobalTileClickTime && (now - this.lastGlobalTileClickTime < 150)) {
+        // 동일 타일 초고속 중복 클릭(고스트 터치)만 250ms 차단하고, 방금 열린 바닥 타일 등 다른 타일은 0ms 즉각 처리!
+        if (this.lastClickedTileId === tile.id && this.lastGlobalTileClickTime && (now - this.lastGlobalTileClickTime < 250)) {
           return;
         }
+        this.lastClickedTileId = tile.id;
         this.lastGlobalTileClickTime = now;
 
         // 슬롯 수용 가능 여부 체크
