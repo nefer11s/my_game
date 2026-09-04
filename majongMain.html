@@ -42,59 +42,112 @@
       align-items: center;
       justify-content: space-between;
       touch-action: manipulation;
+      padding: 6px 12px 6px;
     }
 
-    /* 상단 헤더 UI */
-    header {
+    /* 상단 슬림 일체형 게임 HUD 바 (단일 라인으로 극대화된 게임 뷰포트 확보) */
+    header.game-hud {
       width: 100%;
-      max-width: 860px;
-      padding: 14px 16px 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 100;
-    }
-
-    .status-bar {
+      max-width: 980px;
+      height: 46px;
+      padding: 0 12px;
+      margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(255, 255, 255, 0.88);
+      gap: 8px;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      padding: 10px 24px;
-      border-radius: 20px;
-      box-shadow: 0 8px 24px rgba(24, 60, 44, 0.07);
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(24, 60, 44, 0.08);
       border: 1.5px solid rgba(255, 255, 255, 0.95);
+      flex-shrink: 0;
     }
 
-    .stat-pill {
+    .hud-left {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      min-width: 75px;
+      gap: 6px;
+      flex-shrink: 0;
     }
 
-    .stat-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: #5c8772;
-      letter-spacing: 0.5px;
-      margin-bottom: 2px;
-    }
-
-    .stat-val {
-      font-size: 22px;
+    .stage-badge {
+      background: #174232;
+      color: #ffffff;
       font-weight: 800;
-      color: var(--text-dark);
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    .hud-lives {
+      font-size: 14px;
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      margin-left: 2px;
+    }
+
+    .hud-center {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 1;
+      overflow: hidden;
+    }
+
+    .hud-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      background: rgba(235, 246, 240, 0.85);
+      border: 1px solid rgba(180, 220, 200, 0.6);
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #214e39;
+      white-space: nowrap;
+    }
+
+    .hud-pill-label {
+      color: #5c8772;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .hud-pill-val {
+      font-weight: 800;
+      font-size: 13px;
+      color: #174232;
       font-variant-numeric: tabular-nums;
     }
 
-    .controls-bar {
+    .hud-pill.match-pill {
+      background: rgba(255, 248, 230, 0.9);
+      border-color: rgba(243, 156, 18, 0.35);
+    }
+    .hud-pill.match-pill .hud-pill-val {
+      color: #b7791f;
+    }
+
+    .hud-right {
       display: flex;
-      justify-content: center;
       align-items: center;
-      gap: 12px;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .btn-hud {
+      height: 34px;
+      padding: 0 10px;
+      font-size: 12px;
+      border-radius: 10px;
+      gap: 4px;
+      box-shadow: 0 2px 8px rgba(24, 60, 44, 0.06);
     }
 
     /* 톱니바퀴 설정 메뉴 래퍼 & 드롭다운 */
@@ -731,49 +784,26 @@
       }
     }
 
-    /* 하단 안내 바 */
-    footer {
-      width: 100%;
-      max-width: 860px;
-      padding: 8px 16px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13px;
-      color: #3b6652;
-      font-weight: 600;
-    }
-
-    .moves-badge {
-      background: rgba(255, 255, 255, 0.8);
-      padding: 6px 14px;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 2px 8px rgba(24, 60, 44, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.9);
-    }
-
-    /* 슬롯 보관함 트레이 (Tray Rack) */
+    /* 슬롯 보관함 트레이 (초슬림 플로팅 랙) */
     .tray-container {
       width: 100%;
-      max-width: 660px;
-      margin: 0 auto 6px;
-      padding: 8px 14px 10px;
-      background: linear-gradient(135deg, rgba(20, 54, 38, 0.92), rgba(12, 38, 26, 0.95));
-      border: 2px solid rgba(212, 175, 55, 0.45);
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(10, 30, 20, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+      max-width: 620px;
+      margin: 0 auto 2px;
+      padding: 4px 12px 6px;
+      background: linear-gradient(135deg, rgba(20, 54, 38, 0.94), rgba(12, 38, 26, 0.96));
+      border: 1.5px solid rgba(212, 175, 55, 0.5);
+      border-radius: 14px;
+      box-shadow: 0 6px 20px rgba(10, 30, 20, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.2);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 3px;
       z-index: 10;
       position: relative;
       user-select: none;
       backdrop-filter: blur(8px);
       transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      flex-shrink: 0;
     }
 
     .tray-container.danger {
@@ -1531,71 +1561,57 @@
 
     /* 모바일 반응형 최적화 (보드 영역 극대화 및 터치 조작 최적화) */
     @media (max-width: 680px) {
-      header {
-        padding: 6px 10px 4px;
-        gap: 6px;
+      body {
+        padding: 4px 6px 3px;
       }
 
-      .status-bar {
-        padding: 5px 8px;
-        border-radius: 14px;
+      header.game-hud {
+        height: 40px;
+        padding: 0 8px;
+        gap: 4px;
+        border-radius: 12px;
+      }
+
+      .hud-left {
+        gap: 4px;
+      }
+
+      .stage-badge, .diff-badge {
+        font-size: 11px;
+        padding: 2px 5px;
+      }
+
+      .hud-lives {
+        font-size: 12px;
+        letter-spacing: 1px;
+      }
+
+      .hud-center {
+        gap: 4px;
+      }
+
+      .hud-pill {
+        padding: 2px 5px;
+        font-size: 11px;
         gap: 2px;
       }
 
-      .stat-pill {
-        min-width: 42px;
+      .hud-pill-val {
+        font-size: 12px;
       }
 
-      .stat-label {
-        font-size: 9px;
-      }
-
-      .stat-val {
-        font-size: 14px;
-      }
-
-      .diff-badge {
-        font-size: 11px;
-        padding: 1px 6px;
-        border-radius: 6px;
-      }
-
-      .controls-bar {
-        gap: 4px;
-        flex-wrap: wrap;
-      }
-
-      .diff-select {
-        height: 34px;
-        padding: 0 6px;
-        font-size: 11px;
-        border-radius: 10px;
-      }
-
-      .btn {
-        height: 34px;
+      .btn-hud {
+        height: 30px;
         padding: 0 8px;
-        font-size: 11px;
-        border-radius: 10px;
-        gap: 3px;
+        border-radius: 8px;
       }
 
-      .btn-icon {
-        font-size: 13px;
-      }
-
-      footer {
-        padding: 4px 10px 6px;
-        font-size: 11px;
-      }
-
-      .moves-badge {
-        padding: 4px 10px;
-        font-size: 11px;
+      .btn-hud .btn-label {
+        display: none; /* 모바일에서 텍스트 숨기고 아이콘만 노출 */
       }
 
       .settings-dropdown {
-        min-width: 200px;
+        min-width: 190px;
         padding: 10px;
         gap: 6px;
       }
@@ -1606,64 +1622,72 @@
       }
     }
 
+    /* 화면 폭이 극도로 좁은 소형 모바일 */
+    @media (max-width: 420px) {
+      .hud-center .score-pill, .hud-center .match-pill {
+        display: none;
+      }
+    }
+
     /* 화면이 가로일 때(Landscape) 모바일 상하 여백 극소화 */
     @media (max-height: 520px) {
-      header {
-        padding: 3px 8px 2px;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        max-width: 99%;
-        gap: 6px;
+      body {
+        padding: 2px 6px 2px;
       }
 
-      .status-bar {
-        padding: 3px 10px;
-        border-radius: 12px;
+      header.game-hud {
+        height: 34px;
+        padding: 0 6px;
+        gap: 4px;
+        border-radius: 10px;
       }
 
-      .stat-pill {
-        min-width: 44px;
+      .btn-hud {
+        height: 28px;
+        padding: 0 6px;
+        font-size: 11px;
+        border-radius: 6px;
       }
 
-      .stat-label {
-        font-size: 9px;
+      .btn-hud .btn-label {
+        display: none;
       }
 
-      .stat-val {
-        font-size: 14px;
+      .tray-container {
+        padding: 2px 8px 3px;
+        margin: 0 auto 1px;
       }
 
-      .controls-bar {
+      .tray-slots {
+        min-height: 48px;
         gap: 4px;
       }
 
-      .btn {
-        height: 30px;
-        padding: 0 8px;
-        font-size: 11px;
-        border-radius: 8px;
+      .tray-slot-box {
+        width: 38px;
+        height: 48px;
+      }
+
+      .tray-tile {
+        width: 34px;
+        height: 44px;
       }
 
       .settings-dropdown {
-        top: calc(100% + 4px);
-        padding: 8px;
-        gap: 5px;
-        min-width: 180px;
+        top: calc(100% + 3px);
+        padding: 6px;
+        gap: 4px;
+        min-width: 170px;
       }
 
       .settings-dropdown .diff-select {
-        height: 30px;
+        height: 28px;
         font-size: 11px;
       }
 
       .settings-dropdown .settings-btn {
-        height: 30px;
+        height: 28px;
         font-size: 11px;
-      }
-
-      footer {
-        display: none; /* 가로 모드 시 보드 높이 최대 확보를 위해 푸터 숨김 */
       }
     }
   </style>
@@ -1671,56 +1695,55 @@
 
 <body>
 
-  <!-- 헤더 정보 및 컨트롤러 -->
-  <header>
-    <div class="status-bar">
-      <div class="stat-pill">
-        <span class="stat-label">진행 판수</span>
-        <span class="stat-val" id="stat-stage">1판</span>
+  <!-- 상단 슬림 일체형 게임 HUD 바 (1줄 미니멀 배치로 게임 영역 극대화) -->
+  <header class="game-hud">
+    <!-- 좌측: 판수, 난이도, 하트 -->
+    <div class="hud-left">
+      <div class="stage-badge" id="stat-stage" title="진행 판수">1판</div>
+      <div class="diff-badge" id="stat-diff" title="난이도">보통</div>
+      <span id="stat-layout" style="display:none;"></span>
+      <div class="hud-lives" id="stat-lives" title="남은 하트">❤️❤️❤️❤️</div>
+    </div>
+
+    <!-- 중앙: 핵심 통계 (남은패, 즉시 매치 가능 수, 시간, 점수) -->
+    <div class="hud-center">
+      <div class="hud-pill" title="남은 패">
+        <span class="hud-pill-label">패</span>
+        <span class="hud-pill-val" id="stat-tiles">0</span>
       </div>
-      <div class="stat-pill">
-        <span class="stat-label">난이도 / 지형</span>
-        <span class="stat-val" style="display:flex; flex-direction:column; align-items:center; gap:2px;">
-          <span class="diff-badge" id="stat-diff">보통</span>
-          <span id="stat-layout" style="font-size: 11px; font-weight: 700; color: #1e6b4d; white-space: nowrap;">🐢 거북이 (3층)</span>
-        </span>
+      <div class="hud-pill match-pill" title="즉시 매치 가능한 패 수">
+        <span class="hud-pill-label">매치</span>
+        <span class="hud-pill-val" id="stat-moves">0</span>
       </div>
-      <div class="stat-pill">
-        <span class="stat-label">남은 하트</span>
-        <span class="stat-val" id="stat-lives" style="font-size: 15px; letter-spacing: 2px;">❤️❤️❤️</span>
+      <div class="hud-pill" title="경과 시간">
+        <span class="hud-pill-label">⏱</span>
+        <span class="hud-pill-val" id="stat-time">00:00</span>
       </div>
-      <div class="stat-pill">
-        <span class="stat-label">남은 패</span>
-        <span class="stat-val" id="stat-tiles">0</span>
-      </div>
-      <div class="stat-pill">
-        <span class="stat-label">진행 시간</span>
-        <span class="stat-val" id="stat-time">00:00</span>
-      </div>
-      <div class="stat-pill">
-        <span class="stat-label">점수</span>
-        <span class="stat-val" id="stat-score">0</span>
+      <div class="hud-pill score-pill" title="현재 점수">
+        <span class="hud-pill-label">점수</span>
+        <span class="hud-pill-val" id="stat-score">0</span>
       </div>
     </div>
 
-    <div class="controls-bar">
-      <button class="btn" id="btn-undo" title="되돌리기">
-        <span class="btn-icon">↩</span> 되돌리기
+    <!-- 우측: 필수 게임 컨트롤 버튼군 및 톱니바퀴 설정 -->
+    <div class="hud-right">
+      <button class="btn btn-hud" id="btn-undo" title="한 수 되돌리기">
+        <span class="btn-icon">↩</span><span class="btn-label">되돌리기</span>
       </button>
-      <button class="btn" id="btn-hint" title="힌트 보기">
-        <span class="btn-icon">💡</span> 힌트
+      <button class="btn btn-hud" id="btn-hint" title="매치 짝 힌트">
+        <span class="btn-icon">💡</span><span class="btn-label">힌트</span>
       </button>
-      <button class="btn" id="btn-shuffle" title="패 섞기">
-        <span class="btn-icon">🔀</span> 셔플
+      <button class="btn btn-hud" id="btn-shuffle" title="패 섞기 (하트 1개 소모)">
+        <span class="btn-icon">🔀</span><span class="btn-label">셔플</span>
       </button>
-      <button class="btn" id="btn-restart" title="현재 판 다시 시작">
-        <span class="btn-icon">🔄</span> 다시 시작
+      <button class="btn btn-hud" id="btn-restart" title="현재 판 다시 시작">
+        <span class="btn-icon">🔄</span><span class="btn-label">재도전</span>
       </button>
 
       <!-- 톱니바퀴 설정 메뉴 (난이도, 방법, 랭킹, 전체화면) -->
       <div class="settings-wrapper" id="settings-wrapper">
-        <button class="btn" id="btn-settings" title="설정 메뉴" aria-haspopup="true" aria-expanded="false">
-          <span class="btn-icon">⚙️</span> 설정
+        <button class="btn btn-hud" id="btn-settings" title="환경 설정" aria-haspopup="true" aria-expanded="false">
+          <span class="btn-icon">⚙️</span>
         </button>
         <div class="settings-dropdown" id="settings-dropdown">
           <div class="settings-item">
@@ -1733,15 +1756,19 @@
             </select>
           </div>
           <div class="settings-divider"></div>
-          <button class="btn settings-btn" id="btn-rules-header" title="게임 방법 보기">
+          <button class="btn settings-btn" id="btn-rules-header" title="게임 방법 안내">
             <span class="btn-icon">📜</span> 게임 방법
           </button>
           <button class="btn settings-btn" id="btn-rank-header" title="명예의 전당">
             <span class="btn-icon">🏆</span> 명예의 전당 (랭킹)
           </button>
-          <button class="btn settings-btn" id="btn-fullscreen" title="전체화면 모드">
+          <button class="btn settings-btn" id="btn-fullscreen" title="전체화면 모드 토글">
             <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
           </button>
+          <div class="settings-divider"></div>
+          <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
+            Si-Yeon Mahjong Solitaire v1.4.0
+          </div>
         </div>
       </div>
     </div>
@@ -1750,17 +1777,16 @@
   <!-- 피해 화면 플래시 -->
   <div class="damage-flash" id="damage-flash"></div>
 
-  <!-- 메인 게임 필드 -->
+  <!-- 메인 게임 필드 (화면 최대 영역 활용) -->
   <main class="game-viewport" id="viewport">
     <div class="game-board" id="board"></div>
   </main>
 
-  <!-- 슬롯 보관함 트레이 바 -->
+  <!-- 슬롯 보관함 트레이 바 (초슬림 컴팩트화) -->
   <div class="tray-container" id="tray-container">
     <div class="tray-header">
       <div class="tray-title">
         <span class="tray-icon">📥</span> <strong>임시 보관함</strong>
-        <span class="tray-hint-sub">(클릭한 패가 모이고 2개가 되면 짝이 맞아 사라집니다)</span>
       </div>
       <div class="tray-count-badge" id="tray-count-badge">0 / 5</div>
     </div>
@@ -1768,15 +1794,6 @@
       <!-- 동적 슬롯 박스 -->
     </div>
   </div>
-
-  <!-- 하단 상태 바 -->
-  <footer>
-    <div class="moves-badge">
-      <span>즉시 매치 가능:</span>
-      <strong id="stat-moves">0</strong>
-    </div>
-    <div style="font-size:12px; opacity:0.8;">Si-Yeon Mahjong Solitaire v1.4.0</div>
-  </footer>
 
   <!-- 승리 및 알림 모달 -->
   <div class="modal-overlay" id="modal">
@@ -2871,8 +2888,28 @@
         const goSubmitRank = document.getElementById('go-submit-rank');
         const goRestartBtn = document.getElementById('go-restart-btn');
 
+        // 기본적으로 스플래시 화면 첫 터치/클릭부터 전체화면 모드 자동 진입
+        const enterFullscreenAuto = () => {
+          const doc = document;
+          const isFull = !!(doc.fullscreenElement || doc.webkitFullscreenElement);
+          if (!isFull) {
+            const docEl = document.documentElement;
+            if (docEl.requestFullscreen) {
+              docEl.requestFullscreen().catch(() => {});
+            } else if (docEl.webkitRequestFullscreen) {
+              docEl.webkitRequestFullscreen();
+            }
+          }
+        };
+
+        // 스플래시 화면 어디든 터치/클릭 시 전체화면 시도
+        if (splashEl) {
+          splashEl.addEventListener('pointerdown', () => enterFullscreenAuto(), { once: true });
+        }
+
         if (btnSplashStart) {
           btnSplashStart.addEventListener('click', () => {
+            enterFullscreenAuto();
             this.sound.playSelect();
             if (splashEl) splashEl.classList.remove('active');
             this.hasStarted = true;
@@ -2882,6 +2919,7 @@
 
         if (btnSplashRules) {
           btnSplashRules.addEventListener('click', () => {
+            enterFullscreenAuto();
             this.sound.playSelect();
             if (rulesModal) rulesModal.classList.add('active');
           });
@@ -2889,6 +2927,7 @@
 
         if (btnSplashRank) {
           btnSplashRank.addEventListener('click', () => {
+            enterFullscreenAuto();
             this.sound.playSelect();
             this.renderHallOfFame();
             if (rankModal) rankModal.classList.add('active');
@@ -4511,26 +4550,26 @@
         const isMobile = vw < 680;
         const isPortrait = vw < vh;
 
-        // 모바일 여백 극소화로 타일 표시 면적 극대화
-        const marginX = isMobile ? (isPortrait ? 6 : 10) : (vw < 960 ? 16 : 28);
-        const marginY = isMobile ? (vh < 600 ? 6 : 12) : 24;
+        // 화면 여백 극소화로 보드 면적 극대화
+        const marginX = isMobile ? (isPortrait ? 4 : 8) : 12;
+        const marginY = isMobile ? (vh < 600 ? 4 : 8) : 10;
 
         const scaleX = (vw - marginX) / boardW;
         const scaleY = (vh - marginY) / boardH;
 
         let scale;
         if (isMobile && isPortrait) {
-          // 모바일 세로 모드: 가로폭 및 세로 여백을 화면 안에 100% 안전하게 피팅 (양옆 타일 클리핑 방지)
+          // 모바일 세로 모드: 화면 폭과 높이에 안전하게 최대 피팅
           scale = Math.min(scaleX * 0.98, scaleY);
-          scale = Math.min(1.45, Math.max(0.42, scale));
+          scale = Math.min(1.6, Math.max(0.45, scale));
         } else {
-          // 데스크톱 및 가로 모드
+          // 데스크톱 및 가로 모드: 화면을 시원하게 채우도록 최대 스케일 확장
           scale = Math.min(scaleX, scaleY);
-          scale = Math.min(1.35, Math.max(0.45, scale));
+          scale = Math.min(1.55, Math.max(0.5, scale));
         }
 
         // 3D 틸트 각도: 모바일에서는 시야각 왜곡을 방지하기 위해 5도로 완화
-        const tiltX = isMobile ? (isPortrait ? 5 : 8) : 12;
+        const tiltX = isMobile ? (isPortrait ? 5 : 8) : 10;
         this.boardEl.style.transform = `rotateX(${tiltX}deg) scale(${scale.toFixed(3)})`;
       }
     }
