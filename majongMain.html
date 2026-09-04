@@ -2974,6 +2974,7 @@
         this.initialLives = 4;
         this.isGameOver = false;
         this.blindMismatchCount = 0; // 뒤집기 3회 실패 카운터
+        this.hasUsedLastChanceShuffle = false; // 하트 1개일 때 마지막 무료 셔플 사용 여부
 
         // 뷰포트 확대/축소 및 자유 이동(Pan & Zoom) 시스템
         this.baseScale = 1.0;
@@ -3422,6 +3423,7 @@
         document.getElementById('btn-undo').disabled = true;
         document.getElementById('btn-shuffle').disabled = false;
         document.getElementById('btn-hint').disabled = false;
+        this.hasUsedLastChanceShuffle = false;
 
         this.buildSolvableBoard();
         this.initialTiles = this.cloneTileData(this.tiles);
@@ -3470,6 +3472,9 @@
         this.isGameOver = false;
         this.blindMismatchCount = 0;
         this.lastFlippedBlindTile = null;
+        this.hasUsedLastChanceShuffle = false;
+        const btnShuffle = document.getElementById('btn-shuffle');
+        if (btnShuffle) btnShuffle.disabled = false;
 
         // 사용자 요청: 다시시작 버튼 시 하트 개수가 초기화되지 않도록
         // 게임 오버 상태(lives <= 0)인 경우에만 maxLives로 복구, 진행 중 재시작 시에는 현재 남은 하트 유지
@@ -4016,8 +4021,16 @@
         if (this.isDeadlocked()) {
           setTimeout(() => {
             if (this.isDeadlocked() && !this.isClear && !this.isGameOver) {
-              if (confirm("더 이상 진행할 수 있는 수가 없습니다!\n(슬롯 가득 참 / 이동 가능한 패 없음)\n패를 섞으시겠습니까? (하트 1개 소진)")) {
-                this.shuffleRemain();
+              if (this.lives === 1 && !this.hasUsedLastChanceShuffle) {
+                if (confirm("더 이상 진행할 수 있는 수가 없습니다!\n(슬롯 가득 참 / 이동 가능한 패 없음)\n[마지막 기회 무료 셔플]을 사용하시겠습니까? (하트 소진 없음)")) {
+                  this.shuffleRemain();
+                }
+              } else if (this.lives === 1 && this.hasUsedLastChanceShuffle) {
+                alert("더 이상 진행할 수 있는 수가 없으며, 마지막 무료 셔플도 소진했습니다!\n되돌리기(Undo)를 사용하여 다른 수를 시도해 보세요.");
+              } else {
+                if (confirm("더 이상 진행할 수 있는 수가 없습니다!\n(슬롯 가득 참 / 이동 가능한 패 없음)\n패를 섞으시겠습니까? (하트 1개 소진)")) {
+                  this.shuffleRemain();
+                }
               }
             }
           }, 350);
@@ -4529,9 +4542,32 @@
         const activeTiles = this.tiles.filter(t => !t.removed && t.el);
         if (activeTiles.length === 0) return;
 
-        // 셔플 시 하트 1개 소진
-        this.loseLife();
-        if (this.isGameOver) return;
+        // [방안 A] 하트 1개일 때 '마지막 기회 무료 셔플(판당 1회)' 보장
+        if (this.lives === 1) {
+          if (this.hasUsedLastChanceShuffle) {
+            alert("마지막 기회 무료 셔플을 이미 사용하셨습니다!\n하트가 1개뿐이어서 더 이상 셔플할 수 없습니다.");
+            return;
+          }
+          this.hasUsedLastChanceShuffle = true;
+          const btnShuffle = document.getElementById('btn-shuffle');
+          if (btnShuffle) btnShuffle.disabled = true;
+
+          // 상단 알림 배지로 유저에게 기사회생 피드백 연출
+          let notice = document.getElementById('finale-notice');
+          if (!notice) {
+            notice = document.createElement('div');
+            notice.id = 'finale-notice';
+            notice.className = 'finale-notice';
+            this.viewportEl.appendChild(notice);
+          }
+          notice.textContent = '✨ 마지막 기회 무료 셔플 발동! (하트 보존)';
+          notice.classList.add('active');
+          setTimeout(() => notice.classList.remove('active'), 2200);
+        } else {
+          // 하트 2개 이상: 기존처럼 하트 1개 소진
+          this.loseLife();
+          if (this.isGameOver) return;
+        }
 
         this.sound.playShuffle();
         this.clearHints();
