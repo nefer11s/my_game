@@ -3829,7 +3829,7 @@
             pointerValid = false;
             if (this.hasPannedFar || this.isPanning) return;
             const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
-            if (dist < 14) {
+            if (dist < 26) {
               e.stopPropagation();
               this.handleTileClick(tile);
             }
@@ -4712,7 +4712,8 @@
       }
 
       /**
-       * 뷰포트 터치 제스처 (핀치 줌, 드래그 팬, 마우스 휠 줌, 더블 탭) 시스템
+       * 뷰포트 터치 제스처 (핀치 줌, 빈 바탕 드래그 팬, 마우스 휠 줌) 시스템
+       * 타일 터치는 순수 타일 클릭으로 격리하여 터치 시 화면 커짐/씹힘 원천 방지
        */
       initViewportGestures() {
         if (!this.viewportEl) return;
@@ -4725,30 +4726,24 @@
         let initialPanX = 0;
         let initialPanY = 0;
         let totalDragDistance = 0;
-        let lastTapTime = 0;
+
+        // 브라우저 기본 더블클릭/더블탭 줌 방지
+        this.viewportEl.addEventListener('dblclick', (e) => e.preventDefault());
 
         const onPointerDown = (e) => {
-          // 플로팅 버튼이나 알림, 모달 클릭 시 제스처 제외
+          // UI 컨트롤, 배너, 모달 클릭 시 제스처 제외
           if (e.target.closest('#zoom-controls') || e.target.closest('.big-win-banner') || e.target.closest('.modal-card')) {
             return;
           }
 
-          // 더블 탭 감지 (300ms 이내 빠른 2회 터치 시 1.6배 줌 토글)
-          const now = performance.now();
-          if (now - lastTapTime < 300) {
-            lastTapTime = 0;
-            if (this.zoomLevel > 1.1) {
-              this.resetZoomAndPan(true);
-            } else {
-              this.setZoom(1.6, true);
-            }
-            return;
-          }
-          lastTapTime = now;
-
-          activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+          const isTileTarget = !!e.target.closest('.tile');
+          activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY, isTile: isTileTarget });
 
           if (activePointers.size === 1) {
+            // 타일 위에서 시작된 터치는 뷰포트 드래그(Pan)를 시작하지 않음 (순수 타일 터치 전용)
+            if (isTileTarget) {
+              return;
+            }
             dragStartX = e.clientX;
             dragStartY = e.clientY;
             initialPanX = this.panX;
@@ -4756,6 +4751,7 @@
             totalDragDistance = 0;
             this.hasPannedFar = false;
           } else if (activePointers.size === 2) {
+            // 두 손가락 터치 시 핀치 줌 & 2손가락 팬 활성화
             try {
               this.viewportEl.setPointerCapture(e.pointerId);
             } catch (err) {}
@@ -4772,15 +4768,20 @@
 
         const onPointerMove = (e) => {
           if (!activePointers.has(e.pointerId)) return;
-          activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+          const ptr = activePointers.get(e.pointerId);
+          ptr.x = e.clientX;
+          ptr.y = e.clientY;
 
           if (activePointers.size === 1) {
+            // 타일 터치 시에는 뷰포트 드래그를 실행하지 않음 (타일 클릭 보장)
+            if (ptr.isTile) return;
+
             const dx = e.clientX - dragStartX;
             const dy = e.clientY - dragStartY;
             totalDragDistance = Math.hypot(dx, dy);
 
-            // 7px 이상 움직이면 보드 이동(팬) 시작 & 타일 클릭 방지 & 포인터 캡처
-            if (totalDragDistance > 7) {
+            // 빈 바탕에서 8px 이상 드래그 시 패닝 실행
+            if (totalDragDistance > 8) {
               if (!this.hasPannedFar) {
                 try {
                   this.viewportEl.setPointerCapture(e.pointerId);
@@ -4827,16 +4828,18 @@
 
           if (activePointers.size === 1) {
             const remaining = Array.from(activePointers.values())[0];
-            dragStartX = remaining.x;
-            dragStartY = remaining.y;
-            initialPanX = this.panX;
-            initialPanY = this.panY;
+            if (!remaining.isTile) {
+              dragStartX = remaining.x;
+              dragStartY = remaining.y;
+              initialPanX = this.panX;
+              initialPanY = this.panY;
+            }
           } else if (activePointers.size === 0) {
             this.viewportEl.classList.remove('panning');
             setTimeout(() => {
               this.isPanning = false;
               this.hasPannedFar = false;
-            }, 80);
+            }, 60);
           }
         };
 
