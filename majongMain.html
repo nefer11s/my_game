@@ -203,6 +203,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
       transition: transform 0.22s cubic-bezier(0.2, 0.9, 0.4, 1.1),
                   filter 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
       will-change: transform, filter, box-shadow;
@@ -223,6 +227,11 @@
         7px 7px 0 #123e2b,
         8px 8px 0 #0d2c1e,
         6px 10px 16px rgba(10, 35, 22, 0.26);
+    }
+
+    /* 타일 내부 요소는 클릭/터치 이벤트를 방해하지 않고 본체로 통과 */
+    .tile-inner, .tile-front, .tile-back, .tile-graphic-wrap, .tile-graphic-wrap *, .tile-sub-label, .tile-corner-badge {
+      pointer-events: none;
     }
 
     /* 3D 플립 카드 이너 래퍼 */
@@ -496,6 +505,19 @@
 
     .tile.blocked .tile-graphic-wrap {
       filter: grayscale(0.25) brightness(0.82);
+    }
+
+    /* 잠긴 타일 터치 시 불가 피드백 흔들림 */
+    .tile.blocked.wiggle {
+      animation: tileLockWiggle 0.3s ease !important;
+    }
+
+    @keyframes tileLockWiggle {
+      0%, 100% { transform: translate3d(var(--tx), var(--ty), var(--tz)); }
+      20% { transform: translate3d(calc(var(--tx) - 4px), var(--ty), var(--tz)); }
+      40% { transform: translate3d(calc(var(--tx) + 4px), var(--ty), var(--tz)); }
+      60% { transform: translate3d(calc(var(--tx) - 2px), var(--ty), var(--tz)); }
+      80% { transform: translate3d(calc(var(--tx) + 2px), var(--ty), var(--tz)); }
     }
 
     /* 자유로운 뒤집힌 패 호버 시 신비로운 골드 글로우 */
@@ -3393,6 +3415,30 @@
             </div>
           `;
 
+          // 고반응 터치/포인터 이벤트 리스너 (모바일 미세 흔들림 및 300ms 지연 완벽 방지)
+          let startX = 0, startY = 0, pointerValid = false;
+
+          el.addEventListener('pointerdown', (e) => {
+            if (e.pointerType === 'mouse' && e.button !== 0) return;
+            startX = e.clientX;
+            startY = e.clientY;
+            pointerValid = true;
+          });
+
+          el.addEventListener('pointerup', (e) => {
+            if (!pointerValid) return;
+            pointerValid = false;
+            const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
+            if (dist < 14) {
+              e.stopPropagation();
+              this.handleTileClick(tile);
+            }
+          });
+
+          el.addEventListener('pointercancel', () => {
+            pointerValid = false;
+          });
+
           el.addEventListener('click', (e) => {
             e.stopPropagation();
             this.handleTileClick(tile);
@@ -3465,6 +3511,9 @@
           if (tile.el) {
             tile.el.classList.toggle('free', free);
             tile.el.classList.toggle('blocked', !free);
+            // 자유 패는 같은 층의 잠긴 패보다 z-index를 +35 높여 터치 가림 원천 방지
+            const baseZ = tile.z * 100 + tile.y * 10 + tile.x;
+            tile.el.style.zIndex = free ? (baseZ + 35) : baseZ;
           }
         });
 
@@ -3502,7 +3551,26 @@
        * 타일 클릭: 보드에서 빈 슬롯(트레이)으로 이동
        */
       handleTileClick(tile) {
-        if (this.isGameOver || this.isAutoClearing || this.isDealing || tile.removed || !this.isTileFree(tile)) {
+        if (this.isGameOver || this.isAutoClearing || this.isDealing || tile.removed) {
+          return;
+        }
+
+        // 터치 디바운스 (동일 타일의 160ms 이내 중복 연타 방지)
+        const now = performance.now();
+        if (tile._lastClickTime && (now - tile._lastClickTime < 160)) {
+          return;
+        }
+        tile._lastClickTime = now;
+
+        // 잠긴 타일인 경우: 시각적 흔들림(wiggle)과 미스 사운드로 잠김 상태 명확 피드백
+        if (!this.isTileFree(tile)) {
+          if (this.sound && this.sound.playMiss) this.sound.playMiss();
+          if (tile.el) {
+            tile.el.classList.remove('wiggle');
+            void tile.el.offsetWidth;
+            tile.el.classList.add('wiggle');
+            setTimeout(() => { if (tile.el) tile.el.classList.remove('wiggle'); }, 300);
+          }
           return;
         }
 
