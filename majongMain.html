@@ -1338,11 +1338,45 @@
         0 0 30px rgba(255, 140, 0, 0.8),
         0 6px 20px rgba(0, 0, 0, 0.45);
       z-index: 1800;
-      pointer-events: none;
+      pointer-events: auto;
+      cursor: pointer;
       opacity: 0;
       letter-spacing: 6px;
       animation: bigWinPop 0.85s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
       white-space: nowrap;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .big-win-banner .win-sub-touch {
+      font-size: clamp(14px, 3.5vw, 20px);
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 215, 0, 0.6);
+      background: rgba(16, 65, 43, 0.85);
+      padding: 6px 18px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 215, 0, 0.5);
+      animation: touchGuideBlink 1.2s infinite alternate ease-in-out;
+    }
+
+    @keyframes touchGuideBlink {
+      0% { transform: scale(0.96); opacity: 0.8; }
+      100% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 14px rgba(255, 215, 0, 0.6); }
+    }
+
+    .big-win-banner.closing {
+      animation: bigWinFadeOut 0.32s ease forwards;
+    }
+
+    @keyframes bigWinFadeOut {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
     }
 
     @keyframes bigWinPop {
@@ -4008,34 +4042,67 @@
           });
         });
 
-        // 3) 대형 황금 WIN 배너 팝업
+        // 3) 대형 황금 WIN 배너 팝업 (터치 시 사라지며 승리 모달로 전환)
+        this.showWinBanner();
+      }
+
+      /**
+       * 대형 황금 WIN 배너 연출 (터치/클릭해야 사라지며 승리 모달로 전환)
+       */
+      showWinBanner() {
+        if (this.isClear) return;
+        this.isClear = true;
+        clearInterval(this.timerId);
+        this.sound.playWin();
+
         const oldBanner = document.getElementById('big-win-banner');
         if (oldBanner) oldBanner.remove();
 
         const winBanner = document.createElement('div');
         winBanner.className = 'big-win-banner';
         winBanner.id = 'big-win-banner';
-        winBanner.innerHTML = '🏆 WIN!';
-        this.viewportEl.appendChild(winBanner);
+        winBanner.innerHTML = `
+          <span>🏆 WIN!</span>
+          <span class="win-sub-touch">👆 화면을 터치하여 계속하기</span>
+        `;
 
-        // 4) 최종 승리 모달 활성화
-        const winTimer = setTimeout(() => {
-          this.sound.playWin();
-          this.isClear = true;
-          clearInterval(this.timerId);
-          this.showVictoryModal();
-        }, 950);
-        this.autoClearTimeouts.push(winTimer);
+        let dismissed = false;
+        const dismissBanner = (e) => {
+          if (e) {
+            e.stopPropagation();
+          }
+          if (dismissed) return;
+          dismissed = true;
+
+          this.sound.playSelect();
+          winBanner.classList.add('closing');
+          setTimeout(() => {
+            if (winBanner.parentNode) winBanner.remove();
+            this.showVictoryModal();
+          }, 280);
+        };
+
+        // 배너 자체 클릭/터치 이벤트
+        winBanner.addEventListener('click', dismissBanner);
+        winBanner.addEventListener('touchend', dismissBanner);
+
+        // 뷰포트/화면 어디를 터치해도 닫히도록 1회성 글로벌 리스너 등록
+        setTimeout(() => {
+          const globalDismiss = (e) => {
+            window.removeEventListener('pointerdown', globalDismiss);
+            dismissBanner(e);
+          };
+          window.addEventListener('pointerdown', globalDismiss, { once: true });
+        }, 350);
+
+        this.viewportEl.appendChild(winBanner);
       }
 
       checkWinCondition() {
         const remain = this.tiles.filter(t => !t.removed).length;
         const remainTray = this.trayTiles ? this.trayTiles.length : 0;
         if (remain === 0 && remainTray === 0 && !this.isClear) {
-          this.isClear = true;
-          clearInterval(this.timerId);
-          this.sound.playWin();
-          this.showVictoryModal();
+          this.showWinBanner();
         }
       }
 
