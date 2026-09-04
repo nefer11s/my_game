@@ -124,23 +124,14 @@
       font-variant-numeric: tabular-nums;
     }
 
-    .top-right {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
+    .btn-dock-settings {
+      border-color: rgba(74, 110, 93, 0.4);
+      color: #214e39;
     }
 
-    .btn-top-icon {
-      height: 32px;
-      width: 32px;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 10px;
-      font-size: 16px;
-      box-shadow: 0 2px 6px rgba(24, 60, 44, 0.08);
+    .btn-dock-settings:hover:not(:disabled) {
+      border-color: #2ea779;
+      color: #2ea779;
     }
 
     /* 하단 상용 컨트롤 독 바 (Bottom Controller Dock) */
@@ -227,8 +218,9 @@
 
     .settings-dropdown {
       position: absolute;
-      top: calc(100% + 8px);
+      bottom: calc(100% + 10px);
       right: 0;
+      top: auto;
       background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
@@ -242,18 +234,18 @@
       min-width: 220px;
       max-width: calc(100vw - 24px);
       z-index: 1200;
-      transform-origin: top right;
-      animation: settingsPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-origin: bottom right;
+      animation: settingsPopUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .settings-dropdown.active {
       display: flex;
     }
 
-    @keyframes settingsPop {
+    @keyframes settingsPopUp {
       from {
         opacity: 0;
-        transform: scale(0.92) translateY(-6px);
+        transform: scale(0.92) translateY(6px);
       }
       to {
         opacity: 1;
@@ -1753,6 +1745,8 @@
 
       .settings-dropdown {
         min-width: 190px;
+        bottom: calc(100% + 8px);
+        top: auto;
         padding: 10px;
         gap: 6px;
       }
@@ -1822,7 +1816,8 @@
       }
 
       .settings-dropdown {
-        top: calc(100% + 3px);
+        bottom: calc(100% + 4px);
+        top: auto;
         padding: 6px;
         gap: 4px;
         min-width: 170px;
@@ -1860,40 +1855,6 @@
       <div class="hud-pill score-pill" title="현재 점수">
         <span class="hud-pill-label">점수</span>
         <span class="hud-pill-val" id="stat-score">0</span>
-      </div>
-    </div>
-
-    <div class="top-right">
-      <!-- 톱니바퀴 설정 메뉴 (난이도, 방법, 랭킹, 전체화면) -->
-      <div class="settings-wrapper" id="settings-wrapper">
-        <button class="btn btn-top-icon" id="btn-settings" title="환경 설정" aria-haspopup="true" aria-expanded="false">
-          <span class="btn-icon">⚙️</span>
-        </button>
-        <div class="settings-dropdown" id="settings-dropdown">
-          <div class="settings-item">
-            <span class="settings-label">🎮 난이도 선택</span>
-            <select class="diff-select" id="select-difficulty" title="난이도 선택">
-              <option value="easy">🌱 쉬움 (15종 · 공개)</option>
-              <option value="normal" selected>🌿 보통 (24종 · 블라인드 4개)</option>
-              <option value="hard">🔥 어려움 (34종 · 블라인드 10개)</option>
-              <option value="master">👑 달인 (46종 · 블라인드 16개)</option>
-            </select>
-          </div>
-          <div class="settings-divider"></div>
-          <button class="btn settings-btn" id="btn-rules-header" title="게임 방법 안내">
-            <span class="btn-icon">📜</span> 게임 방법
-          </button>
-          <button class="btn settings-btn" id="btn-rank-header" title="명예의 전당">
-            <span class="btn-icon">🏆</span> 명예의 전당 (랭킹)
-          </button>
-          <button class="btn settings-btn" id="btn-fullscreen" title="전체화면 모드 토글">
-            <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
-          </button>
-          <div class="settings-divider"></div>
-          <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.1
-          </div>
-        </div>
       </div>
     </div>
   </header>
@@ -1952,6 +1913,38 @@
       <button class="btn btn-dock" id="btn-restart" title="현재 판 다시 시작">
         <span class="btn-icon">🔄</span><span class="btn-label">재도전</span>
       </button>
+
+      <!-- 톱니바퀴 설정 메뉴 (하단 바로 이동) -->
+      <div class="settings-wrapper" id="settings-wrapper">
+        <button class="btn btn-dock" id="btn-settings" title="환경 설정 (난이도, 규칙, 랭킹, 화면)" aria-haspopup="true" aria-expanded="false">
+          <span class="btn-icon">⚙️</span><span class="btn-label">설정</span>
+        </button>
+        <div class="settings-dropdown" id="settings-dropdown">
+          <div class="settings-item">
+            <span class="settings-label">🎮 난이도 선택</span>
+            <select class="diff-select" id="select-difficulty" title="난이도 선택">
+              <option value="easy">🌱 쉬움 (15종 · 공개)</option>
+              <option value="normal" selected>🌿 보통 (24종 · 블라인드 4개)</option>
+              <option value="hard">🔥 어려움 (34종 · 블라인드 10개)</option>
+              <option value="master">👑 달인 (46종 · 블라인드 16개)</option>
+            </select>
+          </div>
+          <div class="settings-divider"></div>
+          <button class="btn settings-btn" id="btn-rules-header" title="게임 방법 안내">
+            <span class="btn-icon">📜</span> 게임 방법
+          </button>
+          <button class="btn settings-btn" id="btn-rank-header" title="명예의 전당">
+            <span class="btn-icon">🏆</span> 명예의 전당 (랭킹)
+          </button>
+          <button class="btn settings-btn" id="btn-fullscreen" title="전체화면 모드 토글">
+            <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
+          </button>
+          <div class="settings-divider"></div>
+          <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
+            Si-Yeon Mahjong Solitaire v1.4.2
+          </div>
+        </div>
+      </div>
     </div>
   </footer>
 
