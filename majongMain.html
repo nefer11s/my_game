@@ -1875,10 +1875,10 @@
           <div class="settings-item">
             <span class="settings-label">🎮 난이도 선택</span>
             <select class="diff-select" id="select-difficulty" title="난이도 선택">
-              <option value="easy">🌱 쉬움 (15종 · 공개)</option>
-              <option value="normal" selected>🌿 보통 (24종 · 블라인드 4개)</option>
-              <option value="hard">🔥 어려움 (34종 · 블라인드 10개)</option>
-              <option value="master">👑 달인 (46종 · 블라인드 16개)</option>
+              <option value="easy">🌱 쉬움 (14종 · 슬롯 5개 · 공개)</option>
+              <option value="normal" selected>🌿 보통 (24종 · 슬롯 4개 · 블라인드 4개)</option>
+              <option value="hard">🔥 어려움 (34종 · 슬롯 4개 · 블라인드 12개)</option>
+              <option value="master">👑 달인 (50종 · 슬롯 3개 · 블라인드 18개 · 극한 병목)</option>
             </select>
           </div>
           <div class="settings-divider"></div>
@@ -2531,11 +2531,23 @@
             <text x="24" y="52" text-anchor="middle" font-size="9" font-weight="900" fill="${color}">${sub}</text>
           </svg>
         `;
+      },
+
+      // 전통 4예패 (Four Arts 4종: 琴 棋 書 畫)
+      arts(hanzi, color, sub) {
+        return `
+          <svg class="tile-svg" viewBox="0 0 48 60">
+            <polygon points="24,8 40,24 24,40 8,24" fill="${color}" opacity="0.12"/>
+            <polygon points="24,8 40,24 24,40 8,24" fill="none" stroke="${color}" stroke-width="1.6"/>
+            <text x="24" y="34" text-anchor="middle" font-size="25" font-weight="900" fill="${color}" font-family="'Noto Serif KR', 'Songti SC', 'Batang', serif">${hanzi}</text>
+            <text x="24" y="52" text-anchor="middle" font-size="9" font-weight="900" fill="${color}">${sub}</text>
+          </svg>
+        `;
       }
     };
 
     /**
-     * 마작 패 데이터 목록 (총 46종)
+     * 마작 패 데이터 목록 (총 50종)
      */
     const TILE_DEFINITIONS = [
       // 만수 (1-9)
@@ -2571,18 +2583,18 @@
       { id: 's8', suit: 'tiao', val: 8, label: '8索', badge: '8索', render: () => SvgFactory.tiao(8) },
       { id: 's9', suit: 'tiao', val: 9, label: '9索', badge: '9索', render: () => SvgFactory.tiao(9) },
 
-      // 삼원패
+      // 삼원패 (3종)
       { id: 'hc', suit: 'honor', val: 'chun', label: '紅中', badge: '中', render: () => SvgFactory.honor('chun') },
       { id: 'hf', suit: 'honor', val: 'fa', label: '發財', badge: '發', render: () => SvgFactory.honor('fa') },
       { id: 'hb', suit: 'honor', val: 'bai', label: '白板', badge: '白', render: () => SvgFactory.honor('bai') },
 
-      // 풍패
+      // 풍패 (4종)
       { id: 'de', suit: 'wind', val: 'east', label: '東風', badge: '東', render: () => SvgFactory.wind('東') },
       { id: 'ds', suit: 'wind', val: 'south', label: '南風', badge: '南', render: () => SvgFactory.wind('南') },
       { id: 'dw', suit: 'wind', val: 'west', label: '西風', badge: '西', render: () => SvgFactory.wind('西') },
       { id: 'dn', suit: 'wind', val: 'north', label: '北風', badge: '北', render: () => SvgFactory.wind('北') },
 
-      // 화패 / 사군자 (Flowers 8종) - 고급/마스터 전용 그림셋
+      // 화패 / 사군자 (Flowers 8종)
       { id: 'f_mei', suit: 'flower', val: 'mei', label: '梅花', badge: '梅', render: () => SvgFactory.flower('梅', '#d81b60', '매화') },
       { id: 'f_lan', suit: 'flower', val: 'lan', label: '蘭草', badge: '蘭', render: () => SvgFactory.flower('蘭', '#8e24aa', '난초') },
       { id: 'f_zhu', suit: 'flower', val: 'zhu', label: '竹葉', badge: '竹', render: () => SvgFactory.flower('竹', '#2e7d32', '대나무') },
@@ -2592,7 +2604,13 @@
       { id: 'f_qiu', suit: 'flower', val: 'qiu', label: '秋楓', badge: '秋', render: () => SvgFactory.season('秋', '#e65100', '가을') },
       { id: 'f_dong', suit: 'flower', val: 'dong', label: '冬雪', badge: '冬', render: () => SvgFactory.season('冬', '#3949ab', '겨울') },
 
-      // 사신수 영수패 (Mythic 4종) - 마스터 전용 그림셋
+      // 4예패 (Four Arts 4종: 琴 棋 書 畫)
+      { id: 'a_qin', suit: 'arts', val: 'qin', label: '玄琴', badge: '琴', render: () => SvgFactory.arts('琴', '#00796b', '거문고') },
+      { id: 'a_qi', suit: 'arts', val: 'qi', label: '圍棋', badge: '棋', render: () => SvgFactory.arts('棋', '#455a64', '바둑') },
+      { id: 'a_shu', suit: 'arts', val: 'shu', label: '書法', badge: '書', render: () => SvgFactory.arts('書', '#5d4037', '서예') },
+      { id: 'a_hua', suit: 'arts', val: 'hua', label: '丹靑', badge: '畫', render: () => SvgFactory.arts('畫', '#c2185b', '그림') },
+
+      // 사신수 영수패 (Mythic 4종)
       { id: 'm_dragon', suit: 'myth', val: 'dragon', label: '靑龍', badge: '龍', render: () => SvgFactory.myth('龍', '#00897b', '청룡') },
       { id: 'm_tiger', suit: 'myth', val: 'tiger', label: '白虎', badge: '虎', render: () => SvgFactory.myth('虎', '#546e7a', '백호') },
       { id: 'm_phoenix', suit: 'myth', val: 'phoenix', label: '朱雀', badge: '雀', render: () => SvgFactory.myth('雀', '#c2185b', '주작') },
@@ -2600,22 +2618,22 @@
     ];
 
     /**
-     * 난이도 설정 (패 종류 수 및 그림셋 확장)
+     * 난이도 설정 (패 종류 수 및 상용급 조합 복잡도 구성)
      */
     const DIFFICULTY_CONFIG = {
       easy: {
         name: '쉬움',
         badgeColor: '#2ea779',
         slotCount: 5, // 빈 슬롯 5개
-        blindCount: 0, // 블라인드 없음 (전체 공개)
+        blindCount: 0, // 블라인드 없음
         lives: 5, // 하트 5개
-        filter: (def) => (def.suit === 'wan' && def.val <= 6) || (def.suit === 'tong' && def.val <= 6) || (def.suit === 'tiao' && def.val <= 3) // 15종 풀
+        filter: (def) => (def.suit === 'wan' && def.val <= 5) || (def.suit === 'tong' && def.val <= 5) || (def.suit === 'tiao' && def.val <= 4) // 14종 풀 (중복 풍부)
       },
       normal: {
         name: '보통',
         badgeColor: '#2980b9',
         slotCount: 4, // 빈 슬롯 4개
-        blindCount: 4, // 최상단 Layer 2 (4개) 블라인드
+        blindCount: 4, // 최상단 Layer 2 블라인드
         lives: 4, // 하트 4개
         filter: (def) => (def.suit === 'wan') || (def.suit === 'tong') || (def.suit === 'tiao' && def.val <= 6) // 24종 풀
       },
@@ -2623,17 +2641,17 @@
         name: '어려움',
         badgeColor: '#d35400',
         slotCount: 4, // 빈 슬롯 4개
-        blindCount: 10, // 최상단 Layer 2 (4개) + Layer 1 (6개) 블라인드
+        blindCount: 12, // 블라인드 12개
         lives: 3, // 하트 3개
-        filter: (def) => ['wan', 'tong', 'tiao', 'honor', 'wind'].includes(def.suit) // 34종 전체 정통 마작패 풀
+        filter: (def) => ['wan', 'tong', 'tiao', 'honor', 'wind'].includes(def.suit) // 34종 정통 마작 풀 (만·통·삭·삼원·사풍패 전원)
       },
       master: {
         name: '달인',
         badgeColor: '#8e44ad',
-        slotCount: 3, // 빈 슬롯 3개
-        blindCount: 16, // Layer 2 (4개) + Layer 1 (12개 전원) = 상위 2개 층 블라인드
+        slotCount: 3, // 빈 슬롯 3개 (극도의 슬롯 병목 유도)
+        blindCount: 18, // 블라인드 18개 (상위 2개 층 블라인드)
         lives: 3, // 하트 3개
-        filter: () => true // 46종 전체 (꽃패 8종 + 사신수 4종 총출동)
+        filter: () => true // 50종 전체 (화패 8종 + 4예패 4종 + 사신수 4종 총출동, 맵에 1쌍씩만 유일 출현)
       }
     };
 
@@ -3609,11 +3627,31 @@
         const chosenDefs = [];
         const poolCopy = [...availablePool];
 
-        for (let i = 0; i < numPairs; i++) {
-          const randIdx = Math.floor(Math.random() * poolCopy.length);
-          chosenDefs.push(poolCopy[randIdx]);
-          if (poolCopy.length > numPairs - i) {
-            poolCopy.splice(randIdx, 1);
+        // 난이도별 상용급 패 다양성(Diversity) 가중치 적용:
+        // 달인(Master)/어려움(Hard) 모드는 중복을 원천 차단하고 보드 전체에 '1쌍(2개)'씩만 유일 출현하도록 강제!
+        // 맵에 짝 1개가 깊숙이 묻혀있으면 슬롯이 즉시 잠기는 상용급 병목 및 수읽기 요구
+        if (this.difficulty === 'master' || this.difficulty === 'hard') {
+          // 가용 풀 전체 무작위 셔플 (Fisher-Yates)
+          for (let i = poolCopy.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [poolCopy[i], poolCopy[j]] = [poolCopy[j], poolCopy[i]];
+          }
+          for (let i = 0; i < numPairs; i++) {
+            if (i < poolCopy.length) {
+              chosenDefs.push(poolCopy[i]);
+            } else {
+              const randIdx = Math.floor(Math.random() * poolCopy.length);
+              chosenDefs.push(poolCopy[randIdx]);
+            }
+          }
+        } else {
+          // 쉬움/보통: 적은 종류 풀에서 여러 쌍이 중복 등장하여 짝 맞추기 용이
+          for (let i = 0; i < numPairs; i++) {
+            const randIdx = Math.floor(Math.random() * poolCopy.length);
+            chosenDefs.push(poolCopy[randIdx]);
+            if (poolCopy.length > numPairs - i) {
+              poolCopy.splice(randIdx, 1);
+            }
           }
         }
 
