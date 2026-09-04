@@ -3339,7 +3339,7 @@
         document.getElementById('btn-hint').disabled = false;
 
         this.buildSolvableBoard();
-        this.initialTiles = JSON.parse(JSON.stringify(this.tiles));
+        this.initialTiles = this.cloneTileData(this.tiles);
         this.updateHeaderUI();
         this.renderBoard();
         this.handleResize();
@@ -3348,6 +3348,24 @@
         if (this.hasStarted) {
           this.startTimer();
         }
+      }
+
+      /**
+       * 타일 데이터 복사 (def 내 render 함수 보존을 위해 얕은 복사 수행)
+       */
+      cloneTileData(tileList) {
+        if (!tileList) return [];
+        return tileList.map(t => ({
+          id: t.id,
+          slotId: t.slotId,
+          x: t.x,
+          y: t.y,
+          z: t.z,
+          def: t.def, // TILE_DEFINITIONS 참조 유지 (render 함수 보존)
+          removed: false,
+          isCovered: !!t.isCovered,
+          isRevealed: false
+        }));
       }
 
       /**
@@ -3367,8 +3385,11 @@
         this.blindMismatchCount = 0;
         this.lastFlippedBlindTile = null;
 
-        // 목숨을 해당 판 시작 시점으로 복원
-        this.lives = this.initialLives || this.maxLives;
+        // 사용자 요청: 다시시작 버튼 시 하트 개수가 초기화되지 않도록
+        // 게임 오버 상태(lives <= 0)인 경우에만 maxLives로 복구, 진행 중 재시작 시에는 현재 남은 하트 유지
+        if (this.lives <= 0) {
+          this.lives = this.maxLives;
+        }
         this.updateLivesUI();
 
         // 슬롯(트레이) 초기화
@@ -3406,12 +3427,12 @@
         document.getElementById('btn-shuffle').disabled = false;
         document.getElementById('btn-hint').disabled = false;
 
-        // 해당 판의 초기 타일 배치 복원
+        // 해당 판의 초기 타일 배치 복원 (cloneTileData 사용으로 render 함수 보존)
         if (this.initialTiles && this.initialTiles.length > 0) {
-          this.tiles = JSON.parse(JSON.stringify(this.initialTiles));
+          this.tiles = this.cloneTileData(this.initialTiles);
         } else {
           this.buildSolvableBoard();
-          this.initialTiles = JSON.parse(JSON.stringify(this.tiles));
+          this.initialTiles = this.cloneTileData(this.tiles);
         }
 
         this.updateHeaderUI();
@@ -4234,8 +4255,8 @@
       }
 
       shuffleRemain() {
-        if (this.isAutoClearing || this.isGameOver) return;
-        const activeTiles = this.tiles.filter(t => !t.removed);
+        if (this.isAutoClearing || this.isGameOver || this.isDealing) return;
+        const activeTiles = this.tiles.filter(t => !t.removed && t.el);
         if (activeTiles.length === 0) return;
 
         // 셔플 시 하트 1개 소진
@@ -4247,7 +4268,7 @@
         if (this.selectedTile) {
           if (this.selectedTile.isCovered) {
             this.flipTileBack(this.selectedTile);
-          } else {
+          } else if (this.selectedTile.el) {
             this.selectedTile.el.classList.remove('selected');
           }
           this.selectedTile = null;
@@ -4261,6 +4282,7 @@
 
         activeTiles.forEach((tile, i) => {
           tile.def = activeDefs[i];
+          if (!tile.el) return;
 
           const badgeEl = tile.el.querySelector('.tile-corner-badge');
           const wrapEl = tile.el.querySelector('.tile-graphic-wrap');
@@ -4279,7 +4301,9 @@
           tile.el.style.transition = 'transform 0.25s ease';
           tile.el.style.transform += ' scale(0.92)';
           setTimeout(() => {
-            tile.el.style.transform = tile.el.style.transform.replace(' scale(0.92)', '');
+            if (tile.el && !tile.removed) {
+              tile.el.style.transform = tile.el.style.transform.replace(' scale(0.92)', '');
+            }
           }, 240);
         });
 
