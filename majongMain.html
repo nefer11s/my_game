@@ -4417,6 +4417,7 @@
           this.sound.playMatch();
           const bonus = (t1.wasCovered || t2.wasCovered) ? 150 : 100;
           this.score += bonus;
+          this.blindMismatchCount = 0; // 일반 패 매치 성공 시에도 실패 카운트 초기화
           this.updateHeaderUI();
 
           // 되돌리기 스택에 매칭 기록
