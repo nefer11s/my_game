@@ -93,7 +93,95 @@
     .controls-bar {
       display: flex;
       justify-content: center;
+      align-items: center;
       gap: 12px;
+    }
+
+    /* 톱니바퀴 설정 메뉴 래퍼 & 드롭다운 */
+    .settings-wrapper {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .settings-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: rgba(255, 255, 255, 0.96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 16px;
+      border: 1.5px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 14px 36px rgba(24, 60, 44, 0.2), 0 2px 8px rgba(0, 0, 0, 0.06);
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 220px;
+      max-width: calc(100vw - 24px);
+      z-index: 1200;
+      transform-origin: top right;
+      animation: settingsPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .settings-dropdown.active {
+      display: flex;
+    }
+
+    @keyframes settingsPop {
+      from {
+        opacity: 0;
+        transform: scale(0.92) translateY(-6px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .settings-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .settings-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #5c8772;
+      padding-left: 4px;
+      letter-spacing: 0.3px;
+    }
+
+    .settings-dropdown .diff-select {
+      width: 100%;
+      height: 38px;
+      font-size: 13px;
+      border: 1.5px solid rgba(46, 167, 121, 0.3);
+    }
+
+    .settings-dropdown .settings-btn {
+      width: 100%;
+      height: 38px;
+      justify-content: flex-start;
+      padding: 0 12px;
+      font-size: 13px;
+      background: rgba(244, 250, 246, 0.95);
+      border: 1px solid rgba(215, 235, 224, 0.85);
+      box-shadow: none;
+      white-space: nowrap;
+    }
+
+    .settings-dropdown .settings-btn:hover {
+      background: #ffffff;
+      border-color: var(--accent-mint);
+      transform: translateX(2px);
+    }
+
+    .settings-divider {
+      height: 1px;
+      background: rgba(46, 167, 121, 0.15);
+      margin: 2px 0;
     }
 
     .btn {
@@ -1505,6 +1593,17 @@
         padding: 4px 10px;
         font-size: 11px;
       }
+
+      .settings-dropdown {
+        min-width: 200px;
+        padding: 10px;
+        gap: 6px;
+      }
+
+      .settings-dropdown .settings-btn {
+        height: 34px;
+        font-size: 12px;
+      }
     }
 
     /* 화면이 가로일 때(Landscape) 모바일 상하 여백 극소화 */
@@ -1544,6 +1643,23 @@
         padding: 0 8px;
         font-size: 11px;
         border-radius: 8px;
+      }
+
+      .settings-dropdown {
+        top: calc(100% + 4px);
+        padding: 8px;
+        gap: 5px;
+        min-width: 180px;
+      }
+
+      .settings-dropdown .diff-select {
+        height: 30px;
+        font-size: 11px;
+      }
+
+      .settings-dropdown .settings-btn {
+        height: 30px;
+        font-size: 11px;
       }
 
       footer {
@@ -1588,21 +1704,6 @@
     </div>
 
     <div class="controls-bar">
-      <select class="diff-select" id="select-difficulty" title="난이도 선택">
-        <option value="easy">🌱 쉬움 (15종 · 공개)</option>
-        <option value="normal" selected>🌿 보통 (24종 · 블라인드 4개)</option>
-        <option value="hard">🔥 어려움 (34종 · 블라인드 10개)</option>
-        <option value="master">👑 달인 (46종 · 블라인드 16개)</option>
-      </select>
-      <button class="btn" id="btn-rules-header" title="게임 방법 보기">
-        <span class="btn-icon">❓</span> 방법
-      </button>
-      <button class="btn" id="btn-rank-header" title="명예의 전당">
-        <span class="btn-icon">🏆</span> 랭킹
-      </button>
-      <button class="btn" id="btn-fullscreen" title="전체화면 모드">
-        <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
-      </button>
       <button class="btn" id="btn-undo" title="되돌리기">
         <span class="btn-icon">↩</span> 되돌리기
       </button>
@@ -1615,6 +1716,34 @@
       <button class="btn" id="btn-restart" title="현재 판 다시 시작">
         <span class="btn-icon">🔄</span> 다시 시작
       </button>
+
+      <!-- 톱니바퀴 설정 메뉴 (난이도, 방법, 랭킹, 전체화면) -->
+      <div class="settings-wrapper" id="settings-wrapper">
+        <button class="btn" id="btn-settings" title="설정 메뉴" aria-haspopup="true" aria-expanded="false">
+          <span class="btn-icon">⚙️</span> 설정
+        </button>
+        <div class="settings-dropdown" id="settings-dropdown">
+          <div class="settings-item">
+            <span class="settings-label">🎮 난이도 선택</span>
+            <select class="diff-select" id="select-difficulty" title="난이도 선택">
+              <option value="easy">🌱 쉬움 (15종 · 공개)</option>
+              <option value="normal" selected>🌿 보통 (24종 · 블라인드 4개)</option>
+              <option value="hard">🔥 어려움 (34종 · 블라인드 10개)</option>
+              <option value="master">👑 달인 (46종 · 블라인드 16개)</option>
+            </select>
+          </div>
+          <div class="settings-divider"></div>
+          <button class="btn settings-btn" id="btn-rules-header" title="게임 방법 보기">
+            <span class="btn-icon">📜</span> 게임 방법
+          </button>
+          <button class="btn settings-btn" id="btn-rank-header" title="명예의 전당">
+            <span class="btn-icon">🏆</span> 명예의 전당 (랭킹)
+          </button>
+          <button class="btn settings-btn" id="btn-fullscreen" title="전체화면 모드">
+            <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
+          </button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -2761,9 +2890,40 @@
           });
         }
 
+        // 톱니바퀴 설정 메뉴 토글 및 외부 클릭 처리
+        const btnSettings = document.getElementById('btn-settings');
+        const settingsDropdown = document.getElementById('settings-dropdown');
+        if (btnSettings && settingsDropdown) {
+          btnSettings.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.sound.playSelect();
+            const isOpen = settingsDropdown.classList.toggle('active');
+            btnSettings.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+          });
+
+          // 설정 드롭다운 내부 클릭 시 외부 닫기 이벤트 전파 방지
+          settingsDropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+          });
+
+          // 바깥 영역 클릭/터치 시 메뉴 닫기
+          document.addEventListener('pointerdown', (e) => {
+            if (settingsDropdown.classList.contains('active')) {
+              if (!settingsDropdown.contains(e.target) && !btnSettings.contains(e.target)) {
+                settingsDropdown.classList.remove('active');
+                btnSettings.setAttribute('aria-expanded', 'false');
+              }
+            }
+          });
+        }
+
         if (btnRulesHeader) {
           btnRulesHeader.addEventListener('click', () => {
             this.sound.playSelect();
+            if (settingsDropdown) {
+              settingsDropdown.classList.remove('active');
+              if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
+            }
             if (rulesModal) rulesModal.classList.add('active');
           });
         }
@@ -2771,6 +2931,10 @@
         if (btnRankHeader) {
           btnRankHeader.addEventListener('click', () => {
             this.sound.playSelect();
+            if (settingsDropdown) {
+              settingsDropdown.classList.remove('active');
+              if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
+            }
             this.renderHallOfFame();
             if (rankModal) rankModal.classList.add('active');
           });
@@ -2820,10 +2984,23 @@
         if (diffSelect) {
           diffSelect.addEventListener('change', (e) => {
             this.setDifficulty(e.target.value);
+            if (settingsDropdown) {
+              settingsDropdown.classList.remove('active');
+              if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
+            }
           });
         }
 
-        document.getElementById('btn-fullscreen').addEventListener('click', () => this.toggleFullscreen());
+        const btnFs = document.getElementById('btn-fullscreen');
+        if (btnFs) {
+          btnFs.addEventListener('click', () => {
+            if (settingsDropdown) {
+              settingsDropdown.classList.remove('active');
+              if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
+            }
+            this.toggleFullscreen();
+          });
+        }
         document.getElementById('btn-undo').addEventListener('click', () => this.undo());
         document.getElementById('btn-hint').addEventListener('click', () => this.showHint());
         document.getElementById('btn-shuffle').addEventListener('click', () => this.shuffleRemain());
