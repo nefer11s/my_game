@@ -3748,37 +3748,31 @@
             </div>
           `;
 
-          // 고반응 터치 및 클릭 이벤트 리스너 (하위 타일 관통 클릭 방지)
-          let touchStartX = 0, touchStartY = 0;
+          // 고반응 정밀 포인터 이벤트 (마우스/터치 통합 0ms 반응 및 고스트 클릭 원천 차단)
+          let pDownX = 0, pDownY = 0, pDownTime = 0;
 
-          el.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) {
-              touchStartX = e.touches[0].clientX;
-              touchStartY = e.touches[0].clientY;
+          el.addEventListener('pointerdown', (e) => {
+            if (e.button !== undefined && e.button !== 0) return;
+            pDownX = e.clientX;
+            pDownY = e.clientY;
+            pDownTime = performance.now();
+          });
+
+          el.addEventListener('pointerup', (e) => {
+            if (e.button !== undefined && e.button !== 0) return;
+            const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
+            const duration = performance.now() - pDownTime;
+
+            // 화면 드래그 제스처가 아닌 탭/클릭(25px 이내, 500ms 미만)인 경우 즉시 실행
+            if (dist < 25 && duration < 500) {
+              if (e.cancelable) e.preventDefault();
+              this.handleTileClick(tile);
             }
-          }, { passive: true });
+          });
 
-          el.addEventListener('touchend', (e) => {
-            if (e.changedTouches.length === 1) {
-              const dx = e.changedTouches[0].clientX - touchStartX;
-              const dy = e.changedTouches[0].clientY - touchStartY;
-              const dist = Math.hypot(dx, dy);
-              if (dist < 40) {
-                // 터치 조작 시 브라우저 합성 click(Ghost Click)으로 인한 하위 타일 관통 방지
-                if (e.cancelable) e.preventDefault();
-                this.lastTouchHandledTime = performance.now();
-                this.handleTileClick(tile);
-              }
-            }
-          }, { passive: false });
-
+          // 브라우저 기본 합성 click 이벤트의 중복 발화 및 버블링 차단
           el.addEventListener('click', (e) => {
             e.stopPropagation();
-            // 최근 터치 조작 직후 브라우저가 생성하는 합성 고스트 클릭만 정밀 차단 (180ms)
-            if (this.lastTouchHandledTime && (performance.now() - this.lastTouchHandledTime < 180)) {
-              return;
-            }
-            this.handleTileClick(tile);
           });
 
           this.boardEl.appendChild(el);
@@ -3848,9 +3842,9 @@
           if (tile.el) {
             tile.el.classList.toggle('free', free);
             tile.el.classList.toggle('blocked', !free);
-            // 자유 패는 같은 층의 잠긴 패보다 z-index를 +35 높여 터치 가림 원천 방지
+            // 자유 패는 잠긴 패보다 z-index를 +150 대폭 높여 3D 시차 및 경계면 터치 시 무조건 우선권 부여
             const baseZ = tile.z * 100 + tile.y * 10 + tile.x;
-            tile.el.style.zIndex = free ? (baseZ + 35) : baseZ;
+            tile.el.style.zIndex = free ? (baseZ + 150) : baseZ;
           }
         });
 
