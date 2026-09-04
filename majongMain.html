@@ -415,7 +415,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      touch-action: manipulation;
+      touch-action: none !important;
       -webkit-tap-highlight-color: transparent;
       user-select: none;
       -webkit-user-select: none;
@@ -425,6 +425,12 @@
       outline: none;
       perspective: 800px;
       transform-style: preserve-3d;
+    }
+
+    /* 타일 내부 모든 자식 엘리먼트의 포인터 가로챔 원천 차단 (타일 본체로 단일 수신) */
+    .tile * {
+      pointer-events: none !important;
+    }
 
       /* 정밀 3D 적층 두께: 1~3px 백색 상아 본체층 + 4~8px 에메랄드 비취 바닥층 */
       box-shadow:
@@ -1870,6 +1876,9 @@
           <button class="btn settings-btn" id="btn-rank-header" title="명예의 전당">
             <span class="btn-icon">🏆</span> 명예의 전당 (랭킹)
           </button>
+          <button class="btn settings-btn" id="btn-sound-toggle" title="효과음 켜기/끄기">
+            <span class="btn-icon" id="sound-toggle-icon">🔊</span> <span id="sound-toggle-text">소리 켜짐</span>
+          </button>
           <button class="btn settings-btn" id="btn-fullscreen" title="전체화면 모드 토글">
             <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
           </button>
@@ -2044,9 +2053,19 @@
     class SoundFX {
       constructor() {
         this.ctx = null;
+        this.muted = localStorage.getItem('mahjong_sound_muted') === 'true';
+      }
+
+      toggleMute() {
+        this.muted = !this.muted;
+        try {
+          localStorage.setItem('mahjong_sound_muted', this.muted ? 'true' : 'false');
+        } catch (e) {}
+        return this.muted;
       }
 
       init() {
+        if (this.muted) return;
         if (!this.ctx) {
           const AudioContext = window.AudioContext || window.webkitAudioContext;
           if (AudioContext) {
@@ -3129,6 +3148,25 @@
           });
         }
 
+        // 소리 On / Off 토글 버튼 이벤트
+        const btnSound = document.getElementById('btn-sound-toggle');
+        const updateSoundUI = () => {
+          const icon = document.getElementById('sound-toggle-icon');
+          const text = document.getElementById('sound-toggle-text');
+          if (icon && text) {
+            icon.textContent = this.sound.muted ? '🔇' : '🔊';
+            text.textContent = this.sound.muted ? '소리 꺼짐 (음소거)' : '소리 켜짐';
+          }
+        };
+        updateSoundUI();
+        if (btnSound) {
+          btnSound.addEventListener('click', () => {
+            const isMuted = this.sound.toggleMute();
+            updateSoundUI();
+            if (!isMuted) this.sound.playSelect();
+          });
+        }
+
         const btnFs = document.getElementById('btn-fullscreen');
         if (btnFs) {
           btnFs.addEventListener('click', () => {
@@ -3952,12 +3990,20 @@
             this.renderTray();
 
             // 슬롯 내 2개 짝(매칭) 즉시 판정 및 소멸
+            this.blindMismatchCount = 0; // 매치 성공 시 실패 카운트 리셋
             this.checkTrayMatch(item2);
             return;
 
-          } else if (tile.isCovered && !tile.isRevealed) {
-            // 다른 뒤집힌 패를 클릭한 경우: 기존에 열려있던 패는 다시 뒷면으로 뒤집음
+          } else {
+            // 다른 뒤집힌 패든 일반 자유 패든, 모양이 다르면 기존에 열려있던 블라인드 패는 다시 뒤집어 숨김!
             this.flipTileBack(prevRevealed);
+
+            // 뒤집힌 패 3회 연속 매칭 실패 시 하트 1개 소진
+            this.blindMismatchCount++;
+            if (this.blindMismatchCount >= 3) {
+              this.blindMismatchCount = 0;
+              this.loseLife();
+            }
           }
         }
 
