@@ -3748,7 +3748,7 @@
             </div>
           `;
 
-          // 고반응 터치 및 클릭 이벤트 리스너
+          // 고반응 터치 및 클릭 이벤트 리스너 (하위 타일 관통 클릭 방지)
           let touchStartX = 0, touchStartY = 0;
 
           el.addEventListener('touchstart', (e) => {
@@ -3764,13 +3764,20 @@
               const dy = e.changedTouches[0].clientY - touchStartY;
               const dist = Math.hypot(dx, dy);
               if (dist < 45) {
+                // 터치 조작 시 브라우저 합성 click(Ghost Click)으로 인한 하위 타일 관통 방지
+                if (e.cancelable) e.preventDefault();
+                this.lastTouchHandledTime = performance.now();
                 this.handleTileClick(tile);
               }
             }
-          }, { passive: true });
+          }, { passive: false });
 
           el.addEventListener('click', (e) => {
             e.stopPropagation();
+            // 최근 터치 조작 직후 발생하는 고스트 클릭 무시
+            if (this.lastTouchHandledTime && (performance.now() - this.lastTouchHandledTime < 500)) {
+              return;
+            }
             this.handleTileClick(tile);
           });
 
@@ -3888,12 +3895,18 @@
           return;
         }
 
-        // 터치 디바운스 (동일 타일의 160ms 이내 중복 연타 방지)
         const now = performance.now();
+        // 전역 클릭 디바운스 (상위 타일 제거 직후 하위 타일의 연속 선택 관통 방지)
+        if (this.lastGlobalTileClickTime && (now - this.lastGlobalTileClickTime < 200)) {
+          return;
+        }
+
+        // 터치 디바운스 (동일 타일의 160ms 이내 중복 연타 방지)
         if (tile._lastClickTime && (now - tile._lastClickTime < 160)) {
           return;
         }
         tile._lastClickTime = now;
+        this.lastGlobalTileClickTime = now;
 
         // 잠긴 타일인 경우: 시각적 흔들림(wiggle)과 미스 사운드로 잠김 상태 명확 피드백
         if (!this.isTileFree(tile)) {
