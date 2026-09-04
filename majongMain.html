@@ -392,6 +392,14 @@
       overflow: hidden;
       perspective: 1100px;
       perspective-origin: 50% 38%;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      cursor: grab;
+    }
+
+    .game-viewport.panning {
+      cursor: grabbing;
     }
 
     .game-board {
@@ -400,7 +408,70 @@
       height: 545px;
       transform-origin: center center;
       transform-style: preserve-3d;
-      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.3, 1);
+      will-change: transform;
+    }
+
+    /* 화면 확대/축소 및 이동 플로팅 컨트롤 바 */
+    .zoom-floating-bar {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      z-index: 60;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 6px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 8px 24px rgba(24, 60, 44, 0.16);
+      transition: opacity 0.2s ease;
+    }
+
+    .btn-zoom {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: 1px solid rgba(46, 167, 121, 0.2);
+      background: #ffffff;
+      color: #174232;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+      transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+      touch-action: manipulation;
+    }
+
+    .btn-zoom:hover {
+      background: #e6f6ee;
+      color: var(--accent-mint);
+      border-color: var(--accent-mint);
+      transform: scale(1.08);
+      box-shadow: 0 4px 10px rgba(46, 167, 121, 0.25);
+    }
+
+    .btn-zoom:active {
+      transform: scale(0.92);
+    }
+
+    @media (max-width: 680px) {
+      .zoom-floating-bar {
+        right: 10px;
+        bottom: 10px;
+        padding: 5px;
+        gap: 5px;
+      }
+      .btn-zoom {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+      }
     }
 
     /* 타일 (Mahjong Tile) 3D 렌더링 - 맑고 밝은 상아/도자기 페이스 + 비취 2단 적층 바디 */
@@ -1846,6 +1917,13 @@
   <!-- 메인 게임 필드 (화면 중앙 최대 면적) -->
   <main class="game-viewport" id="viewport">
     <div class="game-board" id="board"></div>
+
+    <!-- 손쉬운 확대/축소 및 화면 맞춤 플로팅 컨트롤러 -->
+    <div class="zoom-floating-bar" id="zoom-controls">
+      <button class="btn-zoom" id="btn-zoom-in" title="화면 확대 (또는 두 손가락 핀치/마우스 휠)">➕</button>
+      <button class="btn-zoom" id="btn-zoom-reset" title="기본 크기 및 위치 맞춤">🎯</button>
+      <button class="btn-zoom" id="btn-zoom-out" title="화면 축소">➖</button>
+    </div>
   </main>
 
   <!-- 하단 상용 컨트롤 독 바 (남은패/매치 현황 + 쾌적한 하단 액션 버튼) -->
@@ -2921,11 +2999,20 @@
         this.isGameOver = false;
         this.blindMismatchCount = 0; // 뒤집기 3회 실패 카운터
 
+        // 뷰포트 확대/축소 및 자유 이동(Pan & Zoom) 시스템
+        this.baseScale = 1.0;
+        this.zoomLevel = 1.0;
+        this.panX = 0;
+        this.panY = 0;
+        this.isPanning = false;
+        this.hasPannedFar = false;
+
         // 난이도 및 무한 판수(스테이지) 설정
         this.difficulty = 'normal';
         this.currentStage = 1;
 
         this.bindEvents();
+        this.initViewportGestures();
         this.startNewGame();
       }
 
@@ -3342,6 +3429,7 @@
         this.initialTiles = this.cloneTileData(this.tiles);
         this.updateHeaderUI();
         this.renderBoard();
+        this.resetZoomAndPan(false);
         this.handleResize();
 
         // 사용자가 스플래시에서 게임 시작을 누른 이후에만 타이머 진행
@@ -3437,6 +3525,7 @@
 
         this.updateHeaderUI();
         this.renderBoard();
+        this.resetZoomAndPan(true);
         this.handleResize();
 
         if (this.hasStarted) {
@@ -3745,6 +3834,7 @@
           el.addEventListener('pointerup', (e) => {
             if (!pointerValid) return;
             pointerValid = false;
+            if (this.hasPannedFar || this.isPanning) return;
             const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
             if (dist < 14) {
               e.stopPropagation();
@@ -3757,6 +3847,7 @@
           });
 
           el.addEventListener('click', (e) => {
+            if (this.hasPannedFar || this.isPanning) return;
             e.stopPropagation();
             this.handleTileClick(tile);
           });
@@ -3868,7 +3959,7 @@
        * 타일 클릭: 보드에서 빈 슬롯(트레이)으로 이동
        */
       handleTileClick(tile) {
-        if (this.isGameOver || this.isAutoClearing || this.isDealing || tile.removed) {
+        if (this.isGameOver || this.isAutoClearing || this.isDealing || tile.removed || this.isPanning || this.hasPannedFar) {
           return;
         }
 
@@ -4628,6 +4719,206 @@
       }
 
       /**
+       * 뷰포트 터치 제스처 (핀치 줌, 드래그 팬, 마우스 휠 줌, 더블 탭) 시스템
+       */
+      initViewportGestures() {
+        if (!this.viewportEl) return;
+
+        const activePointers = new Map();
+        let lastPinchDist = 0;
+        let lastCenter = { x: 0, y: 0 };
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let initialPanX = 0;
+        let initialPanY = 0;
+        let totalDragDistance = 0;
+        let lastTapTime = 0;
+
+        const onPointerDown = (e) => {
+          // 플로팅 버튼이나 알림, 모달 클릭 시 제스처 제외
+          if (e.target.closest('#zoom-controls') || e.target.closest('.big-win-banner') || e.target.closest('.modal-card')) {
+            return;
+          }
+
+          // 더블 탭 감지 (300ms 이내 빠른 2회 터치 시 1.6배 줌 토글)
+          const now = performance.now();
+          if (now - lastTapTime < 300) {
+            lastTapTime = 0;
+            if (this.zoomLevel > 1.1) {
+              this.resetZoomAndPan(true);
+            } else {
+              this.setZoom(1.6, true);
+            }
+            return;
+          }
+          lastTapTime = now;
+
+          activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+          if (activePointers.size === 1) {
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            initialPanX = this.panX;
+            initialPanY = this.panY;
+            totalDragDistance = 0;
+            this.hasPannedFar = false;
+          } else if (activePointers.size === 2) {
+            try {
+              this.viewportEl.setPointerCapture(e.pointerId);
+            } catch (err) {}
+            const pts = Array.from(activePointers.values());
+            lastPinchDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+            lastCenter = {
+              x: (pts[0].x + pts[1].x) / 2,
+              y: (pts[0].y + pts[1].y) / 2
+            };
+            this.hasPannedFar = true;
+            this.isPanning = true;
+          }
+        };
+
+        const onPointerMove = (e) => {
+          if (!activePointers.has(e.pointerId)) return;
+          activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+          if (activePointers.size === 1) {
+            const dx = e.clientX - dragStartX;
+            const dy = e.clientY - dragStartY;
+            totalDragDistance = Math.hypot(dx, dy);
+
+            // 7px 이상 움직이면 보드 이동(팬) 시작 & 타일 클릭 방지 & 포인터 캡처
+            if (totalDragDistance > 7) {
+              if (!this.hasPannedFar) {
+                try {
+                  this.viewportEl.setPointerCapture(e.pointerId);
+                } catch (err) {}
+              }
+              this.hasPannedFar = true;
+              this.isPanning = true;
+              this.viewportEl.classList.add('panning');
+              this.panX = initialPanX + dx;
+              this.panY = initialPanY + dy;
+              this.applyBoardTransform(false);
+            }
+          } else if (activePointers.size === 2) {
+            const pts = Array.from(activePointers.values());
+            const currentDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+            const currentCenter = {
+              x: (pts[0].x + pts[1].x) / 2,
+              y: (pts[0].y + pts[1].y) / 2
+            };
+
+            if (lastPinchDist > 0 && currentDist > 0) {
+              const zoomFactor = currentDist / lastPinchDist;
+              this.zoomLevel = Math.min(3.2, Math.max(0.7, this.zoomLevel * zoomFactor));
+
+              // 손가락 중심점 이동도 팬에 실시간 반영
+              this.panX += currentCenter.x - lastCenter.x;
+              this.panY += currentCenter.y - lastCenter.y;
+
+              this.applyBoardTransform(false);
+            }
+
+            lastPinchDist = currentDist;
+            lastCenter = currentCenter;
+          }
+        };
+
+        const onPointerUp = (e) => {
+          if (activePointers.has(e.pointerId)) {
+            try {
+              this.viewportEl.releasePointerCapture(e.pointerId);
+            } catch (err) {}
+            activePointers.delete(e.pointerId);
+          }
+
+          if (activePointers.size === 1) {
+            const remaining = Array.from(activePointers.values())[0];
+            dragStartX = remaining.x;
+            dragStartY = remaining.y;
+            initialPanX = this.panX;
+            initialPanY = this.panY;
+          } else if (activePointers.size === 0) {
+            this.viewportEl.classList.remove('panning');
+            setTimeout(() => {
+              this.isPanning = false;
+              this.hasPannedFar = false;
+            }, 80);
+          }
+        };
+
+        this.viewportEl.addEventListener('pointerdown', onPointerDown);
+        this.viewportEl.addEventListener('pointermove', onPointerMove);
+        this.viewportEl.addEventListener('pointerup', onPointerUp);
+        this.viewportEl.addEventListener('pointercancel', onPointerUp);
+
+        // 데스크톱 마우스 휠 줌
+        this.viewportEl.addEventListener('wheel', (e) => {
+          e.preventDefault();
+          const zoomStep = e.deltaY < 0 ? 0.15 : -0.15;
+          this.setZoom(this.zoomLevel + zoomStep, false);
+        }, { passive: false });
+
+        // 플로팅 줌 컨트롤 버튼 연동
+        const btnZoomIn = document.getElementById('btn-zoom-in');
+        const btnZoomOut = document.getElementById('btn-zoom-out');
+        const btnZoomReset = document.getElementById('btn-zoom-reset');
+
+        if (btnZoomIn) {
+          btnZoomIn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.sound.playSelect();
+            this.setZoom(this.zoomLevel + 0.25, true);
+          });
+        }
+        if (btnZoomOut) {
+          btnZoomOut.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.sound.playSelect();
+            this.setZoom(this.zoomLevel - 0.25, true);
+          });
+        }
+        if (btnZoomReset) {
+          btnZoomReset.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.sound.playSelect();
+            this.resetZoomAndPan(true);
+          });
+        }
+      }
+
+      setZoom(newZoom, animated = false) {
+        this.zoomLevel = Math.min(3.2, Math.max(0.7, newZoom));
+        this.applyBoardTransform(animated);
+      }
+
+      resetZoomAndPan(animated = true) {
+        this.zoomLevel = 1.0;
+        this.panX = 0;
+        this.panY = 0;
+        this.applyBoardTransform(animated);
+      }
+
+      applyBoardTransform(animated = false) {
+        if (!this.boardEl || !this.viewportEl) return;
+        const vw = this.viewportEl.clientWidth;
+        const vh = this.viewportEl.clientHeight;
+        const isMobile = vw < 680;
+        const isPortrait = vw < vh;
+        const tiltX = isMobile ? (isPortrait ? 5 : 8) : 10;
+
+        const effectiveScale = (this.baseScale * this.zoomLevel).toFixed(3);
+
+        if (animated) {
+          this.boardEl.style.transition = 'transform 0.24s cubic-bezier(0.2, 0.8, 0.3, 1)';
+        } else {
+          this.boardEl.style.transition = 'none';
+        }
+
+        this.boardEl.style.transform = `translate3d(${this.panX.toFixed(1)}px, ${this.panY.toFixed(1)}px, 0) rotateX(${tiltX}deg) scale(${effectiveScale})`;
+      }
+
+      /**
        * 레이아웃별 실제 바운딩 박스 기반 반응형 스케일러
        * 모바일 세로/가로 화면에서 타일 크기 1.5배 이상 확대 최적화
        */
@@ -4650,20 +4941,17 @@
         const scaleX = (vw - marginX) / boardW;
         const scaleY = (vh - marginY) / boardH;
 
-        let scale;
         if (isMobile && isPortrait) {
           // 모바일 세로 모드: 화면 폭과 높이에 안전하게 최대 피팅
-          scale = Math.min(scaleX * 0.98, scaleY);
-          scale = Math.min(1.6, Math.max(0.45, scale));
+          this.baseScale = Math.min(scaleX * 0.98, scaleY);
+          this.baseScale = Math.min(1.6, Math.max(0.45, this.baseScale));
         } else {
           // 데스크톱 및 가로 모드: 화면을 시원하게 채우도록 최대 스케일 확장
-          scale = Math.min(scaleX, scaleY);
-          scale = Math.min(1.55, Math.max(0.5, scale));
+          this.baseScale = Math.min(scaleX, scaleY);
+          this.baseScale = Math.min(1.55, Math.max(0.5, this.baseScale));
         }
 
-        // 3D 틸트 각도: 모바일에서는 시야각 왜곡을 방지하기 위해 5도로 완화
-        const tiltX = isMobile ? (isPortrait ? 5 : 8) : 10;
-        this.boardEl.style.transform = `rotateX(${tiltX}deg) scale(${scale.toFixed(3)})`;
+        this.applyBoardTransform(false);
       }
     }
 
