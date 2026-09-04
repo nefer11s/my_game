@@ -634,6 +634,195 @@
       border: 1px solid rgba(255, 255, 255, 0.9);
     }
 
+    /* 슬롯 보관함 트레이 (Tray Rack) */
+    .tray-container {
+      width: 100%;
+      max-width: 660px;
+      margin: 0 auto 6px;
+      padding: 8px 14px 10px;
+      background: linear-gradient(135deg, rgba(20, 54, 38, 0.92), rgba(12, 38, 26, 0.95));
+      border: 2px solid rgba(212, 175, 55, 0.45);
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(10, 30, 20, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      z-index: 10;
+      position: relative;
+      user-select: none;
+      backdrop-filter: blur(8px);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .tray-container.danger {
+      border-color: #e53e3e;
+      box-shadow: 0 0 20px rgba(229, 62, 62, 0.6), inset 0 0 10px rgba(229, 62, 62, 0.3);
+      animation: trayShake 0.4s ease;
+    }
+
+    @keyframes trayShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    .tray-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: #e2f0d9;
+    }
+
+    .tray-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #dfcaa2;
+      font-weight: 700;
+    }
+
+    .tray-hint-sub {
+      font-size: 11px;
+      font-weight: normal;
+      color: #9abfa9;
+    }
+
+    @media (max-width: 600px) {
+      .tray-hint-sub {
+        display: none;
+      }
+    }
+
+    .tray-count-badge {
+      background: rgba(0, 0, 0, 0.35);
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #dfcaa2;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .tray-count-badge.warning {
+      color: #fc8181;
+      border-color: #e53e3e;
+      background: rgba(229, 62, 62, 0.25);
+      animation: pulseAlert 0.8s infinite alternate;
+    }
+
+    @keyframes pulseAlert {
+      from { transform: scale(1); }
+      to { transform: scale(1.08); }
+    }
+
+    .tray-slots {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      min-height: 64px;
+      flex-wrap: wrap;
+    }
+
+    .tray-slot-box {
+      width: 48px;
+      height: 60px;
+      border-radius: 8px;
+      background: rgba(6, 22, 15, 0.7);
+      border: 1.5px dashed rgba(212, 175, 55, 0.35);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: all 0.25s ease;
+    }
+
+    .tray-slot-box.bonus-expanded {
+      border: 2px solid #ffd700;
+      background: rgba(212, 175, 55, 0.18);
+      animation: slotPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes slotPop {
+      0% { transform: scale(0.3); opacity: 0; }
+      70% { transform: scale(1.18); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* 슬롯 내부의 마작 패 */
+    .tray-tile {
+      width: 44px;
+      height: 56px;
+      border-radius: 6px;
+      background: linear-gradient(145deg, #ffffff 0%, #faf6ee 55%, #eae0ce 100%);
+      border: 1px solid #dcd1be;
+      box-shadow: 1px 1px 0 #ede5d4, 2px 2px 0 #dfd5bf, 3px 3px 0 #287756, 4px 5px 8px rgba(0,0,0,0.35);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.2s ease;
+      animation: trayTileEnter 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes trayTileEnter {
+      from { transform: translateY(-24px) scale(0.65); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .tray-tile:hover {
+      transform: translateY(-4px) scale(1.06);
+      box-shadow: 0 6px 14px rgba(212, 175, 55, 0.5);
+    }
+
+    .tray-tile.matching {
+      animation: trayTileMatch 0.35s ease forwards;
+    }
+
+    @keyframes trayTileMatch {
+      0% { transform: scale(1); filter: brightness(1); }
+      40% { transform: scale(1.25); filter: brightness(1.7) drop-shadow(0 0 12px #ffd700); }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    .tray-tile .tile-corner-badge {
+      position: absolute;
+      top: 1px;
+      left: 3px;
+      font-size: 8px;
+      font-weight: 800;
+      color: #6d5b47;
+      opacity: 0.85;
+    }
+
+    .tray-tile .tile-graphic-wrap {
+      width: 32px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tray-tile .tile-graphic-wrap svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .tray-tile .tile-sub-label {
+      position: absolute;
+      bottom: 1px;
+      font-size: 8px;
+      font-weight: 700;
+      color: #534537;
+    }
+
     /* 모달 팝업 */
     .modal-overlay {
       position: fixed;
@@ -1370,6 +1559,20 @@
     <div class="game-board" id="board"></div>
   </main>
 
+  <!-- 슬롯 보관함 트레이 바 -->
+  <div class="tray-container" id="tray-container">
+    <div class="tray-header">
+      <div class="tray-title">
+        <span class="tray-icon">📥</span> <strong>임시 보관함</strong>
+        <span class="tray-hint-sub">(클릭한 패가 모이고 2개가 되면 짝이 맞아 사라집니다)</span>
+      </div>
+      <div class="tray-count-badge" id="tray-count-badge">0 / 5</div>
+    </div>
+    <div class="tray-slots" id="tray-slots">
+      <!-- 동적 슬롯 박스 -->
+    </div>
+  </div>
+
   <!-- 하단 상태 바 -->
   <footer>
     <div class="moves-badge">
@@ -1437,29 +1640,29 @@
         <div class="rule-item">
           <div class="rule-num">1</div>
           <div class="rule-text">
-            <strong>같은 패 맞추기 (매칭)</strong>
-            <p>보드에서 동일한 문양 또는 그림의 마작 패 2개를 순서대로 터치하여 짝을 맞추면 패가 제거됩니다.</p>
+            <strong>임시 보관함 슬롯 & 짝 맞추기</strong>
+            <p>보드에서 자유 패를 터치하면 하단 <strong>임시 보관함 슬롯</strong>으로 이동합니다. 보관함에 동일한 패 2개가 모이면 자동으로 짝이 맞아 사라집니다. (보관함의 패를 터치하면 다시 보드로 반환 가능)</p>
           </div>
         </div>
         <div class="rule-item">
           <div class="rule-num">2</div>
           <div class="rule-text">
             <strong>선택 가능한 패의 조건 (자유 패)</strong>
-            <p>위쪽에 다른 패가 얹혀있지 않고, 좌우 중 최소 한쪽이 트여있는 패만 선택할 수 있습니다. (잠긴 패는 어둡게 표시)</p>
+            <p>위쪽에 다른 패가 얹혀있지 않고, 좌우 중 최소 한쪽이 트여있는 패만 선택할 수 있습니다. 보드에서 패가 슬롯으로 빠지면 가려져 있던 아래 패가 즉시 열립니다.</p>
           </div>
         </div>
         <div class="rule-item">
           <div class="rule-num">3</div>
           <div class="rule-text">
-            <strong>목숨(하트) 소진 규칙 (랜덤 3~5개 시작)</strong>
-            <p>판마다 3~5개의 목숨으로 시작합니다. <strong>[🔀 셔플] 사용 시 하트 1개가 소진</strong>되며, <strong>뒤집힌 패 매칭 실패 3회 누적 시 하트 1개가 소진</strong>됩니다. (일반 패 오선택은 목숨이 깎이지 않습니다.)</p>
+            <strong>슬롯 포화 & 목숨(하트) 규칙 (슬롯 5~3개)</strong>
+            <p>난이도에 따라 기본 5~3개의 슬롯이 주어집니다. <strong>빈 슬롯이 꽉 차면 목숨 1개가 소진</strong>되며 탈출을 돕기 위해 <strong>구제 슬롯 1칸이 추가 개방</strong>됩니다. [🔀 셔플] 시에도 하트 1개가 소진됩니다.</p>
           </div>
         </div>
         <div class="rule-item">
           <div class="rule-num">4</div>
           <div class="rule-text">
             <strong>블라인드 패 시스템</strong>
-            <p>난이도에 따라 상단 패들이 뒤집혀 안 보입니다. 터치하면 앞면이 보이며, 다른 뒤집힌 패를 터치하면 이전 패는 다시 뒤집혀 숨겨집니다. 짝을 찾지 못하고 3회 실패할 때마다 목숨 1개가 차감됩니다.</p>
+            <p>난이도에 따라 상단 패들이 뒤집혀 있습니다. 터치하여 슬롯으로 가져오면 앞면이 공개되며 보너스 점수(+150점)를 얻습니다.</p>
           </div>
         </div>
         <div class="rule-item">
@@ -2072,24 +2275,28 @@
       easy: {
         name: '쉬움',
         badgeColor: '#2ea779',
+        slotCount: 5, // 빈 슬롯 5개
         blindCount: 0, // 블라인드 없음 (전체 공개)
         filter: (def) => (def.suit === 'wan' && def.val <= 6) || (def.suit === 'tong' && def.val <= 6) || (def.suit === 'tiao' && def.val <= 3) // 15종 풀
       },
       normal: {
         name: '보통',
         badgeColor: '#2980b9',
+        slotCount: 4, // 빈 슬롯 4개
         blindCount: 4, // 최상단 Layer 2 (4개) 블라인드
         filter: (def) => (def.suit === 'wan') || (def.suit === 'tong') || (def.suit === 'tiao' && def.val <= 6) // 24종 풀
       },
       hard: {
         name: '어려움',
         badgeColor: '#d35400',
+        slotCount: 4, // 빈 슬롯 4개
         blindCount: 10, // 최상단 Layer 2 (4개) + Layer 1 (6개) 블라인드
         filter: (def) => ['wan', 'tong', 'tiao', 'honor', 'wind'].includes(def.suit) // 34종 전체 정통 마작패 풀
       },
       master: {
         name: '달인',
         badgeColor: '#8e44ad',
+        slotCount: 3, // 빈 슬롯 3개
         blindCount: 16, // Layer 2 (4개) + Layer 1 (12개 전원) = 상위 2개 층 블라인드
         filter: () => true // 46종 전체 (꽃패 8종 + 사신수 4종 총출동)
       }
@@ -2385,6 +2592,10 @@
 
         this.tiles = [];
         this.initialTiles = [];
+        this.trayTiles = []; // 슬롯(트레이)에 들어있는 패 목록
+        this.maxSlots = 5;
+        this.baseMaxSlots = 5;
+        this.extraSlots = 0;
         this.stageStartScore = 0;
         this.initialLives = 3;
         this.selectedTile = null;
@@ -2723,6 +2934,9 @@
         this.initialLives = this.lives;
         this.updateLivesUI();
 
+        // 슬롯(트레이) 초기화
+        this.initTray();
+
         const goModal = document.getElementById('gameover-modal');
         if (goModal) goModal.classList.remove('active');
 
@@ -2788,6 +3002,9 @@
         this.lives = this.initialLives || this.maxLives;
         this.updateLivesUI();
 
+        // 슬롯(트레이) 초기화
+        this.initTray();
+
         const goModal = document.getElementById('gameover-modal');
         if (goModal) goModal.classList.remove('active');
 
@@ -2834,6 +3051,62 @@
 
         if (this.hasStarted) {
           this.startTimer();
+        }
+      }
+
+      /**
+       * 슬롯(트레이) 초기화 및 렌더링
+       */
+      initTray() {
+        const diffCfg = DIFFICULTY_CONFIG[this.difficulty] || DIFFICULTY_CONFIG.normal;
+        this.baseMaxSlots = diffCfg.slotCount || 4;
+        this.extraSlots = 0;
+        this.maxSlots = this.baseMaxSlots;
+        this.trayTiles = [];
+        this.renderTray();
+      }
+
+      renderTray() {
+        const slotsEl = document.getElementById('tray-slots');
+        const countEl = document.getElementById('tray-count-badge');
+        const containerEl = document.getElementById('tray-container');
+        if (!slotsEl) return;
+
+        slotsEl.innerHTML = '';
+        if (countEl) {
+          countEl.textContent = `${this.trayTiles.length} / ${this.maxSlots}`;
+          countEl.classList.toggle('warning', this.trayTiles.length >= this.maxSlots - 1);
+        }
+        if (containerEl) {
+          containerEl.classList.toggle('danger', this.trayTiles.length >= this.maxSlots);
+        }
+
+        for (let i = 0; i < this.maxSlots; i++) {
+          const box = document.createElement('div');
+          box.className = 'tray-slot-box';
+          if (i >= this.baseMaxSlots) {
+            box.classList.add('bonus-expanded');
+            box.title = '✨ 구제 확장 슬롯';
+          }
+
+          const item = this.trayTiles[i];
+          if (item) {
+            const tileDiv = document.createElement('div');
+            tileDiv.className = 'tray-tile';
+            tileDiv.dataset.trayIndex = i;
+            tileDiv.title = `${item.def.name || item.def.label} (클릭 시 보드로 반환)`;
+            tileDiv.innerHTML = `
+              <span class="tile-corner-badge">${item.def.badge}</span>
+              <div class="tile-graphic-wrap">${item.def.render()}</div>
+              <span class="tile-sub-label">${item.def.label}</span>
+            `;
+            tileDiv.addEventListener('click', (e) => {
+              e.stopPropagation();
+              this.returnTileFromTray(i);
+            });
+            box.appendChild(tileDiv);
+          }
+          slotsEl.appendChild(box);
         }
       }
 
@@ -3147,6 +3420,9 @@
         }
       }
 
+      /**
+       * 타일 클릭: 보드에서 빈 슬롯(트레이)으로 이동
+       */
       handleTileClick(tile) {
         if (this.isGameOver || this.isAutoClearing || this.isDealing || tile.removed || !this.isTileFree(tile)) {
           return;
@@ -3154,156 +3430,196 @@
 
         this.clearHints();
 
-        // 1) 클릭한 패가 이미 열려있는 동일한 선택 패인 경우 -> 선택 취소 및 뒤집힌 패라면 다시 닫기
-        if (this.selectedTile && this.selectedTile.id === tile.id) {
-          if (tile.isCovered && tile.isRevealed) {
-            this.sound.playFlip();
-            this.flipTileBack(tile);
-            this.lastFlippedBlindTile = null;
-          } else {
-            this.sound.playSelect();
-            tile.el.classList.remove('selected');
+        // 슬롯 수용 가능 여부 체크
+        // 만약 슬롯이 꽉 찼더라도, 슬롯 내에 같은 종류의 패가 있어서 들어가자마자 매치될 수 있다면 수용 가능!
+        const willMatchImmediately = this.trayTiles.some(t => t.def.id === tile.def.id);
+        if (this.trayTiles.length >= this.maxSlots && !willMatchImmediately) {
+          // 슬롯이 가득 차서 더 이상 넣을 수 없음
+          this.sound.playMiss();
+          const trayEl = document.getElementById('tray-container');
+          if (trayEl) {
+            trayEl.classList.remove('danger');
+            void trayEl.offsetWidth;
+            trayEl.classList.add('danger');
           }
-          this.selectedTile = null;
           return;
         }
 
-        // 2) 클릭한 패가 뒤집혀 있는 상태(아직 안 열림)인 경우
-        if (tile.isCovered && !tile.isRevealed) {
-          this.sound.playFlip();
-          tile.isRevealed = true;
-          tile.el.classList.add('revealed');
+        // 블라인드 패였는지 기록
+        const wasCovered = tile.isCovered;
+        tile.isCovered = false;
+        tile.isRevealed = true;
 
-          // 이전에 선택된 패가 없는 경우
-          if (!this.selectedTile) {
-            if (this.lastFlippedBlindTile && this.lastFlippedBlindTile.id !== tile.id) {
-              this.flipTileBack(this.lastFlippedBlindTile);
-            }
-            this.selectedTile = tile;
-            this.lastFlippedBlindTile = tile;
-            tile.el.classList.add('selected');
-            return;
-          }
-
-          // 이전에 선택된 패(first)가 있는 상태에서 뒤집힌 패를 클릭함
-          const first = this.selectedTile;
-          if (first.def.id === tile.def.id) {
-            // 짝이 일치: 매칭 성공! (실패 누적 카운트 리셋)
-            this.blindMismatchCount = 0;
-            this.sound.playMatch();
-            first.el.classList.remove('selected');
-            this.selectedTile = null;
-            this.lastFlippedBlindTile = null;
-
-            first.el.classList.add('matching');
-            tile.el.classList.add('matching');
-
-            first.removed = true;
-            tile.removed = true;
-
-            this.undoStack.push([first, tile]);
-            this.score += 150; // 블라인드 매칭 보너스 점수
-
-            setTimeout(() => {
-              if (first.el) first.el.style.display = 'none';
-              if (tile.el) tile.el.style.display = 'none';
-              this.updateTileStates();
-
-              const remain = this.tiles.filter(t => !t.removed).length;
-              if (remain > 0 && remain <= 10 && !this.isAutoClearing) {
-                this.triggerAutoClearFinale();
-              } else {
-                this.checkWinCondition();
-              }
-            }, 380);
-          } else {
-            // 짝 불일치: 3회 실패 시에만 목숨 1개 소진
-            this.blindMismatchCount++;
-            if (this.blindMismatchCount >= 3) {
-              this.blindMismatchCount = 0;
-              this.loseLife();
-            } else {
-              this.sound.playMiss();
-            }
-
-            if (first.isCovered) {
-              this.flipTileBack(first);
-            } else {
-              first.el.classList.remove('selected');
-            }
-            if (this.lastFlippedBlindTile && this.lastFlippedBlindTile.id !== tile.id && this.lastFlippedBlindTile.id !== first.id) {
-              this.flipTileBack(this.lastFlippedBlindTile);
-            }
-            this.selectedTile = tile;
-            this.lastFlippedBlindTile = tile;
-            tile.el.classList.add('selected');
-          }
-          this.updateHeaderUI();
-          return;
+        // 보드에서 패 숨김 및 제거 플래그 (아래에 가려진 패들이 즉시 열림!)
+        tile.removed = true;
+        if (tile.el) {
+          tile.el.style.display = 'none';
+          tile.el.classList.remove('selected', 'face-down');
         }
 
-        // 3) 클릭한 패가 일반 패(또는 이미 열려있는 패)인 경우
-        if (!this.selectedTile) {
-          if (this.lastFlippedBlindTile && this.lastFlippedBlindTile.id !== tile.id) {
-            this.flipTileBack(this.lastFlippedBlindTile);
-            this.lastFlippedBlindTile = null;
-          }
-          this.sound.playSelect();
-          this.selectedTile = tile;
-          tile.el.classList.add('selected');
-          return;
-        }
+        // 보드 상태 즉시 갱신 (자유 패 및 가능한 수 재계산)
+        this.updateTileStates();
 
-        // 4) 기존 선택된 패가 있는 상태에서 일반 패를 클릭한 경우
-        const first = this.selectedTile;
-        if (first.def.id === tile.def.id) {
-          // 매칭 성공!
-          this.sound.playMatch();
-          first.el.classList.remove('selected');
-          this.selectedTile = null;
-          this.lastFlippedBlindTile = null;
+        // 트레이에 아이템 추가
+        const trayItem = {
+          tile: tile,
+          def: tile.def,
+          id: tile.id,
+          wasCovered: wasCovered
+        };
+        this.trayTiles.push(trayItem);
+        this.sound.playSelect();
+        this.renderTray();
 
-          first.el.classList.add('matching');
-          tile.el.classList.add('matching');
-
-          first.removed = true;
-          tile.removed = true;
-
-          this.undoStack.push([first, tile]);
-          this.score += (first.isCovered ? 150 : 100);
-
-          setTimeout(() => {
-            if (first.el) first.el.style.display = 'none';
-            if (tile.el) tile.el.style.display = 'none';
-            this.updateTileStates();
-
-            const remain = this.tiles.filter(t => !t.removed).length;
-            if (remain > 0 && remain <= 10 && !this.isAutoClearing) {
-              this.triggerAutoClearFinale();
-            } else {
-              this.checkWinCondition();
-            }
-          }, 380);
-        } else {
-          // 일반 패 불일치: 목숨 차감 없음, 선택 변경만 수행
-          this.sound.playSelect();
-          if (first.isCovered) {
-            this.flipTileBack(first);
-          } else {
-            first.el.classList.remove('selected');
-          }
-          this.selectedTile = tile;
-          tile.el.classList.add('selected');
-          this.lastFlippedBlindTile = null;
-        }
-
-        this.updateHeaderUI();
+        // 슬롯 내 2개 짝(매칭) 검사
+        this.checkTrayMatch(trayItem);
       }
 
+      /**
+       * 슬롯 내 2개 짝(매치) 판정 및 제거
+       */
+      checkTrayMatch(newItem) {
+        // newItem과 동일한 def.id를 가진 기존 패 검색
+        const matches = this.trayTiles.filter(t => t.def.id === newItem.def.id);
+
+        if (matches.length >= 2) {
+          // 2개 짝 매치 성공!
+          const [t1, t2] = matches.slice(0, 2);
+
+          // 매치 애니메이션 실행
+          const slotsEl = document.getElementById('tray-slots');
+          if (slotsEl) {
+            const tilesInDom = slotsEl.querySelectorAll('.tray-tile');
+            tilesInDom.forEach(el => {
+              const idx = parseInt(el.dataset.trayIndex, 10);
+              const curItem = this.trayTiles[idx];
+              if (curItem && (curItem.id === t1.id || curItem.id === t2.id)) {
+                el.classList.add('matching');
+              }
+            });
+          }
+
+          this.sound.playMatch();
+          const bonus = (t1.wasCovered || t2.wasCovered) ? 150 : 100;
+          this.score += bonus;
+          this.updateHeaderUI();
+
+          // 되돌리기 스택에 매칭 기록
+          this.undoStack.push({
+            type: 'match',
+            tiles: [t1, t2]
+          });
+          document.getElementById('btn-undo').disabled = false;
+
+          setTimeout(() => {
+            // 트레이에서 두 패 제거
+            this.trayTiles = this.trayTiles.filter(t => t.id !== t1.id && t.id !== t2.id);
+            this.renderTray();
+
+            // 남은 보드 타일 수 및 클리어 체크
+            const remainBoard = this.tiles.filter(t => !t.removed).length;
+            const remainTray = this.trayTiles.length;
+            if (remainBoard === 0 && remainTray === 0) {
+              this.checkWinCondition();
+            } else if (remainBoard + remainTray <= 10 && !this.isAutoClearing) {
+              this.triggerAutoClearFinale();
+            }
+          }, 320);
+
+        } else {
+          // 짝이 아직 없어 슬롯에 안착됨
+          this.undoStack.push({
+            type: 'toTray',
+            tileItem: newItem
+          });
+          document.getElementById('btn-undo').disabled = false;
+
+          // 슬롯 포화 검사 (모든 슬롯이 꽉 찼을 때)
+          if (this.trayTiles.length >= this.maxSlots) {
+            this.handleTrayOverflow(newItem);
+          }
+        }
+      }
+
+      /**
+       * 슬롯 포화 시 처리: 목숨 1개 소진 및 구제 슬롯 1칸 추가 확장 (사용자 선택안)
+       */
+      handleTrayOverflow(lastItem) {
+        this.sound.playMiss();
+        if (this.sound.playDamage) this.sound.playDamage();
+
+        const flash = document.getElementById('damage-flash');
+        if (flash) {
+          flash.classList.remove('active');
+          void flash.offsetWidth;
+          flash.classList.add('active');
+          setTimeout(() => flash.classList.remove('active'), 500);
+        }
+
+        const trayEl = document.getElementById('tray-container');
+        if (trayEl) {
+          trayEl.classList.remove('danger');
+          void trayEl.offsetWidth;
+          trayEl.classList.add('danger');
+        }
+
+        // 목숨 1개 소진
+        this.loseLife();
+
+        if (this.isGameOver) return;
+
+        // [A안 + 슬롯 1개 추가]: 비상 구제 슬롯이 1칸 추가 확장되어 계속 플레이할 공간 제공!
+        if (this.maxSlots < 8) {
+          this.maxSlots++;
+          this.extraSlots++;
+          this.renderTray();
+        } else {
+          // 이미 8칸 이상으로 확장된 상태라면 마지막 패를 보드로 반환
+          setTimeout(() => {
+            this.returnTileFromTray(this.trayTiles.length - 1);
+          }, 250);
+        }
+      }
+
+      /**
+       * 슬롯의 패를 클릭했을 때 보드의 원래 위치로 반환
+       */
+      returnTileFromTray(trayIndex) {
+        if (this.isGameOver || this.isAutoClearing || this.isDealing) return;
+        const item = this.trayTiles[trayIndex];
+        if (!item) return;
+
+        this.trayTiles.splice(trayIndex, 1);
+        const tile = item.tile;
+        tile.removed = false;
+        tile.isCovered = item.wasCovered;
+        tile.isRevealed = !item.wasCovered;
+
+        if (tile.el) {
+          tile.el.style.display = 'flex';
+          if (tile.isCovered) {
+            tile.el.classList.add('face-down');
+            tile.el.classList.remove('revealed');
+          } else {
+            tile.el.classList.remove('face-down');
+            tile.el.classList.add('revealed');
+          }
+        }
+
+        this.sound.playSelect();
+        this.renderTray();
+        this.updateTileStates();
+      }
+
+      /**
+       * 가능한 짝 조합 계산 (보드 자유패 쌍 및 [슬롯 패 ↔ 보드 자유패] 쌍)
+       */
       getAvailablePairs() {
-        const freeTiles = this.tiles.filter(t => !t.removed && this.isTileFree(t));
+        const activeTiles = this.tiles.filter(t => !t.removed);
+        const freeTiles = activeTiles.filter(t => this.isTileFree(t));
         const pairs = [];
 
+        // 1) 보드의 자유 패끼리 매칭
         for (let i = 0; i < freeTiles.length; i++) {
           for (let j = i + 1; j < freeTiles.length; j++) {
             if (freeTiles[i].def.id === freeTiles[j].def.id) {
@@ -3311,6 +3627,16 @@
             }
           }
         }
+
+        // 2) 슬롯의 패와 보드의 자유 패 매칭
+        this.trayTiles.forEach(trayItem => {
+          freeTiles.forEach(freeTile => {
+            if (trayItem.def.id === freeTile.def.id) {
+              pairs.push([trayItem.tile, freeTile]);
+            }
+          });
+        });
+
         return pairs;
       }
 
@@ -3321,8 +3647,8 @@
         if (pairs.length > 0) {
           this.sound.playSelect();
           const [t1, t2] = pairs[0];
-          t1.el.classList.add('hinted');
-          t2.el.classList.add('hinted');
+          if (t1.el && !t1.removed) t1.el.classList.add('hinted');
+          if (t2.el && !t2.removed) t2.el.classList.add('hinted');
           setTimeout(() => this.clearHints(), 3200);
         } else {
           alert("현재 맞출 수 있는 패가 없습니다. 셔플을 눌러주세요.");
@@ -3339,43 +3665,32 @@
         if (this.isAutoClearing || this.undoStack.length === 0) return;
         this.sound.playSelect();
         this.clearHints();
-        if (this.selectedTile) {
-          if (this.selectedTile.isCovered) {
-            this.flipTileBack(this.selectedTile);
-          } else {
-            this.selectedTile.el.classList.remove('selected');
+
+        const lastAction = this.undoStack.pop();
+        if (!lastAction) return;
+
+        if (lastAction.type === 'toTray') {
+          // 슬롯으로 들어갔던 패를 보드로 복귀
+          const idx = this.trayTiles.findIndex(t => t.id === lastAction.tileItem.id);
+          if (idx !== -1) {
+            this.returnTileFromTray(idx);
           }
-          this.selectedTile = null;
-        }
-        if (this.lastFlippedBlindTile) {
-          this.flipTileBack(this.lastFlippedBlindTile);
-          this.lastFlippedBlindTile = null;
-        }
-
-        const [t1, t2] = this.undoStack.pop();
-        t1.removed = false;
-        t2.removed = false;
-
-        t1.el.style.display = 'flex';
-        t2.el.style.display = 'flex';
-        t1.el.classList.remove('matching');
-        t2.el.classList.remove('matching');
-
-        // 블라인드 패였던 경우 다시 닫힌 상태로 복원
-        if (t1.isCovered) {
-          t1.isRevealed = false;
-          t1.el.classList.add('face-down');
-          t1.el.classList.remove('revealed');
-        }
-        if (t2.isCovered) {
-          t2.isRevealed = false;
-          t2.el.classList.add('face-down');
-          t2.el.classList.remove('revealed');
+        } else if (lastAction.type === 'match') {
+          // 매치되어 사라진 두 패를 다시 슬롯으로 복귀
+          const [t1, t2] = lastAction.tiles;
+          this.trayTiles.push(t1, t2);
+          this.score = Math.max(0, this.score - ((t1.wasCovered || t2.wasCovered) ? 150 : 100));
+          this.renderTray();
+          this.updateHeaderUI();
+        } else if (Array.isArray(lastAction)) {
+          lastAction.forEach(tile => {
+            tile.removed = false;
+            if (tile.el) tile.el.style.display = 'flex';
+          });
+          this.updateTileStates();
         }
 
-        this.score = Math.max(0, this.score - 50);
-        this.updateHeaderUI();
-        this.updateTileStates();
+        document.getElementById('btn-undo').disabled = this.undoStack.length === 0;
       }
 
       shuffleRemain() {
@@ -3449,9 +3764,18 @@
         document.getElementById('btn-shuffle').disabled = true;
         document.getElementById('btn-hint').disabled = true;
 
+        // 1) 피날레 시작 시 슬롯(트레이)에 남아있던 패들도 매칭 대상에 포함
+        if (this.trayTiles && this.trayTiles.length > 0) {
+          this.trayTiles.forEach(item => {
+            item.tile.removed = false;
+          });
+          this.trayTiles = [];
+          this.renderTray();
+        }
+
         const remainCount = this.tiles.filter(t => !t.removed).length;
 
-        // 1) 피날레 알림 배지 표시
+        // 2) 피날레 알림 배지 표시
         let notice = document.getElementById('finale-notice');
         if (!notice) {
           notice = document.createElement('div');
@@ -3462,7 +3786,7 @@
         notice.textContent = `⚡ 남은 패 ${remainCount}개 피날레! 자동 클리어 발동`;
         notice.classList.add('active');
 
-        // 2) 남은 활성 패들을 짝(Pair)으로 구성
+        // 3) 남은 활성 패들을 짝(Pair)으로 구성
         const activeTiles = this.tiles.filter(t => !t.removed);
         const groups = {};
         activeTiles.forEach(t => {
@@ -3615,7 +3939,8 @@
 
       checkWinCondition() {
         const remain = this.tiles.filter(t => !t.removed).length;
-        if (remain === 0 && !this.isClear) {
+        const remainTray = this.trayTiles ? this.trayTiles.length : 0;
+        if (remain === 0 && remainTray === 0 && !this.isClear) {
           this.isClear = true;
           clearInterval(this.timerId);
           this.sound.playWin();
