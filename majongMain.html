@@ -894,18 +894,6 @@
       transition: all 0.25s ease;
     }
 
-    .tray-slot-box.bonus-expanded {
-      border: 2px solid #ffd700;
-      background: rgba(212, 175, 55, 0.18);
-      animation: slotPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    @keyframes slotPop {
-      0% { transform: scale(0.3); opacity: 0; }
-      70% { transform: scale(1.18); }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
     /* 슬롯 내부의 마작 패 */
     .tray-tile {
       width: 44px;
@@ -1868,7 +1856,7 @@
           <div class="rule-num">3</div>
           <div class="rule-text">
             <strong>슬롯 포화 & 하트 소진 규칙 (슬롯 5~3개)</strong>
-            <p>난이도에 따라 기본 5~3개의 슬롯이 주어집니다. <strong>빈 슬롯이 꽉 차면 하트 1개가 소진</strong>되며 탈출을 돕기 위해 <strong>구제 슬롯 1칸이 추가 개방</strong>됩니다. [🔀 셔플] 시에도 하트 1개가 소진됩니다.</p>
+            <p>난이도에 따라 기본 5~3개의 슬롯이 고정 부여됩니다. <strong>빈 슬롯이 꽉 차면 하트 1개가 소진</strong>되며 <strong>마지막 패가 보드로 반환</strong>됩니다. [🔀 셔플] 시에도 하트 1개가 소진됩니다.</p>
           </div>
         </div>
         <div class="rule-item">
@@ -2810,9 +2798,7 @@
         this.tiles = [];
         this.initialTiles = [];
         this.trayTiles = []; // 슬롯(트레이)에 들어있는 패 목록
-        this.maxSlots = 5;
-        this.baseMaxSlots = 5;
-        this.extraSlots = 0;
+        this.maxSlots = 4;
         this.stageStartScore = 0;
         this.initialLives = 3;
         this.selectedTile = null;
@@ -3344,13 +3330,11 @@
       }
 
       /**
-       * 슬롯(트레이) 초기화 및 렌더링
+       * 슬롯(트레이) 초기화 및 렌더링 (난이도별 고정 슬롯)
        */
       initTray() {
         const diffCfg = DIFFICULTY_CONFIG[this.difficulty] || DIFFICULTY_CONFIG.normal;
-        this.baseMaxSlots = diffCfg.slotCount || 4;
-        this.extraSlots = 0;
-        this.maxSlots = this.baseMaxSlots;
+        this.maxSlots = diffCfg.slotCount || 4;
         this.trayTiles = [];
         this.renderTray();
       }
@@ -3373,10 +3357,6 @@
         for (let i = 0; i < this.maxSlots; i++) {
           const box = document.createElement('div');
           box.className = 'tray-slot-box';
-          if (i >= this.baseMaxSlots) {
-            box.classList.add('bonus-expanded');
-            box.title = '✨ 구제 확장 슬롯';
-          }
 
           const item = this.trayTiles[i];
           if (item) {
@@ -4004,22 +3984,17 @@
           trayEl.classList.add('danger');
         }
 
-        // 목숨 1개 소진
+        // 하트 1개 소진
         this.loseLife();
 
         if (this.isGameOver) return;
 
-        // [A안 + 슬롯 1개 추가]: 비상 구제 슬롯이 1칸 추가 확장되어 계속 플레이할 공간 제공!
-        if (this.maxSlots < 8) {
-          this.maxSlots++;
-          this.extraSlots++;
-          this.renderTray();
-        } else {
-          // 이미 8칸 이상으로 확장된 상태라면 마지막 패를 보드로 반환
-          setTimeout(() => {
+        // 슬롯 동적 확장 없이 마지막으로 들어온 패를 보드로 강제 반환
+        setTimeout(() => {
+          if (this.trayTiles.length >= this.maxSlots) {
             this.returnTileFromTray(this.trayTiles.length - 1);
-          }, 250);
-        }
+          }
+        }, 280);
       }
 
       /**
