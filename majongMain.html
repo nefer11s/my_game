@@ -684,9 +684,23 @@
       cursor: pointer;
     }
 
+    /* 자유 패 터치 영역 확장: 손가락 끝 접촉면 오차 및 틈새 터치를 100% 흡수하는 투명 마진 */
+    .tile.free::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      right: -8px;
+      bottom: -8px;
+      z-index: 10;
+      pointer-events: auto !important;
+      touch-action: none !important;
+    }
+
     @media (hover: hover) {
       .tile.free:hover {
-        transform: translate3d(var(--tx), calc(var(--ty) - 8px), calc(var(--tz) + 20px)) !important;
+        /* 물리적 위치 이동(translate)을 배제하여 S펜/터치 지터(무한 진동) 및 타겟 좌표 이탈 완벽 방지 */
+        filter: brightness(1.08) contrast(1.04);
         box-shadow:
           inset 1px 1px 1.5px rgba(255, 255, 255, 1),
           1px 1px 0 #f2ece0,
@@ -697,8 +711,8 @@
           6px 6px 0 #1f724e,
           7px 7px 0 #17593c,
           8px 8px 0 #10412b,
-          4px 8px 12px rgba(0, 0, 0, 0.2),
-          10px 22px 28px rgba(35, 120, 80, 0.38);
+          0 0 16px rgba(56, 239, 125, 0.45),
+          4px 8px 12px rgba(0, 0, 0, 0.2);
       }
     }
 
@@ -4067,18 +4081,15 @@
             // 두 손가락 핀치 제스처 쿨다운 중에는 터치 차단
             if (this.gestureCooldownUntil && Date.now() < this.gestureCooldownUntil) return;
 
-            // 모바일 터치 환경: 손가락이 닿는 순간 즉시 0ms 반응 실행!
-            // (setPointerCapture는 DOM 제거 시 포인터 취소/유실을 일으키므로 사용하지 않음)
-            if (e.pointerType === 'touch') {
-              executeTileAction(e);
-            }
+            // 손가락 터치, 삼성 S펜(pen), PC 마우스 등 모든 입력 장치 0ms 즉시 반응!
+            executeTileAction(e);
           }, { passive: false });
 
           el.addEventListener('pointerup', (e) => {
             if (e.button !== undefined && e.button !== 0) return;
             if (isHandled) return;
 
-            // PC 마우스 클릭 또는 pointerdown에서 누락된 모바일 터치 구제 (35px 이내, 750ms 미만)
+            // 혹시 pointerdown에서 누락된 포인터 구제 (35px 이내, 750ms 미만)
             const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
             const duration = performance.now() - pDownTime;
 
@@ -5185,6 +5196,39 @@
           const zoomStep = e.deltaY < 0 ? 0.15 : -0.15;
           this.setZoom(this.zoomLevel + zoomStep, false);
         }, { passive: false });
+
+        // [스마트 근접 터치 구제] 타일 사이 1~2px 틈새나 보드 배경을 찍었을 때 가장 가까운 자유 패 자동 구제
+        if (this.boardEl) {
+          this.boardEl.addEventListener('pointerdown', (e) => {
+            if (e.button !== undefined && e.button !== 0) return;
+            // 타일 본체를 정확히 누른 경우는 타일 자체 리스너에서 처리하므로 제외
+            if (e.target && e.target.closest && e.target.closest('.tile')) return;
+            if (this.gestureCooldownUntil && Date.now() < this.gestureCooldownUntil) return;
+            if (this.isGameOver || this.isAutoClearing || this.isDealing) return;
+
+            const touchX = e.clientX;
+            const touchY = e.clientY;
+            let bestTile = null;
+            let minDistance = 46; // 반 타일(약 46px) 이내 오차 완벽 흡수
+
+            const freeTiles = this.tiles.filter(t => !t.removed && t.free && t.el);
+            for (const t of freeTiles) {
+              const rect = t.el.getBoundingClientRect();
+              const centerX = rect.left + rect.width / 2;
+              const centerY = rect.top + rect.height / 2;
+              const dist = Math.hypot(touchX - centerX, touchY - centerY);
+              if (dist < minDistance) {
+                minDistance = dist;
+                bestTile = t;
+              }
+            }
+
+            if (bestTile) {
+              this.logTouch(`[틈새 보정] '${bestTile.def.label}' 근접 터치 구제`);
+              this.handleTileClick(bestTile);
+            }
+          }, { passive: false });
+        }
       }
 
       setZoom(newZoom, animated = false) {
