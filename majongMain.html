@@ -1549,6 +1549,54 @@
       margin: 0;
     }
 
+    
+    /* 사운드 개별 설정 모달 스타일 */
+    .sound-config-item {
+      background: #f5f9f6;
+      border: 1px solid #e1eee6;
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .sound-config-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #1a4230;
+    }
+    .sound-test-btn {
+      background: #e8f5ee;
+      border: 1px solid #2ea779;
+      color: #1c744f;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .sound-test-btn:hover {
+      background: #2ea779;
+      color: #fff;
+    }
+    .sound-select {
+      width: 100%;
+      height: 36px;
+      border-radius: 8px;
+      border: 1.5px solid #cce3d5;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      color: #123927;
+      padding: 0 8px;
+      outline: none;
+      cursor: pointer;
+    }
+
     /* 목숨 표시 및 대미지 플래시 */
     .heart-icon {
       display: inline-block;
@@ -2719,6 +2767,9 @@
               <option value="synth">✨ 클래식 신디 (경쾌한 전자음)</option>
             </select>
           </div>
+                    <button class="btn settings-btn" id="btn-open-sound-settings" title="타일선택, 매칭, 바차임, 폭죽 소리 개별 변경">
+            <span class="btn-icon">🎛️</span> 효과음 상세 소리 설정...
+          </button>
           <button class="btn settings-btn" id="btn-sound-toggle" title="효과음 켜기/끄기">
             <span class="btn-icon" id="sound-toggle-icon">🔊</span> <span id="sound-toggle-text">소리 켜짐</span>
           </button>
@@ -2866,6 +2917,83 @@
     </div>
   </div>
 
+  
+  <!-- 사운드 개별 커스텀 설정 모달 -->
+  <div class="modal-overlay" id="sound-modal">
+    <div class="modal-card rules-card" style="max-width: 480px;">
+      <div class="rules-header">
+        <span style="font-size: 24px;">🎵</span>
+        <h2 style="font-size: 19px; font-weight: 800; color: #123927; margin: 0;">효과음 개별 소리 선택</h2>
+      </div>
+      <p style="font-size: 12.5px; color: #5a7d6d; margin-top: -8px; margin-bottom: 14px;">
+        각 상황별 원하는 소리를 직접 선택해 보세요. 소리를 변경하면 즉시 미리듣기가 재생됩니다.
+      </p>
+      <div class="rules-body" style="max-height: 54vh;">
+        <!-- 1. 타일 선택음 -->
+        <div class="sound-config-item">
+          <div class="sound-config-title">
+            <span>👆 타일 선택음 (Select)</span>
+            <button class="sound-test-btn" id="btn-test-sound-select" title="선택음 미리듣기">▶ 듣기</button>
+          </div>
+          <select class="diff-select sound-select" id="select-sound-select">
+            <option value="real">🀄 리얼 마작패 톡 (실물 수지 접촉)</option>
+            <option value="wood">🪵 단단한 우드블록 탁 (원목 타격)</option>
+            <option value="crystal">🔔 크리스탈 핑 (청아한 유리)</option>
+            <option value="synth">✨ 클래식 뾱 (경쾌한 전자음)</option>
+          </select>
+        </div>
+
+        <!-- 2. 짝 맞춤 타격음 -->
+        <div class="sound-config-item">
+          <div class="sound-config-title">
+            <span>💥 짝 맞춤 타격음 (Match Impact)</span>
+            <button class="sound-test-btn" id="btn-test-sound-match" title="타격음 미리듣기">▶ 듣기</button>
+          </div>
+          <select class="diff-select sound-select" id="select-sound-match">
+            <option value="real">🀄 리얼 마작 짝! (실물 강한 충돌)</option>
+            <option value="ceramic">🏺 도자기 맑은 딱! (선명한 크랙)</option>
+            <option value="crystal">🔔 크리스탈 벨 댕~ (깊은 공명)</option>
+            <option value="punch">⚡ 묵직한 펀치 챡! (강한 임팩트)</option>
+          </select>
+        </div>
+
+        <!-- 3. 짝 소멸 바차임 -->
+        <div class="sound-config-item">
+          <div class="sound-config-title">
+            <span>✨ 짝 소멸 바차임 (Chime)</span>
+            <button class="sound-test-btn" id="btn-test-sound-chime" title="바차임 미리듣기">▶ 듣기</button>
+          </div>
+          <select class="diff-select sound-select" id="select-sound-chime">
+            <option value="lydian">🎶 메탈 바차임 뾰로로롱 (12음 글리산도)</option>
+            <option value="celesta">⭐ 첼레스타 오르골 (따뜻한 벨)</option>
+            <option value="shimmer">✨ 반짝이는 크리스탈 쉬머 (고음 하모닉)</option>
+            <option value="retro">🎮 아케이드 스타 (8비트 징글)</option>
+          </select>
+        </div>
+
+        <!-- 4. 축하 폭죽 소리 -->
+        <div class="sound-config-item">
+          <div class="sound-config-title">
+            <span>🎆 축하 폭죽 소리 (Firework)</span>
+            <button class="sound-test-btn" id="btn-test-sound-firework" title="폭죽음 미리듣기">▶ 듣기</button>
+          </div>
+          <select class="diff-select sound-select" id="select-sound-firework">
+            <option value="real">💥 리얼 파열 폭죽 쾅! (실제 폭발음)</option>
+            <option value="sparkle">✨ 화려한 스파크 파라락 (불꽃 연출)</option>
+            <option value="cannon">💣 묵직한 대포 쾅 (서브베이스 펀치)</option>
+            <option value="cheer">🎉 축하 팝 & 팡파레 (경쾌한 축제)</option>
+          </select>
+        </div>
+      </div>
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button class="btn settings-btn" id="btn-sound-defaults" style="flex: 1; border: 1px solid #d4e6db; border-radius: 12px; height: 42px; background: #fff; color: #436e59; font-weight: 700; cursor: pointer;">
+          ↺ 기본값 복원
+        </button>
+        <button class="modal-btn" id="btn-sound-modal-close" style="flex: 1.5; margin: 0; height: 42px;">확인 완료</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 명예의 전당 모달 -->
   <div class="modal-overlay" id="rank-modal">
     <div class="modal-card rank-card">
@@ -2973,7 +3101,15 @@
         this.masterGain = null;
         this.compressor = null;
         this.muted = localStorage.getItem('mahjong_sound_muted') === 'true';
-        this.theme = localStorage.getItem('mahjong_sound_theme') || 'real'; // 'real' | 'crystal' | 'synth'
+
+        // 각 사운드별 선택된 소리 (3~4개 테마별 옵션)
+        this.customSounds = {
+          select: localStorage.getItem('mahjong_sound_select') || 'real',
+          match: localStorage.getItem('mahjong_sound_match') || 'real',
+          chime: localStorage.getItem('mahjong_sound_chime') || 'lydian',
+          firework: localStorage.getItem('mahjong_sound_firework') || 'real'
+        };
+
         this.buffers = {};
         this.chimeBuffer = null;
         this.crystalClickBuffer = null;
@@ -2985,13 +3121,45 @@
         };
       }
 
-      setTheme(theme) {
-        if (['real', 'crystal', 'synth'].includes(theme)) {
-          this.theme = theme;
+      setSoundOption(category, value) {
+        if (this.customSounds[category] !== undefined) {
+          this.customSounds[category] = value;
           try {
-            localStorage.setItem('mahjong_sound_theme', theme);
+            localStorage.setItem('mahjong_sound_' + category, value);
           } catch (e) { }
         }
+      }
+
+      setTheme(theme) {
+        if (theme === 'real') {
+          this.setSoundOption('select', 'real');
+          this.setSoundOption('match', 'real');
+          this.setSoundOption('chime', 'lydian');
+          this.setSoundOption('firework', 'real');
+        } else if (theme === 'crystal') {
+          this.setSoundOption('select', 'crystal');
+          this.setSoundOption('match', 'crystal');
+          this.setSoundOption('chime', 'shimmer');
+          this.setSoundOption('firework', 'sparkle');
+        } else if (theme === 'synth') {
+          this.setSoundOption('select', 'synth');
+          this.setSoundOption('match', 'punch');
+          this.setSoundOption('chime', 'retro');
+          this.setSoundOption('firework', 'cannon');
+        }
+        try { localStorage.setItem('mahjong_sound_theme', theme); } catch (e) { }
+      }
+
+      resetDefaults() {
+        this.customSounds = {
+          select: 'real',
+          match: 'real',
+          chime: 'lydian',
+          firework: 'real'
+        };
+        ['select', 'match', 'chime', 'firework'].forEach(k => {
+          try { localStorage.setItem('mahjong_sound_' + k, this.customSounds[k]); } catch (e) { }
+        });
       }
 
       toggleMute() {
@@ -3009,7 +3177,7 @@
           if (AudioContext) {
             this.ctx = new AudioContext();
 
-            // 볼륨 평탄화 및 마스터 리미터/컴프레서 체인
+            // 마스터 리미터/컴프레서 체인
             this.compressor = this.ctx.createDynamicsCompressor();
             this.compressor.threshold.setValueAtTime(-18, this.ctx.currentTime);
             this.compressor.knee.setValueAtTime(10, this.ctx.currentTime);
@@ -3055,7 +3223,6 @@
         }
       }
 
-      // 메탈 바차임 버퍼 (Euler-Bernoulli 모달 글리산도)
       buildChimeBuffer() {
         if (!this.ctx || this.chimeBuffer) return;
         try {
@@ -3116,7 +3283,6 @@
         }
       }
 
-      // 크리스탈 벨(청아한 유리/종) 버퍼 합성
       buildCrystalBuffers() {
         if (!this.ctx || this.crystalClickBuffer) return;
         try {
@@ -3173,20 +3339,14 @@
         } catch (e) { }
       }
 
-      // 타일 선택음 (볼륨 평탄화: ~0.55)
-      playSelect() {
+      // 1. 타일 선택음 (Select): real | wood | crystal | synth
+      playSelect(overrideType = null) {
         this.init();
         if (!this.ctx) return;
+        const type = overrideType || this.customSounds.select;
+        const now = this.ctx.currentTime;
 
-        if (this.theme === 'crystal' && this.crystalClickBuffer) {
-          this.playBuffer(this.crystalClickBuffer, {
-            volume: 0.52,
-            rate: 0.98 + Math.random() * 0.05
-          });
-          return;
-        }
-
-        if (this.theme === 'real' && this.buffers.click) {
+        if (type === 'real' && this.buffers.click) {
           this.playBuffer(this.buffers.click, {
             volume: 0.55,
             rate: 0.97 + Math.random() * 0.06
@@ -3194,14 +3354,37 @@
           return;
         }
 
-        // synth 테마 또는 폴백
-        const now = this.ctx.currentTime;
+        if (type === 'crystal' && this.crystalClickBuffer) {
+          this.playBuffer(this.crystalClickBuffer, {
+            volume: 0.52,
+            rate: 0.98 + Math.random() * 0.05
+          });
+          return;
+        }
+
+        if (type === 'wood') {
+          // 단단한 우드블록 탁! (우드 모달 공명)
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(580, now);
+          osc.frequency.exponentialRampToValueAtTime(140, now + 0.038);
+          gain.gain.setValueAtTime(0.38, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+          osc.connect(gain);
+          gain.connect(this.getDestination());
+          osc.start(now);
+          osc.stop(now + 0.05);
+          return;
+        }
+
+        // synth
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(1380, now);
         osc.frequency.exponentialRampToValueAtTime(740, now + 0.025);
-        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.setValueAtTime(0.20, now);
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
         osc.connect(gain);
         gain.connect(this.getDestination());
@@ -3209,27 +3392,243 @@
         osc.stop(now + 0.035);
       }
 
-      // 패 플립음 (볼륨 평탄화: ~0.58)
+      // 2. 짝 맞춤 타격음 (Match): real | ceramic | crystal | punch
+      playMatch(overrideType = null) {
+        this.init();
+        if (!this.ctx) return;
+        const type = overrideType || this.customSounds.match;
+        const now = this.ctx.currentTime;
+
+        if (type === 'real' && this.buffers.tile) {
+          this.playBuffer(this.buffers.tile, {
+            volume: 0.65,
+            rate: 0.98 + Math.random() * 0.04
+          });
+        } else if (type === 'crystal' && this.crystalMatchBuffer) {
+          this.playBuffer(this.crystalMatchBuffer, {
+            volume: 0.62,
+            rate: 0.98 + Math.random() * 0.04
+          });
+        } else if (type === 'ceramic') {
+          // 도자기 맑은 딱! (고주파 크랙 + 도자기 링잉)
+          const clickOsc = this.ctx.createOscillator();
+          const clickGain = this.ctx.createGain();
+          clickOsc.type = 'triangle';
+          clickOsc.frequency.setValueAtTime(2800, now);
+          clickOsc.frequency.exponentialRampToValueAtTime(620, now + 0.035);
+          clickGain.gain.setValueAtTime(0.35, now);
+          clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+          clickOsc.connect(clickGain);
+          clickGain.connect(this.getDestination());
+          clickOsc.start(now);
+          clickOsc.stop(now + 0.05);
+
+          const ringOsc = this.ctx.createOscillator();
+          const ringGain = this.ctx.createGain();
+          ringOsc.type = 'sine';
+          ringOsc.frequency.setValueAtTime(1860, now + 0.005);
+          ringOsc.frequency.exponentialRampToValueAtTime(1420, now + 0.16);
+          ringGain.gain.setValueAtTime(0.24, now + 0.005);
+          ringGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+          ringOsc.connect(ringGain);
+          ringGain.connect(this.getDestination());
+          ringOsc.start(now + 0.005);
+          ringOsc.stop(now + 0.20);
+        } else {
+          // punch (묵직한 펀치 챡!)
+          const punchOsc = this.ctx.createOscillator();
+          const punchGain = this.ctx.createGain();
+          punchOsc.type = 'triangle';
+          punchOsc.frequency.setValueAtTime(320, now);
+          punchOsc.frequency.exponentialRampToValueAtTime(55, now + 0.08);
+          punchGain.gain.setValueAtTime(0.42, now);
+          punchGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+          punchOsc.connect(punchGain);
+          punchGain.connect(this.getDestination());
+          punchOsc.start(now);
+          punchOsc.stop(now + 0.1);
+        }
+
+        // 인게임에서는 매칭 타격 후 0.04초 뒤 바차임 자동 연계
+        if (!overrideType) {
+          this.playWindChime(now + 0.04);
+        }
+      }
+
+      // 3. 짝 소멸 바차임 (Chime): lydian | celesta | shimmer | retro
+      playWindChime(startTime = null, overrideType = null) {
+        this.init();
+        if (!this.ctx) return;
+        const type = overrideType || this.customSounds.chime;
+        const baseTime = startTime !== null ? startTime : this.ctx.currentTime;
+        const delay = Math.max(0, baseTime - this.ctx.currentTime);
+
+        if (type === 'lydian' && this.chimeBuffer) {
+          this.playBuffer(this.chimeBuffer, {
+            volume: 0.58,
+            delay: delay
+          });
+          return;
+        }
+
+        if (type === 'celesta') {
+          // 첼레스타 오르골 (C6, E6, G6, B6, C7, E7 따뜻한 벨)
+          const notes = [1046.5, 1318.5, 1568.0, 1975.5, 2093.0, 2637.0];
+          notes.forEach((freq, idx) => {
+            const t = baseTime + idx * 0.045;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, t);
+            gain.gain.setValueAtTime(0.14, t);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+            osc.connect(gain);
+            gain.connect(this.getDestination());
+            osc.start(t);
+            osc.stop(t + 0.6);
+          });
+          return;
+        }
+
+        if (type === 'shimmer') {
+          // 반짝이는 크리스탈 쉬머 (초고주파 하모닉 스윕)
+          const notes = [1760.0, 2217.5, 2637.0, 3322.4, 3951.1, 4698.6];
+          notes.forEach((freq, idx) => {
+            const t = baseTime + idx * 0.03;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, t);
+            osc.frequency.linearRampToValueAtTime(freq * 1.01, t + 0.2);
+            gain.gain.setValueAtTime(0.09, t);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.4);
+            osc.connect(gain);
+            gain.connect(this.getDestination());
+            osc.start(t);
+            osc.stop(t + 0.42);
+          });
+          return;
+        }
+
+        // retro (아케이드 8비트 스타)
+        const notes = [523.25, 659.25, 783.99, 1046.5, 1318.5];
+        notes.forEach((freq, idx) => {
+          const t = baseTime + idx * 0.038;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, t);
+          gain.gain.setValueAtTime(0.18, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+          osc.connect(gain);
+          gain.connect(this.getDestination());
+          osc.start(t);
+          osc.stop(t + 0.16);
+        });
+      }
+
+      // 4. 축하 폭죽 소리 (Firework): real | sparkle | cannon | cheer
+      playFirework(overrideType = null) {
+        this.init();
+        if (!this.ctx) return;
+        const type = overrideType || this.customSounds.firework;
+        const now = this.ctx.currentTime;
+
+        if (type === 'real' && this.buffers.exp) {
+          this.playBuffer(this.buffers.exp, {
+            volume: 0.60,
+            rate: 0.95 + Math.random() * 0.1
+          });
+          for (let i = 0; i < 3; i++) {
+            const ct = now + 0.08 + Math.random() * 0.2;
+            const sOsc = this.ctx.createOscillator();
+            const sGain = this.ctx.createGain();
+            sOsc.type = 'triangle';
+            sOsc.frequency.setValueAtTime(1800 + Math.random() * 2000, ct);
+            sGain.gain.setValueAtTime(0.05 + Math.random() * 0.04, ct);
+            sGain.gain.exponentialRampToValueAtTime(0.0001, ct + 0.03);
+            sOsc.connect(sGain);
+            sGain.connect(this.getDestination());
+            sOsc.start(ct);
+            sOsc.stop(ct + 0.035);
+          }
+          return;
+        }
+
+        if (type === 'sparkle') {
+          // 발사 상승 휘슬 + 화려한 스파크 6발
+          const wOsc = this.ctx.createOscillator();
+          const wGain = this.ctx.createGain();
+          wOsc.type = 'sine';
+          wOsc.frequency.setValueAtTime(450, now);
+          wOsc.frequency.exponentialRampToValueAtTime(1450, now + 0.07);
+          wGain.gain.setValueAtTime(0.12, now);
+          wGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          wOsc.connect(wGain);
+          wGain.connect(this.getDestination());
+          wOsc.start(now);
+          wOsc.stop(now + 0.085);
+
+          for (let i = 0; i < 6; i++) {
+            const ct = now + 0.08 + i * 0.04;
+            const sOsc = this.ctx.createOscillator();
+            const sGain = this.ctx.createGain();
+            sOsc.type = 'triangle';
+            sOsc.frequency.setValueAtTime(1900 + Math.random() * 2200, ct);
+            sGain.gain.setValueAtTime(0.11, ct);
+            sGain.gain.exponentialRampToValueAtTime(0.0001, ct + 0.04);
+            sOsc.connect(sGain);
+            sGain.connect(this.getDestination());
+            sOsc.start(ct);
+            sOsc.stop(ct + 0.045);
+          }
+          return;
+        }
+
+        if (type === 'cannon') {
+          // 묵직한 대포 쾅!
+          const bOsc = this.ctx.createOscillator();
+          const bGain = this.ctx.createGain();
+          bOsc.type = 'triangle';
+          bOsc.frequency.setValueAtTime(140, now);
+          bOsc.frequency.exponentialRampToValueAtTime(26, now + 0.36);
+          bGain.gain.setValueAtTime(0.48, now);
+          bGain.gain.exponentialRampToValueAtTime(0.001, now + 0.36);
+          bOsc.connect(bGain);
+          bGain.connect(this.getDestination());
+          bOsc.start(now);
+          bOsc.stop(now + 0.38);
+          return;
+        }
+
+        // cheer (축하 팝 + 팡파레 코드)
+        const chord = [523.25, 659.25, 783.99, 1046.5];
+        chord.forEach((freq, idx) => {
+          const t = now + idx * 0.06;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, t);
+          gain.gain.setValueAtTime(0.20, t);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.4);
+          osc.connect(gain);
+          gain.connect(this.getDestination());
+          osc.start(t);
+          osc.stop(t + 0.42);
+        });
+      }
+
       playFlip() {
         this.init();
         if (!this.ctx) return;
-
-        if (this.theme === 'crystal' && this.crystalClickBuffer) {
-          this.playBuffer(this.crystalClickBuffer, {
-            volume: 0.54,
-            rate: 1.22 + Math.random() * 0.06
-          });
+        if (this.customSounds.select === 'crystal' && this.crystalClickBuffer) {
+          this.playBuffer(this.crystalClickBuffer, { volume: 0.54, rate: 1.22 + Math.random() * 0.06 });
           return;
         }
-
-        if (this.theme === 'real' && this.buffers.click) {
-          this.playBuffer(this.buffers.click, {
-            volume: 0.58,
-            rate: 1.15 + Math.random() * 0.06
-          });
+        if (this.buffers.click) {
+          this.playBuffer(this.buffers.click, { volume: 0.58, rate: 1.15 + Math.random() * 0.06 });
           return;
         }
-
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -3245,27 +3644,13 @@
         osc.stop(now + 0.11);
       }
 
-      // 패 안착 및 쌓임 효과음 (볼륨 평탄화: ~0.48)
       playTileStack(layer = 0) {
         this.init();
         if (!this.ctx) return;
-
-        if (this.theme === 'crystal' && this.crystalClickBuffer) {
-          this.playBuffer(this.crystalClickBuffer, {
-            volume: 0.46,
-            rate: 0.82 + layer * 0.04
-          });
+        if (this.buffers.click) {
+          this.playBuffer(this.buffers.click, { volume: 0.48, rate: 0.82 + layer * 0.04 });
           return;
         }
-
-        if (this.theme === 'real' && this.buffers.click) {
-          this.playBuffer(this.buffers.click, {
-            volume: 0.48,
-            rate: 0.82 + layer * 0.04
-          });
-          return;
-        }
-
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -3281,75 +3666,6 @@
         osc.stop(now + 0.055);
       }
 
-      // 짝 맞을 때 타격음 + 바차임 (볼륨 평탄화: 타격 0.65, 바차임 0.58)
-      playMatch() {
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-
-        if (this.theme === 'crystal' && this.crystalMatchBuffer) {
-          this.playBuffer(this.crystalMatchBuffer, {
-            volume: 0.62,
-            rate: 0.98 + Math.random() * 0.04
-          });
-        } else if (this.theme === 'real' && this.buffers.tile) {
-          this.playBuffer(this.buffers.tile, {
-            volume: 0.65,
-            rate: 0.98 + Math.random() * 0.04
-          });
-        } else {
-          // synth
-          const clickOsc = this.ctx.createOscillator();
-          const clickGain = this.ctx.createGain();
-          clickOsc.type = 'triangle';
-          clickOsc.frequency.setValueAtTime(2200, now);
-          clickOsc.frequency.exponentialRampToValueAtTime(540, now + 0.035);
-          clickGain.gain.setValueAtTime(0.30, now);
-          clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
-          clickOsc.connect(clickGain);
-          clickGain.connect(this.getDestination());
-          clickOsc.start(now);
-          clickOsc.stop(now + 0.05);
-        }
-
-        // 바차임 연결 (0.04초 딜레이)
-        this.playWindChime(now + 0.04);
-      }
-
-      // 바차임(Wind Chime): 반짝이며 뾰로로롱 올라가는 영롱한 크리스탈 아르페지오 (볼륨 평탄화: ~0.58)
-      playWindChime(startTime = null) {
-        this.init();
-        if (!this.ctx) return;
-        const baseTime = startTime !== null ? startTime : this.ctx.currentTime;
-        const delay = Math.max(0, baseTime - this.ctx.currentTime);
-
-        if (this.chimeBuffer) {
-          this.playBuffer(this.chimeBuffer, {
-            volume: 0.58,
-            delay: delay
-          });
-          return;
-        }
-
-        const chimeNotes = [1046.50, 1318.51, 1567.98, 2093.00, 2637.02, 3135.96];
-        const stepDelay = 0.036;
-        chimeNotes.forEach((freq, idx) => {
-          const t = baseTime + idx * stepDelay;
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
-          osc.frequency.setValueAtTime(freq, t);
-          osc.frequency.linearRampToValueAtTime(freq * 1.006, t + 0.16);
-          gain.gain.setValueAtTime(0.11, t);
-          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
-          osc.connect(gain);
-          gain.connect(this.getDestination());
-          osc.start(t);
-          osc.stop(t + 0.48);
-        });
-      }
-
-      // 셔플 및 리셋 사운드 (볼륨 평탄화: ~0.10)
       playShuffle() {
         this.init();
         if (!this.ctx) return;
@@ -3358,12 +3674,10 @@
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           const time = now + i * 0.045;
-
           osc.type = 'sine';
           osc.frequency.setValueAtTime(320 + Math.random() * 220, time);
           gain.gain.setValueAtTime(0.10, time);
           gain.gain.exponentialRampToValueAtTime(0.001, time + 0.055);
-
           osc.connect(gain);
           gain.connect(this.getDestination());
           osc.start(time);
@@ -3371,7 +3685,6 @@
         }
       }
 
-      // 승리 팡파레 (볼륨 평탄화: ~0.22)
       playWin() {
         this.init();
         if (!this.ctx) return;
@@ -3381,57 +3694,15 @@
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           const t = now + i * 0.11;
-
           osc.type = 'sine';
           osc.frequency.setValueAtTime(freq, t);
           gain.gain.setValueAtTime(0.22, t);
           gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.75);
-
           osc.connect(gain);
           gain.connect(this.getDestination());
           osc.start(t);
           osc.stop(t + 0.8);
         });
-      }
-
-      // 축하 폭죽 소리 (볼륨 평탄화: ~0.60)
-      playFirework() {
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-
-        if (this.buffers.exp && this.theme !== 'synth') {
-          this.playBuffer(this.buffers.exp, {
-            volume: 0.60,
-            rate: 0.95 + Math.random() * 0.1
-          });
-        } else {
-          const boomOsc = this.ctx.createOscillator();
-          const boomGain = this.ctx.createGain();
-          boomOsc.type = 'triangle';
-          boomOsc.frequency.setValueAtTime(180, now);
-          boomOsc.frequency.exponentialRampToValueAtTime(32, now + 0.32);
-          boomGain.gain.setValueAtTime(0.32, now);
-          boomGain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
-          boomOsc.connect(boomGain);
-          boomGain.connect(this.getDestination());
-          boomOsc.start(now);
-          boomOsc.stop(now + 0.35);
-        }
-
-        for (let i = 0; i < 4; i++) {
-          const crackleTime = now + 0.07 + Math.random() * 0.22;
-          const sOsc = this.ctx.createOscillator();
-          const sGain = this.ctx.createGain();
-          sOsc.type = 'triangle';
-          sOsc.frequency.setValueAtTime(1800 + Math.random() * 2000, crackleTime);
-          sGain.gain.setValueAtTime(0.06 + Math.random() * 0.05, crackleTime);
-          sGain.gain.exponentialRampToValueAtTime(0.0001, crackleTime + 0.035);
-          sOsc.connect(sGain);
-          sGain.connect(this.getDestination());
-          sOsc.start(crackleTime);
-          sOsc.stop(crackleTime + 0.04);
-        }
       }
 
       // 판 파괴 및 유리/도자기 깨짐 효과음
@@ -5655,6 +5926,105 @@
             if (rankModal) rankModal.classList.remove('active');
           });
         }
+
+        // 사운드 개별 설정 모달 이벤트
+        const soundModal = document.getElementById('sound-modal');
+        const btnOpenSoundSettings = document.getElementById('btn-open-sound-settings');
+        const btnSoundModalClose = document.getElementById('btn-sound-modal-close');
+        const btnSoundDefaults = document.getElementById('btn-sound-defaults');
+
+        const selectSoundSelect = document.getElementById('select-sound-select');
+        const selectSoundMatch = document.getElementById('select-sound-match');
+        const selectSoundChime = document.getElementById('select-sound-chime');
+        const selectSoundFirework = document.getElementById('select-sound-firework');
+
+        const syncSoundModalUI = () => {
+          if (selectSoundSelect) selectSoundSelect.value = this.sound.customSounds.select;
+          if (selectSoundMatch) selectSoundMatch.value = this.sound.customSounds.match;
+          if (selectSoundChime) selectSoundChime.value = this.sound.customSounds.chime;
+          if (selectSoundFirework) selectSoundFirework.value = this.sound.customSounds.firework;
+        };
+        syncSoundModalUI();
+
+        if (btnOpenSoundSettings) {
+          btnOpenSoundSettings.addEventListener('click', () => {
+            this.sound.playSelect();
+            if (settingsDropdown) {
+              settingsDropdown.classList.remove('active');
+              if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
+            }
+            syncSoundModalUI();
+            if (soundModal) soundModal.classList.add('active');
+          });
+        }
+
+        if (btnSoundModalClose) {
+          btnSoundModalClose.addEventListener('click', () => {
+            this.sound.playSelect();
+            if (soundModal) soundModal.classList.remove('active');
+          });
+        }
+
+        if (btnSoundDefaults) {
+          btnSoundDefaults.addEventListener('click', () => {
+            this.sound.resetDefaults();
+            syncSoundModalUI();
+            this.sound.playSelect();
+          });
+        }
+
+        // 개별 셀렉트 변경 리스너 (변경 즉시 재생)
+        if (selectSoundSelect) {
+          selectSoundSelect.addEventListener('change', (e) => {
+            this.sound.setSoundOption('select', e.target.value);
+            this.sound.playSelect(e.target.value);
+          });
+        }
+        if (selectSoundMatch) {
+          selectSoundMatch.addEventListener('change', (e) => {
+            this.sound.setSoundOption('match', e.target.value);
+            this.sound.playMatch(e.target.value);
+          });
+        }
+        if (selectSoundChime) {
+          selectSoundChime.addEventListener('change', (e) => {
+            this.sound.setSoundOption('chime', e.target.value);
+            this.sound.playWindChime(null, e.target.value);
+          });
+        }
+        if (selectSoundFirework) {
+          selectSoundFirework.addEventListener('change', (e) => {
+            this.sound.setSoundOption('firework', e.target.value);
+            this.sound.playFirework(e.target.value);
+          });
+        }
+
+        // 개별 미리듣기 버튼 리스너
+        const btnTestSelect = document.getElementById('btn-test-sound-select');
+        if (btnTestSelect) {
+          btnTestSelect.addEventListener('click', () => {
+            this.sound.playSelect(selectSoundSelect ? selectSoundSelect.value : null);
+          });
+        }
+        const btnTestMatch = document.getElementById('btn-test-sound-match');
+        if (btnTestMatch) {
+          btnTestMatch.addEventListener('click', () => {
+            this.sound.playMatch(selectSoundMatch ? selectSoundMatch.value : null);
+          });
+        }
+        const btnTestChime = document.getElementById('btn-test-sound-chime');
+        if (btnTestChime) {
+          btnTestChime.addEventListener('click', () => {
+            this.sound.playWindChime(null, selectSoundChime ? selectSoundChime.value : null);
+          });
+        }
+        const btnTestFirework = document.getElementById('btn-test-sound-firework');
+        if (btnTestFirework) {
+          btnTestFirework.addEventListener('click', () => {
+            this.sound.playFirework(selectSoundFirework ? selectSoundFirework.value : null);
+          });
+        }
+
 
         if (btnRankClear) {
           btnRankClear.addEventListener('click', () => {
