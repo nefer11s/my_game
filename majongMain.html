@@ -1265,6 +1265,59 @@
       box-shadow: 0 8px 22px rgba(32, 135, 92, 0.45);
     }
 
+    .modal-btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+
+    @media (min-width: 480px) {
+      .modal-btn-group {
+        flex-direction: row;
+      }
+    }
+
+    .modal-btn-secondary {
+      background: linear-gradient(135deg, #34495e 0%, #1f2a38 100%) !important;
+      box-shadow: 0 6px 18px rgba(31, 42, 56, 0.35) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .modal-btn-secondary:hover {
+      background: linear-gradient(135deg, #3d566e 0%, #263342 100%) !important;
+      box-shadow: 0 8px 22px rgba(31, 42, 56, 0.45) !important;
+    }
+
+    .splash-btn-resume {
+      width: 100%;
+      height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #f39c12 0%, #d35400 100%);
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 8px 20px rgba(211, 84, 0, 0.4);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      animation: resumePulse 2s infinite ease-in-out;
+    }
+
+    .splash-btn-resume:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(211, 84, 0, 0.5);
+    }
+
+    @keyframes resumePulse {
+      0%, 100% { box-shadow: 0 8px 20px rgba(211, 84, 0, 0.4); }
+      50% { box-shadow: 0 8px 28px rgba(243, 156, 18, 0.7); }
+    }
+
     /* 스플래시 화면 오버레이 */
     .splash-overlay {
       position: fixed;
@@ -2666,7 +2719,10 @@
           <span class="modal-stat-val" id="modal-score">0</span>
         </div>
       </div>
-      <button class="modal-btn" id="modal-confirm-btn">다음 판 시작</button>
+      <div class="modal-btn-group">
+        <button class="modal-btn" id="modal-confirm-btn">다음 판 시작 ➔</button>
+        <button class="modal-btn modal-btn-secondary" id="modal-save-exit-btn">저장하고 다음에 계속 💾</button>
+      </div>
     </div>
   </div>
 
@@ -2683,6 +2739,9 @@
         <div class="splash-provider">SY Soft 제공</div>
 
         <div class="splash-btn-group">
+          <button class="splash-btn-resume" id="btn-splash-resume" style="display: none;">
+            <span class="btn-icon">▶</span> <span id="btn-splash-resume-text">이어하기</span>
+          </button>
           <button class="splash-btn-start" id="btn-splash-start">
             <span class="btn-icon">🎮</span> 게임 시작
           </button>
@@ -5028,6 +5087,7 @@
 
         this.bindEvents();
         this.initViewportGestures();
+        this.updateResumeButtonUI();
         this.startNewGame();
       }
 
@@ -5098,11 +5158,29 @@
           splashEl.addEventListener('pointerdown', () => enterFullscreenAuto(), { once: true });
         }
 
+        const btnSplashResume = document.getElementById('btn-splash-resume');
+        if (btnSplashResume) {
+          btnSplashResume.addEventListener('click', () => {
+            enterFullscreenAuto();
+            this.sound.playSelect();
+            this.resumeSavedGame();
+          });
+        }
+
         if (btnSplashStart) {
           btnSplashStart.addEventListener('click', () => {
             enterFullscreenAuto();
             this.sound.playSelect();
+            const saved = this.getSavedProgress();
+            if (saved && saved.stage > 1) {
+              if (!confirm(`이미 진행 중인 제 ${saved.stage}판 기록이 있습니다.\n기존 진행 기록을 지우고 1판부터 새로 시작하시겠습니까?`)) {
+                return;
+              }
+              this.clearSavedProgress();
+            }
             if (splashEl) splashEl.classList.remove('active');
+            this.currentStage = 1;
+            this.score = 0;
             this.hasStarted = true;
             this.startNewGame();
           });
@@ -5277,23 +5355,139 @@
           this.restartCurrentGame();
         });
 
-        // 모달에서 '다음 판 시작' 클릭 시 무한정 다음 판으로 계속 진행
+        // 모달에서 '다음 판 시작' 클릭 시 다음 판으로 계속 진행 (자동 저장)
         document.getElementById('modal-confirm-btn').addEventListener('click', () => {
           if (this.fireworks) this.fireworks.stop();
           document.getElementById('modal').classList.remove('active');
           this.currentStage++;
           this.hasStarted = true;
+          this.saveProgress();
           this.startNewGame(true);
         });
+
+        // 모달에서 '저장하고 다음에 계속' 클릭 시 현재 진행상황 저장 후 인트로 스플래시 화면으로 안전 이동
+        const saveExitBtn = document.getElementById('modal-save-exit-btn');
+        if (saveExitBtn) {
+          saveExitBtn.addEventListener('click', () => {
+            if (this.fireworks) this.fireworks.stop();
+            document.getElementById('modal').classList.remove('active');
+            this.currentStage++; // 다음 시작할 판수로 저장
+            this.saveProgress();
+            this.showSplashScreen();
+          });
+        }
       }
 
       setDifficulty(diffKey) {
         if (!DIFFICULTY_CONFIG[diffKey]) return;
         this.difficulty = diffKey;
         this.currentStage = 1; // 난이도 변경 시 1판부터 시작
+        this.clearSavedProgress();
         const selectEl = document.getElementById('select-difficulty');
         if (selectEl) selectEl.value = diffKey;
         this.startNewGame();
+      }
+
+      /**
+       * 진행 상황 로컬 스토리지에 저장
+       */
+      saveProgress() {
+        const progress = {
+          stage: this.currentStage,
+          difficulty: this.difficulty,
+          score: this.score,
+          lives: this.lives,
+          timerSeconds: this.timerSeconds,
+          savedAt: new Date().toLocaleString('ko-KR')
+        };
+        try {
+          localStorage.setItem('siyeon_mahjong_saved_progress', JSON.stringify(progress));
+        } catch (e) { }
+        this.updateResumeButtonUI();
+      }
+
+      /**
+       * 저장된 진행 상황 불러오기
+       */
+      getSavedProgress() {
+        try {
+          const raw = localStorage.getItem('siyeon_mahjong_saved_progress');
+          if (raw) return JSON.parse(raw);
+        } catch (e) { }
+        return null;
+      }
+
+      /**
+       * 저장된 진행 상황 삭제
+       */
+      clearSavedProgress() {
+        try {
+          localStorage.removeItem('siyeon_mahjong_saved_progress');
+        } catch (e) { }
+        this.updateResumeButtonUI();
+      }
+
+      /**
+       * 저장된 진행 상황으로 게임 재개
+       */
+      resumeSavedGame() {
+        const saved = this.getSavedProgress();
+        if (!saved) return false;
+
+        this.currentStage = saved.stage || 1;
+        this.difficulty = saved.difficulty || 'normal';
+        this.score = saved.score || 0;
+        this.lives = saved.lives !== undefined ? saved.lives : 3;
+        this.timerSeconds = saved.timerSeconds || 0;
+
+        const selectEl = document.getElementById('select-difficulty');
+        if (selectEl) selectEl.value = this.difficulty;
+
+        this.hideSplashScreen();
+        this.hasStarted = true;
+        this.startNewGame(true);
+        return true;
+      }
+
+      /**
+       * 스플래시 화면의 '이어하기' 버튼 UI 상태 갱신
+       */
+      updateResumeButtonUI() {
+        const resumeBtn = document.getElementById('btn-splash-resume');
+        const resumeText = document.getElementById('btn-splash-resume-text');
+        if (!resumeBtn) return;
+
+        const saved = this.getSavedProgress();
+        if (saved && saved.stage > 1) {
+          const diffCfg = DIFFICULTY_CONFIG[saved.difficulty] || DIFFICULTY_CONFIG.normal;
+          if (resumeText) {
+            resumeText.textContent = `▶ 제 ${saved.stage}판 이어하기 (${diffCfg.name} · ${saved.score.toLocaleString()}점)`;
+          }
+          resumeBtn.style.display = 'flex';
+        } else {
+          resumeBtn.style.display = 'none';
+        }
+      }
+
+      /**
+       * 스플래시 인트로 화면 표시
+       */
+      showSplashScreen() {
+        const splashEl = document.getElementById('splash-screen');
+        if (splashEl) {
+          splashEl.classList.add('active');
+          this.updateResumeButtonUI();
+        }
+      }
+
+      /**
+       * 스플래시 인트로 화면 숨김
+       */
+      hideSplashScreen() {
+        const splashEl = document.getElementById('splash-screen');
+        if (splashEl) {
+          splashEl.classList.remove('active');
+        }
       }
 
       startTimer() {
@@ -5349,6 +5543,7 @@
         clearInterval(this.timerId);
         this.sound.playGameOver();
         this.clearHints();
+        this.clearSavedProgress(); // 게임 오버 시 저장 기록 정리
 
         const goStage = document.getElementById('go-stage');
         const goScore = document.getElementById('go-score');
@@ -7003,6 +7198,8 @@
         modalTitle.textContent = `제 ${this.currentStage}판 클리어!`;
         modalDesc.textContent = `[${diffCfg.name}] 난이도 제 ${this.currentStage}판 격파 완료! (보너스 +${clearBonus}점, 하트 +1 회복)`;
         confirmBtn.textContent = `다음 판 시작 (제 ${this.currentStage + 1}판) ➔`;
+        const saveExitBtn = document.getElementById('modal-save-exit-btn');
+        if (saveExitBtn) saveExitBtn.textContent = `저장하고 다음에 계속 (제 ${this.currentStage + 1}판) 💾`;
 
         document.getElementById('modal-time').textContent = this.formatTime(this.timerSeconds);
         document.getElementById('modal-score').textContent = this.score.toLocaleString();
