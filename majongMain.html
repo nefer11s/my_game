@@ -7501,18 +7501,18 @@
         const isPortrait = vw < vh;
 
         if (isMobile && isPortrait) {
-          // [모바일 세로 모드]: 상단 임시보관함 침범 방지 여백 정밀 계산
-          const marginX = 8;
+          // [모바일 세로 모드]: 좌우 여백 넉넉히 확보 및 상단 임시보관함 침범 방지 여백 정밀 계산
+          const marginX = 20; // 기존 8px에서 좌우 각 10px 이상의 여유 버퍼 확보
           // 상단 임시보관함 크기(trayH) 및 하단 독과의 간섭을 막는 안전 여백
           const traySafety = Math.max(16, Math.min(36, trayH * 0.35));
-          const marginY = 24 + traySafety;
+          const marginY = 28 + traySafety;
 
           const scaleX = (vw - marginX) / effectiveW;
           const scaleY = (vh - marginY) / effectiveH;
 
-          // 세로가 상단 임시보관함이나 하단 독을 절대 넘치지 않도록 scaleY와 scaleX 중 작은 쪽을 엄격히 채택
-          const optimalScale = Math.min(scaleX, scaleY);
-          this.baseScale = Math.min(1.75, Math.max(0.5, optimalScale));
+          // 세로가 상단 임시보관함이나 하단 독을 절대 넘치지 않도록 하고, 좌우 1~2px 잘림 방지 0.96 안전 계수 적용
+          const optimalScale = Math.min(scaleX, scaleY) * 0.96;
+          this.baseScale = Math.min(1.75, Math.max(0.48, optimalScale));
 
           // 남은 타일 뭉치가 정중앙에 오도록 X, Y 동시 오토 센터링 적용
           if (this.zoomLevel === 1.0) {
@@ -7520,16 +7520,16 @@
             this.panY = offsetCenterY * this.baseScale;
           }
         } else {
-          // [데스크톱 및 가로 모드]: 상단 임시보관함과의 안전 버퍼 포함 쾌적한 피팅
-          const marginX = isMobile ? 12 : 24;
+          // [데스크톱 및 가로 모드]: 좌우 여백 확보 및 상단 임시보관함과의 안전 버퍼 포함 쾌적한 피팅
+          const marginX = isMobile ? 24 : 40; // 좌우 테두리 잘림 완전 방지 (기존 12/24 -> 24/40)
           const traySafety = Math.max(18, Math.min(40, trayH * 0.3));
-          const marginY = (isMobile ? 18 : 28) + traySafety;
+          const marginY = (isMobile ? 22 : 32) + traySafety;
 
           const scaleX = (vw - marginX) / effectiveW;
           const scaleY = (vh - marginY) / effectiveH;
 
-          const optimalScale = Math.min(scaleX, scaleY) * 0.96;
-          this.baseScale = Math.min(1.75, Math.max(0.55, optimalScale));
+          const optimalScale = Math.min(scaleX, scaleY) * 0.94; // 0.96 -> 0.94로 살짝 여유 간격 부여
+          this.baseScale = Math.min(1.75, Math.max(0.52, optimalScale));
 
           if (this.zoomLevel === 1.0) {
             this.panX = offsetCenterX * this.baseScale;
