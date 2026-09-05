@@ -1890,9 +1890,9 @@
             <span class="settings-label">🎮 난이도 선택</span>
             <select class="diff-select" id="select-difficulty" title="난이도 선택">
               <option value="easy">🌱 쉬움 (14종 · 슬롯 5개 · 공개)</option>
-              <option value="normal" selected>🌿 보통 (34종 · 슬롯 4개 · 블라인드 4개)</option>
-              <option value="hard">🔥 어려움 (56종 · 슬롯 4개 · 블라인드 12개)</option>
-              <option value="master">👑 달인 (82종 · 슬롯 3개 · 블라인드 18개 · 극한 병목)</option>
+              <option value="normal" selected>🌿 보통 (39종 · 슬롯 4개 · 블라인드 4개)</option>
+              <option value="hard">🔥 어려움 (63종 · 슬롯 4개 · 블라인드 12개)</option>
+              <option value="master">👑 달인 (89종 · 슬롯 3개 · 블라인드 18개 · 극한 병목)</option>
             </select>
           </div>
           <div class="settings-divider"></div>
@@ -2741,45 +2741,309 @@
         `;
       },
 
-      // 사주 10간 (天干 10종: 오행 5색 원형 링 프레임)
-      sajuGan(hanzi, color, sub) {
+      // 사주 10간 (天干 10종: 자연 오행 원소 정령 캐릭터 아트)
+      sajuGan(id, hanzi, color, sub) {
+        let icon = '';
+        if (id === 'jia') {
+          // 갑목: 울창한 거목 소나무
+          icon = `<path d="M 24 13 L 28 20 L 26 20 L 30 27 L 27 27 L 31 34 L 17 34 L 21 27 L 18 27 L 22 20 L 20 20 Z" fill="${color}"/>
+                  <rect x="22.5" y="34" width="3" height="4" fill="#5d4037"/>`;
+        } else if (id === 'yi') {
+          // 을목: 화초 새싹 & 나비날개 클로버
+          icon = `<path d="M 24 35 C 24 26 18 24 16 19 C 14 14 20 13 23 18 C 25 15 31 14 31 20 C 31 25 24 27 24 35 Z" fill="${color}"/>
+                  <circle cx="19" cy="18" r="3.5" fill="#a5d6a7"/>
+                  <circle cx="28" cy="19" r="3.5" fill="#81c784"/>`;
+        } else if (id === 'bing') {
+          // 병화: 이글거리는 찬란한 태양
+          icon = `<circle cx="24" cy="24" r="7.5" fill="${color}"/>
+                  <path d="M 24 11 L 24 14 M 24 34 L 24 37 M 11 24 L 14 24 M 34 24 L 37 24 M 15 15 L 17 17 M 31 31 L 33 33 M 15 33 L 17 31 M 31 17 L 33 15" stroke="${color}" stroke-width="2.2" stroke-linecap="round"/>
+                  <circle cx="24" cy="24" r="4" fill="#ffebee"/>`;
+        } else if (id === 'ding') {
+          // 정화: 따뜻한 촛대 & 등불
+          icon = `<path d="M 24 13 C 27 17 29 21 27 25 C 25 28 23 28 21 25 C 19 21 21 17 24 13 Z" fill="${color}"/>
+                  <ellipse cx="24" cy="22" rx="2" ry="3.5" fill="#fff59d"/>
+                  <rect x="22.5" y="27" width="3" height="7" fill="#8d6e63"/>
+                  <rect x="18" y="34" width="12" height="3" rx="1.5" fill="#5d4037"/>`;
+        } else if (id === 'wu') {
+          // 무토: 웅장한 태산 바위산
+          icon = `<polygon points="24,13 33,35 15,35" fill="${color}"/>
+                  <polygon points="34,19 41,35 27,35" fill="#8d6e63" opacity="0.8"/>
+                  <polygon points="14,21 21,35 7,35" fill="#a1887f" opacity="0.85"/>
+                  <polygon points="24,13 27,21 21,21" fill="#fff9c4" opacity="0.75"/>`;
+        } else if (id === 'ji') {
+          // 기토: 비옥한 대지 & 벼이삭
+          icon = `<path d="M 16 35 C 16 28 20 22 24 15 C 24 15 28 22 32 35 Z" fill="${color}" opacity="0.25"/>
+                  <path d="M 24 35 L 24 16 M 24 18 C 21 17 20 14 24 14 C 28 14 27 17 24 18 M 24 23 C 19 22 18 19 24 19 C 30 19 29 22 24 23 M 24 28 C 18 27 17 24 24 24 C 31 24 30 27 24 28" stroke="${color}" stroke-width="2" stroke-linecap="round"/>`;
+        } else if (id === 'geng') {
+          // 경금: 강철 원석 & 은빛 대검
+          icon = `<path d="M 24 12 L 27 16 L 27 30 L 24 33 L 21 30 L 21 16 Z" fill="${color}"/>
+                  <line x1="24" y1="12" x2="24" y2="33" stroke="#ffffff" stroke-width="1"/>
+                  <rect x="18" y="29" width="12" height="3" rx="1" fill="#37474f"/>
+                  <rect x="22.5" y="32" width="3" height="5" fill="#212121"/>`;
+        } else if (id === 'xin') {
+          // 신금: 반짝이는 다이아몬드 보석
+          icon = `<polygon points="24,13 35,21 31,33 17,33 13,21" fill="${color}"/>
+                  <polygon points="24,13 29,21 24,33 19,21" fill="#eceff1" opacity="0.6"/>
+                  <line x1="13" y1="21" x2="35" y2="21" stroke="#ffffff" stroke-width="1.2"/>`;
+        } else if (id === 'ren') {
+          // 임수: 거대한 대양 파도 & 삼지창
+          icon = `<path d="M 12 30 C 16 24 18 32 24 26 C 29 21 32 30 36 24 C 36 31 34 35 24 35 C 14 35 12 30 12 30 Z" fill="${color}"/>
+                  <path d="M 24 13 L 24 31 M 19 16 L 19 25 C 19 28 24 28 24 28 M 29 16 L 29 25 C 29 28 24 28 24 28" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" fill="none"/>`;
+        } else if (id === 'gui') {
+          // 계수: 맑은 이슬방울 & 빗방울
+          icon = `<path d="M 24 13 C 24 13 32 23 32 27 C 32 31.4 28.4 35 24 35 C 19.6 35 16 31.4 16 27 C 16 23 24 13 24 13 Z" fill="${color}"/>
+                  <ellipse cx="21.5" cy="25" rx="2" ry="3.5" fill="#ffffff" opacity="0.75"/>`;
+        }
         return `
           <svg class="tile-svg" viewBox="0 0 48 60">
-            <circle cx="24" cy="27" r="16" fill="${color}" opacity="0.12"/>
-            <circle cx="24" cy="27" r="15" fill="none" stroke="${color}" stroke-width="1.6" stroke-dasharray="3,1.5"/>
-            <text x="24" y="35" text-anchor="middle" font-size="26" font-weight="900" fill="${color}" font-family="'Noto Serif KR', 'Songti SC', 'Batang', serif">${hanzi}</text>
-            <text x="24" y="52" text-anchor="middle" font-size="9" font-weight="900" fill="${color}">${sub}</text>
+            <!-- 상단 한자 뱃지 (약칭) -->
+            <rect x="4" y="4" width="13" height="13" rx="2.5" fill="${color}" opacity="0.16"/>
+            <text x="10.5" y="14" text-anchor="middle" font-size="10.5" font-weight="900" fill="${color}" font-family="'Noto Serif KR', serif">${hanzi}</text>
+            <!-- 중앙 캐릭터 일러스트 -->
+            <g transform="translate(0, 3)">${icon}</g>
+            <!-- 하단 한글 라벨 -->
+            <text x="24" y="52.5" text-anchor="middle" font-size="9" font-weight="900" fill="${color}">${sub}</text>
           </svg>
         `;
       },
 
-      // 사주 12지 (地支 12종: 12간지 방위 사각 프레임)
-      sajuZhi(hanzi, color, sub) {
+      // 사주 12지 (地支 12종: 십이지신 동물 수호대 캐릭터 아트)
+      sajuZhi(id, hanzi, color, sub) {
+        let animal = '';
+        if (id === 'zi') {
+          // 쥐(子): 큰 귀 + 쌀알/치즈
+          animal = `<circle cx="16" cy="18" r="5" fill="${color}"/>
+                    <circle cx="32" cy="18" r="5" fill="${color}"/>
+                    <ellipse cx="24" cy="26" rx="8" ry="7.5" fill="#90caf9"/>
+                    <circle cx="21" cy="24" r="1.5" fill="#0d47a1"/><circle cx="27" cy="24" r="1.5" fill="#0d47a1"/>
+                    <polygon points="24,27 22,29 26,29" fill="#e91e63"/>
+                    <ellipse cx="24" cy="33" rx="4" ry="2.5" fill="#ffd54f"/>`;
+        } else if (id === 'chou') {
+          // 소(丑): 듬직한 뿔 + 코뚜레
+          animal = `<path d="M 14 17 C 14 12 18 16 19 20" stroke="#5d4037" stroke-width="3" fill="none" stroke-linecap="round"/>
+                    <path d="M 34 17 C 34 12 30 16 29 20" stroke="#5d4037" stroke-width="3" fill="none" stroke-linecap="round"/>
+                    <ellipse cx="24" cy="25" rx="8" ry="7" fill="${color}"/>
+                    <ellipse cx="24" cy="28" rx="6" ry="3.5" fill="#ffe0b2"/>
+                    <circle cx="24" cy="32" r="2.5" fill="none" stroke="#f57f17" stroke-width="1.5"/>`;
+        } else if (id === 'yin') {
+          // 호랑이(寅): 백두산 호랑이 줄무늬 + 王자
+          animal = `<circle cx="16" cy="19" r="4.5" fill="${color}"/><circle cx="32" cy="19" r="4.5" fill="${color}"/>
+                    <ellipse cx="24" cy="25" rx="8.5" ry="7.5" fill="#ffb74d"/>
+                    <text x="24" y="22" text-anchor="middle" font-size="6" font-weight="900" fill="#d32f2f">王</text>
+                    <line x1="16" y1="25" x2="19" y2="25" stroke="#212121" stroke-width="1.2"/>
+                    <line x1="29" y1="25" x2="32" y2="25" stroke="#212121" stroke-width="1.2"/>
+                    <polygon points="24,26 22,28 26,28" fill="#d32f2f"/>`;
+        } else if (id === 'zhi_mao') {
+          // 토끼(卯): 긴 쫑긋 귀 + 분홍 볼
+          animal = `<ellipse cx="19" cy="15" rx="3" ry="7" fill="#ffffff" stroke="${color}" stroke-width="1"/>
+                    <ellipse cx="29" cy="15" rx="3" ry="7" fill="#ffffff" stroke="${color}" stroke-width="1"/>
+                    <circle cx="24" cy="26" r="7.5" fill="#ffffff" stroke="${color}" stroke-width="1"/>
+                    <circle cx="21" cy="25" r="1.3" fill="#e91e63"/><circle cx="27" cy="25" r="1.3" fill="#e91e63"/>
+                    <circle cx="24" cy="28" r="1.5" fill="#ff80ab"/>`;
+        } else if (id === 'chen') {
+          // 용(辰): 용 뿔 + 수염 + 여의주
+          animal = `<path d="M 18 16 L 15 11 M 30 16 L 33 11" stroke="#f57f17" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="24" cy="24" r="8" fill="${color}"/>
+                    <path d="M 18 27 Q 15 32 12 30 M 30 27 Q 33 32 36 30" stroke="#f57f17" stroke-width="1.8" fill="none"/>
+                    <circle cx="24" cy="33" r="3.2" fill="#ffd700" stroke="#e65100" stroke-width="0.8"/>`;
+        } else if (id === 'si') {
+          // 뱀(巳): 또아리 튼 영초 백사
+          animal = `<path d="M 24 15 C 29 15 31 19 28 22 C 24 25 18 22 18 27 C 18 32 29 32 29 27" stroke="${color}" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+                    <circle cx="24" cy="16" r="4" fill="#ffcdd2"/>
+                    <path d="M 22 14 L 20 11 M 22 14 L 23 10" stroke="#d32f2f" stroke-width="1.2"/>`;
+        } else if (id === 'zhi_wu') {
+          // 말(午): 적토마 갈기털 & 말발굽
+          animal = `<path d="M 20 17 Q 27 13 28 20 L 26 31 L 20 28 Z" fill="${color}"/>
+                    <path d="M 20 15 Q 17 19 18 27" stroke="#ffeb3b" stroke-width="2.2" fill="none"/>
+                    <path d="M 21 31 C 21 34 27 34 27 31" fill="none" stroke="#ffe082" stroke-width="2.5"/>`;
+        } else if (id === 'wei') {
+          // 양(未): 둥글게 말린 뿔 + 몽실몽실 털
+          animal = `<path d="M 17 21 C 13 19 13 14 17 15 M 31 21 C 35 19 35 14 31 15" stroke="#795548" stroke-width="2.5" fill="none"/>
+                    <circle cx="24" cy="25" r="7.5" fill="#f5f5f5" stroke="${color}" stroke-width="1.5"/>
+                    <circle cx="21" cy="24" r="1.3" fill="#3e2723"/><circle cx="27" cy="24" r="1.3" fill="#3e2723"/>`;
+        } else if (id === 'shen') {
+          // 원숭이(申): 큰 귀 + 천도복숭아
+          animal = `<circle cx="15" cy="24" r="4.5" fill="#8d6e63"/><circle cx="33" cy="24" r="4.5" fill="#8d6e63"/>
+                    <circle cx="24" cy="24" r="8" fill="${color}"/>
+                    <ellipse cx="24" cy="26" rx="6" ry="4.5" fill="#ffccbc"/>
+                    <circle cx="24" cy="33" r="3" fill="#ff4081"/>`;
+        } else if (id === 'you') {
+          // 닭(酉): 붉은 볏 + 부리
+          animal = `<path d="M 24 13 C 22 10 26 10 24 15 C 27 12 29 15 26 17" fill="#d32f2f"/>
+                    <circle cx="24" cy="24" r="7.5" fill="${color}"/>
+                    <polygon points="28,24 33,25 28,27" fill="#ff9800"/>
+                    <circle cx="22" cy="22" r="1.5" fill="#ffffff"/>`;
+        } else if (id === 'xu') {
+          // 개(戌): 쫑긋한 귀 + 복주머니 목걸이
+          animal = `<polygon points="17,14 14,21 19,20" fill="${color}"/><polygon points="31,14 34,21 29,20" fill="${color}"/>
+                    <circle cx="24" cy="24" r="8" fill="#ffcc80"/>
+                    <circle cx="21" cy="23" r="1.3" fill="#3e2723"/><circle cx="27" cy="23" r="1.3" fill="#3e2723"/>
+                    <ellipse cx="24" cy="26" rx="3.5" ry="2" fill="#d32f2f"/>
+                    <circle cx="24" cy="33" r="2.5" fill="#ffd700"/>`;
+        } else if (id === 'hai') {
+          // 돼지(亥): 둥근 복돼지 코 + 엽전
+          animal = `<circle cx="17" cy="18" r="3.5" fill="${color}"/><circle cx="31" cy="18" r="3.5" fill="${color}"/>
+                    <circle cx="24" cy="25" r="8.5" fill="#f48fb1"/>
+                    <ellipse cx="24" cy="26" rx="4.5" ry="3" fill="#ad1457"/>
+                    <circle cx="22.5" cy="26" r="1" fill="#ffffff"/><circle cx="25.5" cy="26" r="1" fill="#ffffff"/>
+                    <circle cx="24" cy="33" r="3" fill="#ffd700" stroke="#f57f17" stroke-width="0.8"/>`;
+        }
         return `
           <svg class="tile-svg" viewBox="0 0 48 60">
-            <rect x="7" y="8" width="34" height="35" rx="7" fill="${color}" opacity="0.11"/>
-            <rect x="7" y="8" width="34" height="35" rx="7" fill="none" stroke="${color}" stroke-width="1.6"/>
-            <text x="24" y="34" text-anchor="middle" font-size="25" font-weight="900" fill="${color}" font-family="'Noto Serif KR', 'Songti SC', 'Batang', serif">${hanzi}</text>
-            <text x="24" y="52" text-anchor="middle" font-size="8.5" font-weight="900" fill="${color}">${sub}</text>
+            <!-- 상단 한자 뱃지 -->
+            <rect x="4" y="4" width="13" height="13" rx="2.5" fill="${color}" opacity="0.16"/>
+            <text x="10.5" y="14" text-anchor="middle" font-size="10.5" font-weight="900" fill="${color}" font-family="'Noto Serif KR', serif">${hanzi}</text>
+            <!-- 중앙 십이지신 동물 마스코트 -->
+            <g transform="translate(0, 2)">${animal}</g>
+            <!-- 하단 동물 명칭 라벨 -->
+            <text x="24" y="52.5" text-anchor="middle" font-size="9" font-weight="900" fill="${color}">${sub}</text>
           </svg>
         `;
       },
 
-      // 사주 10신 (十神 10종: 명리학 8각 인장 엠블럼)
-      sajuShin(hanzi, color, sub) {
+      // 사주 십신 (十神 10종: 운명의 10대 페르소나 아바타 아트)
+      sajuShin(id, hanzi, color, sub) {
+        let avatar = '';
+        if (id === 'bijian') {
+          // 비견: 어깨동무한 쌍둥이 분신
+          avatar = `<circle cx="19" cy="18" r="4.5" fill="${color}"/><circle cx="29" cy="18" r="4.5" fill="#80cbc4"/>
+                    <path d="M 15 32 C 15 25 24 24 24 32 Z" fill="${color}"/>
+                    <path d="M 24 32 C 24 25 33 24 33 32 Z" fill="#80cbc4"/>`;
+        } else if (id === 'geobjae') {
+          // 겁재: 도깨비 방망이와 뿔
+          avatar = `<polygon points="24,12 21,17 27,17" fill="#ffeb3b"/>
+                    <circle cx="24" cy="22" r="6.5" fill="${color}"/>
+                    <path d="M 30 19 L 36 25 L 34 27 L 28 21 Z" fill="#d32f2f"/>
+                    <circle cx="35" cy="21" r="1.5" fill="#ffe082"/><circle cx="31" cy="25" r="1.5" fill="#ffe082"/>`;
+        } else if (id === 'siksin') {
+          // 식신: 황금 수저 & 복주머니
+          avatar = `<ellipse cx="24" cy="17" rx="4" ry="5.5" fill="#ffd700"/>
+                    <rect x="23" y="22" width="2" height="12" fill="#ffd700"/>
+                    <path d="M 16 26 C 16 23 20 22 24 22 C 28 22 32 23 32 26 C 32 33 16 33 16 26 Z" fill="${color}" opacity="0.3"/>`;
+        } else if (id === 'sangpwan') {
+          // 상관: 화려한 부채 & 붓
+          avatar = `<path d="M 14 28 C 14 18 34 18 34 28 Z" fill="${color}"/>
+                    <line x1="24" y1="28" x2="16" y2="20" stroke="#fff" stroke-width="1"/>
+                    <line x1="24" y1="28" x2="24" y2="18" stroke="#fff" stroke-width="1"/>
+                    <line x1="24" y1="28" x2="32" y2="20" stroke="#fff" stroke-width="1"/>
+                    <circle cx="24" cy="28" r="2.5" fill="#ffd700"/>`;
+        } else if (id === 'pyeonjae') {
+          // 편재: 열려있는 황금 보물상자
+          avatar = `<rect x="15" y="22" width="18" height="11" rx="2" fill="${color}"/>
+                    <path d="M 14 22 C 14 17 34 17 34 22 Z" fill="#ffb300"/>
+                    <circle cx="24" cy="24" r="2" fill="#ffffff"/>
+                    <circle cx="24" cy="18" r="2.5" fill="#ffd700"/>`;
+        } else if (id === 'jeongjae') {
+          // 정재: 알뜰 주판 & 엽전 꾸러미
+          avatar = `<rect x="14" y="16" width="20" height="15" rx="1.5" fill="#5d4037" stroke="${color}" stroke-width="1"/>
+                    <line x1="14" y1="21" x2="34" y2="21" stroke="#ffffff" stroke-width="1"/>
+                    <circle cx="18" cy="19" r="1.5" fill="#ffd700"/><circle cx="24" cy="19" r="1.5" fill="#ffd700"/><circle cx="30" cy="19" r="1.5" fill="#ffd700"/>
+                    <circle cx="18" cy="25" r="1.5" fill="#ffd700"/><circle cx="24" cy="25" r="1.5" fill="#ffd700"/><circle cx="30" cy="25" r="1.5" fill="#ffd700"/>`;
+        } else if (id === 'pyeongwan') {
+          // 편관(칠살): 청룡언월도 대도
+          avatar = `<path d="M 19 14 C 27 12 31 16 32 23 L 26 22 Z" fill="${color}"/>
+                    <line x1="26" y1="22" x2="16" y2="34" stroke="#37474f" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="26" cy="22" r="2.5" fill="#ffd700"/>`;
+        } else if (id === 'jeonggwan') {
+          // 정관: 암행어사 마패
+          avatar = `<circle cx="24" cy="23" r="9" fill="${color}"/>
+                    <circle cx="24" cy="23" r="7" fill="none" stroke="#ffd700" stroke-width="1"/>
+                    <text x="24" y="26" text-anchor="middle" font-size="9" font-weight="900" fill="#ffd700">馬</text>
+                    <rect x="22" y="12" width="4" height="3" fill="#ffd700"/>`;
+        } else if (id === 'pyeonin') {
+          // 편인: 지혜의 신비 올빼미
+          avatar = `<ellipse cx="24" cy="24" rx="8" ry="8.5" fill="${color}"/>
+                    <circle cx="20" cy="22" r="3.5" fill="#ffd700"/><circle cx="28" cy="22" r="3.5" fill="#ffd700"/>
+                    <circle cx="20" cy="22" r="1.5" fill="#212121"/><circle cx="28" cy="22" r="1.5" fill="#212121"/>
+                    <polygon points="24,25 22.5,28 25.5,28" fill="#ff9800"/>`;
+        } else if (id === 'jeongin') {
+          // 정인: 성현 서책 두루마리
+          avatar = `<path d="M 15 17 C 20 19 28 15 33 17 L 33 30 C 28 28 20 32 15 30 Z" fill="#fff9c4" stroke="${color}" stroke-width="1.2"/>
+                    <line x1="24" y1="18" x2="24" y2="31" stroke="${color}" stroke-width="1.2"/>
+                    <line x1="18" y1="22" x2="22" y2="22" stroke="#5d4037" stroke-width="1"/>
+                    <line x1="26" y1="22" x2="30" y2="22" stroke="#5d4037" stroke-width="1"/>`;
+        }
         return `
           <svg class="tile-svg" viewBox="0 0 48 60">
-            <polygon points="24,6 41,23 24,40 7,23" fill="${color}" opacity="0.13"/>
-            <polygon points="24,6 41,23 24,40 7,23" fill="none" stroke="${color}" stroke-width="1.8"/>
-            <text x="24" y="33" text-anchor="middle" font-size="24" font-weight="900" fill="${color}" font-family="'Noto Serif KR', 'Songti SC', 'Batang', serif">${hanzi}</text>
-            <text x="24" y="52" text-anchor="middle" font-size="9" font-weight="900" fill="${color}">${sub}</text>
+            <!-- 상단 한자 뱃지 -->
+            <rect x="4" y="4" width="13" height="13" rx="2.5" fill="${color}" opacity="0.16"/>
+            <text x="10.5" y="14" text-anchor="middle" font-size="10" font-weight="900" fill="${color}" font-family="'Noto Serif KR', serif">${hanzi}</text>
+            <!-- 중앙 십신 페르소나 상징 -->
+            <g transform="translate(0, 2)">${avatar}</g>
+            <!-- 하단 육친 명칭 라벨 -->
+            <text x="24" y="52.5" text-anchor="middle" font-size="9" font-weight="900" fill="${color}">${sub}</text>
+          </svg>
+        `;
+      },
+
+      // 음양 (陰陽 2종: 삼족오 태양 & 월광 백여우)
+      sajuYinYang(val, hanzi, color, sub) {
+        let graphic = '';
+        if (val === 'yang') {
+          // 양(陽): 삼족오 일광 태양신
+          graphic = `<circle cx="24" cy="24" r="8" fill="${color}"/>
+                     <path d="M 24 10 L 27 15 L 34 14 L 32 20 L 38 24 L 32 28 L 34 34 L 27 33 L 24 38 L 21 33 L 14 34 L 16 28 L 10 24 L 16 20 L 14 14 L 21 15 Z" fill="${color}" opacity="0.4"/>
+                     <circle cx="24" cy="24" r="4.5" fill="#fff3e0"/>
+                     <path d="M 22 23 C 24 21 26 21 26 25" stroke="#e65100" stroke-width="1.2" fill="none"/>`;
+        } else {
+          // 음(陰): 은빛 초승달 & 별빛 베일
+          graphic = `<path d="M 28 14 C 20 14 17 21 17 26 C 17 31 22 36 29 35 C 23 33 21 28 22 23 C 23 18 26 15 28 14 Z" fill="${color}"/>
+                     <polygon points="32,18 33,21 36,21 33.5,23 34.5,26 32,24 29.5,26 30.5,23 28,21 31,21" fill="#ffd700"/>
+                     <circle cx="15" cy="20" r="1" fill="#ffffff"/><circle cx="33" cy="29" r="1" fill="#ffffff"/>`;
+        }
+        return `
+          <svg class="tile-svg" viewBox="0 0 48 60">
+            <rect x="4" y="4" width="13" height="13" rx="2.5" fill="${color}" opacity="0.16"/>
+            <text x="10.5" y="14" text-anchor="middle" font-size="10.5" font-weight="900" fill="${color}" font-family="'Noto Serif KR', serif">${hanzi}</text>
+            <g transform="translate(0, 2)">${graphic}</g>
+            <text x="24" y="52.5" text-anchor="middle" font-size="9" font-weight="900" fill="${color}">${sub}</text>
+          </svg>
+        `;
+      },
+
+      // 오행 (五行 5종: 5대 원소 신수 마스코트)
+      sajuWuXing(val, hanzi, color, sub) {
+        let graphic = '';
+        if (val === 'wood') {
+          // 목(木): 생명의 세계수 잎사귀
+          graphic = `<circle cx="24" cy="23" r="9" fill="${color}" opacity="0.2"/>
+                     <path d="M 24 14 C 18 19 18 29 24 33 C 30 29 30 19 24 14 Z" fill="${color}"/>
+                     <line x1="24" y1="17" x2="24" y2="33" stroke="#a5d6a7" stroke-width="1.5"/>
+                     <line x1="24" y1="23" x2="20" y2="20" stroke="#a5d6a7" stroke-width="1.2"/>
+                     <line x1="24" y1="26" x2="28" y2="23" stroke="#a5d6a7" stroke-width="1.2"/>`;
+        } else if (val === 'fire') {
+          // 화(火): 타오르는 3단 불꽃
+          graphic = `<path d="M 24 12 C 28 17 32 23 28 29 C 25 34 20 33 17 29 C 14 23 20 18 24 12 Z" fill="${color}"/>
+                     <path d="M 24 20 C 26 23 28 26 26 29 C 24 32 21 31 20 29 C 18 26 21 23 24 20 Z" fill="#ffeb3b"/>`;
+        } else if (val === 'earth') {
+          // 토(土): 만물의 대지 황금 거북 현무
+          graphic = `<ellipse cx="24" cy="24" rx="9" ry="7.5" fill="${color}"/>
+                     <ellipse cx="24" cy="24" rx="7" ry="5.5" fill="#fff8e1" opacity="0.4"/>
+                     <circle cx="15" cy="24" r="2.5" fill="${color}"/><circle cx="33" cy="24" r="2.5" fill="${color}"/>
+                     <circle cx="24" cy="16" r="3" fill="${color}"/>`;
+        } else if (val === 'metal') {
+          // 금(金): 은빛 대검 & 방패
+          graphic = `<polygon points="24,14 32,18 30,28 24,34 18,28 16,18" fill="${color}"/>
+                     <line x1="24" y1="14" x2="24" y2="34" stroke="#ffffff" stroke-width="1.5"/>
+                     <line x1="18" y1="22" x2="30" y2="22" stroke="#ffffff" stroke-width="1.5"/>`;
+        } else if (val === 'water') {
+          // 수(水): 소용돌이치는 샘물과 해마 물결
+          graphic = `<path d="M 24 14 C 29 14 32 18 28 22 C 24 26 19 23 19 28 C 19 33 28 33 28 28" stroke="${color}" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+                     <circle cx="24" cy="16" r="2.5" fill="#ffffff"/>`;
+        }
+        return `
+          <svg class="tile-svg" viewBox="0 0 48 60">
+            <polygon points="24,4 32,8 32,16 24,20 16,16 16,8" fill="${color}" opacity="0.16"/>
+            <text x="24" y="15" text-anchor="middle" font-size="10.5" font-weight="900" fill="${color}" font-family="'Noto Serif KR', serif">${hanzi}</text>
+            <g transform="translate(0, 3)">${graphic}</g>
+            <text x="24" y="52.5" text-anchor="middle" font-size="9" font-weight="900" fill="${color}">${sub}</text>
           </svg>
         `;
       }
     };
 
     /**
-     * 마작 및 사주 명리학 패 데이터 목록 (총 82종)
+     * 마작 및 사주 명리학 패 데이터 목록 (총 89종)
      */
     const TILE_DEFINITIONS = [
       // 만수 (1-9)
@@ -2848,43 +3112,54 @@
       { id: 'm_phoenix', suit: 'myth', val: 'phoenix', label: '朱雀', badge: '雀', render: () => SvgFactory.myth('雀', '#c2185b', '주작') },
       { id: 'm_turtle', suit: 'myth', val: 'turtle', label: '玄武', badge: '武', render: () => SvgFactory.myth('武', '#283593', '현무') },
 
-      // 10간(天干 10종: 오행 5색 원형 링 체계)
-      { id: 'g_jia', suit: 'gan', val: 'jia', label: '甲木', badge: '甲', render: () => SvgFactory.sajuGan('甲', '#00897b', '갑목') },
-      { id: 'g_yi', suit: 'gan', val: 'yi', label: '乙木', badge: '乙', render: () => SvgFactory.sajuGan('乙', '#2e7d32', '을목') },
-      { id: 'g_bing', suit: 'gan', val: 'bing', label: '丙火', badge: '丙', render: () => SvgFactory.sajuGan('丙', '#d32f2f', '병화') },
-      { id: 'g_ding', suit: 'gan', val: 'ding', label: '丁火', badge: '丁', render: () => SvgFactory.sajuGan('丁', '#e53935', '정화') },
-      { id: 'g_wu', suit: 'gan', val: 'wu', label: '戊土', badge: '戊', render: () => SvgFactory.sajuGan('戊', '#b78103', '무토') },
-      { id: 'g_ji', suit: 'gan', val: 'ji', label: '己土', badge: '己', render: () => SvgFactory.sajuGan('己', '#f57f17', '기토') },
-      { id: 'g_geng', suit: 'gan', val: 'geng', label: '庚金', badge: '庚', render: () => SvgFactory.sajuGan('庚', '#455a64', '경금') },
-      { id: 'g_xin', suit: 'gan', val: 'xin', label: '辛金', badge: '辛', render: () => SvgFactory.sajuGan('辛', '#37474f', '신금') },
-      { id: 'g_ren', suit: 'gan', val: 'ren', label: '壬水', badge: '壬', render: () => SvgFactory.sajuGan('壬', '#1565c0', '임수') },
-      { id: 'g_gui', suit: 'gan', val: 'gui', label: '癸水', badge: '癸', render: () => SvgFactory.sajuGan('癸', '#0d47a1', '계수') },
+      // 10간(天干 10종: 자연 오행 원소 정령 캐릭터)
+      { id: 'g_jia', suit: 'gan', val: 'jia', label: '甲木', badge: '甲', render: () => SvgFactory.sajuGan('jia', '甲', '#00897b', '갑목(소나무)') },
+      { id: 'g_yi', suit: 'gan', val: 'yi', label: '乙木', badge: '乙', render: () => SvgFactory.sajuGan('yi', '乙', '#2e7d32', '을목(화초)') },
+      { id: 'g_bing', suit: 'gan', val: 'bing', label: '丙火', badge: '丙', render: () => SvgFactory.sajuGan('bing', '丙', '#d32f2f', '병화(태양)') },
+      { id: 'g_ding', suit: 'gan', val: 'ding', label: '丁火', badge: '丁', render: () => SvgFactory.sajuGan('ding', '丁', '#e53935', '정화(등불)') },
+      { id: 'g_wu', suit: 'gan', val: 'wu', label: '戊土', badge: '戊', render: () => SvgFactory.sajuGan('wu', '戊', '#b78103', '무토(태산)') },
+      { id: 'g_ji', suit: 'gan', val: 'ji', label: '己土', badge: '己', render: () => SvgFactory.sajuGan('ji', '己', '#f57f17', '기토(대지)') },
+      { id: 'g_geng', suit: 'gan', val: 'geng', label: '庚金', badge: '庚', render: () => SvgFactory.sajuGan('geng', '庚', '#455a64', '경금(대검)') },
+      { id: 'g_xin', suit: 'gan', val: 'xin', label: '辛金', badge: '辛', render: () => SvgFactory.sajuGan('xin', '辛', '#37474f', '신금(보석)') },
+      { id: 'g_ren', suit: 'gan', val: 'ren', label: '壬水', badge: '壬', render: () => SvgFactory.sajuGan('ren', '壬', '#1565c0', '임수(대양)') },
+      { id: 'g_gui', suit: 'gan', val: 'gui', label: '癸水', badge: '癸', render: () => SvgFactory.sajuGan('gui', '癸', '#0d47a1', '계수(이슬)') },
 
-      // 12지(地支 12종: 12간지 동물 & 방위 사각 프레임)
-      { id: 'z_zi', suit: 'zhi', val: 'zi', label: '子水', badge: '子', render: () => SvgFactory.sajuZhi('子', '#0d47a1', '자(쥐)') },
-      { id: 'z_chou', suit: 'zhi', val: 'chou', label: '丑土', badge: '丑', render: () => SvgFactory.sajuZhi('丑', '#b78103', '축(소)') },
-      { id: 'z_yin', suit: 'zhi', val: 'yin', label: '寅木', badge: '寅', render: () => SvgFactory.sajuZhi('寅', '#00897b', '인(호랑이)') },
-      { id: 'z_mao', suit: 'zhi', val: 'zhi_mao', label: '卯木', badge: '卯', render: () => SvgFactory.sajuZhi('卯', '#2e7d32', '묘(토끼)') },
-      { id: 'z_chen', suit: 'zhi', val: 'chen', label: '辰土', badge: '辰', render: () => SvgFactory.sajuZhi('辰', '#b78103', '진(용)') },
-      { id: 'z_si', suit: 'zhi', val: 'si', label: '巳火', badge: '巳', render: () => SvgFactory.sajuZhi('巳', '#d32f2f', '사(뱀)') },
-      { id: 'z_wu', suit: 'zhi', val: 'zhi_wu', label: '午火', badge: '午', render: () => SvgFactory.sajuZhi('午', '#e53935', '오(말)') },
-      { id: 'z_wei', suit: 'zhi', val: 'wei', label: '未土', badge: '未', render: () => SvgFactory.sajuZhi('未', '#b78103', '미(양)') },
-      { id: 'z_shen', suit: 'zhi', val: 'shen', label: '申金', badge: '申', render: () => SvgFactory.sajuZhi('申', '#455a64', '신(원숭이)') },
-      { id: 'z_you', suit: 'zhi', val: 'you', label: '酉金', badge: '酉', render: () => SvgFactory.sajuZhi('酉', '#37474f', '유(닭)') },
-      { id: 'z_xu', suit: 'zhi', val: 'xu', label: '戌土', badge: '戌', render: () => SvgFactory.sajuZhi('戌', '#b78103', '술(개)') },
-      { id: 'z_hai', suit: 'zhi', val: 'hai', label: '亥水', badge: '亥', render: () => SvgFactory.sajuZhi('亥', '#1565c0', '해(돼지)') },
+      // 12지(地支 12종: 십이지신 동물 수호대 캐릭터)
+      { id: 'z_zi', suit: 'zhi', val: 'zi', label: '子水', badge: '子', render: () => SvgFactory.sajuZhi('zi', '子', '#0d47a1', '자(쥐)') },
+      { id: 'z_chou', suit: 'zhi', val: 'chou', label: '丑土', badge: '丑', render: () => SvgFactory.sajuZhi('chou', '丑', '#b78103', '축(소)') },
+      { id: 'z_yin', suit: 'zhi', val: 'yin', label: '寅木', badge: '寅', render: () => SvgFactory.sajuZhi('yin', '寅', '#00897b', '인(호랑이)') },
+      { id: 'z_mao', suit: 'zhi', val: 'zhi_mao', label: '卯木', badge: '卯', render: () => SvgFactory.sajuZhi('zhi_mao', '卯', '#2e7d32', '묘(토끼)') },
+      { id: 'z_chen', suit: 'zhi', val: 'chen', label: '辰土', badge: '辰', render: () => SvgFactory.sajuZhi('chen', '辰', '#b78103', '진(용)') },
+      { id: 'z_si', suit: 'zhi', val: 'si', label: '巳火', badge: '巳', render: () => SvgFactory.sajuZhi('si', '巳', '#d32f2f', '사(뱀)') },
+      { id: 'z_wu', suit: 'zhi', val: 'zhi_wu', label: '午火', badge: '午', render: () => SvgFactory.sajuZhi('zhi_wu', '午', '#e53935', '오(말)') },
+      { id: 'z_wei', suit: 'zhi', val: 'wei', label: '未土', badge: '未', render: () => SvgFactory.sajuZhi('wei', '未', '#b78103', '미(양)') },
+      { id: 'z_shen', suit: 'zhi', val: 'shen', label: '申金', badge: '申', render: () => SvgFactory.sajuZhi('shen', '申', '#455a64', '신(원숭이)') },
+      { id: 'z_you', suit: 'zhi', val: 'you', label: '酉金', badge: '酉', render: () => SvgFactory.sajuZhi('you', '酉', '#37474f', '유(닭)') },
+      { id: 'z_xu', suit: 'zhi', val: 'xu', label: '戌土', badge: '戌', render: () => SvgFactory.sajuZhi('xu', '戌', '#b78103', '술(개)') },
+      { id: 'z_hai', suit: 'zhi', val: 'hai', label: '亥水', badge: '亥', render: () => SvgFactory.sajuZhi('hai', '亥', '#1565c0', '해(돼지)') },
 
-      // 10신(十神 10종: 육친 5대 범주 8각 인장 엠블럼)
-      { id: 's_bijian', suit: 'shin', val: 'bijian', label: '比肩', badge: '比', render: () => SvgFactory.sajuShin('比', '#00796b', '비견') },
-      { id: 's_geobjae', suit: 'shin', val: 'geobjae', label: '劫財', badge: '劫', render: () => SvgFactory.sajuShin('劫', '#004d40', '겁재') },
-      { id: 's_siksin', suit: 'shin', val: 'siksin', label: '食神', badge: '食', render: () => SvgFactory.sajuShin('食', '#e65100', '식신') },
-      { id: 's_sangpwan', suit: 'shin', val: 'sangpwan', label: '傷官', badge: '傷', render: () => SvgFactory.sajuShin('傷', '#bf360c', '상관') },
-      { id: 's_pyeonjae', suit: 'shin', val: 'pyeonjae', label: '偏財', badge: '才', render: () => SvgFactory.sajuShin('才', '#f57f17', '편재') },
-      { id: 's_jeongjae', suit: 'shin', val: 'jeongjae', label: '正財', badge: '財', render: () => SvgFactory.sajuShin('財', '#ffd600', '정재') },
-      { id: 's_pyeongwan', suit: 'shin', val: 'pyeongwan', label: '七殺', badge: '殺', render: () => SvgFactory.sajuShin('殺', '#c2185b', '편관') },
-      { id: 's_jeonggwan', suit: 'shin', val: 'jeonggwan', label: '正官', badge: '官', render: () => SvgFactory.sajuShin('官', '#455a64', '정관') },
-      { id: 's_pyeonin', suit: 'shin', val: 'pyeonin', label: '偏印', badge: '梟', render: () => SvgFactory.sajuShin('梟', '#512da8', '편인') },
-      { id: 's_jeongin', suit: 'shin', val: 'jeongin', label: '正印', badge: '印', render: () => SvgFactory.sajuShin('印', '#311b92', '정인') }
+      // 10신(十神 10종: 운명의 10대 페르소나 아바타)
+      { id: 's_bijian', suit: 'shin', val: 'bijian', label: '比肩', badge: '比', render: () => SvgFactory.sajuShin('bijian', '比', '#00796b', '비견(분신)') },
+      { id: 's_geobjae', suit: 'shin', val: 'geobjae', label: '劫財', badge: '劫', render: () => SvgFactory.sajuShin('geobjae', '劫', '#004d40', '겁재(도깨비)') },
+      { id: 's_siksin', suit: 'shin', val: 'siksin', label: '食神', badge: '食', render: () => SvgFactory.sajuShin('siksin', '食', '#e65100', '식신(수저)') },
+      { id: 's_sangpwan', suit: 'shin', val: 'sangpwan', label: '傷官', badge: '傷', render: () => SvgFactory.sajuShin('sangpwan', '傷', '#bf360c', '상관(부채)') },
+      { id: 's_pyeonjae', suit: 'shin', val: 'pyeonjae', label: '偏財', badge: '才', render: () => SvgFactory.sajuShin('pyeonjae', '才', '#f57f17', '편재(보물상자)') },
+      { id: 's_jeongjae', suit: 'shin', val: 'jeongjae', label: '正財', badge: '財', render: () => SvgFactory.sajuShin('jeongjae', '財', '#ffd600', '정재(주판)') },
+      { id: 's_pyeongwan', suit: 'shin', val: 'pyeongwan', label: '七殺', badge: '殺', render: () => SvgFactory.sajuShin('pyeongwan', '殺', '#c2185b', '편관(대도)') },
+      { id: 's_jeonggwan', suit: 'shin', val: 'jeonggwan', label: '正官', badge: '官', render: () => SvgFactory.sajuShin('jeonggwan', '官', '#455a64', '정관(마패)') },
+      { id: 's_pyeonin', suit: 'shin', val: 'pyeonin', label: '偏印', badge: '梟', render: () => SvgFactory.sajuShin('pyeonin', '梟', '#512da8', '편인(올빼미)') },
+      { id: 's_jeongin', suit: 'shin', val: 'jeongin', label: '正印', badge: '印', render: () => SvgFactory.sajuShin('jeongin', '印', '#311b92', '정인(서책)') },
+
+      // 음양 (陰陽 2종: 천지의 두 기운 삼족오 & 월광 백여우)
+      { id: 'yy_yang', suit: 'yinyang', val: 'yang', label: '太陽', badge: '陽', render: () => SvgFactory.sajuYinYang('yang', '陽', '#ff6f00', '일광(삼족오)') },
+      { id: 'yy_yin', suit: 'yinyang', val: 'yin', label: '太陰', badge: '陰', render: () => SvgFactory.sajuYinYang('yin', '陰', '#5c6bc0', '월광(백여우)') },
+
+      // 오행 (五行 5종: 우주 5대 원소 신수 마스코트)
+      { id: 'wx_wood', suit: 'wuxing', val: 'wood', label: '木行', badge: '木', render: () => SvgFactory.sajuWuXing('wood', '木', '#2e7d32', '생명나무') },
+      { id: 'wx_fire', suit: 'wuxing', val: 'fire', label: '火行', badge: '火', render: () => SvgFactory.sajuWuXing('fire', '火', '#d32f2f', '화염주작') },
+      { id: 'wx_earth', suit: 'wuxing', val: 'earth', label: '土行', badge: '土', render: () => SvgFactory.sajuWuXing('earth', '土', '#f57f17', '대지현무') },
+      { id: 'wx_metal', suit: 'wuxing', val: 'metal', label: '金行', badge: '金', render: () => SvgFactory.sajuWuXing('metal', '金', '#455a64', '은백호검') },
+      { id: 'wx_water', suit: 'wuxing', val: 'water', label: '水行', badge: '水', render: () => SvgFactory.sajuWuXing('water', '水', '#0288d1', '샘물해마') }
     ];
 
     /**
@@ -2905,7 +3180,7 @@
         slotCount: 4, // 빈 슬롯 4개
         blindCount: 4, // 최상단 Layer 2 블라인드
         lives: 4, // 하트 4개
-        filter: (def) => (def.suit === 'wan') || (def.suit === 'tong') || (def.suit === 'tiao' && def.val <= 6) || (def.suit === 'gan') // 34종 풀 (만·통·삭 + 10간)
+        filter: (def) => (def.suit === 'wan') || (def.suit === 'tong') || (def.suit === 'tiao' && def.val <= 6) || (def.suit === 'gan') || (def.suit === 'wuxing') // 39종 풀 (만·통·삭 + 10간 + 5행)
       },
       hard: {
         name: '어려움',
@@ -2913,7 +3188,7 @@
         slotCount: 4, // 빈 슬롯 4개
         blindCount: 12, // 블라인드 12개
         lives: 3, // 하트 3개
-        filter: (def) => ['wan', 'tong', 'tiao', 'honor', 'wind', 'gan', 'zhi'].includes(def.suit) // 56종 풀 (전통 마작 34종 + 10간 10종 + 12지 12종)
+        filter: (def) => ['wan', 'tong', 'tiao', 'honor', 'wind', 'gan', 'zhi', 'wuxing', 'yinyang'].includes(def.suit) // 63종 풀 (전통 마작 34종 + 10간 + 12지 + 5행 + 음양)
       },
       master: {
         name: '달인',
@@ -2921,7 +3196,7 @@
         slotCount: 3, // 빈 슬롯 3개 (극도의 슬롯 병목 유도)
         blindCount: 18, // 블라인드 18개 (상위 2개 층 블라인드)
         lives: 3, // 하트 3개
-        filter: () => true // 82종 전체 (화패 8종 + 4예패 4종 + 사신수 4종 + 10간 10종 + 12지 12종 + 10신 10종 총출동)
+        filter: () => true // 89종 전체 총출동 (화패 8종 + 4예패 4종 + 사신수 4종 + 10간 10종 + 12지 12종 + 10신 10종 + 음양 2종 + 5행 5종)
       }
     };
 
