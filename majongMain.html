@@ -3736,12 +3736,14 @@
         if (!slotsEl) return;
 
         slotsEl.innerHTML = '';
+        // 소멸 애니메이션 중인 패를 제외한 실제 유효 슬롯 패 개수 산출
+        const activeCount = this.trayTiles.filter(t => !t.isMatching).length;
         if (countEl) {
-          countEl.textContent = `${this.trayTiles.length} / ${this.maxSlots}`;
-          countEl.classList.toggle('warning', this.trayTiles.length >= this.maxSlots - 1);
+          countEl.textContent = `${activeCount} / ${this.maxSlots}`;
+          countEl.classList.toggle('warning', activeCount >= this.maxSlots - 1);
         }
         if (containerEl) {
-          containerEl.classList.toggle('danger', this.trayTiles.length >= this.maxSlots);
+          containerEl.classList.toggle('danger', activeCount >= this.maxSlots);
         }
 
         for (let i = 0; i < this.maxSlots; i++) {
@@ -3751,7 +3753,7 @@
           const item = this.trayTiles[i];
           if (item) {
             const tileDiv = document.createElement('div');
-            tileDiv.className = 'tray-tile';
+            tileDiv.className = 'tray-tile' + (item.isMatching ? ' matching' : '');
             tileDiv.dataset.trayIndex = i;
             tileDiv.title = `${item.def.name || item.def.label} (클릭 시 보드로 반환)`;
             tileDiv.innerHTML = `
@@ -3761,12 +3763,12 @@
             `;
             let trayHandled = false;
             const handleTrayAction = (e) => {
-              if (trayHandled) return;
+              if (trayHandled || item.isMatching) return;
               trayHandled = true;
               e.stopPropagation();
               if (e && e.cancelable) e.preventDefault();
               this.returnTileFromTray(i);
-              setTimeout(() => { trayHandled = false; }, 250);
+              setTimeout(() => { trayHandled = false; }, 140);
             };
 
             tileDiv.addEventListener('pointerdown', (e) => {
@@ -4042,7 +4044,7 @@
             </div>
           `;
 
-          // 방안 A + B 하이브리드 고반응 초정밀 터치/클릭 엔진
+          // [모바일 고감도 터치 엔진] 브라우저 포인터 스트림 교란 제거 및 초정밀 탭 판정
           let pDownX = 0, pDownY = 0, pDownTime = 0;
           let isHandled = false;
 
@@ -4051,8 +4053,8 @@
             isHandled = true;
             if (e && e.cancelable) e.preventDefault();
             this.handleTileClick(tile);
-            // 더블 클릭/고스트 방지용 250ms 후 플래그 초기화
-            setTimeout(() => { isHandled = false; }, 250);
+            // 더블 터치 방지용 140ms 후 플래그 해제 (신속한 연타 보장)
+            setTimeout(() => { isHandled = false; }, 140);
           };
 
           el.addEventListener('pointerdown', (e) => {
@@ -4062,17 +4064,11 @@
             pDownTime = performance.now();
             isHandled = false;
 
-            // 두 손가락 제스처 쿨다운 중에는 터치 차단
+            // 두 손가락 핀치 제스처 쿨다운 중에는 터치 차단
             if (this.gestureCooldownUntil && Date.now() < this.gestureCooldownUntil) return;
 
-            // [방안 A] 포인터 캡처로 모바일 터치 타겟 이탈 방지
-            try {
-              if (el.setPointerCapture && e.pointerId) {
-                el.setPointerCapture(e.pointerId);
-              }
-            } catch (err) {}
-
-            // [방안 B] 모바일 터치 환경: 손가락이 닿는 순간 즉시 0ms 네이티브급 반응 실행!
+            // 모바일 터치 환경: 손가락이 닿는 순간 즉시 0ms 반응 실행!
+            // (setPointerCapture는 DOM 제거 시 포인터 취소/유실을 일으키므로 사용하지 않음)
             if (e.pointerType === 'touch') {
               executeTileAction(e);
             }
@@ -4080,35 +4076,23 @@
 
           el.addEventListener('pointerup', (e) => {
             if (e.button !== undefined && e.button !== 0) return;
-            try {
-              if (el.releasePointerCapture && e.pointerId) {
-                el.releasePointerCapture(e.pointerId);
-              }
-            } catch (err) {}
-
             if (isHandled) return;
 
-            // [방안 A] PC 마우스 또는 pointerdown에서 처리되지 않은 터치 구제 (기준: 30px 이내, 750ms 미만)
+            // PC 마우스 클릭 또는 pointerdown에서 누락된 모바일 터치 구제 (35px 이내, 750ms 미만)
             const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
             const duration = performance.now() - pDownTime;
 
-            if (dist < 30 && duration < 750) {
+            if (dist < 35 && duration < 750) {
               executeTileAction(e);
             }
           });
 
-          // [방안 A] pointercancel 발생 시에도 미세 이동(25px 이내)인 경우 정상 탭으로 즉시 구제
+          // 모바일 스크롤/제스처 시작으로 pointercancel 발생 시에도 미세 이동(30px 이내)인 경우 정상 탭 구제
           el.addEventListener('pointercancel', (e) => {
-            try {
-              if (el.releasePointerCapture && e.pointerId) {
-                el.releasePointerCapture(e.pointerId);
-              }
-            } catch (err) {}
-
             if (isHandled) return;
 
             const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
-            if (dist < 25) {
+            if (dist < 30) {
               executeTileAction(e);
             }
           });
@@ -4151,6 +4135,59 @@
       }
 
       /**
+       * 터치 진단 로거: 콘솔 및 모바일 온스크린 오버레이 출력
+       */
+      logTouch(msg, level = 'info') {
+        const timeStr = new Date().toTimeString().split(' ')[0] + '.' + String(Date.now() % 1000).padStart(3, '0');
+        const formatted = `[터치] ${msg}`;
+        if (level === 'warn') {
+          console.warn(`[TOUCH ${timeStr}] ${msg}`);
+        } else {
+          console.log(`[TOUCH ${timeStr}] ${msg}`);
+        }
+
+        // 온스크린 실시간 진단 바 (모바일에서 즉시 시각 확인)
+        let bar = document.getElementById('touch-debug-bar');
+        if (!bar) {
+          bar = document.createElement('div');
+          bar.id = 'touch-debug-bar';
+          bar.style.cssText = `
+            position: fixed;
+            top: 48px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.9);
+            color: #38ef7d;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(56, 239, 125, 0.4);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+            z-index: 99999;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.18s ease;
+            white-space: nowrap;
+            max-width: 90vw;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          `;
+          document.body.appendChild(bar);
+        }
+        bar.textContent = formatted;
+        bar.style.color = level === 'warn' ? '#ff7675' : '#55efc4';
+        bar.style.borderColor = level === 'warn' ? 'rgba(255, 118, 117, 0.5)' : 'rgba(85, 239, 196, 0.4)';
+        bar.style.opacity = '1';
+
+        clearTimeout(this._debugBarTimer);
+        this._debugBarTimer = setTimeout(() => {
+          if (bar) bar.style.opacity = '0';
+        }, 1600);
+      }
+
+      /**
        * 진정한 교착 상태(더 이상 진행할 수 없는 상태) 판정
        * - 슬롯에 빈자리가 있다면, 플레이어가 자유 패를 슬롯에 담아 아래층 패를 열 수 있으므로 절대 교착이 아님!
        * - 슬롯이 꽉 찼을 때 보드의 자유 패 중 슬롯의 패와 즉시 매치되는 패가 0개이거나, 보드에 자유 패가 0개일 때만 교착.
@@ -4167,12 +4204,13 @@
 
         // 2) 슬롯에 빈자리가 남아있는 경우:
         //    플레이어가 자유 패를 슬롯에 담아 아래 패를 열 수 있으므로 절대 교착이 아님!
-        if (this.trayTiles.length < this.maxSlots) return false;
+        const activeTrayCount = this.trayTiles.filter(t => !t.isMatching).length;
+        if (activeTrayCount < this.maxSlots) return false;
 
-        // 3) 슬롯이 가득 찬 경우 (trayTiles.length >= maxSlots):
+        // 3) 슬롯이 가득 찬 경우:
         //    보드의 자유 패 중 슬롯의 패와 일치하여 즉시 매치 가능한 패가 1개라도 있는지 검사
         const hasMatchingMove = freeTiles.some(ft =>
-          this.trayTiles.some(trayItem => trayItem.def.id === ft.def.id)
+          this.trayTiles.some(trayItem => !trayItem.isMatching && trayItem.def.id === ft.def.id)
         );
 
         // 즉시 매치 가능한 패조차 없다면 더 이상 패를 슬롯에 넣을 수 없으므로 교착 상태!
@@ -4237,9 +4275,11 @@
        */
       handleTileClick(tile) {
         if (this.isGameOver || this.isAutoClearing || this.isDealing || tile.removed) {
+          this.logTouch(`[차단] 게임상태(오버/피날레/딜링:${this.isDealing}/제거:${tile.removed})`, 'warn');
           return;
         }
         if (this.gestureCooldownUntil && Date.now() < this.gestureCooldownUntil) {
+          this.logTouch('[차단] 두 손가락 핀치 제스처 직후 쿨다운 중', 'warn');
           return;
         }
 
@@ -4247,6 +4287,7 @@
 
         // 클릭된 해당 타일이 잠겨있는 경우 흔들림 효과 및 미스 사운드
         if (!this.isTileFree(tile)) {
+          this.logTouch(`[잠김패] '${tile.def.label}' 선택 불가 (좌우 또는 위가 막힘)`, 'warn');
           if (this.sound && this.sound.playMiss) this.sound.playMiss();
           if (tile.el) {
             tile.el.classList.remove('wiggle');
@@ -4266,6 +4307,7 @@
         if (prevRevealed) {
           // 클릭한 타일과 공개된 타일이 동일한 종류인 경우: 짝 매칭 즉시 성립!
           if (tile.def.id === prevRevealed.def.id) {
+            this.logTouch(`[블라인드 짝 일치] '${tile.def.label}' 매칭 성공!`);
             // 새로 클릭한 타일도 뒤집힌 상태라면 앞면 공개 연출
             if (tile.isCovered && !tile.isRevealed) {
               tile.isRevealed = true;
@@ -4293,13 +4335,15 @@
               tile: prevRevealed,
               def: prevRevealed.def,
               id: prevRevealed.id,
-              wasCovered: true
+              wasCovered: true,
+              isMatching: true
             };
             const item2 = {
               tile: tile,
               def: tile.def,
               id: tile.id,
-              wasCovered: tile.isCovered
+              wasCovered: tile.isCovered,
+              isMatching: true
             };
 
             this.trayTiles.push(item1, item2);
@@ -4313,6 +4357,7 @@
 
           } else {
             // 다른 뒤집힌 패든 일반 자유 패든, 모양이 다르면 기존에 열려있던 블라인드 패는 다시 뒤집어 숨김!
+            this.logTouch(`[블라인드 불일치] '${prevRevealed.def.label}' 닫힘 (${this.blindMismatchCount + 1}/3)`);
             this.flipTileBack(prevRevealed);
 
             // 뒤집힌 패 3회 연속 매칭 실패 시 하트 1개 소진
@@ -4326,6 +4371,7 @@
 
         // 2) 뒤집힌 타일인 경우: 1회 클릭 시 먼저 보드에서 뒤집혀 앞면 공개 후 대기
         if (tile.isCovered && !tile.isRevealed) {
+          this.logTouch(`[블라인드 오픈] '${tile.def.label}' 앞면 공개`);
           this.tiles.forEach(t => {
             if (t !== tile && t.isCovered && t.isRevealed && !t.removed) {
               this.flipTileBack(t);
@@ -4342,16 +4388,19 @@
         }
 
         // 3) 일반 자유 패(또는 이미 공개된 블라인드 패의 재클릭): 슬롯(트레이)으로 이동
-        // 동일 타일 초고속 중복 클릭(고스트 터치)만 250ms 차단하고, 방금 열린 바닥 타일 등 다른 타일은 0ms 즉각 처리!
-        if (this.lastClickedTileId === tile.id && this.lastGlobalTileClickTime && (now - this.lastGlobalTileClickTime < 250)) {
+        // 동일 타일 초고속 중복 클릭(고스트 터치)만 140ms 차단하고, 다른 타일은 0ms 즉각 처리!
+        if (this.lastClickedTileId === tile.id && this.lastGlobalTileClickTime && (now - this.lastGlobalTileClickTime < 140)) {
+          this.logTouch(`[중복 무시] '${tile.def.label}' 초고속 연타 차단`, 'warn');
           return;
         }
         this.lastClickedTileId = tile.id;
         this.lastGlobalTileClickTime = now;
 
-        // 슬롯 수용 가능 여부 체크
-        const willMatchImmediately = this.trayTiles.some(t => t.def.id === tile.def.id);
-        if (this.trayTiles.length >= this.maxSlots && !willMatchImmediately) {
+        // 슬롯 수용 가능 여부 체크 (소멸 애니메이션 중인 패는 즉시 제외하여 연속 터치 씹힘 완전 해결!)
+        const activeTrayTiles = this.trayTiles.filter(t => !t.isMatching);
+        const willMatchImmediately = activeTrayTiles.some(t => t.def.id === tile.def.id);
+        if (activeTrayTiles.length >= this.maxSlots && !willMatchImmediately) {
+          this.logTouch(`[슬롯 부족] 슬롯 가득참 (${activeTrayTiles.length}/${this.maxSlots}) - 매치불가`, 'warn');
           this.sound.playMiss();
           const trayEl = document.getElementById('tray-container');
           if (trayEl) {
@@ -4361,6 +4410,8 @@
           }
           return;
         }
+
+        this.logTouch(`[슬롯 이동] '${tile.def.label}' 담김 (${activeTrayTiles.length + 1}/${this.maxSlots})`);
 
         // 블라인드 패였는지 기록
         const wasCovered = tile.isCovered;
@@ -4394,12 +4445,16 @@
        * 슬롯 내 2개 짝(매치) 판정 및 제거
        */
       checkTrayMatch(newItem) {
-        // newItem과 동일한 def.id를 가진 기존 패 검색
+        // newItem과 동일한 def.id를 가진 기존 패 검색 (아직 완전히 제거되지 않은 패 중)
         const matches = this.trayTiles.filter(t => t.def.id === newItem.def.id);
 
         if (matches.length >= 2) {
           // 2개 짝 매치 성공!
           const [t1, t2] = matches.slice(0, 2);
+
+          // [핵심 해결] 320ms 애니메이션 도중에도 유저가 다음 패를 터치할 수 있도록 논리적 슬롯 2자리를 0ms 즉시 확보!
+          t1.isMatching = true;
+          t2.isMatching = true;
 
           // 매치 애니메이션 실행
           const slotsEl = document.getElementById('tray-slots');
@@ -4419,6 +4474,7 @@
           this.score += bonus;
           this.blindMismatchCount = 0; // 일반 패 매치 성공 시에도 실패 카운트 초기화
           this.updateHeaderUI();
+          this.logTouch(`[매칭 성공] '${t1.def.label}' 짝 소멸! (+${bonus}점)`);
 
           // 되돌리기 스택에 매칭 기록
           this.undoStack.push({
@@ -4498,7 +4554,7 @@
       returnTileFromTray(trayIndex) {
         if (this.isGameOver || this.isAutoClearing || this.isDealing) return;
         const item = this.trayTiles[trayIndex];
-        if (!item) return;
+        if (!item || item.isMatching) return;
 
         this.trayTiles.splice(trayIndex, 1);
         const tile = item.tile;
