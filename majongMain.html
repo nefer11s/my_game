@@ -5924,12 +5924,12 @@
           if (s.z > maxZ) maxZ = s.z;
         });
 
-        // 1유닛 = 35px(가로), 43px(세로). 타일 크기는 2x2 유닛 차지.
+        // 1유닛 = 33px(가로), 43px(세로). 타일 크기는 2x2 유닛 차지 (66px×88px).
         const cols = (maxX - minX) + 2;
         const rows = (maxY - minY) + 2;
         const padX = 24;
         const padY = 24;
-        this.currentLayoutWidth = cols * 35 + padX * 2;
+        this.currentLayoutWidth = cols * 33 + padX * 2;
         this.currentLayoutHeight = rows * 43 + padY * 2;
         this.currentLayoutBounds = { minX, maxX, minY, maxY, maxZ, padX, padY };
 
@@ -6127,7 +6127,7 @@
           el.dataset.layer = tile.z;
 
           // 보드 좌상단(minX, minY) 기준 상대 좌표 정규화
-          const posX = (tile.x - bounds.minX) * 35 + bounds.padX;
+          const posX = (tile.x - bounds.minX) * 33 + bounds.padX;
           const posY = (tile.y - bounds.minY) * 43 + bounds.padY;
 
           // 층(z: 0~4)별 상단-좌측 시차 오프셋 (아이소메트릭 단차감 강조)
