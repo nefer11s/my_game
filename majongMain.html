@@ -2716,9 +2716,15 @@
           <button class="btn settings-btn" id="btn-fullscreen" title="전체화면 모드 토글">
             <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
           </button>
+          <button class="btn settings-btn" id="btn-auto-blind-match" title="뒤집힌 타일 터치 시 동일한 타일 자동 매칭">
+            <span class="btn-icon" id="auto-blind-match-icon">🔒</span> <span id="auto-blind-match-text">뒤집힌패 자동매칭: 꺼짐</span>
+          </button>
+          <button class="btn settings-btn" id="btn-auto-end-match" title="남은 타일 10개 이하 시 자동으로 매칭 진행">
+            <span class="btn-icon" id="auto-end-match-icon">🔒</span> <span id="auto-end-match-text">마지막10개 자동매칭: 꺼짐</span>
+          </button>
           <div class="settings-divider"></div>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.29
+            Si-Yeon Mahjong Solitaire v1.4.30
           </div>
         </div>
       </div>
@@ -2752,7 +2758,7 @@
     <div class="splash-card">
       <div class="splash-img-wrap">
         <img src="assets/mahjong_splash.jpg" alt="시연 그림맞추기" class="splash-hero-img">
-        <div class="splash-version-badge">v1.4.29</div>
+        <div class="splash-version-badge">v1.4.30</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연 그림맞추기</h1>
@@ -5098,6 +5104,8 @@
         this.isGameOver = false;
         this.blindMismatchCount = 0; // 뒤집기 3회 실패 카운터
         this.hasUsedLastChanceShuffle = false; // 하트 1개일 때 마지막 무료 셔플 사용 여부
+        this.autoBlindMatch = localStorage.getItem('autoBlindMatch') === '1'; // 뒤집힌 타일 자동매칭 (기본: 꺼짐)
+        this.autoEndMatch = localStorage.getItem('autoEndMatch') === '1'; // 마지막 10개 타일 자동매칭 (기본: 꺼짐)
 
         // 뷰포트 확대/축소 및 자유 이동(Pan & Zoom) 시스템
         this.baseScale = 1.0;
@@ -5404,6 +5412,54 @@
             this.toggleFullscreen();
           });
         }
+
+        // 뒤집힌 패 자동매칭 토글 버튼 이벤트
+        const btnAutoBlindMatch = document.getElementById('btn-auto-blind-match');
+        const updateAutoBlindMatchUI = () => {
+          const icon = document.getElementById('auto-blind-match-icon');
+          const text = document.getElementById('auto-blind-match-text');
+          if (icon && text) {
+            icon.textContent = this.autoBlindMatch ? '🔓' : '🔒';
+            text.textContent = this.autoBlindMatch ? '뒤집힌패 자동매칭: 켜짐' : '뒤집힌패 자동매칭: 꺼짐';
+          }
+        };
+        updateAutoBlindMatchUI();
+        if (btnAutoBlindMatch) {
+          btnAutoBlindMatch.addEventListener('click', () => {
+            this.autoBlindMatch = !this.autoBlindMatch;
+            localStorage.setItem('autoBlindMatch', this.autoBlindMatch ? '1' : '0');
+            updateAutoBlindMatchUI();
+          });
+        }
+
+        // 마지막 10개 자동매칭 토글 버튼 이벤트
+        const btnAutoEndMatch = document.getElementById('btn-auto-end-match');
+        const updateAutoEndMatchUI = () => {
+          const icon = document.getElementById('auto-end-match-icon');
+          const text = document.getElementById('auto-end-match-text');
+          if (icon && text) {
+            icon.textContent = this.autoEndMatch ? '⚡' : '🔒';
+            text.textContent = this.autoEndMatch ? '마지막10개 자동매칭: 켜짐' : '마지막10개 자동매칭: 꺼짐';
+          }
+        };
+        updateAutoEndMatchUI();
+        if (btnAutoEndMatch) {
+          btnAutoEndMatch.addEventListener('click', () => {
+            this.autoEndMatch = !this.autoEndMatch;
+            localStorage.setItem('autoEndMatch', this.autoEndMatch ? '1' : '0');
+            updateAutoEndMatchUI();
+
+            // 만약 켠 시점에 이미 남은 패가 10개 이하라면 즉시 피날레 가동
+            if (this.autoEndMatch && !this.isAutoClearing && !this.isGameOver) {
+              const remainBoard = this.tiles ? this.tiles.filter(t => !t.removed).length : 0;
+              const remainTray = this.trayTiles ? this.trayTiles.length : 0;
+              if (remainBoard + remainTray > 0 && remainBoard + remainTray <= 10) {
+                this.triggerAutoClearFinale();
+              }
+            }
+          });
+        }
+
         document.getElementById('btn-undo').addEventListener('click', () => this.undo());
         document.getElementById('btn-hint').addEventListener('click', () => this.showHint());
         document.getElementById('btn-shuffle').addEventListener('click', () => this.shuffleRemain());
@@ -6594,6 +6650,81 @@
             tile.el.classList.add('face-down', 'revealed');
           }
           this.updateTileStates();
+
+          // [옵션 기능] 뒤집힌 패 자동 매칭: 트레이나 보드에 매칭 가능한 동일 패가 있으면 자동 매칭
+          if (this.autoBlindMatch) {
+            // A. 트레이에 동일 패가 이미 대기 중인 경우 -> 즉시 트레이로 보내 매치
+            const trayMatch = this.trayTiles.find(t => !t.isMatching && t.def.id === tile.def.id);
+            if (trayMatch) {
+              setTimeout(() => {
+                if (tile.removed || this.isGameOver) return;
+                tile.removed = true;
+                if (tile.el) {
+                  this.hideTileEl(tile.el);
+                  tile.el.classList.remove('selected', 'face-down', 'revealed');
+                }
+                this.updateTileStates();
+
+                const trayItem = {
+                  tile: tile,
+                  def: tile.def,
+                  id: tile.id,
+                  wasCovered: true
+                };
+                this.trayTiles.push(trayItem);
+                this.sound.playSelect();
+                this.renderTray();
+                this.blindMismatchCount = 0;
+                this.checkTrayMatch(trayItem);
+              }, 160);
+              return;
+            }
+
+            // B. 보드에 자유 패(isFree) 또는 이미 열린 블라인드 패 중 동일 패가 있는 경우 -> 두 패 자동 매치
+            const boardMatch = this.tiles.find(t => !t.removed && t.id !== tile.id && (t.isFree || (t.isCovered && t.isRevealed)) && t.def.id === tile.def.id);
+            if (boardMatch) {
+              setTimeout(() => {
+                if (tile.removed || boardMatch.removed || this.isGameOver) return;
+
+                boardMatch.removed = true;
+                if (boardMatch.el) {
+                  this.hideTileEl(boardMatch.el);
+                  boardMatch.el.classList.remove('selected', 'face-down', 'revealed');
+                }
+
+                tile.removed = true;
+                if (tile.el) {
+                  this.hideTileEl(tile.el);
+                  tile.el.classList.remove('selected', 'face-down', 'revealed');
+                }
+
+                this.updateTileStates();
+
+                const item1 = {
+                  tile: boardMatch,
+                  def: boardMatch.def,
+                  id: boardMatch.id,
+                  wasCovered: boardMatch.isCovered,
+                  isMatching: true
+                };
+                const item2 = {
+                  tile: tile,
+                  def: tile.def,
+                  id: tile.id,
+                  wasCovered: true,
+                  isMatching: true
+                };
+
+                this.trayTiles.push(item1, item2);
+                this.sound.playSelect();
+                this.renderTray();
+                this.blindMismatchCount = 0;
+                this.checkTrayMatch(item2);
+              }, 160);
+              return;
+            }
+          }
+
           return;
         }
 
@@ -6704,7 +6835,7 @@
             const remainTray = this.trayTiles.length;
             if (remainBoard === 0 && remainTray === 0) {
               this.checkWinCondition();
-            } else if (remainBoard + remainTray <= 10 && !this.isAutoClearing) {
+            } else if (this.autoEndMatch && remainBoard + remainTray <= 10 && !this.isAutoClearing) {
               this.triggerAutoClearFinale();
             }
           }, 320);
