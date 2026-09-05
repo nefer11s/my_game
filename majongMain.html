@@ -452,6 +452,22 @@
       -webkit-touch-callout: none !important;
     }
 
+    /* 자유 패: 밝고 선명하게 */
+    .tile.free {
+      filter: brightness(1.08);
+      transition: filter 0.25s ease, transform 0.22s cubic-bezier(0.2, 0.9, 0.4, 1.1),
+        box-shadow 0.22s ease, opacity 0.22s ease;
+    }
+
+    /* 잠긴 패: 어둡게 (힌트처럼 보이지 않도록 살짝만 어둡게) */
+    .tile.blocked {
+      filter: brightness(0.72) saturate(0.7);
+      cursor: default;
+      transition: filter 0.25s ease, transform 0.22s cubic-bezier(0.2, 0.9, 0.4, 1.1),
+        box-shadow 0.22s ease, opacity 0.22s ease;
+    }
+
+
     /* 타일 내부 요소는 클릭/터치 이벤트를 방해하지 않고 본체로 통과 */
     .tile-inner,
     .tile-front,
@@ -4775,10 +4791,9 @@
         const l0 = [
           { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 }, { x: 10, y: 2 },
           { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 }, { x: 10, y: 4 },
-          { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 },
+          { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 8, y: 6 }, { x: 10, y: 6 },
           { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 }, { x: 10, y: 8 },
-          { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 }, { x: 10, y: 10 },
-          { x: 6, y: 0 }
+          { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 }, { x: 10, y: 10 }
         ];
         l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
         const l1 = [
@@ -4839,19 +4854,19 @@
           { x: 8, y: 2 }, { x: 10, y: 2 }, { x: 12, y: 2 },
           { x: 8, y: 4 }, { x: 10, y: 4 }, { x: 12, y: 4 },
           { x: 8, y: 6 }, { x: 10, y: 6 }, { x: 12, y: 6 },
-          { x: 8, y: 8 }, { x: 10, y: 8 }, { x: 12, y: 8 },
-          { x: 4, y: 0 }, { x: 10, y: 0 },
-          { x: 4, y: 10 }, { x: 10, y: 10 }
+          { x: 8, y: 8 }, { x: 10, y: 8 }, { x: 12, y: 8 }
         ];
         l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
         const l1 = [
           { x: 3, y: 4 }, { x: 5, y: 4 },
           { x: 3, y: 6 }, { x: 5, y: 6 },
+          { x: 7, y: 4 }, { x: 7, y: 6 },
           { x: 9, y: 4 }, { x: 11, y: 4 },
           { x: 9, y: 6 }, { x: 11, y: 6 }
         ];
         l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
         const l2 = [
+          { x: 4, y: 3 }, { x: 10, y: 3 },
           { x: 4, y: 5 }, { x: 4, y: 7 },
           { x: 10, y: 5 }, { x: 10, y: 7 }
         ];
@@ -4869,13 +4884,12 @@
           { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 }, { x: 10, y: 4 }, { x: 12, y: 4 }, { x: 14, y: 4 }, { x: 16, y: 4 },
           { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 }, { x: 10, y: 6 }, { x: 12, y: 6 }, { x: 14, y: 6 }, { x: 16, y: 6 },
           { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 }, { x: 10, y: 8 }, { x: 12, y: 8 }, { x: 14, y: 8 },
-          { x: 6, y: 10 }, { x: 8, y: 10 }, { x: 10, y: 10 }, { x: 12, y: 10 },
-          { x: 0, y: 5 }, { x: 18, y: 5 }
+          { x: 6, y: 10 }, { x: 8, y: 10 }, { x: 10, y: 10 }, { x: 12, y: 10 }
         ];
         l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
         const l1 = [
           { x: 6, y: 3 }, { x: 8, y: 3 }, { x: 10, y: 3 }, { x: 12, y: 3 },
-          { x: 6, y: 5 }, { x: 8, y: 5 }, { x: 10, y: 5 }, { x: 12, y: 5 },
+          { x: 4, y: 5 }, { x: 6, y: 5 }, { x: 8, y: 5 }, { x: 10, y: 5 }, { x: 12, y: 5 }, { x: 14, y: 5 },
           { x: 6, y: 7 }, { x: 8, y: 7 }, { x: 10, y: 7 }, { x: 12, y: 7 }
         ];
         l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
@@ -6360,12 +6374,10 @@
             const baseZ = tile.z * 100 + tile.y * 10 + tile.x;
             tile.el.style.zIndex = free ? (baseZ + 1000) : baseZ;
 
-            // 3D 공간(preserve-3d)에서 자유 패를 물리적으로 앞으로 돌출시켜 브라우저/S펜 히트테스팅 최우선 보장
+            // 모든 패의 높이를 동일하게 유지 (extraZ 돌출 없음)
             if (tile.finalX !== undefined && tile.finalY !== undefined && tile.finalZ !== undefined) {
-              const extraZ = free ? 80 : 0;
-              const curZ = tile.finalZ + extraZ;
-              tile.el.style.setProperty('--tz', `${curZ}px`);
-              tile.el.style.transform = `translate3d(${tile.finalX}px, ${tile.finalY}px, ${curZ}px)`;
+              tile.el.style.setProperty('--tz', `${tile.finalZ}px`);
+              tile.el.style.transform = `translate3d(${tile.finalX}px, ${tile.finalY}px, ${tile.finalZ}px)`;
             }
           }
         });
