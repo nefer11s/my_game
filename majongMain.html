@@ -432,26 +432,24 @@
       outline: none;
       perspective: 800px;
       transform-style: preserve-3d;
+      /* 정밀 3D 적층 두께: 1~3px 백색 상아 본체층 + 4~8px 에메랄드 비취 바닥층 */
+      box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.9),
+        inset -1px -1px 2px rgba(180, 160, 135, 0.2),
+        1px 1px 0 #ede5d4,
+        2px 2px 0 #dfd5bf,
+        3px 3px 0 #cfc2a8,
+        4px 4px 0 #287756,
+        5px 5px 0 #206346,
+        6px 6px 0 #195239,
+        7px 7px 0 #123e2b,
+        8px 8px 0 #0d2c1e,
+        6px 10px 16px rgba(10, 35, 22, 0.26);
     }
 
     /* 타일 내부 모든 자식 엘리먼트의 포인터 가로챔 원천 차단 (타일 본체로 단일 수신) */
     .tile * {
       pointer-events: none !important;
       -webkit-touch-callout: none !important;
-    }
-
-    /* 정밀 3D 적층 두께: 1~3px 백색 상아 본체층 + 4~8px 에메랄드 비취 바닥층 */
-    box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.9),
-    inset -1px -1px 2px rgba(180, 160, 135, 0.2),
-    1px 1px 0 #ede5d4,
-    2px 2px 0 #dfd5bf,
-    3px 3px 0 #cfc2a8,
-    4px 4px 0 #287756,
-    5px 5px 0 #206346,
-    6px 6px 0 #195239,
-    7px 7px 0 #123e2b,
-    8px 8px 0 #0d2c1e,
-    6px 10px 16px rgba(10, 35, 22, 0.26);
     }
 
     /* 타일 내부 요소는 클릭/터치 이벤트를 방해하지 않고 본체로 통과 */
@@ -7136,7 +7134,7 @@
         this.zoomLevel = 1.0;
         this.panX = 0;
         this.panY = 0;
-        this.applyBoardTransform(animated);
+        this.handleResize(animated);
       }
 
       applyBoardTransform(animated = false) {
@@ -7160,31 +7158,38 @@
 
       /**
        * 레이아웃 및 남은 타일 바운딩 박스 기반 동적 오토-피팅(Auto-Fitting) 스케일러
-       * 화면 잘림 제로(0%) 보장 + 모바일 세로/가로 화면에서 타일 크기 최대 확대 최적화
+       * 상단 임시보관함(트레이) 높이와 3D 틸트 상단 돌출을 완벽히 계산하여 상하단 잘림 0% 보장
        */
       handleResize(animated = false) {
         if (!this.viewportEl || !this.boardEl) return;
         const vw = this.viewportEl.clientWidth;
         const vh = this.viewportEl.clientHeight;
 
+        // 상단 임시보관함(트레이) 실제 높이 감지
+        const trayEl = document.getElementById('tray-container');
+        const trayH = trayEl ? trayEl.offsetHeight : 64;
+
         const bounds = this.currentLayoutBounds || { minX: 0, maxX: 16, minY: 0, maxY: 10, padX: 24, padY: 24 };
 
-        // 1. 현재 보드에 남은 활성 타일들의 실제 픽셀 좌표(Pixel Bounding Box) 오차 0 정밀 산출
+        // 1. 현재 보드에 남은 활성 타일들의 실제 픽셀 좌표(Pixel Bounding Box) 정밀 산출
         const activeTiles = (this.tiles && this.tiles.length > 0) ? this.tiles.filter(t => !t.removed) : null;
         let effectiveW = this.currentLayoutWidth || 730;
         let effectiveH = this.currentLayoutHeight || 545;
         let offsetCenterX = 0;
+        let offsetCenterY = 0;
 
         if (activeTiles && activeTiles.length > 0) {
           let minPx = Infinity, maxPx = -Infinity, minPy = Infinity, maxPy = -Infinity;
           activeTiles.forEach(t => {
-            // 실제 타일 렌더링 시 적용되는 정규화 픽셀 위치 (renderBoard 수식과 100% 동기화)
+            // 실제 타일 렌더링 정규화 픽셀 위치 (renderBoard 수식 동기화)
             const px = (t.x - bounds.minX) * 35 + bounds.padX - t.z * 6;
             const py = (t.y - bounds.minY) * 43 + bounds.padY - t.z * 8.1;
             if (px < minPx) minPx = px;
-            if (px + 66 > maxPx) maxPx = px + 66; // 66px: 기본 타일 폭
-            if (py < minPy) minPy = py;
-            if (py + 88 > maxPy) maxPy = py + 88; // 88px: 기본 타일 높이
+            if (px + 66 > maxPx) maxPx = px + 66; // 66px: 타일 폭
+            // 3D 층고(z) 상단 솟음 및 틸트 여유분 반영
+            const topPy = py - (t.z > 0 ? t.z * 8 : 0);
+            if (topPy < minPy) minPy = topPy;
+            if (py + 88 > maxPy) maxPy = py + 88; // 88px: 타일 높이
           });
 
           // 남은 타일들의 실제 픽셀 너비/높이
@@ -7194,45 +7199,53 @@
           effectiveW = Math.min(this.currentLayoutWidth || 730, exactTilesW);
           effectiveH = Math.min(this.currentLayoutHeight || 545, exactTilesH);
 
-          // 타일이 한쪽부터 제거되어 중심이 이동했을 때, 활성 타일 뭉치를 뷰포트 정중앙에 위치시키는 오프셋
+          // 타일 뭉치를 뷰포트 정중앙에 정확히 위치시키는 X, Y 오프셋 동시 산출
           const boardCenterX = (this.currentLayoutWidth || 730) / 2;
           const tilesCenterX = (minPx + maxPx) / 2;
           offsetCenterX = boardCenterX - tilesCenterX;
+
+          const boardCenterY = (this.currentLayoutHeight || 545) / 2;
+          const tilesCenterY = (minPy + maxPy) / 2;
+          offsetCenterY = boardCenterY - tilesCenterY;
         }
 
         const isMobile = vw < 680;
         const isPortrait = vw < vh;
 
         if (isMobile && isPortrait) {
-          // [모바일 세로 모드]: 좌우 여백을 4px(양쪽 2px)로 최소화하여 화면에 100% 꽉 차게 확대
-          const marginX = 4;
-          // 세로 방향: 상단 헤더/하단 트레이 간섭 방지 안전 여백 (세로 높이가 충분하면 가로 꽉 참 우선)
-          const marginY = (vh < 640) ? 14 : 20;
+          // [모바일 세로 모드]: 상단 임시보관함 침범 방지 여백 정밀 계산
+          const marginX = 8;
+          // 상단 임시보관함 크기(trayH) 및 하단 독과의 간섭을 막는 안전 여백
+          const traySafety = Math.max(16, Math.min(36, trayH * 0.35));
+          const marginY = 24 + traySafety;
 
           const scaleX = (vw - marginX) / effectiveW;
           const scaleY = (vh - marginY) / effectiveH;
 
-          // 가로 꽉 참(scaleX)을 최우선으로 하되, 세로가 화면 밖으로 넘치지 않도록 안전 클램핑
-          const optimalScale = Math.min(scaleX, scaleY > 0 ? scaleY : scaleX);
-          this.baseScale = Math.min(1.85, Math.max(0.55, optimalScale));
+          // 세로가 상단 임시보관함이나 하단 독을 절대 넘치지 않도록 scaleY와 scaleX 중 작은 쪽을 엄격히 채택
+          const optimalScale = Math.min(scaleX, scaleY);
+          this.baseScale = Math.min(1.75, Math.max(0.5, optimalScale));
 
-          // 남은 타일 뭉치가 정중앙에 오도록 오토 센터링 적용
+          // 남은 타일 뭉치가 정중앙에 오도록 X, Y 동시 오토 센터링 적용
           if (this.zoomLevel === 1.0) {
             this.panX = offsetCenterX * this.baseScale;
+            this.panY = offsetCenterY * this.baseScale;
           }
         } else {
-          // [데스크톱 및 가로 모드]: 가로/세로 균형감 있는 쾌적한 피팅 (여백 16px)
-          const marginX = isMobile ? 8 : 16;
-          const marginY = isMobile ? 12 : 18;
+          // [데스크톱 및 가로 모드]: 상단 임시보관함과의 안전 버퍼 포함 쾌적한 피팅
+          const marginX = isMobile ? 12 : 24;
+          const traySafety = Math.max(18, Math.min(40, trayH * 0.3));
+          const marginY = (isMobile ? 18 : 28) + traySafety;
 
           const scaleX = (vw - marginX) / effectiveW;
           const scaleY = (vh - marginY) / effectiveH;
 
-          const optimalScale = Math.min(scaleX, scaleY) * 0.98;
-          this.baseScale = Math.min(1.85, Math.max(0.6, optimalScale));
+          const optimalScale = Math.min(scaleX, scaleY) * 0.96;
+          this.baseScale = Math.min(1.75, Math.max(0.55, optimalScale));
 
           if (this.zoomLevel === 1.0) {
             this.panX = offsetCenterX * this.baseScale;
+            this.panY = offsetCenterY * this.baseScale;
           }
         }
 
