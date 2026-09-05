@@ -1890,9 +1890,9 @@
             <span class="settings-label">🎮 난이도 선택</span>
             <select class="diff-select" id="select-difficulty" title="난이도 선택">
               <option value="easy">🌱 쉬움 (14종 · 슬롯 5개 · 공개)</option>
-              <option value="normal" selected>🌿 보통 (24종 · 슬롯 4개 · 블라인드 4개)</option>
-              <option value="hard">🔥 어려움 (34종 · 슬롯 4개 · 블라인드 12개)</option>
-              <option value="master">👑 달인 (50종 · 슬롯 3개 · 블라인드 18개 · 극한 병목)</option>
+              <option value="normal" selected>🌿 보통 (34종 · 슬롯 4개 · 블라인드 4개)</option>
+              <option value="hard">🔥 어려움 (56종 · 슬롯 4개 · 블라인드 12개)</option>
+              <option value="master">👑 달인 (82종 · 슬롯 3개 · 블라인드 18개 · 극한 병목)</option>
             </select>
           </div>
           <div class="settings-divider"></div>
@@ -2739,11 +2739,47 @@
             <text x="24" y="52" text-anchor="middle" font-size="9" font-weight="900" fill="${color}">${sub}</text>
           </svg>
         `;
+      },
+
+      // 사주 10간 (天干 10종: 오행 5색 원형 링 프레임)
+      sajuGan(hanzi, color, sub) {
+        return `
+          <svg class="tile-svg" viewBox="0 0 48 60">
+            <circle cx="24" cy="27" r="16" fill="${color}" opacity="0.12"/>
+            <circle cx="24" cy="27" r="15" fill="none" stroke="${color}" stroke-width="1.6" stroke-dasharray="3,1.5"/>
+            <text x="24" y="35" text-anchor="middle" font-size="26" font-weight="900" fill="${color}" font-family="'Noto Serif KR', 'Songti SC', 'Batang', serif">${hanzi}</text>
+            <text x="24" y="52" text-anchor="middle" font-size="9" font-weight="900" fill="${color}">${sub}</text>
+          </svg>
+        `;
+      },
+
+      // 사주 12지 (地支 12종: 12간지 방위 사각 프레임)
+      sajuZhi(hanzi, color, sub) {
+        return `
+          <svg class="tile-svg" viewBox="0 0 48 60">
+            <rect x="7" y="8" width="34" height="35" rx="7" fill="${color}" opacity="0.11"/>
+            <rect x="7" y="8" width="34" height="35" rx="7" fill="none" stroke="${color}" stroke-width="1.6"/>
+            <text x="24" y="34" text-anchor="middle" font-size="25" font-weight="900" fill="${color}" font-family="'Noto Serif KR', 'Songti SC', 'Batang', serif">${hanzi}</text>
+            <text x="24" y="52" text-anchor="middle" font-size="8.5" font-weight="900" fill="${color}">${sub}</text>
+          </svg>
+        `;
+      },
+
+      // 사주 10신 (十神 10종: 명리학 8각 인장 엠블럼)
+      sajuShin(hanzi, color, sub) {
+        return `
+          <svg class="tile-svg" viewBox="0 0 48 60">
+            <polygon points="24,6 41,23 24,40 7,23" fill="${color}" opacity="0.13"/>
+            <polygon points="24,6 41,23 24,40 7,23" fill="none" stroke="${color}" stroke-width="1.8"/>
+            <text x="24" y="33" text-anchor="middle" font-size="24" font-weight="900" fill="${color}" font-family="'Noto Serif KR', 'Songti SC', 'Batang', serif">${hanzi}</text>
+            <text x="24" y="52" text-anchor="middle" font-size="9" font-weight="900" fill="${color}">${sub}</text>
+          </svg>
+        `;
       }
     };
 
     /**
-     * 마작 패 데이터 목록 (총 50종)
+     * 마작 및 사주 명리학 패 데이터 목록 (총 82종)
      */
     const TILE_DEFINITIONS = [
       // 만수 (1-9)
@@ -2810,7 +2846,45 @@
       { id: 'm_dragon', suit: 'myth', val: 'dragon', label: '靑龍', badge: '龍', render: () => SvgFactory.myth('龍', '#00897b', '청룡') },
       { id: 'm_tiger', suit: 'myth', val: 'tiger', label: '白虎', badge: '虎', render: () => SvgFactory.myth('虎', '#546e7a', '백호') },
       { id: 'm_phoenix', suit: 'myth', val: 'phoenix', label: '朱雀', badge: '雀', render: () => SvgFactory.myth('雀', '#c2185b', '주작') },
-      { id: 'm_turtle', suit: 'myth', val: 'turtle', label: '玄武', badge: '武', render: () => SvgFactory.myth('武', '#283593', '현무') }
+      { id: 'm_turtle', suit: 'myth', val: 'turtle', label: '玄武', badge: '武', render: () => SvgFactory.myth('武', '#283593', '현무') },
+
+      // 10간(天干 10종: 오행 5색 원형 링 체계)
+      { id: 'g_jia', suit: 'gan', val: 'jia', label: '甲木', badge: '甲', render: () => SvgFactory.sajuGan('甲', '#00897b', '갑목') },
+      { id: 'g_yi', suit: 'gan', val: 'yi', label: '乙木', badge: '乙', render: () => SvgFactory.sajuGan('乙', '#2e7d32', '을목') },
+      { id: 'g_bing', suit: 'gan', val: 'bing', label: '丙火', badge: '丙', render: () => SvgFactory.sajuGan('丙', '#d32f2f', '병화') },
+      { id: 'g_ding', suit: 'gan', val: 'ding', label: '丁火', badge: '丁', render: () => SvgFactory.sajuGan('丁', '#e53935', '정화') },
+      { id: 'g_wu', suit: 'gan', val: 'wu', label: '戊土', badge: '戊', render: () => SvgFactory.sajuGan('戊', '#b78103', '무토') },
+      { id: 'g_ji', suit: 'gan', val: 'ji', label: '己土', badge: '己', render: () => SvgFactory.sajuGan('己', '#f57f17', '기토') },
+      { id: 'g_geng', suit: 'gan', val: 'geng', label: '庚金', badge: '庚', render: () => SvgFactory.sajuGan('庚', '#455a64', '경금') },
+      { id: 'g_xin', suit: 'gan', val: 'xin', label: '辛金', badge: '辛', render: () => SvgFactory.sajuGan('辛', '#37474f', '신금') },
+      { id: 'g_ren', suit: 'gan', val: 'ren', label: '壬水', badge: '壬', render: () => SvgFactory.sajuGan('壬', '#1565c0', '임수') },
+      { id: 'g_gui', suit: 'gan', val: 'gui', label: '癸水', badge: '癸', render: () => SvgFactory.sajuGan('癸', '#0d47a1', '계수') },
+
+      // 12지(地支 12종: 12간지 동물 & 방위 사각 프레임)
+      { id: 'z_zi', suit: 'zhi', val: 'zi', label: '子水', badge: '子', render: () => SvgFactory.sajuZhi('子', '#0d47a1', '자(쥐)') },
+      { id: 'z_chou', suit: 'zhi', val: 'chou', label: '丑土', badge: '丑', render: () => SvgFactory.sajuZhi('丑', '#b78103', '축(소)') },
+      { id: 'z_yin', suit: 'zhi', val: 'yin', label: '寅木', badge: '寅', render: () => SvgFactory.sajuZhi('寅', '#00897b', '인(호랑이)') },
+      { id: 'z_mao', suit: 'zhi', val: 'zhi_mao', label: '卯木', badge: '卯', render: () => SvgFactory.sajuZhi('卯', '#2e7d32', '묘(토끼)') },
+      { id: 'z_chen', suit: 'zhi', val: 'chen', label: '辰土', badge: '辰', render: () => SvgFactory.sajuZhi('辰', '#b78103', '진(용)') },
+      { id: 'z_si', suit: 'zhi', val: 'si', label: '巳火', badge: '巳', render: () => SvgFactory.sajuZhi('巳', '#d32f2f', '사(뱀)') },
+      { id: 'z_wu', suit: 'zhi', val: 'zhi_wu', label: '午火', badge: '午', render: () => SvgFactory.sajuZhi('午', '#e53935', '오(말)') },
+      { id: 'z_wei', suit: 'zhi', val: 'wei', label: '未土', badge: '未', render: () => SvgFactory.sajuZhi('未', '#b78103', '미(양)') },
+      { id: 'z_shen', suit: 'zhi', val: 'shen', label: '申金', badge: '申', render: () => SvgFactory.sajuZhi('申', '#455a64', '신(원숭이)') },
+      { id: 'z_you', suit: 'zhi', val: 'you', label: '酉金', badge: '酉', render: () => SvgFactory.sajuZhi('酉', '#37474f', '유(닭)') },
+      { id: 'z_xu', suit: 'zhi', val: 'xu', label: '戌土', badge: '戌', render: () => SvgFactory.sajuZhi('戌', '#b78103', '술(개)') },
+      { id: 'z_hai', suit: 'zhi', val: 'hai', label: '亥水', badge: '亥', render: () => SvgFactory.sajuZhi('亥', '#1565c0', '해(돼지)') },
+
+      // 10신(十神 10종: 육친 5대 범주 8각 인장 엠블럼)
+      { id: 's_bijian', suit: 'shin', val: 'bijian', label: '比肩', badge: '比', render: () => SvgFactory.sajuShin('比', '#00796b', '비견') },
+      { id: 's_geobjae', suit: 'shin', val: 'geobjae', label: '劫財', badge: '劫', render: () => SvgFactory.sajuShin('劫', '#004d40', '겁재') },
+      { id: 's_siksin', suit: 'shin', val: 'siksin', label: '食神', badge: '食', render: () => SvgFactory.sajuShin('食', '#e65100', '식신') },
+      { id: 's_sangpwan', suit: 'shin', val: 'sangpwan', label: '傷官', badge: '傷', render: () => SvgFactory.sajuShin('傷', '#bf360c', '상관') },
+      { id: 's_pyeonjae', suit: 'shin', val: 'pyeonjae', label: '偏財', badge: '才', render: () => SvgFactory.sajuShin('才', '#f57f17', '편재') },
+      { id: 's_jeongjae', suit: 'shin', val: 'jeongjae', label: '正財', badge: '財', render: () => SvgFactory.sajuShin('財', '#ffd600', '정재') },
+      { id: 's_pyeongwan', suit: 'shin', val: 'pyeongwan', label: '七殺', badge: '殺', render: () => SvgFactory.sajuShin('殺', '#c2185b', '편관') },
+      { id: 's_jeonggwan', suit: 'shin', val: 'jeonggwan', label: '正官', badge: '官', render: () => SvgFactory.sajuShin('官', '#455a64', '정관') },
+      { id: 's_pyeonin', suit: 'shin', val: 'pyeonin', label: '偏印', badge: '梟', render: () => SvgFactory.sajuShin('梟', '#512da8', '편인') },
+      { id: 's_jeongin', suit: 'shin', val: 'jeongin', label: '正印', badge: '印', render: () => SvgFactory.sajuShin('印', '#311b92', '정인') }
     ];
 
     /**
@@ -2831,7 +2905,7 @@
         slotCount: 4, // 빈 슬롯 4개
         blindCount: 4, // 최상단 Layer 2 블라인드
         lives: 4, // 하트 4개
-        filter: (def) => (def.suit === 'wan') || (def.suit === 'tong') || (def.suit === 'tiao' && def.val <= 6) // 24종 풀
+        filter: (def) => (def.suit === 'wan') || (def.suit === 'tong') || (def.suit === 'tiao' && def.val <= 6) || (def.suit === 'gan') // 34종 풀 (만·통·삭 + 10간)
       },
       hard: {
         name: '어려움',
@@ -2839,7 +2913,7 @@
         slotCount: 4, // 빈 슬롯 4개
         blindCount: 12, // 블라인드 12개
         lives: 3, // 하트 3개
-        filter: (def) => ['wan', 'tong', 'tiao', 'honor', 'wind'].includes(def.suit) // 34종 정통 마작 풀 (만·통·삭·삼원·사풍패 전원)
+        filter: (def) => ['wan', 'tong', 'tiao', 'honor', 'wind', 'gan', 'zhi'].includes(def.suit) // 56종 풀 (전통 마작 34종 + 10간 10종 + 12지 12종)
       },
       master: {
         name: '달인',
@@ -2847,7 +2921,7 @@
         slotCount: 3, // 빈 슬롯 3개 (극도의 슬롯 병목 유도)
         blindCount: 18, // 블라인드 18개 (상위 2개 층 블라인드)
         lives: 3, // 하트 3개
-        filter: () => true // 50종 전체 (화패 8종 + 4예패 4종 + 사신수 4종 총출동, 맵에 1쌍씩만 유일 출현)
+        filter: () => true // 82종 전체 (화패 8종 + 4예패 4종 + 사신수 4종 + 10간 10종 + 12지 12종 + 10신 10종 총출동)
       }
     };
 
