@@ -4083,8 +4083,13 @@
 
         return `
           <svg class="tile-svg saju-hybrid-svg" viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg">
-            <image href="assets/tiles/${id}.webp" x="0" y="0" width="240" height="300" preserveAspectRatio="none" />
+            <!-- 1. 초고화질 3D 실물 마작패 이미지 (중심 기준 1.10배 스케일로 외곽 베젤을 자연스럽게 클리핑하여 기존 패와 1:1 심볼 크기 일치) -->
+            <g transform="translate(120, 150) scale(1.10) translate(-120, -150)">
+              <image href="assets/tiles/${id}.webp" x="0" y="0" width="240" height="300" preserveAspectRatio="none" />
+            </g>
+            <!-- 2. 좌상단 SVG 전통 단청 배지 -->
             ${badgeSvg}
+            <!-- 3. 하단 실시간 SVG 텍스트 (한글 명칭 + 낙관 인장) -->
             ${bottomSvg}
           </svg>
         `;
@@ -7162,47 +7167,73 @@
         const vw = this.viewportEl.clientWidth;
         const vh = this.viewportEl.clientHeight;
 
-        // 1. 현재 보드에 남은 활성 타일들의 실제 유효 경계(Bounding Box) 동적 산출
+        const bounds = this.currentLayoutBounds || { minX: 0, maxX: 16, minY: 0, maxY: 10, padX: 24, padY: 24 };
+
+        // 1. 현재 보드에 남은 활성 타일들의 실제 픽셀 좌표(Pixel Bounding Box) 오차 0 정밀 산출
         const activeTiles = (this.tiles && this.tiles.length > 0) ? this.tiles.filter(t => !t.removed) : null;
         let effectiveW = this.currentLayoutWidth || 730;
         let effectiveH = this.currentLayoutHeight || 545;
+        let offsetCenterX = 0;
 
         if (activeTiles && activeTiles.length > 0) {
-          let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+          let minPx = Infinity, maxPx = -Infinity, minPy = Infinity, maxPy = -Infinity;
           activeTiles.forEach(t => {
-            if (t.x < minX) minX = t.x;
-            if (t.x > maxX) maxX = t.x;
-            if (t.y < minY) minY = t.y;
-            if (t.y > maxY) maxY = t.y;
+            // 실제 타일 렌더링 시 적용되는 정규화 픽셀 위치 (renderBoard 수식과 100% 동기화)
+            const px = (t.x - bounds.minX) * 35 + bounds.padX - t.z * 6;
+            const py = (t.y - bounds.minY) * 43 + bounds.padY - t.z * 8.1;
+            if (px < minPx) minPx = px;
+            if (px + 66 > maxPx) maxPx = px + 66; // 66px: 기본 타일 폭
+            if (py < minPy) minPy = py;
+            if (py + 88 > maxPy) maxPy = py + 88; // 88px: 기본 타일 높이
           });
-          const cols = (maxX - minX) + 2;
-          const rows = (maxY - minY) + 2;
-          // 타일 2단위 = 70px(가로), 86px(세로). 외곽 여백 48px 포함
-          const actualTilesW = cols * 35 + 48;
-          const actualTilesH = rows * 43 + 48;
-          // 전체 레이아웃 크기와 현재 남은 타일 폭 중 안전하게 최소 300px 보장하며 가변 피팅
-          effectiveW = Math.max(300, Math.min(this.currentLayoutWidth || 730, actualTilesW));
-          effectiveH = Math.max(280, Math.min(this.currentLayoutHeight || 545, actualTilesH));
+
+          // 남은 타일들의 실제 픽셀 너비/높이
+          const exactTilesW = Math.max(260, maxPx - minPx);
+          const exactTilesH = Math.max(260, maxPy - minPy);
+
+          effectiveW = Math.min(this.currentLayoutWidth || 730, exactTilesW);
+          effectiveH = Math.min(this.currentLayoutHeight || 545, exactTilesH);
+
+          // 타일이 한쪽부터 제거되어 중심이 이동했을 때, 활성 타일 뭉치를 뷰포트 정중앙에 위치시키는 오프셋
+          const boardCenterX = (this.currentLayoutWidth || 730) / 2;
+          const tilesCenterX = (minPx + maxPx) / 2;
+          offsetCenterX = boardCenterX - tilesCenterX;
         }
 
         const isMobile = vw < 680;
         const isPortrait = vw < vh;
 
-        // 화면 밖 잘림을 100% 방지하는 뷰포트 안전 여백 (헤더 dock, 슬롯 트레이 간섭 방지)
-        const marginX = isMobile ? (isPortrait ? 8 : 12) : 20;
-        const marginY = isMobile ? (vh < 620 ? 8 : 14) : 18;
-
-        const scaleX = (vw - marginX) / effectiveW;
-        const scaleY = (vh - marginY) / effectiveH;
-
         if (isMobile && isPortrait) {
-          // 모바일 세로 모드: 가로/세로 중 작은 쪽에 안전하게 96% 피팅하여 1px도 짤림 없음 보장
-          const optimalScale = Math.min(scaleX, scaleY) * 0.96;
-          this.baseScale = Math.min(1.65, Math.max(0.55, optimalScale));
+          // [모바일 세로 모드]: 좌우 여백을 4px(양쪽 2px)로 최소화하여 화면에 100% 꽉 차게 확대
+          const marginX = 4;
+          // 세로 방향: 상단 헤더/하단 트레이 간섭 방지 안전 여백 (세로 높이가 충분하면 가로 꽉 참 우선)
+          const marginY = (vh < 640) ? 14 : 20;
+
+          const scaleX = (vw - marginX) / effectiveW;
+          const scaleY = (vh - marginY) / effectiveH;
+
+          // 가로 꽉 참(scaleX)을 최우선으로 하되, 세로가 화면 밖으로 넘치지 않도록 안전 클램핑
+          const optimalScale = Math.min(scaleX, scaleY > 0 ? scaleY : scaleX);
+          this.baseScale = Math.min(1.85, Math.max(0.55, optimalScale));
+
+          // 남은 타일 뭉치가 정중앙에 오도록 오토 센터링 적용
+          if (this.zoomLevel === 1.0) {
+            this.panX = offsetCenterX * this.baseScale;
+          }
         } else {
-          // 데스크톱 및 가로 모드: 10열 화면을 시원하게 채우도록 96% 피팅
-          const optimalScale = Math.min(scaleX, scaleY) * 0.96;
-          this.baseScale = Math.min(1.65, Math.max(0.6, optimalScale));
+          // [데스크톱 및 가로 모드]: 가로/세로 균형감 있는 쾌적한 피팅 (여백 16px)
+          const marginX = isMobile ? 8 : 16;
+          const marginY = isMobile ? 12 : 18;
+
+          const scaleX = (vw - marginX) / effectiveW;
+          const scaleY = (vh - marginY) / effectiveH;
+
+          const optimalScale = Math.min(scaleX, scaleY) * 0.98;
+          this.baseScale = Math.min(1.85, Math.max(0.6, optimalScale));
+
+          if (this.zoomLevel === 1.0) {
+            this.panX = offsetCenterX * this.baseScale;
+          }
         }
 
         this.applyBoardTransform(animated);
