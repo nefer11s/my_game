@@ -3268,13 +3268,22 @@
        * 현재 난이도 풀에서 직전 판과 중복되지 않도록 레이아웃 랜덤 추첨
        */
       pickRandomLayout() {
+        const isMobile = window.innerWidth < 680;
+        const isPortrait = window.innerWidth < window.innerHeight;
+
         const pool = DIFFICULTY_LAYOUT_POOLS[this.difficulty] || DIFFICULTY_LAYOUT_POOLS.normal;
         let candidates = pool.filter(id => id !== this.lastLayoutId);
         if (candidates.length === 0) candidates = pool;
 
+        // 모바일 세로 화면(Portrait): 가로 10열 초과 레이아웃(classic_turtle)을 배제하고 max 7~8열 세로 최적 레이아웃 우선 배정
+        if (isMobile && isPortrait) {
+          const portraitPool = candidates.filter(id => id !== 'classic_turtle');
+          if (portraitPool.length > 0) candidates = portraitPool;
+        }
+
         const chosenId = candidates[Math.floor(Math.random() * candidates.length)];
         this.lastLayoutId = chosenId;
-        const builder = LAYOUT_REGISTRY[chosenId] || LAYOUT_REGISTRY.classic_turtle;
+        const builder = LAYOUT_REGISTRY[chosenId] || LAYOUT_REGISTRY.pagoda;
         return builder();
       }
 
@@ -4618,6 +4627,7 @@
             // 트레이에서 두 패 제거
             this.trayTiles = this.trayTiles.filter(t => t.id !== t1.id && t.id !== t2.id);
             this.renderTray();
+            this.handleResize(true); // 남은 타일에 맞춰 부드럽게 화면 꽉 채움(Auto-Fit)
 
             // 남은 보드 타일 수 및 클리어 체크
             const remainBoard = this.tiles.filter(t => !t.removed).length;
@@ -4819,6 +4829,7 @@
         }
 
         document.getElementById('btn-undo').disabled = this.undoStack.length === 0;
+        this.handleResize(true);
       }
 
       shuffleRemain() {
@@ -5358,39 +5369,58 @@
       }
 
       /**
-       * 레이아웃별 실제 바운딩 박스 기반 반응형 스케일러
-       * 모바일 세로/가로 화면에서 타일 크기 1.5배 이상 확대 최적화
+       * 레이아웃 및 남은 타일 바운딩 박스 기반 동적 오토-피팅(Auto-Fitting) 스케일러
+       * 화면 잘림 제로(0%) 보장 + 모바일 세로/가로 화면에서 타일 크기 최대 확대 최적화
        */
-      handleResize() {
+      handleResize(animated = false) {
         if (!this.viewportEl || !this.boardEl) return;
         const vw = this.viewportEl.clientWidth;
         const vh = this.viewportEl.clientHeight;
 
-        // 레이아웃 고유 크기 기준
-        const boardW = this.currentLayoutWidth || 730;
-        const boardH = this.currentLayoutHeight || 545;
+        // 1. 현재 보드에 남은 활성 타일들의 실제 유효 경계(Bounding Box) 동적 산출
+        const activeTiles = (this.tiles && this.tiles.length > 0) ? this.tiles.filter(t => !t.removed) : null;
+        let effectiveW = this.currentLayoutWidth || 730;
+        let effectiveH = this.currentLayoutHeight || 545;
+
+        if (activeTiles && activeTiles.length > 0) {
+          let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+          activeTiles.forEach(t => {
+            if (t.x < minX) minX = t.x;
+            if (t.x > maxX) maxX = t.x;
+            if (t.y < minY) minY = t.y;
+            if (t.y > maxY) maxY = t.y;
+          });
+          const cols = (maxX - minX) + 2;
+          const rows = (maxY - minY) + 2;
+          // 타일 2단위 = 70px(가로), 86px(세로). 외곽 여백 48px 포함
+          const actualTilesW = cols * 35 + 48;
+          const actualTilesH = rows * 43 + 48;
+          // 전체 레이아웃 크기와 현재 남은 타일 폭 중 안전하게 최소 300px 보장하며 가변 피팅
+          effectiveW = Math.max(300, Math.min(this.currentLayoutWidth || 730, actualTilesW));
+          effectiveH = Math.max(280, Math.min(this.currentLayoutHeight || 545, actualTilesH));
+        }
 
         const isMobile = vw < 680;
         const isPortrait = vw < vh;
 
-        // 화면 여백 극소화로 보드 면적 극대화
-        const marginX = isMobile ? (isPortrait ? 4 : 8) : 12;
-        const marginY = isMobile ? (vh < 600 ? 4 : 8) : 10;
+        // 화면 밖 잘림을 100% 방지하는 뷰포트 안전 여백 (헤더 dock, 슬롯 트레이 간섭 방지)
+        const marginX = isMobile ? (isPortrait ? 8 : 12) : 20;
+        const marginY = isMobile ? (vh < 620 ? 8 : 14) : 18;
 
-        const scaleX = (vw - marginX) / boardW;
-        const scaleY = (vh - marginY) / boardH;
+        const scaleX = (vw - marginX) / effectiveW;
+        const scaleY = (vh - marginY) / effectiveH;
 
         if (isMobile && isPortrait) {
-          // 모바일 세로 모드: 화면 폭과 높이에 안전하게 최대 피팅
-          this.baseScale = Math.min(scaleX * 0.98, scaleY);
-          this.baseScale = Math.min(1.6, Math.max(0.45, this.baseScale));
+          // 모바일 세로 모드: 가로/세로 중 작은 쪽에 안전하게 96% 피팅하여 1px도 짤림 없음 보장
+          const optimalScale = Math.min(scaleX, scaleY) * 0.96;
+          this.baseScale = Math.min(1.65, Math.max(0.55, optimalScale));
         } else {
-          // 데스크톱 및 가로 모드: 화면을 시원하게 채우도록 최대 스케일 확장
-          this.baseScale = Math.min(scaleX, scaleY);
-          this.baseScale = Math.min(1.55, Math.max(0.5, this.baseScale));
+          // 데스크톱 및 가로 모드: 10열 화면을 시원하게 채우도록 96% 피팅
+          const optimalScale = Math.min(scaleX, scaleY) * 0.96;
+          this.baseScale = Math.min(1.65, Math.max(0.6, optimalScale));
         }
 
-        this.applyBoardTransform(false);
+        this.applyBoardTransform(animated);
       }
     }
 
