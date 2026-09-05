@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>시연 마작 솔리테어 (Si-Yeon Mahjong Solitaire)</title>
   <style>
     :root {
@@ -179,6 +180,7 @@
       background: rgba(255, 248, 230, 0.95);
       border-color: rgba(243, 156, 18, 0.4);
     }
+
     .dock-pill.match-pill .hud-pill-val {
       color: #b7791f;
     }
@@ -248,6 +250,7 @@
         opacity: 0;
         transform: scale(0.92) translateY(6px);
       }
+
       to {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -421,7 +424,7 @@
       user-select: none;
       -webkit-user-select: none;
       transition: transform 0.22s cubic-bezier(0.2, 0.9, 0.4, 1.1),
-                  filter 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
+        filter 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
       will-change: transform, filter, box-shadow;
       outline: none;
       perspective: 800px;
@@ -434,23 +437,28 @@
       -webkit-touch-callout: none !important;
     }
 
-      /* 정밀 3D 적층 두께: 1~3px 백색 상아 본체층 + 4~8px 에메랄드 비취 바닥층 */
-      box-shadow:
-        inset 1px 1px 1px rgba(255, 255, 255, 0.9),
-        inset -1px -1px 2px rgba(180, 160, 135, 0.2),
-        1px 1px 0 #ede5d4,
-        2px 2px 0 #dfd5bf,
-        3px 3px 0 #cfc2a8,
-        4px 4px 0 #287756,
-        5px 5px 0 #206346,
-        6px 6px 0 #195239,
-        7px 7px 0 #123e2b,
-        8px 8px 0 #0d2c1e,
-        6px 10px 16px rgba(10, 35, 22, 0.26);
+    /* 정밀 3D 적층 두께: 1~3px 백색 상아 본체층 + 4~8px 에메랄드 비취 바닥층 */
+    box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.9),
+    inset -1px -1px 2px rgba(180, 160, 135, 0.2),
+    1px 1px 0 #ede5d4,
+    2px 2px 0 #dfd5bf,
+    3px 3px 0 #cfc2a8,
+    4px 4px 0 #287756,
+    5px 5px 0 #206346,
+    6px 6px 0 #195239,
+    7px 7px 0 #123e2b,
+    8px 8px 0 #0d2c1e,
+    6px 10px 16px rgba(10, 35, 22, 0.26);
     }
 
     /* 타일 내부 요소는 클릭/터치 이벤트를 방해하지 않고 본체로 통과 */
-    .tile-inner, .tile-front, .tile-back, .tile-graphic-wrap, .tile-graphic-wrap *, .tile-sub-label, .tile-corner-badge {
+    .tile-inner,
+    .tile-front,
+    .tile-back,
+    .tile-graphic-wrap,
+    .tile-graphic-wrap *,
+    .tile-sub-label,
+    .tile-corner-badge {
       pointer-events: none;
     }
 
@@ -755,11 +763,27 @@
     }
 
     @keyframes tileLockWiggle {
-      0%, 100% { transform: translate3d(var(--tx), var(--ty), var(--tz)); }
-      20% { transform: translate3d(calc(var(--tx) - 4px), var(--ty), var(--tz)); }
-      40% { transform: translate3d(calc(var(--tx) + 4px), var(--ty), var(--tz)); }
-      60% { transform: translate3d(calc(var(--tx) - 2px), var(--ty), var(--tz)); }
-      80% { transform: translate3d(calc(var(--tx) + 2px), var(--ty), var(--tz)); }
+
+      0%,
+      100% {
+        transform: translate3d(var(--tx), var(--ty), var(--tz));
+      }
+
+      20% {
+        transform: translate3d(calc(var(--tx) - 4px), var(--ty), var(--tz));
+      }
+
+      40% {
+        transform: translate3d(calc(var(--tx) + 4px), var(--ty), var(--tz));
+      }
+
+      60% {
+        transform: translate3d(calc(var(--tx) - 2px), var(--ty), var(--tz));
+      }
+
+      80% {
+        transform: translate3d(calc(var(--tx) + 2px), var(--ty), var(--tz));
+      }
     }
 
     /* 자유로운 뒤집힌 패 호버 시 신비로운 골드 글로우 */
@@ -803,14 +827,20 @@
     }
 
     @keyframes trayHintPulse {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.08); }
+      0% {
+        transform: scale(1);
+      }
+
+      100% {
+        transform: scale(1.08);
+      }
     }
 
     @keyframes hintPulse {
       0% {
         box-shadow: 0 0 0 2px var(--accent-gold), 4px 6px 14px rgba(15, 45, 30, 0.3);
       }
+
       100% {
         box-shadow: 0 0 20px 5px var(--accent-gold), 0 14px 28px rgba(243, 156, 18, 0.55);
         transform: translate3d(var(--tx), calc(var(--ty) - 10px), calc(var(--tz) + 30px));
@@ -829,11 +859,13 @@
         transform: translate3d(var(--tx), var(--ty), calc(var(--tz) + 20px)) scale(1);
         opacity: 1;
       }
+
       50% {
         transform: translate3d(var(--tx), calc(var(--ty) - 22px), calc(var(--tz) + 60px)) scale(1.15);
         filter: brightness(1.25);
         opacity: 0.9;
       }
+
       100% {
         transform: translate3d(var(--tx), calc(var(--ty) - 36px), calc(var(--tz) + 90px)) scale(0.4);
         opacity: 0;
@@ -852,11 +884,13 @@
         transform: translate3d(var(--tx), var(--ty), calc(var(--tz) + 20px)) scale(1);
         opacity: 1;
       }
+
       42% {
         transform: translate3d(var(--tx), calc(var(--ty) - 26px), calc(var(--tz) + 65px)) scale(1.18);
         filter: brightness(1.35) drop-shadow(0 0 16px rgba(243, 156, 18, 0.85));
         opacity: 0.95;
       }
+
       100% {
         transform: translate3d(var(--tx), calc(var(--ty) - 45px), calc(var(--tz) + 110px)) scale(0.35);
         opacity: 0;
@@ -875,10 +909,12 @@
         opacity: 0;
         box-shadow: 0 25px 35px rgba(10, 35, 22, 0.4);
       }
+
       72% {
         transform: translate3d(var(--tx), calc(var(--ty) + 2.5px), calc(var(--tz) + 4px)) scale(0.985);
         opacity: 0.96;
       }
+
       100% {
         transform: translate3d(var(--tx), var(--ty), var(--tz)) scale(1);
         opacity: 1;
@@ -914,9 +950,21 @@
     }
 
     @keyframes trayShake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-6px); }
-      40%, 80% { transform: translateX(6px); }
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      20%,
+      60% {
+        transform: translateX(-6px);
+      }
+
+      40%,
+      80% {
+        transform: translateX(6px);
+      }
     }
 
     .tray-header {
@@ -967,8 +1015,13 @@
     }
 
     @keyframes pulseAlert {
-      from { transform: scale(1); }
-      to { transform: scale(1.08); }
+      from {
+        transform: scale(1);
+      }
+
+      to {
+        transform: scale(1.08);
+      }
     }
 
     .tray-slots {
@@ -1002,7 +1055,7 @@
       border-radius: 6px;
       background: linear-gradient(145deg, #ffffff 0%, #faf6ee 55%, #eae0ce 100%);
       border: 1px solid #dcd1be;
-      box-shadow: 1px 1px 0 #ede5d4, 2px 2px 0 #dfd5bf, 3px 3px 0 #287756, 4px 5px 8px rgba(0,0,0,0.35);
+      box-shadow: 1px 1px 0 #ede5d4, 2px 2px 0 #dfd5bf, 3px 3px 0 #287756, 4px 5px 8px rgba(0, 0, 0, 0.35);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1023,8 +1076,15 @@
     }
 
     @keyframes trayTileEnter {
-      from { transform: translateY(22px) scale(0.65); opacity: 0; }
-      to { transform: translateY(0) scale(1); opacity: 1; }
+      from {
+        transform: translateY(22px) scale(0.65);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
     }
 
     .tray-tile:hover {
@@ -1037,9 +1097,20 @@
     }
 
     @keyframes trayTileMatch {
-      0% { transform: scale(1); filter: brightness(1); }
-      40% { transform: scale(1.25); filter: brightness(1.7) drop-shadow(0 0 12px #ffd700); }
-      100% { transform: scale(0); opacity: 0; }
+      0% {
+        transform: scale(1);
+        filter: brightness(1);
+      }
+
+      40% {
+        transform: scale(1.25);
+        filter: brightness(1.7) drop-shadow(0 0 12px #ffd700);
+      }
+
+      100% {
+        transform: scale(0);
+        opacity: 0;
+      }
     }
 
     .tray-tile .tile-corner-badge {
@@ -1389,16 +1460,32 @@
       transition: transform 0.25s cubic-bezier(0.17, 0.89, 0.32, 1.49), opacity 0.25s ease;
       filter: drop-shadow(0 1px 2px rgba(231, 76, 60, 0.4));
     }
+
     .heart-icon.lost {
       filter: grayscale(1) opacity(0.3);
       transform: scale(0.85);
     }
+
     @keyframes heartShake {
-      0%, 100% { transform: scale(1); }
-      20% { transform: scale(1.4) rotate(-10deg); }
-      50% { transform: scale(0.8) rotate(10deg); }
-      80% { transform: scale(1.1); }
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      20% {
+        transform: scale(1.4) rotate(-10deg);
+      }
+
+      50% {
+        transform: scale(0.8) rotate(10deg);
+      }
+
+      80% {
+        transform: scale(1.1);
+      }
     }
+
     .heart-damaged {
       animation: heartShake 0.45s ease-out;
     }
@@ -1413,6 +1500,7 @@
       opacity: 0;
       transition: opacity 0.3s ease-out;
     }
+
     .damage-flash.active {
       opacity: 1;
     }
@@ -1434,6 +1522,7 @@
       gap: 6px;
       transition: background 0.15s ease, transform 0.15s ease;
     }
+
     .splash-btn-rank:hover {
       background: #fefcbf;
       transform: translateY(-1px);
@@ -1446,6 +1535,7 @@
       padding: 24px 20px;
       text-align: center;
     }
+
     .rank-header {
       display: flex;
       align-items: center;
@@ -1455,6 +1545,7 @@
       border-bottom: 1.5px solid #edf2f7;
       padding-bottom: 10px;
     }
+
     .rank-table-wrap {
       max-height: 44vh;
       overflow-y: auto;
@@ -1463,11 +1554,13 @@
       border: 1px solid #e2e8f0;
       background: #fafbfc;
     }
+
     .rank-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 13px;
     }
+
     .rank-table th {
       background: #edf2f7;
       color: #4a5568;
@@ -1477,19 +1570,23 @@
       top: 0;
       font-size: 12px;
     }
+
     .rank-table td {
       padding: 9px 6px;
       border-bottom: 1px solid #edf2f7;
       color: #2d3748;
       font-weight: 600;
     }
+
     .rank-table tr:hover {
       background: #f7fafc;
     }
+
     .rank-medal {
       font-size: 15px;
       font-weight: 900;
     }
+
     .rank-score {
       font-weight: 800;
       color: #2b6cb0;
@@ -1501,6 +1598,7 @@
       gap: 8px;
       margin: 14px 0 16px;
     }
+
     .rank-input {
       flex: 1;
       height: 42px;
@@ -1513,9 +1611,11 @@
       outline: none;
       transition: border-color 0.15s;
     }
+
     .rank-input:focus {
       border-color: #2ea779;
     }
+
     .rank-submit-btn {
       height: 42px;
       padding: 0 16px;
@@ -1530,13 +1630,35 @@
 
     /* 화면 흔들림 및 판 파괴 애니메이션 */
     @keyframes screenShake {
-      0%, 100% { transform: translate(0, 0) rotate(0deg); }
-      15% { transform: translate(-8px, 6px) rotate(-1deg); }
-      30% { transform: translate(7px, -6px) rotate(1.2deg); }
-      45% { transform: translate(-6px, -4px) rotate(-0.8deg); }
-      60% { transform: translate(5px, 5px) rotate(0.6deg); }
-      75% { transform: translate(-3px, 2px) rotate(-0.3deg); }
-      90% { transform: translate(2px, -1px) rotate(0.1deg); }
+
+      0%,
+      100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+
+      15% {
+        transform: translate(-8px, 6px) rotate(-1deg);
+      }
+
+      30% {
+        transform: translate(7px, -6px) rotate(1.2deg);
+      }
+
+      45% {
+        transform: translate(-6px, -4px) rotate(-0.8deg);
+      }
+
+      60% {
+        transform: translate(5px, 5px) rotate(0.6deg);
+      }
+
+      75% {
+        transform: translate(-3px, 2px) rotate(-0.3deg);
+      }
+
+      90% {
+        transform: translate(2px, -1px) rotate(0.1deg);
+      }
     }
 
     .shaking {
@@ -1605,8 +1727,16 @@
     }
 
     @keyframes touchGuideBlink {
-      0% { transform: scale(0.96); opacity: 0.8; }
-      100% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 14px rgba(255, 215, 0, 0.6); }
+      0% {
+        transform: scale(0.96);
+        opacity: 0.8;
+      }
+
+      100% {
+        transform: scale(1.05);
+        opacity: 1;
+        box-shadow: 0 0 14px rgba(255, 215, 0, 0.6);
+      }
     }
 
     .big-win-banner.closing {
@@ -1614,8 +1744,15 @@
     }
 
     @keyframes bigWinFadeOut {
-      0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+      }
     }
 
     @keyframes bigWinPop {
@@ -1623,10 +1760,12 @@
         opacity: 0;
         transform: translate(-50%, -50%) scale(0.2) rotate(-8deg);
       }
+
       50% {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1.18) rotate(2deg);
       }
+
       100% {
         opacity: 1;
         transform: translate(-50%, -50%) scale(1) rotate(0deg);
@@ -1671,7 +1810,8 @@
         border-radius: 12px;
       }
 
-      .stage-badge, .diff-badge {
+      .stage-badge,
+      .diff-badge {
         font-size: 11px;
         padding: 2px 5px;
       }
@@ -1719,7 +1859,8 @@
       }
 
       .btn-dock .btn-label {
-        display: none; /* 모바일에서 하단 버튼 텍스트 숨기고 아이콘만 노출 */
+        display: none;
+        /* 모바일에서 하단 버튼 텍스트 숨기고 아이콘만 노출 */
       }
 
       .settings-dropdown {
@@ -1888,7 +2029,8 @@
 
       <!-- 톱니바퀴 설정 메뉴 (하단 바로 이동) -->
       <div class="settings-wrapper" id="settings-wrapper">
-        <button class="btn btn-dock" id="btn-settings" title="환경 설정 (난이도, 규칙, 랭킹, 화면)" aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-dock" id="btn-settings" title="환경 설정 (난이도, 규칙, 랭킹, 화면)" aria-haspopup="true"
+          aria-expanded="false">
           <span class="btn-icon">⚙️</span><span class="btn-label">설정</span>
         </button>
         <div class="settings-dropdown" id="settings-dropdown">
@@ -1916,7 +2058,7 @@
           </button>
           <div class="settings-divider"></div>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.20
+            Si-Yeon Mahjong Solitaire v1.4.21
           </div>
         </div>
       </div>
@@ -1948,13 +2090,13 @@
     <div class="splash-card">
       <div class="splash-img-wrap">
         <img src="assets/mahjong_splash.jpg" alt="시연 그림맞추기" class="splash-hero-img">
-        <div class="splash-version-badge">v1.4.20</div>
+        <div class="splash-version-badge">v1.4.21</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연 그림맞추기</h1>
         <div class="splash-subtitle">Si-Yeon Majong</div>
         <div class="splash-provider">SY Soft 제공</div>
-        
+
         <div class="splash-btn-group">
           <button class="splash-btn-start" id="btn-splash-start">
             <span class="btn-icon">🎮</span> 게임 시작
@@ -1982,7 +2124,8 @@
           <div class="rule-num">1</div>
           <div class="rule-text">
             <strong>임시 보관함 슬롯 & 짝 맞추기</strong>
-            <p>보드에서 자유 패를 터치하면 하단 <strong>임시 보관함 슬롯</strong>으로 이동합니다. 보관함에 동일한 패 2개가 모이면 자동으로 짝이 맞아 사라집니다. (보관함의 패를 터치하면 다시 보드로 반환 가능)</p>
+            <p>보드에서 자유 패를 터치하면 하단 <strong>임시 보관함 슬롯</strong>으로 이동합니다. 보관함에 동일한 패 2개가 모이면 자동으로 짝이 맞아 사라집니다. (보관함의 패를 터치하면
+              다시 보드로 반환 가능)</p>
           </div>
         </div>
         <div class="rule-item">
@@ -2003,14 +2146,16 @@
           <div class="rule-num">4</div>
           <div class="rule-text">
             <strong>블라인드 패 & 하트 소진 규칙</strong>
-            <p>상단에 뒤집힌 블라인드 패는 <strong>1회 터치 시 앞면이 공개</strong>됩니다. 공개된 상태에서 짝이 아닌 다른 패를 눌러 <strong>3회 연속 매칭 실패 시 하트 1개가 소진</strong>됩니다. (어떤 패든 짝 매치 성공 시 실패 횟수는 즉시 초기화됩니다.)</p>
+            <p>상단에 뒤집힌 블라인드 패는 <strong>1회 터치 시 앞면이 공개</strong>됩니다. 공개된 상태에서 짝이 아닌 다른 패를 눌러 <strong>3회 연속 매칭 실패 시 하트 1개가
+                소진</strong>됩니다. (어떤 패든 짝 매치 성공 시 실패 횟수는 즉시 초기화됩니다.)</p>
           </div>
         </div>
         <div class="rule-item">
           <div class="rule-num">5</div>
           <div class="rule-text">
             <strong>도움 기능 & 하트 관리</strong>
-            <p>[🔀 셔플] 사용 시 하트 1개가 소진됩니다. (단, <strong>하트가 1개 남았을 때는 판당 1회 '마지막 기회 무료 셔플'</strong>이 발동됩니다.) 각 판을 클리어하면 하트 1개가 회복되며, [💡 힌트]는 하트 소진 없이 사용할 수 있습니다.</p>
+            <p>[🔀 셔플] 사용 시 하트 1개가 소진됩니다. (단, <strong>하트가 1개 남았을 때는 판당 1회 '마지막 기회 무료 셔플'</strong>이 발동됩니다.) 각 판을 클리어하면 하트
+              1개가 회복되며, [💡 힌트]는 하트 소진 없이 사용할 수 있습니다.</p>
           </div>
         </div>
       </div>
@@ -2026,7 +2171,7 @@
         <h2 class="modal-title" style="margin-bottom: 0; font-size: 23px;">명예의 전당</h2>
       </div>
       <p style="font-size: 13px; color: #698d7b; margin-bottom: 12px;">최고의 마작 솔리테어 달인 기록</p>
-      
+
       <div class="rank-table-wrap">
         <table class="rank-table">
           <thead>
@@ -2057,7 +2202,7 @@
       <div style="font-size: 48px; margin-bottom: 8px;">💔</div>
       <h2 class="modal-title" style="color: #c53030;">게임 오버</h2>
       <p class="modal-desc" style="color: #718096; margin-bottom: 14px;">모든 하트를 소진했습니다!<br>명예의 전당에 당신의 기록을 남겨보세요.</p>
-      
+
       <div class="modal-stats" style="background: #fff5f5; border: 1px solid #fed7d7;">
         <div class="modal-stat-item">
           <span class="modal-stat-label">도달 판수</span>
@@ -2092,7 +2237,7 @@
         this.muted = !this.muted;
         try {
           localStorage.setItem('mahjong_sound_muted', this.muted ? 'true' : 'false');
-        } catch (e) {}
+        } catch (e) { }
         return this.muted;
       }
 
@@ -2369,7 +2514,7 @@
         this.animId = null;
         this.autoLaunchTimer = null;
         this.colors = [
-          '#ffd700', '#ff4757', '#2ea779', '#1e90ff', 
+          '#ffd700', '#ff4757', '#2ea779', '#1e90ff',
           '#ff6b81', '#7bed9f', '#eccc68', '#a55eea', '#ffa502'
         ];
         this.initCanvas();
@@ -2436,8 +2581,8 @@
         for (let i = 0; i < count; i++) {
           const angle = Math.random() * Math.PI * 2;
           const speed = 2.5 + Math.random() * 8.5;
-          const color = Math.random() < 0.35 
-            ? '#ffffff' 
+          const color = Math.random() < 0.35
+            ? '#ffffff'
             : (Math.random() < 0.6 ? baseColor : this.colors[Math.floor(Math.random() * this.colors.length)]);
 
           this.particles.push({
@@ -2568,19 +2713,19 @@
           inner = this.circle(14, 16, 6.5, C_BLUE) + this.circle(24, 30, 6.5, C_RED) + this.circle(34, 44, 6.5, C_GREEN);
         } else if (val === 4) {
           inner = this.circle(16, 18, 6.5, C_BLUE) + this.circle(32, 18, 6.5, C_GREEN) +
-                  this.circle(16, 42, 6.5, C_GREEN) + this.circle(32, 42, 6.5, C_BLUE);
+            this.circle(16, 42, 6.5, C_GREEN) + this.circle(32, 42, 6.5, C_BLUE);
         } else if (val === 5) {
           inner = this.circle(14, 16, 6, C_BLUE) + this.circle(34, 16, 6, C_GREEN) +
-                  this.circle(24, 30, 7, C_RED) +
-                  this.circle(14, 44, 6, C_GREEN) + this.circle(34, 44, 6, C_BLUE);
+            this.circle(24, 30, 7, C_RED) +
+            this.circle(14, 44, 6, C_GREEN) + this.circle(34, 44, 6, C_BLUE);
         } else if (val === 6) {
           inner = this.circle(16, 16, 5.5, C_GREEN) + this.circle(32, 16, 5.5, C_GREEN) +
-                  this.circle(16, 30, 5.5, C_RED) + this.circle(32, 30, 5.5, C_RED) +
-                  this.circle(16, 44, 5.5, C_RED) + this.circle(32, 44, 5.5, C_RED);
+            this.circle(16, 30, 5.5, C_RED) + this.circle(32, 30, 5.5, C_RED) +
+            this.circle(16, 44, 5.5, C_RED) + this.circle(32, 44, 5.5, C_RED);
         } else if (val === 7) {
           inner = this.circle(13, 14, 5, C_GREEN) + this.circle(24, 21, 5, C_GREEN) + this.circle(35, 28, 5, C_GREEN) +
-                  this.circle(16, 40, 5, C_RED) + this.circle(32, 40, 5, C_RED) +
-                  this.circle(16, 51, 5, C_RED) + this.circle(32, 51, 5, C_RED);
+            this.circle(16, 40, 5, C_RED) + this.circle(32, 40, 5, C_RED) +
+            this.circle(16, 51, 5, C_RED) + this.circle(32, 51, 5, C_RED);
         } else if (val === 8) {
           for (let i = 0; i < 4; i++) {
             inner += this.circle(16, 14 + i * 11, 4.8, C_BLUE);
@@ -2601,8 +2746,8 @@
       bamboo(x, y, w, h, color) {
         return `
           <g transform="translate(${x}, ${y})">
-            <rect x="0" y="0" width="${w}" height="${h}" rx="${w/2}" fill="${color}"/>
-            <line x1="-1" y1="${h/2}" x2="${w+1}" y2="${h/2}" stroke="#ffffff" stroke-width="1.2"/>
+            <rect x="0" y="0" width="${w}" height="${h}" rx="${w / 2}" fill="${color}"/>
+            <line x1="-1" y1="${h / 2}" x2="${w + 1}" y2="${h / 2}" stroke="#ffffff" stroke-width="1.2"/>
           </g>
         `;
       },
@@ -2626,14 +2771,14 @@
           inner = this.bamboo(20, 10, 8, 18, C_GREEN) + this.bamboo(20, 32, 8, 18, C_BLUE);
         } else if (val === 3) {
           inner = this.bamboo(20, 9, 8, 17, C_BLUE) +
-                  this.bamboo(13, 31, 8, 17, C_GREEN) + this.bamboo(27, 31, 8, 17, C_GREEN);
+            this.bamboo(13, 31, 8, 17, C_GREEN) + this.bamboo(27, 31, 8, 17, C_GREEN);
         } else if (val === 4) {
           inner = this.bamboo(14, 10, 7, 18, C_BLUE) + this.bamboo(27, 10, 7, 18, C_GREEN) +
-                  this.bamboo(14, 32, 7, 18, C_GREEN) + this.bamboo(27, 32, 7, 18, C_BLUE);
+            this.bamboo(14, 32, 7, 18, C_GREEN) + this.bamboo(27, 32, 7, 18, C_BLUE);
         } else if (val === 5) {
           inner = this.bamboo(13, 9, 7, 17, C_GREEN) + this.bamboo(28, 9, 7, 17, C_BLUE) +
-                  this.bamboo(20.5, 21, 7, 18, C_RED) +
-                  this.bamboo(13, 34, 7, 17, C_BLUE) + this.bamboo(28, 34, 7, 17, C_GREEN);
+            this.bamboo(20.5, 21, 7, 18, C_RED) +
+            this.bamboo(13, 34, 7, 17, C_BLUE) + this.bamboo(28, 34, 7, 17, C_GREEN);
         } else if (val === 6) {
           for (let col = 0; col < 3; col++) {
             inner += this.bamboo(11 + col * 10, 10, 6, 18, C_GREEN);
@@ -3249,23 +3394,23 @@
         const slots = [];
         let nextId = 1;
         const l0 = [
-          {x: 2, y: 2}, {x: 4, y: 2}, {x: 6, y: 2}, {x: 8, y: 2}, {x: 10, y: 2},
-          {x: 2, y: 4}, {x: 4, y: 4}, {x: 6, y: 4}, {x: 8, y: 4}, {x: 10, y: 4},
-          {x: 4, y: 6}, {x: 6, y: 6}, {x: 8, y: 6},
-          {x: 2, y: 8}, {x: 4, y: 8}, {x: 6, y: 8}, {x: 8, y: 8}, {x: 10, y: 8},
-          {x: 2, y: 10}, {x: 4, y: 10}, {x: 6, y: 10}, {x: 8, y: 10}, {x: 10, y: 10},
-          {x: 6, y: 0}
+          { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 }, { x: 10, y: 2 },
+          { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 }, { x: 10, y: 4 },
+          { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 },
+          { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 }, { x: 10, y: 8 },
+          { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 }, { x: 10, y: 10 },
+          { x: 6, y: 0 }
         ];
         l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
         const l1 = [
-          {x: 4, y: 4}, {x: 6, y: 4}, {x: 8, y: 4},
-          {x: 4, y: 6}, {x: 8, y: 6},
-          {x: 4, y: 8}, {x: 6, y: 8}, {x: 8, y: 8}
+          { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 },
+          { x: 4, y: 6 }, { x: 8, y: 6 },
+          { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 }
         ];
         l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
         const l2 = [
-          {x: 5, y: 5}, {x: 7, y: 5},
-          {x: 5, y: 7}, {x: 7, y: 7}
+          { x: 5, y: 5 }, { x: 7, y: 5 },
+          { x: 5, y: 7 }, { x: 7, y: 7 }
         ];
         l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
         return { id: 'mini_turtle', name: '아기 거북이', icon: '🐢', layers: 3, slots };
@@ -3276,28 +3421,28 @@
         const slots = [];
         let nextId = 1;
         const l0 = [
-          {x: 4, y: 0}, {x: 6, y: 0},
-          {x: 4, y: 2}, {x: 6, y: 2},
-          {x: 4, y: 4}, {x: 6, y: 4},
-          {x: 4, y: 6}, {x: 6, y: 6},
-          {x: 4, y: 8}, {x: 6, y: 8},
-          {x: 4, y: 10}, {x: 6, y: 10},
-          {x: 4, y: 12}, {x: 6, y: 12},
-          {x: 0, y: 6}, {x: 2, y: 6}, {x: 8, y: 6}, {x: 10, y: 6},
-          {x: 2, y: 4}, {x: 8, y: 4},
-          {x: 2, y: 8}, {x: 8, y: 8},
-          {x: 0, y: 4}, {x: 10, y: 4},
-          {x: 0, y: 8}, {x: 10, y: 8},
-          {x: 2, y: 2}, {x: 8, y: 2},
-          {x: 2, y: 10}, {x: 8, y: 10},
-          {x: 4, y: 14}, {x: 6, y: 14}
+          { x: 4, y: 0 }, { x: 6, y: 0 },
+          { x: 4, y: 2 }, { x: 6, y: 2 },
+          { x: 4, y: 4 }, { x: 6, y: 4 },
+          { x: 4, y: 6 }, { x: 6, y: 6 },
+          { x: 4, y: 8 }, { x: 6, y: 8 },
+          { x: 4, y: 10 }, { x: 6, y: 10 },
+          { x: 4, y: 12 }, { x: 6, y: 12 },
+          { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 8, y: 6 }, { x: 10, y: 6 },
+          { x: 2, y: 4 }, { x: 8, y: 4 },
+          { x: 2, y: 8 }, { x: 8, y: 8 },
+          { x: 0, y: 4 }, { x: 10, y: 4 },
+          { x: 0, y: 8 }, { x: 10, y: 8 },
+          { x: 2, y: 2 }, { x: 8, y: 2 },
+          { x: 2, y: 10 }, { x: 8, y: 10 },
+          { x: 4, y: 14 }, { x: 6, y: 14 }
         ];
         l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
         const l1 = [
-          {x: 4, y: 4}, {x: 6, y: 4},
-          {x: 2, y: 6}, {x: 8, y: 6},
-          {x: 4, y: 8}, {x: 6, y: 8},
-          {x: 4, y: 6}, {x: 6, y: 6}
+          { x: 4, y: 4 }, { x: 6, y: 4 },
+          { x: 2, y: 6 }, { x: 8, y: 6 },
+          { x: 4, y: 8 }, { x: 6, y: 8 },
+          { x: 4, y: 6 }, { x: 6, y: 6 }
         ];
         l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
         return { id: 'star_cross', name: '성좌 십자', icon: '✨', layers: 2, slots };
@@ -3308,28 +3453,28 @@
         const slots = [];
         let nextId = 1;
         const l0 = [
-          {x: 2, y: 2}, {x: 4, y: 2}, {x: 6, y: 2},
-          {x: 2, y: 4}, {x: 4, y: 4}, {x: 6, y: 4},
-          {x: 2, y: 6}, {x: 4, y: 6}, {x: 6, y: 6},
-          {x: 2, y: 8}, {x: 4, y: 8}, {x: 6, y: 8},
-          {x: 8, y: 2}, {x: 10, y: 2}, {x: 12, y: 2},
-          {x: 8, y: 4}, {x: 10, y: 4}, {x: 12, y: 4},
-          {x: 8, y: 6}, {x: 10, y: 6}, {x: 12, y: 6},
-          {x: 8, y: 8}, {x: 10, y: 8}, {x: 12, y: 8},
-          {x: 4, y: 0}, {x: 10, y: 0},
-          {x: 4, y: 10}, {x: 10, y: 10}
+          { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 },
+          { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 },
+          { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 },
+          { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 },
+          { x: 8, y: 2 }, { x: 10, y: 2 }, { x: 12, y: 2 },
+          { x: 8, y: 4 }, { x: 10, y: 4 }, { x: 12, y: 4 },
+          { x: 8, y: 6 }, { x: 10, y: 6 }, { x: 12, y: 6 },
+          { x: 8, y: 8 }, { x: 10, y: 8 }, { x: 12, y: 8 },
+          { x: 4, y: 0 }, { x: 10, y: 0 },
+          { x: 4, y: 10 }, { x: 10, y: 10 }
         ];
         l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
         const l1 = [
-          {x: 3, y: 4}, {x: 5, y: 4},
-          {x: 3, y: 6}, {x: 5, y: 6},
-          {x: 9, y: 4}, {x: 11, y: 4},
-          {x: 9, y: 6}, {x: 11, y: 6}
+          { x: 3, y: 4 }, { x: 5, y: 4 },
+          { x: 3, y: 6 }, { x: 5, y: 6 },
+          { x: 9, y: 4 }, { x: 11, y: 4 },
+          { x: 9, y: 6 }, { x: 11, y: 6 }
         ];
         l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
         const l2 = [
-          {x: 4, y: 5}, {x: 4, y: 7},
-          {x: 10, y: 5}, {x: 10, y: 7}
+          { x: 4, y: 5 }, { x: 4, y: 7 },
+          { x: 10, y: 5 }, { x: 10, y: 7 }
         ];
         l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
         return { id: 'twin_peaks', name: '쌍봉우리', icon: '⛰️', layers: 3, slots };
@@ -3368,30 +3513,30 @@
         const slots = [];
         let nextId = 1;
         const l0 = [
-          {x: 0, y: 1}, {x: 2, y: 1}, {x: 4, y: 1},
-          {x: 0, y: 3}, {x: 2, y: 3}, {x: 4, y: 3},
-          {x: 2, y: 5}, {x: 4, y: 5},
-          {x: 0, y: 7}, {x: 2, y: 7}, {x: 4, y: 7},
-          {x: 0, y: 9}, {x: 2, y: 9}, {x: 4, y: 9},
-          {x: 8, y: 1}, {x: 10, y: 1}, {x: 12, y: 1},
-          {x: 8, y: 3}, {x: 10, y: 3}, {x: 12, y: 3},
-          {x: 8, y: 5}, {x: 10, y: 5},
-          {x: 8, y: 7}, {x: 10, y: 7}, {x: 12, y: 7},
-          {x: 8, y: 9}, {x: 10, y: 9}, {x: 12, y: 9},
-          {x: 6, y: 0}, {x: 6, y: 2}, {x: 6, y: 4}, {x: 6, y: 6}, {x: 6, y: 8}, {x: 6, y: 10}
+          { x: 0, y: 1 }, { x: 2, y: 1 }, { x: 4, y: 1 },
+          { x: 0, y: 3 }, { x: 2, y: 3 }, { x: 4, y: 3 },
+          { x: 2, y: 5 }, { x: 4, y: 5 },
+          { x: 0, y: 7 }, { x: 2, y: 7 }, { x: 4, y: 7 },
+          { x: 0, y: 9 }, { x: 2, y: 9 }, { x: 4, y: 9 },
+          { x: 8, y: 1 }, { x: 10, y: 1 }, { x: 12, y: 1 },
+          { x: 8, y: 3 }, { x: 10, y: 3 }, { x: 12, y: 3 },
+          { x: 8, y: 5 }, { x: 10, y: 5 },
+          { x: 8, y: 7 }, { x: 10, y: 7 }, { x: 12, y: 7 },
+          { x: 8, y: 9 }, { x: 10, y: 9 }, { x: 12, y: 9 },
+          { x: 6, y: 0 }, { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 6, y: 10 }
         ];
         l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
         const l1 = [
-          {x: 2, y: 2}, {x: 4, y: 2},
-          {x: 2, y: 8}, {x: 4, y: 8},
-          {x: 8, y: 2}, {x: 10, y: 2},
-          {x: 8, y: 8}, {x: 10, y: 8},
-          {x: 6, y: 3}, {x: 6, y: 7}
+          { x: 2, y: 2 }, { x: 4, y: 2 },
+          { x: 2, y: 8 }, { x: 4, y: 8 },
+          { x: 8, y: 2 }, { x: 10, y: 2 },
+          { x: 8, y: 8 }, { x: 10, y: 8 },
+          { x: 6, y: 3 }, { x: 6, y: 7 }
         ];
         l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
         const l2 = [
-          {x: 3, y: 2}, {x: 9, y: 2},
-          {x: 3, y: 8}, {x: 9, y: 8}
+          { x: 3, y: 2 }, { x: 9, y: 2 },
+          { x: 3, y: 8 }, { x: 9, y: 8 }
         ];
         l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
         return { id: 'butterfly', name: '나비 날개', icon: '🦋', layers: 3, slots };
@@ -3402,33 +3547,33 @@
         const slots = [];
         let nextId = 1;
         const l0Raw = [
-          {x: 2, y: 2}, {x: 4, y: 2}, {x: 6, y: 2}, {x: 8, y: 2}, {x: 10, y: 2},
-          {x: 2, y: 4}, {x: 10, y: 4},
-          {x: 2, y: 6}, {x: 10, y: 6},
-          {x: 2, y: 8}, {x: 10, y: 8},
-          {x: 2, y: 10}, {x: 4, y: 10}, {x: 6, y: 10}, {x: 8, y: 10}, {x: 10, y: 10},
-          {x: 0, y: 2}, {x: 12, y: 2}, {x: 0, y: 10}, {x: 12, y: 10},
-          {x: 4, y: 4}, {x: 6, y: 4}, {x: 8, y: 4},
-          {x: 4, y: 6}, {x: 6, y: 6}, {x: 8, y: 6},
-          {x: 4, y: 8}, {x: 6, y: 8}, {x: 8, y: 8}
+          { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 }, { x: 10, y: 2 },
+          { x: 2, y: 4 }, { x: 10, y: 4 },
+          { x: 2, y: 6 }, { x: 10, y: 6 },
+          { x: 2, y: 8 }, { x: 10, y: 8 },
+          { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 }, { x: 10, y: 10 },
+          { x: 0, y: 2 }, { x: 12, y: 2 }, { x: 0, y: 10 }, { x: 12, y: 10 },
+          { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 },
+          { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 },
+          { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 }
         ];
         const l0 = l0Raw.filter(c => !(c.x === 6 && c.y === 6));
         l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
         const l1 = [
-          {x: 4, y: 3}, {x: 6, y: 3}, {x: 8, y: 3},
-          {x: 3, y: 5}, {x: 5, y: 5}, {x: 7, y: 5}, {x: 9, y: 5},
-          {x: 3, y: 7}, {x: 5, y: 7}, {x: 7, y: 7}, {x: 9, y: 7},
-          {x: 4, y: 9}, {x: 6, y: 9}, {x: 8, y: 9}
+          { x: 4, y: 3 }, { x: 6, y: 3 }, { x: 8, y: 3 },
+          { x: 3, y: 5 }, { x: 5, y: 5 }, { x: 7, y: 5 }, { x: 9, y: 5 },
+          { x: 3, y: 7 }, { x: 5, y: 7 }, { x: 7, y: 7 }, { x: 9, y: 7 },
+          { x: 4, y: 9 }, { x: 6, y: 9 }, { x: 8, y: 9 }
         ];
         l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
         const l2 = [
-          {x: 5, y: 4}, {x: 7, y: 4},
-          {x: 5, y: 6}, {x: 7, y: 6},
-          {x: 5, y: 8}, {x: 7, y: 8}
+          { x: 5, y: 4 }, { x: 7, y: 4 },
+          { x: 5, y: 6 }, { x: 7, y: 6 },
+          { x: 5, y: 8 }, { x: 7, y: 8 }
         ];
         l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
         const l3 = [
-          {x: 6, y: 5}, {x: 6, y: 7}
+          { x: 6, y: 5 }, { x: 6, y: 7 }
         ];
         l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
         return { id: 'fortress', name: '수호 요새', icon: '🏰', layers: 4, slots };
@@ -3439,34 +3584,34 @@
         const slots = [];
         let nextId = 1;
         const l0 = [
-          {x: 2, y: 0}, {x: 4, y: 0}, {x: 6, y: 0}, {x: 8, y: 0}, {x: 10, y: 0},
-          {x: 2, y: 2}, {x: 4, y: 2}, {x: 6, y: 2}, {x: 8, y: 2}, {x: 10, y: 2},
-          {x: 2, y: 4}, {x: 4, y: 4}, {x: 6, y: 4}, {x: 8, y: 4}, {x: 10, y: 4},
-          {x: 2, y: 6}, {x: 4, y: 6}, {x: 6, y: 6}, {x: 8, y: 6}, {x: 10, y: 6},
-          {x: 2, y: 8}, {x: 4, y: 8}, {x: 6, y: 8}, {x: 8, y: 8}, {x: 10, y: 8},
-          {x: 2, y: 10}, {x: 4, y: 10}, {x: 6, y: 10}, {x: 8, y: 10}, {x: 10, y: 10}
+          { x: 2, y: 0 }, { x: 4, y: 0 }, { x: 6, y: 0 }, { x: 8, y: 0 }, { x: 10, y: 0 },
+          { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 }, { x: 10, y: 2 },
+          { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 }, { x: 10, y: 4 },
+          { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 }, { x: 10, y: 6 },
+          { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 }, { x: 10, y: 8 },
+          { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 }, { x: 10, y: 10 }
         ];
         l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
         const l1 = [
-          {x: 4, y: 1}, {x: 6, y: 1}, {x: 8, y: 1},
-          {x: 4, y: 3}, {x: 6, y: 3}, {x: 8, y: 3},
-          {x: 4, y: 5}, {x: 6, y: 5}, {x: 8, y: 5},
-          {x: 4, y: 7}, {x: 6, y: 7}, {x: 8, y: 7},
-          {x: 5, y: 9}, {x: 7, y: 9}
+          { x: 4, y: 1 }, { x: 6, y: 1 }, { x: 8, y: 1 },
+          { x: 4, y: 3 }, { x: 6, y: 3 }, { x: 8, y: 3 },
+          { x: 4, y: 5 }, { x: 6, y: 5 }, { x: 8, y: 5 },
+          { x: 4, y: 7 }, { x: 6, y: 7 }, { x: 8, y: 7 },
+          { x: 5, y: 9 }, { x: 7, y: 9 }
         ];
         l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
         const l2 = [
-          {x: 5, y: 2}, {x: 7, y: 2},
-          {x: 5, y: 4}, {x: 7, y: 4},
-          {x: 5, y: 6}, {x: 7, y: 6}
+          { x: 5, y: 2 }, { x: 7, y: 2 },
+          { x: 5, y: 4 }, { x: 7, y: 4 },
+          { x: 5, y: 6 }, { x: 7, y: 6 }
         ];
         l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
         const l3 = [
-          {x: 6, y: 3}, {x: 6, y: 5}
+          { x: 6, y: 3 }, { x: 6, y: 5 }
         ];
         l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
         const l4 = [
-          {x: 5, y: 4}, {x: 7, y: 4}
+          { x: 5, y: 4 }, { x: 7, y: 4 }
         ];
         l4.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 4 }));
         return { id: 'pagoda', name: '동양 5층탑', icon: '🏯', layers: 5, slots };
@@ -3477,32 +3622,32 @@
         const slots = [];
         let nextId = 1;
         const l0 = [
-          {x: 2, y: 0}, {x: 4, y: 0}, {x: 6, y: 0}, {x: 8, y: 0}, {x: 10, y: 0}, {x: 12, y: 0},
-          {x: 2, y: 2}, {x: 4, y: 2}, {x: 6, y: 2}, {x: 8, y: 2}, {x: 10, y: 2}, {x: 12, y: 2},
-          {x: 2, y: 4}, {x: 4, y: 4}, {x: 6, y: 4}, {x: 8, y: 4}, {x: 10, y: 4}, {x: 12, y: 4},
-          {x: 2, y: 6}, {x: 4, y: 6}, {x: 6, y: 6}, {x: 8, y: 6}, {x: 10, y: 6}, {x: 12, y: 6},
-          {x: 2, y: 8}, {x: 4, y: 8}, {x: 6, y: 8}, {x: 8, y: 8}, {x: 10, y: 8}, {x: 12, y: 8},
-          {x: 2, y: 10}, {x: 4, y: 10}, {x: 6, y: 10}, {x: 8, y: 10}, {x: 10, y: 10}, {x: 12, y: 10}
+          { x: 2, y: 0 }, { x: 4, y: 0 }, { x: 6, y: 0 }, { x: 8, y: 0 }, { x: 10, y: 0 }, { x: 12, y: 0 },
+          { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 }, { x: 10, y: 2 }, { x: 12, y: 2 },
+          { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 }, { x: 10, y: 4 }, { x: 12, y: 4 },
+          { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 }, { x: 10, y: 6 }, { x: 12, y: 6 },
+          { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 }, { x: 10, y: 8 }, { x: 12, y: 8 },
+          { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 }, { x: 10, y: 10 }, { x: 12, y: 10 }
         ];
         l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
         const l1 = [
-          {x: 4, y: 2}, {x: 6, y: 2}, {x: 8, y: 2}, {x: 10, y: 2},
-          {x: 4, y: 4}, {x: 6, y: 4}, {x: 8, y: 4}, {x: 10, y: 4},
-          {x: 4, y: 6}, {x: 6, y: 6}, {x: 8, y: 6}, {x: 10, y: 6},
-          {x: 6, y: 8}, {x: 8, y: 8}
+          { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 }, { x: 10, y: 2 },
+          { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 }, { x: 10, y: 4 },
+          { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 }, { x: 10, y: 6 },
+          { x: 6, y: 8 }, { x: 8, y: 8 }
         ];
         l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
         const l2 = [
-          {x: 5, y: 3}, {x: 7, y: 3}, {x: 9, y: 3},
-          {x: 5, y: 5}, {x: 7, y: 5}, {x: 9, y: 5}
+          { x: 5, y: 3 }, { x: 7, y: 3 }, { x: 9, y: 3 },
+          { x: 5, y: 5 }, { x: 7, y: 5 }, { x: 9, y: 5 }
         ];
         l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
         const l3 = [
-          {x: 6, y: 4}, {x: 8, y: 4}
+          { x: 6, y: 4 }, { x: 8, y: 4 }
         ];
         l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
         const l4 = [
-          {x: 7, y: 3}, {x: 7, y: 5}
+          { x: 7, y: 3 }, { x: 7, y: 5 }
         ];
         l4.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 4 }));
         return { id: 'grand_palace', name: '황실 궁전탑', icon: '👑', layers: 5, slots };
@@ -3634,7 +3779,7 @@
           if (!isFull) {
             const docEl = document.documentElement;
             if (docEl.requestFullscreen) {
-              docEl.requestFullscreen().catch(() => {});
+              docEl.requestFullscreen().catch(() => { });
             } else if (docEl.webkitRequestFullscreen) {
               docEl.webkitRequestFullscreen();
             }
@@ -3897,7 +4042,7 @@
         try {
           const raw = localStorage.getItem('siyeon_mahjong_hall_of_fame');
           if (raw) return JSON.parse(raw);
-        } catch (e) {}
+        } catch (e) { }
         return [
           { name: '시연마스터', diff: '달인', stage: 5, score: 4850, date: '2026.09.01' },
           { name: '옥빛비취', diff: '어려움', stage: 4, score: 3600, date: '2026.09.02' },
@@ -3923,7 +4068,7 @@
         const top10 = list.slice(0, 10);
         try {
           localStorage.setItem('siyeon_mahjong_hall_of_fame', JSON.stringify(top10));
-        } catch (e) {}
+        } catch (e) { }
         this.renderHallOfFame();
       }
 
@@ -3954,7 +4099,7 @@
         if (confirm("명예의 전당 모든 기록을 초기화하시겠습니까?")) {
           try {
             localStorage.removeItem('siyeon_mahjong_hall_of_fame');
-          } catch (e) {}
+          } catch (e) { }
           this.renderHallOfFame();
         }
       }
@@ -5526,13 +5671,13 @@
 
         if (!isFull) {
           if (docEl.requestFullscreen) {
-            docEl.requestFullscreen().catch(() => {});
+            docEl.requestFullscreen().catch(() => { });
           } else if (docEl.webkitRequestFullscreen) {
             docEl.webkitRequestFullscreen();
           }
         } else {
           if (doc.exitFullscreen) {
-            doc.exitFullscreen().catch(() => {});
+            doc.exitFullscreen().catch(() => { });
           } else if (doc.webkitExitFullscreen) {
             doc.webkitExitFullscreen();
           }
