@@ -666,10 +666,26 @@
       z-index: 2;
     }
 
-    /* 사주 명리학 타일: 외곽 중복 한자 및 라벨을 제거하고 SVG 내부 올인원 디자인에 집중 */
+    /* 사주 명리학 타일: 외곽 중복 한자 및 라벨을 제거하고 SVG/WebP 내부 올인원 디자인에 집중 */
     .saju-tile .tile-corner-badge,
     .saju-tile .tile-sub-label {
       display: none !important;
+    }
+
+    .saju-tile .tile-graphic-wrap {
+      padding: 0 !important;
+    }
+
+    /* 초고화질 3D 실물 WebP 에셋 전용 스타일 */
+    .tile-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      border-radius: 6px;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
     }
 
     /* 타일 내부 그래픽 래퍼 및 음각(Engraved) 각인 디테일 */
@@ -2618,7 +2634,7 @@
           </button>
           <div class="settings-divider"></div>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.22
+            Si-Yeon Mahjong Solitaire v1.4.23
           </div>
         </div>
       </div>
@@ -2650,7 +2666,7 @@
     <div class="splash-card">
       <div class="splash-img-wrap">
         <img src="assets/mahjong_splash.jpg" alt="시연 그림맞추기" class="splash-hero-img">
-        <div class="splash-version-badge">v1.4.22</div>
+        <div class="splash-version-badge">v1.4.23</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연 그림맞추기</h1>
@@ -4085,54 +4101,54 @@
       { id: 'm_phoenix', suit: 'myth', val: 'phoenix', label: '朱雀', badge: '雀', render: () => SvgFactory.myth('雀', '#c2185b', '주작') },
       { id: 'm_turtle', suit: 'myth', val: 'turtle', label: '玄武', badge: '武', render: () => SvgFactory.myth('武', '#283593', '현무') },
 
-      // 10간(天干 10종: 자연 오행 원소 정령 캐릭터)
-      { id: 'g_jia', suit: 'gan', val: 'jia', label: '甲木', badge: '甲', render: () => SvgFactory.sajuGan('jia', '甲', '#00897b', '갑목', '甲木') },
-      { id: 'g_yi', suit: 'gan', val: 'yi', label: '乙木', badge: '乙', render: () => SvgFactory.sajuGan('yi', '乙', '#2e7d32', '을목', '乙木') },
-      { id: 'g_bing', suit: 'gan', val: 'bing', label: '丙火', badge: '丙', render: () => SvgFactory.sajuGan('bing', '丙', '#d32f2f', '병화', '丙火') },
-      { id: 'g_ding', suit: 'gan', val: 'ding', label: '丁火', badge: '丁', render: () => SvgFactory.sajuGan('ding', '丁', '#e53935', '정화', '丁火') },
-      { id: 'g_wu', suit: 'gan', val: 'wu', label: '戊土', badge: '戊', render: () => SvgFactory.sajuGan('wu', '戊', '#b78103', '무토', '戊土') },
-      { id: 'g_ji', suit: 'gan', val: 'ji', label: '己土', badge: '己', render: () => SvgFactory.sajuGan('ji', '己', '#f57f17', '기토', '己土') },
-      { id: 'g_geng', suit: 'gan', val: 'geng', label: '庚金', badge: '庚', render: () => SvgFactory.sajuGan('geng', '庚', '#455a64', '경금', '庚金') },
-      { id: 'g_xin', suit: 'gan', val: 'xin', label: '辛金', badge: '辛', render: () => SvgFactory.sajuGan('xin', '辛', '#37474f', '신금', '辛金') },
-      { id: 'g_ren', suit: 'gan', val: 'ren', label: '壬水', badge: '壬', render: () => SvgFactory.sajuGan('ren', '壬', '#1565c0', '임수', '壬水') },
-      { id: 'g_gui', suit: 'gan', val: 'gui', label: '癸水', badge: '癸', render: () => SvgFactory.sajuGan('gui', '癸', '#0d47a1', '계수', '癸水') },
+      // 10간(天干 10종: 자연 오행 원소 정령 캐릭터 - 초고화질 3D 실물 WebP 에셋)
+      { id: 'g_jia', suit: 'gan', val: 'jia', label: '甲木', badge: '甲', render: () => `<img src="assets/tiles/g_jia.webp" class="tile-img" alt="甲木" onerror="this.outerHTML=SvgFactory.sajuGan('jia', '甲', '#00897b', '갑목', '甲木')">` },
+      { id: 'g_yi', suit: 'gan', val: 'yi', label: '乙木', badge: '乙', render: () => `<img src="assets/tiles/g_yi.webp" class="tile-img" alt="乙木" onerror="this.outerHTML=SvgFactory.sajuGan('yi', '乙', '#2e7d32', '을목', '乙木')">` },
+      { id: 'g_bing', suit: 'gan', val: 'bing', label: '丙火', badge: '丙', render: () => `<img src="assets/tiles/g_bing.webp" class="tile-img" alt="丙火" onerror="this.outerHTML=SvgFactory.sajuGan('bing', '丙', '#d32f2f', '병화', '丙火')">` },
+      { id: 'g_ding', suit: 'gan', val: 'ding', label: '丁火', badge: '丁', render: () => `<img src="assets/tiles/g_ding.webp" class="tile-img" alt="丁火" onerror="this.outerHTML=SvgFactory.sajuGan('ding', '丁', '#e53935', '정화', '丁火')">` },
+      { id: 'g_wu', suit: 'gan', val: 'wu', label: '戊土', badge: '戊', render: () => `<img src="assets/tiles/g_wu.webp" class="tile-img" alt="戊土" onerror="this.outerHTML=SvgFactory.sajuGan('wu', '戊', '#b78103', '무토', '戊土')">` },
+      { id: 'g_ji', suit: 'gan', val: 'ji', label: '己土', badge: '己', render: () => `<img src="assets/tiles/g_ji.webp" class="tile-img" alt="己土" onerror="this.outerHTML=SvgFactory.sajuGan('ji', '己', '#f57f17', '기토', '己土')">` },
+      { id: 'g_geng', suit: 'gan', val: 'geng', label: '庚金', badge: '庚', render: () => `<img src="assets/tiles/g_geng.webp" class="tile-img" alt="庚金" onerror="this.outerHTML=SvgFactory.sajuGan('geng', '庚', '#455a64', '경금', '庚金')">` },
+      { id: 'g_xin', suit: 'gan', val: 'xin', label: '辛金', badge: '辛', render: () => `<img src="assets/tiles/g_xin.webp" class="tile-img" alt="辛金" onerror="this.outerHTML=SvgFactory.sajuGan('xin', '辛', '#37474f', '신금', '辛金')">` },
+      { id: 'g_ren', suit: 'gan', val: 'ren', label: '壬水', badge: '壬', render: () => `<img src="assets/tiles/g_ren.webp" class="tile-img" alt="壬水" onerror="this.outerHTML=SvgFactory.sajuGan('ren', '壬', '#1565c0', '임수', '壬水')">` },
+      { id: 'g_gui', suit: 'gan', val: 'gui', label: '癸水', badge: '癸', render: () => `<img src="assets/tiles/g_gui.webp" class="tile-img" alt="癸水" onerror="this.outerHTML=SvgFactory.sajuGan('gui', '癸', '#0d47a1', '계수', '癸水')">` },
 
-      // 12지(地支 12종: 십이지신 동물 수호대 캐릭터)
-      { id: 'z_zi', suit: 'zhi', val: 'zi', label: '子水', badge: '子', render: () => SvgFactory.sajuZhi('zi', '子', '#0d47a1', '자(쥐)', '子水') },
-      { id: 'z_chou', suit: 'zhi', val: 'chou', label: '丑土', badge: '丑', render: () => SvgFactory.sajuZhi('chou', '丑', '#b78103', '축(소)', '丑土') },
-      { id: 'z_yin', suit: 'zhi', val: 'yin', label: '寅木', badge: '寅', render: () => SvgFactory.sajuZhi('yin', '寅', '#00897b', '인(호)', '寅木') },
-      { id: 'z_mao', suit: 'zhi', val: 'zhi_mao', label: '卯木', badge: '卯', render: () => SvgFactory.sajuZhi('zhi_mao', '卯', '#2e7d32', '묘(토)', '卯木') },
-      { id: 'z_chen', suit: 'zhi', val: 'chen', label: '辰土', badge: '辰', render: () => SvgFactory.sajuZhi('chen', '辰', '#b78103', '진(용)', '辰土') },
-      { id: 'z_si', suit: 'zhi', val: 'si', label: '巳火', badge: '巳', render: () => SvgFactory.sajuZhi('si', '巳', '#d32f2f', '사(뱀)', '巳火') },
-      { id: 'z_wu', suit: 'zhi', val: 'zhi_wu', label: '午火', badge: '午', render: () => SvgFactory.sajuZhi('zhi_wu', '午', '#e53935', '오(말)', '午火') },
-      { id: 'z_wei', suit: 'zhi', val: 'wei', label: '未土', badge: '未', render: () => SvgFactory.sajuZhi('wei', '未', '#b78103', '미(양)', '未土') },
-      { id: 'z_shen', suit: 'zhi', val: 'shen', label: '申金', badge: '申', render: () => SvgFactory.sajuZhi('shen', '申', '#455a64', '신(원)', '申金') },
-      { id: 'z_you', suit: 'zhi', val: 'you', label: '酉金', badge: '酉', render: () => SvgFactory.sajuZhi('you', '酉', '#37474f', '유(닭)', '酉金') },
-      { id: 'z_xu', suit: 'zhi', val: 'xu', label: '戌土', badge: '戌', render: () => SvgFactory.sajuZhi('xu', '戌', '#b78103', '술(개)', '戌土') },
-      { id: 'z_hai', suit: 'zhi', val: 'hai', label: '亥水', badge: '亥', render: () => SvgFactory.sajuZhi('hai', '亥', '#1565c0', '해(돈)', '亥水') },
+      // 12지(地支 12종: 십이지신 동물 수호대 캐릭터 - 초고화질 3D 실물 WebP 에셋)
+      { id: 'z_zi', suit: 'zhi', val: 'zi', label: '子水', badge: '子', render: () => `<img src="assets/tiles/z_zi.webp" class="tile-img" alt="子水" onerror="this.outerHTML=SvgFactory.sajuZhi('zi', '子', '#0d47a1', '자(쥐)', '子水')">` },
+      { id: 'z_chou', suit: 'zhi', val: 'chou', label: '丑土', badge: '丑', render: () => `<img src="assets/tiles/z_chou.webp" class="tile-img" alt="丑土" onerror="this.outerHTML=SvgFactory.sajuZhi('chou', '丑', '#b78103', '축(소)', '丑土')">` },
+      { id: 'z_yin', suit: 'zhi', val: 'yin', label: '寅木', badge: '寅', render: () => `<img src="assets/tiles/z_yin.webp" class="tile-img" alt="寅木" onerror="this.outerHTML=SvgFactory.sajuZhi('yin', '寅', '#00897b', '인(호)', '寅木')">` },
+      { id: 'z_mao', suit: 'zhi', val: 'zhi_mao', label: '卯木', badge: '卯', render: () => `<img src="assets/tiles/z_mao.webp" class="tile-img" alt="卯木" onerror="this.outerHTML=SvgFactory.sajuZhi('zhi_mao', '卯', '#2e7d32', '묘(토)', '卯木')">` },
+      { id: 'z_chen', suit: 'zhi', val: 'chen', label: '辰土', badge: '辰', render: () => `<img src="assets/tiles/z_chen.webp" class="tile-img" alt="辰土" onerror="this.outerHTML=SvgFactory.sajuZhi('chen', '辰', '#b78103', '진(용)', '辰土')">` },
+      { id: 'z_si', suit: 'zhi', val: 'si', label: '巳火', badge: '巳', render: () => `<img src="assets/tiles/z_si.webp" class="tile-img" alt="巳火" onerror="this.outerHTML=SvgFactory.sajuZhi('si', '巳', '#d32f2f', '사(뱀)', '巳火')">` },
+      { id: 'z_wu', suit: 'zhi', val: 'zhi_wu', label: '午火', badge: '午', render: () => `<img src="assets/tiles/z_wu.webp" class="tile-img" alt="午火" onerror="this.outerHTML=SvgFactory.sajuZhi('zhi_wu', '午', '#e53935', '오(말)', '午火')">` },
+      { id: 'z_wei', suit: 'zhi', val: 'wei', label: '未土', badge: '未', render: () => `<img src="assets/tiles/z_wei.webp" class="tile-img" alt="未土" onerror="this.outerHTML=SvgFactory.sajuZhi('wei', '未', '#b78103', '미(양)', '未土')">` },
+      { id: 'z_shen', suit: 'zhi', val: 'shen', label: '申金', badge: '申', render: () => `<img src="assets/tiles/z_shen.webp" class="tile-img" alt="申金" onerror="this.outerHTML=SvgFactory.sajuZhi('shen', '申', '#455a64', '신(원)', '申金')">` },
+      { id: 'z_you', suit: 'zhi', val: 'you', label: '酉金', badge: '酉', render: () => `<img src="assets/tiles/z_you.webp" class="tile-img" alt="酉金" onerror="this.outerHTML=SvgFactory.sajuZhi('you', '酉', '#37474f', '유(닭)', '酉金')">` },
+      { id: 'z_xu', suit: 'zhi', val: 'xu', label: '戌土', badge: '戌', render: () => `<img src="assets/tiles/z_xu.webp" class="tile-img" alt="戌土" onerror="this.outerHTML=SvgFactory.sajuZhi('xu', '戌', '#b78103', '술(개)', '戌土')">` },
+      { id: 'z_hai', suit: 'zhi', val: 'hai', label: '亥水', badge: '亥', render: () => `<img src="assets/tiles/z_hai.webp" class="tile-img" alt="亥水" onerror="this.outerHTML=SvgFactory.sajuZhi('hai', '亥', '#1565c0', '해(돈)', '亥水')">` },
 
-      // 10신(十神 10종: 운명의 10대 페르소나 아바타)
-      { id: 's_bijian', suit: 'shin', val: 'bijian', label: '比肩', badge: '比', render: () => SvgFactory.sajuShin('bijian', '比', '#00796b', '비견', '比肩') },
-      { id: 's_geobjae', suit: 'shin', val: 'geobjae', label: '劫財', badge: '劫', render: () => SvgFactory.sajuShin('geobjae', '劫', '#004d40', '겁재', '劫財') },
-      { id: 's_siksin', suit: 'shin', val: 'siksin', label: '食神', badge: '食', render: () => SvgFactory.sajuShin('siksin', '食', '#e65100', '식신', '食神') },
-      { id: 's_sangpwan', suit: 'shin', val: 'sangpwan', label: '傷官', badge: '傷', render: () => SvgFactory.sajuShin('sangpwan', '傷', '#bf360c', '상관', '傷官') },
-      { id: 's_pyeonjae', suit: 'shin', val: 'pyeonjae', label: '偏財', badge: '才', render: () => SvgFactory.sajuShin('pyeonjae', '才', '#f57f17', '편재', '偏財') },
-      { id: 's_jeongjae', suit: 'shin', val: 'jeongjae', label: '正財', badge: '財', render: () => SvgFactory.sajuShin('jeongjae', '財', '#ffd600', '정재', '正財') },
-      { id: 's_pyeongwan', suit: 'shin', val: 'pyeongwan', label: '七殺', badge: '殺', render: () => SvgFactory.sajuShin('pyeongwan', '殺', '#c2185b', '편관', '七殺') },
-      { id: 's_jeonggwan', suit: 'shin', val: 'jeonggwan', label: '正官', badge: '官', render: () => SvgFactory.sajuShin('jeonggwan', '官', '#455a64', '정관', '正官') },
-      { id: 's_pyeonin', suit: 'shin', val: 'pyeonin', label: '偏印', badge: '梟', render: () => SvgFactory.sajuShin('pyeonin', '梟', '#512da8', '편인', '偏印') },
-      { id: 's_jeongin', suit: 'shin', val: 'jeongin', label: '正印', badge: '印', render: () => SvgFactory.sajuShin('jeongin', '印', '#311b92', '정인', '正印') },
+      // 10신(十神 10종: 운명의 10대 페르소나 아바타 - 초고화질 3D 실물 WebP 에셋)
+      { id: 's_bijian', suit: 'shin', val: 'bijian', label: '比肩', badge: '比', render: () => `<img src="assets/tiles/s_bijian.webp" class="tile-img" alt="比肩" onerror="this.outerHTML=SvgFactory.sajuShin('bijian', '比', '#00796b', '비견', '比肩')">` },
+      { id: 's_geobjae', suit: 'shin', val: 'geobjae', label: '劫財', badge: '劫', render: () => `<img src="assets/tiles/s_geobjae.webp" class="tile-img" alt="劫財" onerror="this.outerHTML=SvgFactory.sajuShin('geobjae', '劫', '#004d40', '겁재', '劫財')">` },
+      { id: 's_siksin', suit: 'shin', val: 'siksin', label: '食神', badge: '食', render: () => `<img src="assets/tiles/s_siksin.webp" class="tile-img" alt="食神" onerror="this.outerHTML=SvgFactory.sajuShin('siksin', '食', '#e65100', '식신', '食神')">` },
+      { id: 's_sangpwan', suit: 'shin', val: 'sangpwan', label: '傷官', badge: '傷', render: () => `<img src="assets/tiles/s_sangpwan.webp" class="tile-img" alt="傷官" onerror="this.outerHTML=SvgFactory.sajuShin('sangpwan', '傷', '#bf360c', '상관', '傷官')">` },
+      { id: 's_pyeonjae', suit: 'shin', val: 'pyeonjae', label: '偏財', badge: '才', render: () => `<img src="assets/tiles/s_pyeonjae.webp" class="tile-img" alt="偏財" onerror="this.outerHTML=SvgFactory.sajuShin('pyeonjae', '才', '#f57f17', '편재', '偏財')">` },
+      { id: 's_jeongjae', suit: 'shin', val: 'jeongjae', label: '正財', badge: '財', render: () => `<img src="assets/tiles/s_jeongjae.webp" class="tile-img" alt="正財" onerror="this.outerHTML=SvgFactory.sajuShin('jeongjae', '財', '#ffd600', '정재', '正財')">` },
+      { id: 's_pyeongwan', suit: 'shin', val: 'pyeongwan', label: '七殺', badge: '殺', render: () => `<img src="assets/tiles/s_pyeongwan.webp" class="tile-img" alt="七殺" onerror="this.outerHTML=SvgFactory.sajuShin('pyeongwan', '殺', '#c2185b', '편관', '七殺')">` },
+      { id: 's_jeonggwan', suit: 'shin', val: 'jeonggwan', label: '正官', badge: '官', render: () => `<img src="assets/tiles/s_jeonggwan.webp" class="tile-img" alt="正官" onerror="this.outerHTML=SvgFactory.sajuShin('jeonggwan', '官', '#455a64', '정관', '正官')">` },
+      { id: 's_pyeonin', suit: 'shin', val: 'pyeonin', label: '偏印', badge: '梟', render: () => `<img src="assets/tiles/s_pyeonin.webp" class="tile-img" alt="偏印" onerror="this.outerHTML=SvgFactory.sajuShin('pyeonin', '梟', '#512da8', '편인', '偏印')">` },
+      { id: 's_jeongin', suit: 'shin', val: 'jeongin', label: '正印', badge: '印', render: () => `<img src="assets/tiles/s_jeongin.webp" class="tile-img" alt="正印" onerror="this.outerHTML=SvgFactory.sajuShin('jeongin', '印', '#311b92', '정인', '正印')">` },
 
-      // 음양 (陰陽 2종: 천지의 두 기운 삼족오 & 월광 백여우)
-      { id: 'yy_yang', suit: 'yinyang', val: 'yang', label: '太陽', badge: '陽', render: () => SvgFactory.sajuYinYang('yang', '陽', '#ff6f00', '일광', '太陽') },
-      { id: 'yy_yin', suit: 'yinyang', val: 'yin', label: '太陰', badge: '陰', render: () => SvgFactory.sajuYinYang('yin', '陰', '#5c6bc0', '월광', '太陰') },
+      // 음양 (陰陽 2종: 천지의 두 기운 - 초고화질 3D 실물 WebP 에셋)
+      { id: 'yy_yang', suit: 'yinyang', val: 'yang', label: '太陽', badge: '陽', render: () => `<img src="assets/tiles/yy_yang.webp" class="tile-img" alt="太陽" onerror="this.outerHTML=SvgFactory.sajuYinYang('yang', '陽', '#ff6f00', '일광', '太陽')">` },
+      { id: 'yy_yin', suit: 'yinyang', val: 'yin', label: '太陰', badge: '陰', render: () => `<img src="assets/tiles/yy_yin.webp" class="tile-img" alt="太陰" onerror="this.outerHTML=SvgFactory.sajuYinYang('yin', '陰', '#5c6bc0', '월광', '太陰')">` },
 
-      // 오행 (五行 5종: 우주 5대 원소 신수 마스코트)
-      { id: 'wx_wood', suit: 'wuxing', val: 'wood', label: '木行', badge: '木', render: () => SvgFactory.sajuWuXing('wood', '木', '#2e7d32', '목행', '木行') },
-      { id: 'wx_fire', suit: 'wuxing', val: 'fire', label: '火行', badge: '火', render: () => SvgFactory.sajuWuXing('fire', '火', '#d32f2f', '화행', '火行') },
-      { id: 'wx_earth', suit: 'wuxing', val: 'earth', label: '土行', badge: '土', render: () => SvgFactory.sajuWuXing('earth', '土', '#f57f17', '토행', '土行') },
-      { id: 'wx_metal', suit: 'wuxing', val: 'metal', label: '金行', badge: '金', render: () => SvgFactory.sajuWuXing('metal', '金', '#455a64', '금행', '金行') },
-      { id: 'wx_water', suit: 'wuxing', val: 'water', label: '水行', badge: '水', render: () => SvgFactory.sajuWuXing('water', '水', '#0288d1', '수행', '水行') }
+      // 오행 (五行 5종: 우주 5대 원소 신수 마스코트 - 초고화질 3D 실물 WebP 에셋)
+      { id: 'wx_wood', suit: 'wuxing', val: 'wood', label: '木行', badge: '木', render: () => `<img src="assets/tiles/wx_wood.webp" class="tile-img" alt="木行" onerror="this.outerHTML=SvgFactory.sajuWuXing('wood', '木', '#2e7d32', '목행', '木行')">` },
+      { id: 'wx_fire', suit: 'wuxing', val: 'fire', label: '火行', badge: '火', render: () => `<img src="assets/tiles/wx_fire.webp" class="tile-img" alt="火行" onerror="this.outerHTML=SvgFactory.sajuWuXing('fire', '火', '#d32f2f', '화행', '火行')">` },
+      { id: 'wx_earth', suit: 'wuxing', val: 'earth', label: '土行', badge: '土', render: () => `<img src="assets/tiles/wx_earth.webp" class="tile-img" alt="土行" onerror="this.outerHTML=SvgFactory.sajuWuXing('earth', '土', '#f57f17', '토행', '土行')">` },
+      { id: 'wx_metal', suit: 'wuxing', val: 'metal', label: '金行', badge: '金', render: () => `<img src="assets/tiles/wx_metal.webp" class="tile-img" alt="金行" onerror="this.outerHTML=SvgFactory.sajuWuXing('metal', '金', '#455a64', '금행', '金行')">` },
+      { id: 'wx_water', suit: 'wuxing', val: 'water', label: '水行', badge: '水', render: () => `<img src="assets/tiles/wx_water.webp" class="tile-img" alt="水行" onerror="this.outerHTML=SvgFactory.sajuWuXing('water', '水', '#0288d1', '수행', '水行')">` }
     ];
 
     /**
