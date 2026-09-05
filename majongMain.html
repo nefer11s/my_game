@@ -2762,7 +2762,7 @@
                     <div class="settings-item">
             <span class="settings-label">🎵 효과음 테마</span>
             <select class="diff-select" id="select-sound-theme" title="효과음 테마 선택">
-              <option value="default" selected>✨ 시연 기본 테마 (크리스탈 & 축하 팝)</option>
+              <option value="default" selected>✨ 시연 기본 테마 (리얼 마작 & 첼레스타)</option>
               <option value="real">🀄 리얼 마작패 (실물 타격·바차임)</option>
               <option value="wood">🪵 자연의 원목 (우드 & 오르골)</option>
               <option value="synth">🎮 클래식 신디 (경쾌한 전자음)</option>
@@ -2909,7 +2909,7 @@
               • <strong>짝선택 자동슬롯 (기본: 꺼짐)</strong>: 뒤집힌 블라인드 패를 뒤집은 상태에서 보드의 동일한 짝(자유 패)을 선택했을 때, 두 패가 한꺼번에 슬롯으로 자동 이동하여 즉시 매칭 소멸되는 옵션입니다. (꺼짐 시 선택한 자유 패만 단독 이동)<br>
               • <strong>마지막10개 자동매칭 (기본: 꺼짐)</strong>: 남은 타일 수가 10개 이하가 되었을 때, 자동으로 짝을 맞추어 빠르게 클리어하는 피날레 연속 매칭 연출이 진행됩니다.<br>
               • <strong>동적확대 (기본: 꺼짐)</strong>: 남은 패의 수가 줄어들 때, 남은 패들이 화면에 꽉 차도록 보드를 실시간으로 자동 확대(Auto-Fit)해 주는 옵션입니다. (꺼짐 시 안정적인 기본 스케일 유지)<br>
-              • <strong>효과음 테마 (기본: 시연 기본 테마 - 크리스탈 & 축하 팝)</strong>: 리얼 마작패(실물 타격·바차임), 크리스탈 벨(청아한 종소리), 클래식 신디(경쾌한 전자음) 중 취향에 맞게 소리를 고를 수 있으며, 볼륨 평탄화가 적용되어 균일하게 출력됩니다.
+              • <strong>효과음 테마 (기본: 시연 기본 테마 - 리얼 마작패 · 도자기 맑은 · 첼레스타 · 축하 팝)</strong>: 리얼 마작패(실물 타격·바차임), 크리스탈 벨(청아한 종소리), 클래식 신디(경쾌한 전자음) 중 취향에 맞게 소리를 고를 수 있으며, 볼륨 평탄화가 적용되어 균일하게 출력됩니다.
             </p>
           </div>
         </div>
@@ -2937,8 +2937,8 @@
             <button class="sound-test-btn" id="btn-test-sound-select" title="선택음 미리듣기">▶ 듣기</button>
           </div>
           <select class="diff-select sound-select" id="select-sound-select">
-            <option value="crystal" selected>🔔 크리스탈 핑 (청아한 유리)</option>
-            <option value="real">🀄 리얼 마작패 톡 (실물 수지 접촉)</option>
+            <option value="real" selected>🀄 리얼 마작패 톡 (실물 수지 접촉)</option>
+            <option value="crystal">🔔 크리스탈 핑 (청아한 유리)</option>
             <option value="wood">🪵 단단한 우드블록 탁 (원목 타격)</option>
             <option value="synth">✨ 클래식 뾱 (경쾌한 전자음)</option>
           </select>
@@ -2951,9 +2951,9 @@
             <button class="sound-test-btn" id="btn-test-sound-match" title="타격음 미리듣기">▶ 듣기</button>
           </div>
           <select class="diff-select sound-select" id="select-sound-match">
-            <option value="crystal" selected>🔔 크리스탈 벨 댕~ (깊은 공명)</option>
+            <option value="ceramic" selected>🏺 도자기 맑은 딱! (선명한 크랙)</option>
             <option value="real">🀄 리얼 마작 짝! (실물 강한 충돌)</option>
-            <option value="ceramic">🏺 도자기 맑은 딱! (선명한 크랙)</option>
+            <option value="crystal">🔔 크리스탈 벨 댕~ (깊은 공명)</option>
             <option value="punch">⚡ 묵직한 펀치 챡! (강한 임팩트)</option>
           </select>
         </div>
@@ -2965,9 +2965,9 @@
             <button class="sound-test-btn" id="btn-test-sound-chime" title="바차임 미리듣기">▶ 듣기</button>
           </div>
           <select class="diff-select sound-select" id="select-sound-chime">
-            <option value="shimmer" selected>✨ 반짝이는 크리스탈 쉬머 (고음 하모닉)</option>
+            <option value="celesta" selected>⭐ 첼레스타 오르골 (따뜻한 벨)</option>
             <option value="lydian">🎶 메탈 바차임 뾰로로롱 (12음 글리산도)</option>
-            <option value="celesta">⭐ 첼레스타 오르골 (따뜻한 벨)</option>
+            <option value="shimmer">✨ 반짝이는 크리스탈 쉬머 (고음 하모닉)</option>
             <option value="retro">🎮 아케이드 스타 (8비트 징글)</option>
           </select>
         </div>
@@ -3103,11 +3103,11 @@
         this.compressor = null;
         this.muted = localStorage.getItem('mahjong_sound_muted') === 'true';
 
-        // 각 사운드별 선택된 소리 (기본값: 크리스탈 핑 + 크리스탈 벨 + 크리스탈 쉬머 + 스파크)
+        // 각 사운드별 선택된 소리 (시연 기본 테마 디폴트: 리얼마작패 + 도자기맑은 + 첼레스타 + 축하팝)
         this.customSounds = {
-          select: localStorage.getItem('mahjong_sound_select') || 'crystal',
-          match: localStorage.getItem('mahjong_sound_match') || 'crystal',
-          chime: localStorage.getItem('mahjong_sound_chime') || 'shimmer',
+          select: localStorage.getItem('mahjong_sound_select') || 'real',
+          match: localStorage.getItem('mahjong_sound_match') || 'ceramic',
+          chime: localStorage.getItem('mahjong_sound_chime') || 'celesta',
           firework: localStorage.getItem('mahjong_sound_firework') || 'cheer'
         };
 
@@ -3132,7 +3132,12 @@
       }
 
       setTheme(theme) {
-        if (theme === 'default' || theme === 'crystal') {
+        if (theme === 'default') {
+          this.setSoundOption('select', 'real');
+          this.setSoundOption('match', 'ceramic');
+          this.setSoundOption('chime', 'celesta');
+          this.setSoundOption('firework', 'cheer');
+        } else if (theme === 'crystal') {
           this.setSoundOption('select', 'crystal');
           this.setSoundOption('match', 'crystal');
           this.setSoundOption('chime', 'shimmer');
@@ -3158,9 +3163,9 @@
 
       resetDefaults() {
         this.customSounds = {
-          select: 'crystal',
-          match: 'crystal',
-          chime: 'shimmer',
+          select: 'real',
+          match: 'ceramic',
+          chime: 'celesta',
           firework: 'cheer'
         };
         ['select', 'match', 'chime', 'firework'].forEach(k => {
