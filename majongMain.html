@@ -2678,6 +2678,12 @@
               <option value="master">👑 달인 (89종 · 슬롯 3개 · 블라인드 18개 · 극한 병목)</option>
             </select>
           </div>
+          <button class="btn settings-btn" id="btn-save-progress" title="현재 진행 상태 저장">
+            <span class="btn-icon">💾</span> 현재 판 진행 저장
+          </button>
+          <button class="btn settings-btn" id="btn-reset-stage" title="진행 초기화 후 1판부터 시작">
+            <span class="btn-icon">🔄</span> 1판부터 새로하기
+          </button>
           <div class="settings-divider"></div>
           <button class="btn settings-btn" id="btn-rules-header" title="게임 방법 안내">
             <span class="btn-icon">📜</span> 게임 방법
@@ -2800,6 +2806,13 @@
             <strong>도움 기능 & 하트 관리</strong>
             <p>[🔀 셔플] 사용 시 하트 1개가 소진됩니다. (단, <strong>하트가 1개 남았을 때는 판당 1회 '마지막 기회 무료 셔플'</strong>이 발동됩니다.) 각 판을 클리어하면 하트
               1개가 회복되며, [💡 힌트]는 하트 소진 없이 사용할 수 있습니다.</p>
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-num">6</div>
+          <div class="rule-text">
+            <strong>진행 판수 저장 & 이어하기</strong>
+            <p>판을 클리어할 때 <strong>[다음 판 시작]</strong> 또는 <strong>[저장하고 다음에 계속]</strong>을 누르면 도달한 판수와 점수, 난이도가 기기에 안전하게 자동 보존됩니다. 브라우저를 닫거나 재방문 시 첫 화면의 <strong>[▶ 이어하기]</strong> 버튼을 통해 언제든 이어서 도전할 수 있습니다. (설정 메뉴의 [현재 판 저장] 및 [1판부터 새로하기] 이용 가능. 단, 하트가 모두 소진되어 게임 오버 시 저장 기록은 초기화됩니다.)</p>
           </div>
         </div>
       </div>
@@ -5226,6 +5239,37 @@
                 settingsDropdown.classList.remove('active');
                 btnSettings.setAttribute('aria-expanded', 'false');
               }
+            }
+          });
+        }
+
+        const btnSaveProgress = document.getElementById('btn-save-progress');
+        if (btnSaveProgress) {
+          btnSaveProgress.addEventListener('click', () => {
+            this.sound.playSelect();
+            if (settingsDropdown) {
+              settingsDropdown.classList.remove('active');
+              if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
+            }
+            this.saveProgress();
+            alert(`[저장 완료] 제 ${this.currentStage}판 진행 상태(점수: ${this.score.toLocaleString()}점)가 안전하게 저장되었습니다.\n나중에 첫 화면의 '이어하기'로 언제든 다시 진행할 수 있습니다.`);
+          });
+        }
+
+        const btnResetStage = document.getElementById('btn-reset-stage');
+        if (btnResetStage) {
+          btnResetStage.addEventListener('click', () => {
+            this.sound.playSelect();
+            if (settingsDropdown) {
+              settingsDropdown.classList.remove('active');
+              if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
+            }
+            if (confirm(`현재 제 ${this.currentStage}판 진행 기록을 초기화하고 제 1판부터 다시 시작하시겠습니까?`)) {
+              this.clearSavedProgress();
+              this.currentStage = 1;
+              this.score = 0;
+              this.hasStarted = true;
+              this.startNewGame();
             }
           });
         }
