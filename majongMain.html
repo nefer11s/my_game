@@ -2717,9 +2717,7 @@
           <button class="btn settings-btn" id="btn-fullscreen" title="전체화면 모드 토글">
             <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
           </button>
-          <button class="btn settings-btn" id="btn-auto-blind-match" title="뒤집힌 타일 터치 시 동일한 타일 자동 매칭">
-            <span class="btn-icon" id="auto-blind-match-icon">🔒</span> <span id="auto-blind-match-text">뒤집힌패 자동매칭: 꺼짐</span>
-          </button>
+
           <button class="btn settings-btn" id="btn-auto-blind-pair" title="뒤집힌 패 뒤집은 후 같은 자유패 선택 시 두 패 자동 슬롯 이동">
             <span class="btn-icon" id="auto-blind-pair-icon">🔒</span> <span id="auto-blind-pair-text">짝선택 자동슬롯: 꺼짐</span>
           </button>
@@ -5110,11 +5108,9 @@
         this.hasUsedLastChanceShuffle = false; // 하트 1개일 때 마지막 무료 셔플 사용 여부
         // 옵션 로컬 스토리지 불러오기 (기본값: 꺼짐/false)
         try {
-          this.autoBlindMatch = (localStorage.getItem('siyeon_mahjong_auto_blind_match') || localStorage.getItem('autoBlindMatch')) === '1';
           this.autoBlindPairMatch = (localStorage.getItem('siyeon_mahjong_auto_blind_pair') || localStorage.getItem('autoBlindPairMatch')) === '1';
           this.autoEndMatch = (localStorage.getItem('siyeon_mahjong_auto_end_match') || localStorage.getItem('autoEndMatch')) === '1';
         } catch (e) {
-          this.autoBlindMatch = false;
           this.autoBlindPairMatch = false;
           this.autoEndMatch = false;
         }
@@ -5431,27 +5427,6 @@
           });
         }
 
-        // 뒤집힌 패 자동매칭 토글 버튼 이벤트
-        const btnAutoBlindMatch = document.getElementById('btn-auto-blind-match');
-        const updateAutoBlindMatchUI = () => {
-          const icon = document.getElementById('auto-blind-match-icon');
-          const text = document.getElementById('auto-blind-match-text');
-          if (icon && text) {
-            icon.textContent = this.autoBlindMatch ? '🔓' : '🔒';
-            text.textContent = this.autoBlindMatch ? '뒤집힌패 자동매칭: 켜짐' : '뒤집힌패 자동매칭: 꺼짐';
-          }
-        };
-        updateAutoBlindMatchUI();
-        if (btnAutoBlindMatch) {
-          btnAutoBlindMatch.addEventListener('click', () => {
-            this.autoBlindMatch = !this.autoBlindMatch;
-            try {
-              localStorage.setItem('autoBlindMatch', this.autoBlindMatch ? '1' : '0');
-              localStorage.setItem('siyeon_mahjong_auto_blind_match', this.autoBlindMatch ? '1' : '0');
-            } catch (e) { }
-            updateAutoBlindMatchUI();
-          });
-        }
 
         // 뒤집힌 패 짝선택 시 자동 슬롯 이동 토글 버튼 이벤트
         const btnAutoBlindPair = document.getElementById('btn-auto-blind-pair');
@@ -5548,7 +5523,6 @@
           score: this.score,
           lives: this.lives,
           timerSeconds: this.timerSeconds,
-          autoBlindMatch: this.autoBlindMatch,
           autoBlindPairMatch: this.autoBlindPairMatch,
           autoEndMatch: this.autoEndMatch,
           savedAt: new Date().toLocaleString('ko-KR')
@@ -5594,13 +5568,6 @@
         this.timerSeconds = saved.timerSeconds || 0;
 
         // 저장된 옵션 설정 복원
-        if (saved.autoBlindMatch !== undefined) {
-          this.autoBlindMatch = !!saved.autoBlindMatch;
-          try {
-            localStorage.setItem('autoBlindMatch', this.autoBlindMatch ? '1' : '0');
-            localStorage.setItem('siyeon_mahjong_auto_blind_match', this.autoBlindMatch ? '1' : '0');
-          } catch (e) { }
-        }
         if (saved.autoBlindPairMatch !== undefined) {
           this.autoBlindPairMatch = !!saved.autoBlindPairMatch;
           try {
@@ -5614,12 +5581,6 @@
             localStorage.setItem('autoEndMatch', this.autoEndMatch ? '1' : '0');
             localStorage.setItem('siyeon_mahjong_auto_end_match', this.autoEndMatch ? '1' : '0');
           } catch (e) { }
-        }
-        const blindIcon = document.getElementById('auto-blind-match-icon');
-        const blindText = document.getElementById('auto-blind-match-text');
-        if (blindIcon && blindText) {
-          blindIcon.textContent = this.autoBlindMatch ? '🔓' : '🔒';
-          blindText.textContent = this.autoBlindMatch ? '뒤집힌패 자동매칭: 켜짐' : '뒤집힌패 자동매칭: 꺼짐';
         }
         const pairIcon = document.getElementById('auto-blind-pair-icon');
         const pairText = document.getElementById('auto-blind-pair-text');
@@ -6749,81 +6710,6 @@
             tile.el.classList.add('face-down', 'revealed');
           }
           this.updateTileStates();
-
-          // [옵션 기능] 뒤집힌 패 자동 매칭: 트레이나 보드에 매칭 가능한 동일 패가 있으면 자동 매칭
-          if (this.autoBlindMatch) {
-            // A. 트레이에 동일 패가 이미 대기 중인 경우 -> 즉시 트레이로 보내 매치
-            const trayMatch = this.trayTiles.find(t => !t.isMatching && t.def.id === tile.def.id);
-            if (trayMatch) {
-              setTimeout(() => {
-                if (tile.removed || this.isGameOver) return;
-                tile.removed = true;
-                if (tile.el) {
-                  this.hideTileEl(tile.el);
-                  tile.el.classList.remove('selected', 'face-down', 'revealed');
-                }
-                this.updateTileStates();
-
-                const trayItem = {
-                  tile: tile,
-                  def: tile.def,
-                  id: tile.id,
-                  wasCovered: true
-                };
-                this.trayTiles.push(trayItem);
-                this.sound.playSelect();
-                this.renderTray();
-                this.blindMismatchCount = 0;
-                this.checkTrayMatch(trayItem);
-              }, 160);
-              return;
-            }
-
-            // B. 보드에 자유 패(isFree) 또는 이미 열린 블라인드 패 중 동일 패가 있는 경우 -> 두 패 자동 매치
-            const boardMatch = this.tiles.find(t => !t.removed && t.id !== tile.id && (t.isFree || (t.isCovered && t.isRevealed)) && t.def.id === tile.def.id);
-            if (boardMatch) {
-              setTimeout(() => {
-                if (tile.removed || boardMatch.removed || this.isGameOver) return;
-
-                boardMatch.removed = true;
-                if (boardMatch.el) {
-                  this.hideTileEl(boardMatch.el);
-                  boardMatch.el.classList.remove('selected', 'face-down', 'revealed');
-                }
-
-                tile.removed = true;
-                if (tile.el) {
-                  this.hideTileEl(tile.el);
-                  tile.el.classList.remove('selected', 'face-down', 'revealed');
-                }
-
-                this.updateTileStates();
-
-                const item1 = {
-                  tile: boardMatch,
-                  def: boardMatch.def,
-                  id: boardMatch.id,
-                  wasCovered: boardMatch.isCovered,
-                  isMatching: true
-                };
-                const item2 = {
-                  tile: tile,
-                  def: tile.def,
-                  id: tile.id,
-                  wasCovered: true,
-                  isMatching: true
-                };
-
-                this.trayTiles.push(item1, item2);
-                this.sound.playSelect();
-                this.renderTray();
-                this.blindMismatchCount = 0;
-                this.checkTrayMatch(item2);
-              }, 160);
-              return;
-            }
-          }
-
           return;
         }
 
