@@ -6764,16 +6764,44 @@
 
         this.clearHints();
 
-        // 1) 현재 보드에 앞면이 공개되어 대기 중인 다른 뒤집힌(블라인드) 타일 탐색
-        const prevRevealed = this.tiles.find(t => t !== tile && t.isCovered && t.isRevealed && !t.removed);
+        // 1) 아직 앞면이 공개되지 않은 뒤집힌(블라인드) 패를 클릭한 경우:
+        //    무조건 보드 위에서 앞면만 뒤집혀 공개되어야 함 (절대 슬롯으로 자동 이동하지 않음)
+        if (tile.isCovered && !tile.isRevealed) {
+          this.logTouch(`[블라인드 오픈] '${tile.def.label}' 앞면 공개`);
+          
+          // 기존에 다른 뒤집힌 패가 열려있었다면
+          const prevRevealed = this.tiles.find(t => t !== tile && t.isCovered && t.isRevealed && !t.removed);
+          if (prevRevealed) {
+            // 새로 연 패와 기존에 열린 패가 다른 종류면 기존 패는 다시 닫힘
+            if (tile.def.id !== prevRevealed.def.id) {
+              this.logTouch(`[블라인드 불일치] '${prevRevealed.def.label}' 닫힘 (${this.blindMismatchCount + 1}/3)`);
+              this.flipTileBack(prevRevealed);
+              this.blindMismatchCount++;
+              if (this.blindMismatchCount >= 3) {
+                this.blindMismatchCount = 0;
+                this.loseLife();
+              }
+            } else {
+              // 새로 연 패와 기존에 열린 패가 같은 종류면 실패 카운트 리셋 (둘 다 보드에 앞면 공개 상태 유지)
+              this.blindMismatchCount = 0;
+            }
+          }
 
-        // 앞면이 공개된 뒤집힌 타일이 있을 때 다른 타일을 클릭한 경우
+          this.sound.playFlip();
+          tile.isRevealed = true;
+          if (tile.el) {
+            tile.el.classList.add('face-down', 'revealed');
+          }
+          this.updateTileStates();
+          return;
+        }
+
+        // 2) 앞면이 공개된 뒤집힌 패가 보드에 있을 때, 일반 자유 패(또는 이미 공개된 패)를 클릭한 경우
+        const prevRevealed = this.tiles.find(t => t !== tile && t.isCovered && t.isRevealed && !t.removed);
         if (prevRevealed) {
-          // 클릭한 타일과 공개된 타일이 동일한 종류인 경우
           if (tile.def.id === prevRevealed.def.id) {
-            // [옵션 기능] 뒤집힌 패 뒤집고 같은 자유패 선택 시 두 패 자동 슬롯 이동 (기본값: false / 꺼짐)
+            // [옵션 기능] 뒤집힌 패 뒤집고 같은 일반 자유패 선택 시 두 패 자동 슬롯 이동 (기본값: false / 꺼짐)
             if (this.autoBlindPairMatch) {
-              // [슬롯 공간 검증] 두 패가 슬롯으로 이동하려면 최소 2자리의 빈 슬롯이 필요!
               const activeTrayTiles = this.trayTiles.filter(t => !t.isMatching);
               const freeSlots = this.maxSlots - activeTrayTiles.length;
               if (freeSlots < 2) {
@@ -6791,18 +6819,11 @@
                   tile.el.classList.add('wiggle');
                   setTimeout(() => { if (tile.el) tile.el.classList.remove('wiggle'); }, 300);
                 }
-                return; // 슬롯이 모자라므로 보드에서 패를 없애지 않고 중단!
+                return;
               }
 
               this.logTouch(`[블라인드 짝 일치] '${tile.def.label}' 매칭 성공!`);
-              // 새로 클릭한 타일도 뒤집힌 상태라면 앞면 공개 연출
-              if (tile.isCovered && !tile.isRevealed) {
-                tile.isRevealed = true;
-                if (tile.el) tile.el.classList.add('face-down', 'revealed');
-                this.sound.playFlip();
-              }
-
-              // 두 타일을 보드에서 제거 (2단계 GPU 해제)
+              // 두 타일을 보드에서 제거
               prevRevealed.removed = true;
               if (prevRevealed.el) {
                 this.hideTileEl(prevRevealed.el);
@@ -6817,7 +6838,6 @@
 
               this.updateTileStates();
 
-              // 두 타일을 슬롯으로 차례대로 자동 이동시켜 즉시 매치 제거!
               const item1 = {
                 tile: prevRevealed,
                 def: prevRevealed.def,
@@ -6837,45 +6857,23 @@
               this.sound.playSelect();
               this.renderTray();
 
-              // 슬롯 내 2개 짝(매칭) 즉시 판정 및 소멸
-              this.blindMismatchCount = 0; // 매치 성공 시 실패 카운트 리셋
+              this.blindMismatchCount = 0;
               this.checkTrayMatch(item2);
               return;
             } else {
-              // 옵션 꺼짐(기본값): 두 타일 동시 자동 이동을 하지 않고, 현재 선택한 tile만 단독 슬롯 이동 진행
-              // prevRevealed는 일치하는 짝이 선택되었으므로 닫히지 않고 앞면 공개 상태를 유지!
+              // 옵션 꺼짐(기본값): 단독 슬롯 이동 진행
               this.blindMismatchCount = 0;
             }
           } else {
-            // 다른 뒤집힌 패든 일반 자유 패든, 모양이 다르면 기존에 열려있던 블라인드 패는 다시 뒤집어 숨김!
+            // 다른 종류의 패를 클릭한 경우 기존 열려있던 패 닫기
             this.logTouch(`[블라인드 불일치] '${prevRevealed.def.label}' 닫힘 (${this.blindMismatchCount + 1}/3)`);
             this.flipTileBack(prevRevealed);
-
-            // 뒤집힌 패 3회 연속 매칭 실패 시 하트 1개 소진
             this.blindMismatchCount++;
             if (this.blindMismatchCount >= 3) {
               this.blindMismatchCount = 0;
               this.loseLife();
             }
           }
-        }
-
-        // 2) 뒤집힌 타일인 경우: 1회 클릭 시 먼저 보드에서 뒤집혀 앞면 공개 후 대기
-        if (tile.isCovered && !tile.isRevealed) {
-          this.logTouch(`[블라인드 오픈] '${tile.def.label}' 앞면 공개`);
-          this.tiles.forEach(t => {
-            if (t !== tile && t.isCovered && t.isRevealed && !t.removed) {
-              this.flipTileBack(t);
-            }
-          });
-
-          this.sound.playFlip();
-          tile.isRevealed = true;
-          if (tile.el) {
-            tile.el.classList.add('face-down', 'revealed');
-          }
-          this.updateTileStates();
-          return;
         }
 
         // 3) 일반 자유 패(또는 이미 공개된 블라인드 패의 재클릭): 슬롯(트레이)으로 이동
