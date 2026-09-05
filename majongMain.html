@@ -4343,6 +4343,27 @@
         if (prevRevealed) {
           // 클릭한 타일과 공개된 타일이 동일한 종류인 경우: 짝 매칭 즉시 성립!
           if (tile.def.id === prevRevealed.def.id) {
+            // [슬롯 공간 검증] 두 패가 슬롯으로 이동하려면 최소 2자리의 빈 슬롯이 필요!
+            const activeTrayTiles = this.trayTiles.filter(t => !t.isMatching);
+            const freeSlots = this.maxSlots - activeTrayTiles.length;
+            if (freeSlots < 2) {
+              this.logTouch(`[슬롯 부족] 짝 매칭 슬롯 공간 부족 (${freeSlots}/2자리 필요) - 패 유지`, 'warn');
+              if (this.sound && this.sound.playMiss) this.sound.playMiss();
+              const trayEl = document.getElementById('tray-container');
+              if (trayEl) {
+                trayEl.classList.remove('danger');
+                void trayEl.offsetWidth;
+                trayEl.classList.add('danger');
+              }
+              if (tile.el) {
+                tile.el.classList.remove('wiggle');
+                void tile.el.offsetWidth;
+                tile.el.classList.add('wiggle');
+                setTimeout(() => { if (tile.el) tile.el.classList.remove('wiggle'); }, 300);
+              }
+              return; // 슬롯이 모자라므로 보드에서 패를 없애지 않고 중단!
+            }
+
             this.logTouch(`[블라인드 짝 일치] '${tile.def.label}' 매칭 성공!`);
             // 새로 클릭한 타일도 뒤집힌 상태라면 앞면 공개 연출
             if (tile.isCovered && !tile.isRevealed) {
