@@ -6090,8 +6090,8 @@
         // 1유닛 = 33px(가로), 43px(세로). 타일 크기는 2x2 유닛 차지 (66px×88px).
         const cols = (maxX - minX) + 2;
         const rows = (maxY - minY) + 2;
-        const padX = 24;
-        const padY = 24;
+        const padX = 6;
+        const padY = 12;
         this.currentLayoutWidth = cols * 33 + padX * 2;
         this.currentLayoutHeight = rows * 43 + padY * 2;
         this.currentLayoutBounds = { minX, maxX, minY, maxY, maxZ, padX, padY };
@@ -7668,18 +7668,18 @@
         const isPortrait = vw < vh;
 
         if (isMobile && isPortrait) {
-          // [모바일 세로 모드]: 좌우 여백 넉넉히 확보 및 상단 임시보관함 침범 방지 여백 정밀 계산
-          const marginX = 20; // 기존 8px에서 좌우 각 10px 이상의 여유 버퍼 확보
+          // [모바일 세로 모드]: 좌우 여백을 극소화(좌우 각 3px 수준)하여 타일 크기 최대화
+          const marginX = 6;
           // 상단 임시보관함 크기(trayH) 및 하단 독과의 간섭을 막는 안전 여백
-          const traySafety = Math.max(16, Math.min(36, trayH * 0.35));
-          const marginY = 28 + traySafety;
+          const traySafety = Math.max(12, Math.min(32, trayH * 0.3));
+          const marginY = 22 + traySafety;
 
           const scaleX = (vw - marginX) / effectiveW;
           const scaleY = (vh - marginY) / effectiveH;
 
-          // 세로가 상단 임시보관함이나 하단 독을 절대 넘치지 않도록 하고, 좌우 1~2px 잘림 방지 0.96 안전 계수 적용
-          const optimalScale = Math.min(scaleX, scaleY) * 0.96;
-          this.baseScale = Math.min(1.75, Math.max(0.48, optimalScale));
+          // 세로가 상단 임시보관함이나 하단 독을 넘치지 않으면서 타일 크기 최대화
+          const optimalScale = Math.min(scaleX, scaleY) * 0.99;
+          this.baseScale = Math.min(3.5, Math.max(0.48, optimalScale));
 
           // 남은 타일 뭉치가 정중앙에 오도록 X, Y 동시 오토 센터링 적용
           if (this.zoomLevel === 1.0) {
@@ -7687,16 +7687,16 @@
             this.panY = offsetCenterY * this.baseScale;
           }
         } else {
-          // [데스크톱 및 가로 모드]: 좌우 여백 확보 및 상단 임시보관함과의 안전 버퍼 포함 쾌적한 피팅
-          const marginX = isMobile ? 24 : 40; // 좌우 테두리 잘림 완전 방지 (기존 12/24 -> 24/40)
-          const traySafety = Math.max(18, Math.min(40, trayH * 0.3));
-          const marginY = (isMobile ? 22 : 32) + traySafety;
+          // [데스크톱 및 가로 모드]: 최좌측/최우측 타일과 화면 경계와의 간격을 거의 없앰 (좌우 각 3~4px)
+          const marginX = 6;
+          const traySafety = Math.max(14, Math.min(32, trayH * 0.25));
+          const marginY = (isMobile ? 18 : 24) + traySafety;
 
           const scaleX = (vw - marginX) / effectiveW;
           const scaleY = (vh - marginY) / effectiveH;
 
-          const optimalScale = Math.min(scaleX, scaleY) * 0.94; // 0.96 -> 0.94로 살짝 여유 간격 부여
-          this.baseScale = Math.min(1.75, Math.max(0.52, optimalScale));
+          const optimalScale = Math.min(scaleX, scaleY) * 0.99;
+          this.baseScale = Math.min(3.5, Math.max(0.52, optimalScale));
 
           if (this.zoomLevel === 1.0) {
             this.panX = offsetCenterX * this.baseScale;
