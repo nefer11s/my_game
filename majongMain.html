@@ -1797,8 +1797,501 @@
       opacity: 1;
     }
 
+    /* ========================================================
+       전체 타일 도감(일람표) & 전체화면 라이트박스 뷰어 스타일
+       ======================================================== */
+    .gallery-modal-card {
+      max-width: 860px;
+      width: 94%;
+      max-height: 88vh;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+
+    .gallery-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      border-bottom: 1.5px solid #e1eee6;
+      padding-bottom: 10px;
+      flex-shrink: 0;
+    }
+
+    .gallery-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .gallery-count-badge {
+      background: #e8f5ee;
+      color: #20875c;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 10px;
+      border: 1px solid #c8e6d5;
+    }
+
+    .gallery-close-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: #eef4f0;
+      color: #557967;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .gallery-close-btn:hover {
+      background: #e1ede5;
+      color: #1a4f3b;
+      transform: scale(1.08);
+    }
+
+    /* 카테고리 퀵 탭 */
+    .gallery-filter-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #edf4f0;
+      flex-shrink: 0;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .gallery-filter-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .gallery-tab {
+      padding: 5px 12px;
+      border-radius: 14px;
+      background: #f0f7f3;
+      color: #4b715e;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid #d8eadd;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.18s ease;
+      flex-shrink: 0;
+    }
+
+    .gallery-tab:hover {
+      background: #e1f0e7;
+      color: #1a4f3b;
+    }
+
+    .gallery-tab.active {
+      background: linear-gradient(135deg, #2ea779, #20875c);
+      color: #ffffff;
+      border-color: #20875c;
+      box-shadow: 0 2px 8px rgba(32, 135, 92, 0.28);
+    }
+
+    /* 도감 본문 스크롤 영역 */
+    .gallery-body {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .gallery-section {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 12px 14px;
+      border: 1px solid #e3ede6;
+      box-shadow: 0 2px 6px rgba(20, 60, 40, 0.03);
+    }
+
+    .gallery-section-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #1b4b37;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .gallery-section-title::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 14px;
+      background: #2ea779;
+      border-radius: 2px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+      gap: 10px;
+      align-items: start;
+    }
+
+    .gallery-tile-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      padding: 6px 4px 4px;
+      border-radius: 10px;
+      background: #fbfdfc;
+      border: 1px solid transparent;
+      transition: all 0.18s cubic-bezier(0.2, 0.8, 0.3, 1);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .gallery-tile-item:hover {
+      background: #f0f8f4;
+      border-color: #cde4d6;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(25, 75, 50, 0.08);
+    }
+
+    .gallery-tile-item:active {
+      transform: scale(0.96);
+    }
+
+    .gallery-tile-item .tile {
+      position: relative !important;
+      transform: none !important;
+      animation: none !important;
+      pointer-events: none !important;
+      margin: 0 auto;
+    }
+
+    .gallery-tile-caption {
+      font-size: 11px;
+      font-weight: 700;
+      color: #2b5743;
+      margin-top: 6px;
+      text-align: center;
+      line-height: 1.2;
+      max-width: 66px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ----------------------------------------------------
+       전체화면 타일 라이트박스 뷰어 (Fullscreen Lightbox)
+       ---------------------------------------------------- */
+    .tile-lightbox-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .tile-lightbox-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .lightbox-backdrop {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 45%, rgba(10, 36, 25, 0.94) 0%, rgba(4, 15, 10, 0.98) 100%);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      cursor: pointer;
+    }
+
+    .lightbox-container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 20px 28px;
+      cursor: pointer;
+      /* 화면 터치/클릭 시 도감 복귀 */
+    }
+
+    .lightbox-top-bar {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      pointer-events: auto;
+      flex-shrink: 0;
+    }
+
+    .lightbox-badge-info {
+      background: rgba(46, 167, 121, 0.22);
+      border: 1px solid rgba(46, 167, 121, 0.45);
+      color: #7de8b8;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 5px 14px;
+      border-radius: 16px;
+      letter-spacing: 0.5px;
+    }
+
+    .lightbox-hint {
+      color: #9cd4ba;
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0.85;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+      animation: touchGuideBlink 1.5s infinite alternate ease-in-out;
+    }
+
+    .lightbox-close-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .lightbox-close-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.1);
+    }
+
+    .lightbox-stage {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(16px, 5vw, 48px);
+      width: 100%;
+      max-width: 760px;
+      flex: 1;
+      min-height: 0;
+      position: relative;
+    }
+
+    .lightbox-nav-btn {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      font-size: 36px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.3, 1);
+      flex-shrink: 0;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      pointer-events: auto;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .lightbox-nav-btn:hover {
+      background: rgba(46, 167, 121, 0.6);
+      border-color: #5ce6aa;
+      transform: scale(1.12);
+      box-shadow: 0 6px 20px rgba(46, 167, 121, 0.5);
+    }
+
+    .lightbox-nav-btn:active {
+      transform: scale(0.92);
+    }
+
+    .lightbox-tile-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1000px;
+    }
+
+    /* 초대형 프리미엄 3D 마작 타일 */
+    .lightbox-tile {
+      width: 210px !important;
+      height: 280px !important;
+      border-radius: 24px !important;
+      box-shadow:
+        inset 2px 2px 3px rgba(255, 255, 255, 0.95),
+        inset -2px -2px 4px rgba(180, 160, 135, 0.25),
+        2px 2px 0 #ede5d4,
+        4px 4px 0 #dfd5bf,
+        6px 6px 0 #cfc2a8,
+        8px 8px 0 #287756,
+        10px 10px 0 #206346,
+        12px 12px 0 #195239,
+        14px 14px 0 #123e2b,
+        16px 16px 0 #0d2c1e,
+        14px 22px 40px rgba(0, 0, 0, 0.65) !important;
+      transform: none !important;
+      position: relative !important;
+      animation: lightboxTilePop 0.28s cubic-bezier(0.18, 0.89, 0.32, 1.25) !important;
+    }
+
+    @keyframes lightboxTilePop {
+      0% {
+        transform: scale(0.85);
+        opacity: 0.6;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .lightbox-tile .tile-inner {
+      border-radius: 24px !important;
+    }
+
+    .lightbox-tile .tile-front {
+      border-radius: 20px !important;
+      padding: 12px !important;
+    }
+
+    .lightbox-tile .tile-corner-badge {
+      font-size: 26px !important;
+      top: 10px !important;
+      left: 12px !important;
+    }
+
+    .lightbox-tile .tile-sub-label {
+      font-size: 19px !important;
+      bottom: 10px !important;
+      right: 12px !important;
+      letter-spacing: 1px !important;
+    }
+
+    .lightbox-tile.saju-tile .tile-corner-badge,
+    .lightbox-tile.saju-tile .tile-sub-label {
+      display: none !important;
+    }
+
+    /* 하단 설명 정보 바 */
+    .lightbox-bottom-info {
+      width: 100%;
+      max-width: 520px;
+      background: rgba(18, 54, 38, 0.85);
+      border: 1px solid rgba(80, 190, 145, 0.35);
+      border-radius: 18px;
+      padding: 12px 20px;
+      text-align: center;
+      pointer-events: auto;
+      flex-shrink: 0;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .lightbox-tile-title {
+      font-size: 19px;
+      font-weight: 900;
+      color: #ffd700;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+    }
+
+    .lightbox-tile-desc {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #d1eee0;
+      line-height: 1.4;
+    }
+
     /* 모바일 반응형 최적화 (보드 영역 극대화 및 터치 조작 최적화) */
     @media (max-width: 680px) {
+      .gallery-modal-card {
+        padding: 14px 12px;
+        max-height: 90vh;
+      }
+
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+        gap: 6px;
+      }
+
+      .lightbox-tile {
+        width: 170px !important;
+        height: 230px !important;
+        border-radius: 18px !important;
+        box-shadow:
+          inset 1.5px 1.5px 2px rgba(255, 255, 255, 0.95),
+          inset -1.5px -1.5px 3px rgba(180, 160, 135, 0.25),
+          2px 2px 0 #ede5d4,
+          3px 3px 0 #dfd5bf,
+          4px 4px 0 #cfc2a8,
+          6px 6px 0 #287756,
+          8px 8px 0 #206346,
+          10px 10px 0 #195239,
+          12px 12px 0 #123e2b,
+          10px 16px 30px rgba(0, 0, 0, 0.6) !important;
+      }
+
+      .lightbox-tile .tile-corner-badge {
+        font-size: 21px !important;
+        top: 8px !important;
+        left: 9px !important;
+      }
+
+      .lightbox-tile .tile-sub-label {
+        font-size: 15px !important;
+        bottom: 8px !important;
+        right: 9px !important;
+      }
+
+      .lightbox-nav-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 28px;
+      }
+
+      .lightbox-stage {
+        gap: 12px;
+      }
+
+      .lightbox-bottom-info {
+        padding: 10px 14px;
+      }
+
+      .lightbox-tile-title {
+        font-size: 17px;
+      }
+
+      .lightbox-tile-desc {
+        font-size: 12px;
+      }
+
       body {
         padding: 4px 6px 3px;
       }
@@ -2050,6 +2543,9 @@
           <button class="btn settings-btn" id="btn-rank-header" title="명예의 전당">
             <span class="btn-icon">🏆</span> 명예의 전당 (랭킹)
           </button>
+          <button class="btn settings-btn" id="btn-tile-gallery" title="전체 타일 도감">
+            <span class="btn-icon">🀄</span> 전체 타일 도감
+          </button>
           <button class="btn settings-btn" id="btn-sound-toggle" title="효과음 켜기/끄기">
             <span class="btn-icon" id="sound-toggle-icon">🔊</span> <span id="sound-toggle-text">소리 켜짐</span>
           </button>
@@ -2220,6 +2716,43 @@
       </div>
 
       <button class="modal-btn" id="go-restart-btn">다시 시작하기</button>
+    </div>
+  </div>
+
+  <!-- 전체 타일 도감 모달 (89종 일람표) -->
+  <div class="modal-overlay" id="tile-gallery-modal">
+    <div class="modal-card gallery-modal-card">
+      <div class="gallery-header">
+        <div class="gallery-title-wrap">
+          <span style="font-size: 24px;">🀄</span>
+          <h2 class="modal-title" style="margin-bottom: 0; font-size: 20px;">전체 타일 도감</h2>
+          <span class="gallery-count-badge" id="gallery-count-badge">89종</span>
+        </div>
+        <button class="gallery-close-btn" id="btn-gallery-close" title="닫기">✕</button>
+      </div>
+      <div class="gallery-filter-bar" id="gallery-filter-bar"></div>
+      <div class="gallery-body" id="gallery-body"></div>
+    </div>
+  </div>
+
+  <!-- 전체화면 타일 라이트박스 뷰어 -->
+  <div class="tile-lightbox-modal" id="tile-lightbox-modal">
+    <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
+    <div class="lightbox-container" id="lightbox-container">
+      <div class="lightbox-top-bar">
+        <div class="lightbox-badge-info" id="lightbox-badge-info">전체 89종</div>
+        <div class="lightbox-hint">화면을 터치하면 도감 표로 돌아갑니다</div>
+        <button class="lightbox-close-btn" id="btn-lightbox-close" title="도감으로 돌아가기">✕</button>
+      </div>
+      <div class="lightbox-stage" id="lightbox-stage">
+        <button class="lightbox-nav-btn lightbox-prev" id="btn-lightbox-prev" title="이전 타일 (◀)">‹</button>
+        <div class="lightbox-tile-wrap" id="lightbox-tile-wrap"></div>
+        <button class="lightbox-nav-btn lightbox-next" id="btn-lightbox-next" title="다음 타일 (▶)">›</button>
+      </div>
+      <div class="lightbox-bottom-info" id="lightbox-bottom-info">
+        <div class="lightbox-tile-title" id="lightbox-tile-title">타일 이름</div>
+        <div class="lightbox-tile-desc" id="lightbox-tile-desc">타일 설명</div>
+      </div>
     </div>
   </div>
 
@@ -3348,6 +3881,448 @@
     ];
 
     /**
+     * ========================================================
+     * 전체 타일 도감(일람표) & 전체화면 라이트박스 뷰어 관리자
+     * ========================================================
+     */
+    const TILE_CATEGORY_GROUPS = [
+      { id: 'all', name: '전체 (89)' },
+      { id: 'wan', name: '만수 (9)' },
+      { id: 'tong', name: '통수 (9)' },
+      { id: 'tiao', name: '삭수 (9)' },
+      { id: 'honor', name: '자패 (7)' },
+      { id: 'flower', name: '화패·계절 (8)' },
+      { id: 'arts_myth', name: '4예·신수 (8)' },
+      { id: 'gan', name: '10천간 (10)' },
+      { id: 'zhi', name: '12지지 (12)' },
+      { id: 'shin', name: '10십신 (10)' },
+      { id: 'yinyang_wuxing', name: '음양·오행 (7)' }
+    ];
+
+    const TILE_SECTIONS = [
+      { id: 'sec_wan', title: '萬 1~9만 수패 (만수 9종)', suits: ['wan'] },
+      { id: 'sec_tong', title: '筒 1~9통 수패 (통수 9종)', suits: ['tong'] },
+      { id: 'sec_tiao', title: '索 1~9삭 수패 (삭수 9종)', suits: ['tiao'] },
+      { id: 'sec_honor', title: '風/元 바람패 & 삼원패 (자패 7종)', suits: ['wind', 'honor'] },
+      { id: 'sec_flower', title: '花/季 화패 & 사계절패 (8종)', suits: ['flower'] },
+      { id: 'sec_arts_myth', title: '藝/神 4예패 & 사신수패 (8종)', suits: ['arts', 'myth'] },
+      { id: 'sec_gan', title: '天干 사주 10천간 (자연 오행 정령 10종)', suits: ['gan'] },
+      { id: 'sec_zhi', title: '地支 사주 12지지 (12간지 수호동물 12종)', suits: ['zhi'] },
+      { id: 'sec_shin', title: '十神 사주 10십신 (운명의 페르소나 10종)', suits: ['shin'] },
+      { id: 'sec_yinyang_wuxing', title: '陰陽·五行 사주 음양 & 오행 수호신 (7종)', suits: ['yinyang', 'wuxing'] }
+    ];
+
+    function getTileDetailInfo(def, index) {
+      const total = TILE_DEFINITIONS.length;
+      let cat = '마작패';
+      let title = def.label;
+      let desc = '';
+
+      switch (def.suit) {
+        case 'wan':
+          cat = '만수패 (萬子)';
+          title = `${def.val}萬 (${def.label})`;
+          desc = `만수 수패 · 숫자 ${def.val}을 나타내는 전통 붉은 한자 패`;
+          break;
+        case 'tong':
+          cat = '통수패 (筒子)';
+          title = `${def.val}筒 (통수)`;
+          desc = `통수 수패 · 동전/원형 문양 ${def.val}개로 구성된 청홍록 수패`;
+          break;
+        case 'tiao':
+          cat = '삭수패 (索子)';
+          title = `${def.val}索 (삭수)`;
+          desc = def.val === 1 ? '1삭 수패 · 길조와 행운을 부르는 비취빛 공작새' : `삭수 수패 · 대나무 마디 ${def.val}개로 구성된 패`;
+          break;
+        case 'wind':
+          cat = '바람패 (風牌)';
+          title = `${def.label} (풍패)`;
+          desc = `4방위 자패 · 동서남북 중 ${def.label} 방위를 상징하는 자패`;
+          break;
+        case 'honor':
+          cat = '삼원패 (三元牌)';
+          title = `${def.label} (삼원)`;
+          desc = def.val === 'chun' ? '삼원패 · 붉은 중(中), 길상과 태양의 기운 상징' :
+            def.val === 'fa' ? '삼원패 · 푸른 발(發), 큰 재물과 번영 상징' : '삼원패 · 순백의 백(白), 순수와 청정 상징';
+          break;
+        case 'flower':
+          cat = '화패 & 계절패 (花牌)';
+          title = `${def.label} (화패)`;
+          desc = ['매화', '난초', '대나무', '국화'].some(k => def.label.includes(k.substring(0, 1))) ?
+            `사군자 길조패 · 고결한 군자의 기상을 담은 ${def.label}` : `사계절 길조패 · 자연의 순환을 담은 계절패 ${def.label}`;
+          break;
+        case 'arts':
+          cat = '4예패 (四藝牌)';
+          title = `${def.label} (사예)`;
+          desc = `선비의 4대 풍류 예술 · ${def.label}`;
+          break;
+        case 'myth':
+          cat = '사신수패 (四神獸牌)';
+          title = `${def.label} (신수)`;
+          desc = `동서남북 4대 방위 수호신수 · ${def.label}`;
+          break;
+        case 'gan':
+          cat = '사주 10천간 (天干)';
+          title = `${def.label} (천간)`;
+          desc = `사주 명리학 10대 천간 · 자연 오행 정령 캐릭터 (${def.label})`;
+          break;
+        case 'zhi':
+          cat = '사주 12지지 (地支)';
+          title = `${def.label} (지지)`;
+          desc = `사주 명리학 12간지 동물 수호대 캐릭터 (${def.label})`;
+          break;
+        case 'shin':
+          cat = '사주 10십신 (十神)';
+          title = `${def.label} (십신)`;
+          desc = `사주 명리학 운명의 10대 페르소나 아바타 (${def.label})`;
+          break;
+        case 'yinyang':
+          cat = '사주 음양 (陰陽)';
+          title = `${def.label} (음양)`;
+          desc = def.val === 'yang' ? '천지의 으뜸 기운 · 태양(太陽) 일광 삼족오' : '천지의 으뜸 기운 · 태음(太陰) 월광 백여우';
+          break;
+        case 'wuxing':
+          cat = '사주 오행 (五行)';
+          title = `${def.label} (오행)`;
+          desc = `우주 만물을 구성하는 5대 원소 신수 마스코트 (${def.label})`;
+          break;
+      }
+
+      return {
+        badgeText: `${cat} · ${index + 1} / ${total}`,
+        title,
+        desc
+      };
+    }
+
+    class TileGalleryManager {
+      constructor(sound) {
+        this.sound = sound;
+        this.galleryModal = document.getElementById('tile-gallery-modal');
+        this.lightboxModal = document.getElementById('tile-lightbox-modal');
+        this.galleryBody = document.getElementById('gallery-body');
+        this.filterBar = document.getElementById('gallery-filter-bar');
+        this.lightboxTileWrap = document.getElementById('lightbox-tile-wrap');
+        this.lightboxBadge = document.getElementById('lightbox-badge-info');
+        this.lightboxTitle = document.getElementById('lightbox-tile-title');
+        this.lightboxDesc = document.getElementById('lightbox-tile-desc');
+        this.btnPrev = document.getElementById('btn-lightbox-prev');
+        this.btnNext = document.getElementById('btn-lightbox-next');
+        this.btnCloseGallery = document.getElementById('btn-gallery-close');
+        this.btnCloseLightbox = document.getElementById('btn-lightbox-close');
+
+        this.currentIndex = 0;
+        this.currentFilter = 'all';
+        this.isBuilt = false;
+
+        this.touchStartX = 0;
+        this.touchStartY = 0;
+        this.touchStartTime = 0;
+
+        this.init();
+      }
+
+      init() {
+        // 도감 모달 닫기 버튼
+        if (this.btnCloseGallery) {
+          this.btnCloseGallery.addEventListener('click', () => {
+            if (this.sound) this.sound.playSelect();
+            this.closeGallery();
+          });
+        }
+
+        // 도감 모달 배경 클릭 시 닫기
+        if (this.galleryModal) {
+          this.galleryModal.addEventListener('click', (e) => {
+            if (e.target === this.galleryModal) {
+              if (this.sound) this.sound.playSelect();
+              this.closeGallery();
+            }
+          });
+        }
+
+        // 라이트박스 닫기 버튼
+        if (this.btnCloseLightbox) {
+          this.btnCloseLightbox.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (this.sound) this.sound.playSelect();
+            this.closeLightbox();
+          });
+        }
+
+        // 이전/다음 네비게이션 버튼
+        if (this.btnPrev) {
+          this.btnPrev.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (this.sound) this.sound.playSelect();
+            this.prevTile();
+          });
+        }
+
+        if (this.btnNext) {
+          this.btnNext.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (this.sound) this.sound.playSelect();
+            this.nextTile();
+          });
+        }
+
+        // 라이트박스 전체 화면 터치/클릭 시 도감 표로 복귀
+        // (좌/우 화살표 버튼 클릭 제외)
+        if (this.lightboxModal) {
+          this.lightboxModal.addEventListener('click', (e) => {
+            if (e.target.closest('#btn-lightbox-prev') || e.target.closest('#btn-lightbox-next')) {
+              return;
+            }
+            if (this.sound) this.sound.playSelect();
+            this.closeLightbox();
+          });
+
+          // 모바일 터치 스와이프 (좌우 슬라이드 탐색) 및 탭 터치 시 도감 표 복귀
+          let isTouchSwipe = false;
+
+          this.lightboxModal.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+              this.touchStartX = e.touches[0].clientX;
+              this.touchStartY = e.touches[0].clientY;
+              this.touchStartTime = Date.now();
+              isTouchSwipe = false;
+            }
+          }, { passive: true });
+
+          this.lightboxModal.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 1) {
+              const diffX = Math.abs(e.touches[0].clientX - this.touchStartX);
+              const diffY = Math.abs(e.touches[0].clientY - this.touchStartY);
+              if (diffX > 15 || diffY > 15) {
+                isTouchSwipe = true;
+              }
+            }
+          }, { passive: true });
+
+          this.lightboxModal.addEventListener('touchend', (e) => {
+            if (e.target.closest('#btn-lightbox-prev') || e.target.closest('#btn-lightbox-next')) {
+              return;
+            }
+            if (e.changedTouches.length === 1) {
+              const diffX = e.changedTouches[0].clientX - this.touchStartX;
+              const diffY = e.changedTouches[0].clientY - this.touchStartY;
+
+              // 수평 이동 35px 이상 시 스와이프로 타일 이전/다음 이동
+              if (Math.abs(diffX) > 35 && Math.abs(diffX) > Math.abs(diffY)) {
+                if (this.sound) this.sound.playSelect();
+                if (diffX < 0) {
+                  this.nextTile();
+                } else {
+                  this.prevTile();
+                }
+                return;
+              }
+
+              // 제자리 탭 (14px 미만 이동) 시 터치 즉시 도감 표로 복귀
+              if (!isTouchSwipe && Math.abs(diffX) < 14 && Math.abs(diffY) < 14) {
+                if (this.sound) this.sound.playSelect();
+                this.closeLightbox();
+              }
+            }
+          }, { passive: true });
+        }
+
+        // 키보드 네비게이션
+        window.addEventListener('keydown', (e) => {
+          if (!this.lightboxModal || !this.lightboxModal.classList.contains('active')) return;
+          if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            if (this.sound) this.sound.playSelect();
+            this.prevTile();
+          } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            if (this.sound) this.sound.playSelect();
+            this.nextTile();
+          } else if (e.key === 'Escape') {
+            e.preventDefault();
+            if (this.sound) this.sound.playSelect();
+            this.closeLightbox();
+          }
+        });
+      }
+
+      buildGallery() {
+        if (this.isBuilt) return;
+        this.isBuilt = true;
+
+        // 1. 카테고리 필터 탭 생성
+        if (this.filterBar) {
+          this.filterBar.innerHTML = '';
+          TILE_CATEGORY_GROUPS.forEach(cat => {
+            const tab = document.createElement('button');
+            tab.className = `gallery-tab${cat.id === 'all' ? ' active' : ''}`;
+            tab.dataset.catId = cat.id;
+            tab.textContent = cat.name;
+            tab.addEventListener('click', () => {
+              if (this.sound) this.sound.playSelect();
+              this.applyFilter(cat.id);
+            });
+            this.filterBar.appendChild(tab);
+          });
+        }
+
+        // 2. 섹션별 그리드 및 타일 카드 생성
+        if (this.galleryBody) {
+          this.galleryBody.innerHTML = '';
+          TILE_SECTIONS.forEach(sec => {
+            const sectionEl = document.createElement('div');
+            sectionEl.className = 'gallery-section';
+            sectionEl.id = sec.id;
+            sectionEl.dataset.suits = sec.suits.join(',');
+
+            const titleEl = document.createElement('div');
+            titleEl.className = 'gallery-section-title';
+            titleEl.textContent = sec.title;
+            sectionEl.appendChild(titleEl);
+
+            const gridEl = document.createElement('div');
+            gridEl.className = 'gallery-grid';
+
+            const secTiles = TILE_DEFINITIONS.filter(t => sec.suits.includes(t.suit));
+            secTiles.forEach(def => {
+              const index = TILE_DEFINITIONS.indexOf(def);
+              const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'].includes(def.suit);
+
+              const card = document.createElement('div');
+              card.className = 'gallery-tile-item';
+              card.dataset.tileIndex = index;
+              card.title = `${def.label} (터치하여 전체화면 확대)`;
+
+              card.innerHTML = `
+                <div class="tile${isSaju ? ' saju-tile' : ''}">
+                  <div class="tile-inner">
+                    <div class="tile-front">
+                      <span class="tile-corner-badge">${def.badge}</span>
+                      <div class="tile-graphic-wrap">
+                        ${def.render()}
+                      </div>
+                      <span class="tile-sub-label">${def.label}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="gallery-tile-caption">${def.label}</div>
+              `;
+
+              card.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (this.sound) this.sound.playSelect();
+                this.openLightbox(index);
+              });
+
+              gridEl.appendChild(card);
+            });
+
+            sectionEl.appendChild(gridEl);
+            this.galleryBody.appendChild(sectionEl);
+          });
+        }
+      }
+
+      applyFilter(catId) {
+        this.currentFilter = catId;
+        const tabs = this.filterBar.querySelectorAll('.gallery-tab');
+        tabs.forEach(t => t.classList.toggle('active', t.dataset.catId === catId));
+
+        const sections = this.galleryBody.querySelectorAll('.gallery-section');
+        if (catId === 'all') {
+          sections.forEach(s => s.style.display = 'block');
+          return;
+        }
+
+        sections.forEach(sec => {
+          const suits = sec.dataset.suits.split(',');
+          const hasMatch = suits.some(s => {
+            if (catId === 'honor') return s === 'wind' || s === 'honor';
+            if (catId === 'arts_myth') return s === 'arts' || s === 'myth';
+            if (catId === 'yinyang_wuxing') return s === 'yinyang' || s === 'wuxing';
+            return s === catId;
+          });
+          sec.style.display = hasMatch ? 'block' : 'none';
+        });
+
+        // 첫 번째 보이는 섹션으로 스크롤
+        const firstVisible = this.galleryBody.querySelector('.gallery-section[style*="display: block"]');
+        if (firstVisible) {
+          firstVisible.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+
+      openGallery() {
+        this.buildGallery();
+        if (this.galleryModal) {
+          this.galleryModal.classList.add('active');
+        }
+      }
+
+      closeGallery() {
+        if (this.galleryModal) {
+          this.galleryModal.classList.remove('active');
+        }
+      }
+
+      openLightbox(index) {
+        if (index < 0 || index >= TILE_DEFINITIONS.length) index = 0;
+        this.currentIndex = index;
+        this.renderLightboxTile();
+        if (this.lightboxModal) {
+          this.lightboxModal.classList.add('active');
+        }
+      }
+
+      closeLightbox() {
+        if (this.lightboxModal) {
+          this.lightboxModal.classList.remove('active');
+        }
+      }
+
+      prevTile() {
+        const total = TILE_DEFINITIONS.length;
+        this.currentIndex = (this.currentIndex - 1 + total) % total;
+        this.renderLightboxTile();
+      }
+
+      nextTile() {
+        const total = TILE_DEFINITIONS.length;
+        this.currentIndex = (this.currentIndex + 1) % total;
+        this.renderLightboxTile();
+      }
+
+      renderLightboxTile() {
+        const def = TILE_DEFINITIONS[this.currentIndex];
+        if (!def) return;
+
+        const info = getTileDetailInfo(def, this.currentIndex);
+        const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'].includes(def.suit);
+
+        if (this.lightboxBadge) this.lightboxBadge.textContent = info.badgeText;
+        if (this.lightboxTitle) this.lightboxTitle.textContent = info.title;
+        if (this.lightboxDesc) this.lightboxDesc.textContent = info.desc;
+
+        if (this.lightboxTileWrap) {
+          this.lightboxTileWrap.innerHTML = `
+            <div class="tile lightbox-tile${isSaju ? ' saju-tile' : ''}">
+              <div class="tile-inner">
+                <div class="tile-front">
+                  <span class="tile-corner-badge">${def.badge}</span>
+                  <div class="tile-graphic-wrap">
+                    ${def.render()}
+                  </div>
+                  <span class="tile-sub-label">${def.label}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      }
+    }
+
+    /**
      * 난이도 설정 (패 종류 수 및 상용급 조합 복잡도 구성)
      */
     const DIFFICULTY_CONFIG = {
@@ -3865,6 +4840,20 @@
             }
             this.renderHallOfFame();
             if (rankModal) rankModal.classList.add('active');
+          });
+        }
+
+        const btnTileGallery = document.getElementById('btn-tile-gallery');
+        if (btnTileGallery) {
+          btnTileGallery.addEventListener('click', () => {
+            this.sound.playSelect();
+            if (settingsDropdown) {
+              settingsDropdown.classList.remove('active');
+              if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
+            }
+            if (window.tileGalleryManager) {
+              window.tileGalleryManager.openGallery();
+            }
           });
         }
 
@@ -5890,7 +6879,8 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      new MahjongGame();
+      const game = new MahjongGame();
+      window.tileGalleryManager = new TileGalleryManager(game.sound);
     });
   </script>
 </body>
