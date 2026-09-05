@@ -720,22 +720,20 @@
       filter: drop-shadow(0.7px 0.8px 0px rgba(255, 255, 255, 0.85)) drop-shadow(-0.5px -0.5px 0.5px rgba(0, 0, 0, 0.22));
     }
 
-    /* 선택 가능 vs 불가 타일 명암/상태 */
+    /* 선택 가능 타일: 포인터 커서 */
     .tile.free {
       cursor: pointer;
     }
 
-    /* 자유 패 터치 영역 확장: 손가락 끝 접촉면 오차 및 틈새 터치를 100% 흡수하는 투명 마진 */
+    /* 자유 패: 인접 패 침범 방지(inset: 0) 및 은은한 개방 테두리 안내 */
     .tile.free::before {
       content: '';
       position: absolute;
-      top: -8px;
-      left: -8px;
-      right: -8px;
-      bottom: -8px;
-      z-index: 10;
-      pointer-events: auto !important;
-      touch-action: none !important;
+      inset: 0;
+      border-radius: var(--tile-radius);
+      box-shadow: inset 0 0 0 1.5px rgba(46, 167, 121, 0.55);
+      z-index: 2;
+      pointer-events: none;
     }
 
     @media (hover: hover) {
@@ -5818,7 +5816,7 @@
       isSlotFree(slot, slotList) {
         const hasCover = slotList.some(other => {
           if (other.slotId === slot.slotId) return false;
-          if (other.z !== slot.z + 1) return false;
+          if (other.z <= slot.z) return false;
           return Math.abs(other.x - slot.x) < 2 && Math.abs(other.y - slot.y) < 2;
         });
         if (hasCover) return false;
@@ -5841,7 +5839,7 @@
         const activeTiles = this.tiles.filter(t => !t.removed && t.id !== tile.id);
 
         const covered = activeTiles.some(other => {
-          if (other.z !== tile.z + 1) return false;
+          if (other.z <= tile.z) return false;
           return Math.abs(other.x - tile.x) < 2 && Math.abs(other.y - tile.y) < 2;
         });
         if (covered) return false;
@@ -5898,6 +5896,10 @@
           const finalY = posY - tile.z * (zStep * 1.35);
           const finalZ = tile.z * 18;
 
+          tile.finalX = finalX;
+          tile.finalY = finalY;
+          tile.finalZ = finalZ;
+
           el.style.setProperty('--tx', `${finalX}px`);
           el.style.setProperty('--ty', `${finalY}px`);
           el.style.setProperty('--tz', `${finalZ}px`);
@@ -5926,7 +5928,7 @@
             </div>
           `;
 
-          // [모바일 고감도 터치 엔진] 브라우저 포인터 스트림 교란 제거 및 초정밀 탭 판정
+          // [모바일/S펜 초정밀 터치 엔진] 브라우저 3D 히트테스팅 오차 및 잠긴 패 가로챔 완벽 구제
           let pDownX = 0, pDownY = 0, pDownTime = 0;
           let isHandled = false;
 
@@ -5934,7 +5936,17 @@
             if (isHandled) return;
             isHandled = true;
             if (e && e.cancelable) e.preventDefault();
-            this.handleTileClick(tile);
+
+            let targetTile = tile;
+            // 터치 좌표(e.clientX, e.clientY) 기준 최적의 자유 패 정밀 기하학 탐색 (우하단 겹침/잠긴 패 가로챔 100% 구제)
+            if (e && e.clientX !== undefined && e.clientY !== undefined) {
+              const freeCandidate = this.findBestFreeTileAtPoint(e.clientX, e.clientY);
+              if (freeCandidate) {
+                targetTile = freeCandidate;
+              }
+            }
+
+            this.handleTileClick(targetTile);
             // 더블 터치 방지용 140ms 후 플래그 해제 (신속한 연타 보장)
             setTimeout(() => { isHandled = false; }, 140);
           };
@@ -6108,6 +6120,14 @@
             // 자유 패는 층수와 무관하게 모든 잠긴 패(최대 ~400)를 압도하는 절대 우선권(1000+) 부여
             const baseZ = tile.z * 100 + tile.y * 10 + tile.x;
             tile.el.style.zIndex = free ? (baseZ + 1000) : baseZ;
+
+            // 3D 공간(preserve-3d)에서 자유 패를 물리적으로 앞으로 돌출시켜 브라우저/S펜 히트테스팅 최우선 보장
+            if (tile.finalX !== undefined && tile.finalY !== undefined && tile.finalZ !== undefined) {
+              const extraZ = free ? 80 : 0;
+              const curZ = tile.finalZ + extraZ;
+              tile.el.style.setProperty('--tz', `${curZ}px`);
+              tile.el.style.transform = `translate3d(${tile.finalX}px, ${tile.finalY}px, ${curZ}px)`;
+            }
           }
         });
 
@@ -6175,6 +6195,33 @@
         el.style.visibility = 'visible';
         el.style.pointerEvents = '';
         el.style.willChange = '';
+      }
+
+      /**
+       * 화면 절대 좌표(clientX, clientY) 기반 최적의 자유 패 기하학적 정밀 탐색
+       * 3D 단차나 인접 타일(우하단) 겹침으로 포인터가 가로채졌을 때 100% 자유 패 우선권 라우팅
+       */
+      findBestFreeTileAtPoint(clientX, clientY) {
+        if (clientX === undefined || clientY === undefined) return null;
+        const activeFreeTiles = this.tiles.filter(t => !t.removed && this.isTileFree(t) && t.el);
+        let bestTile = null;
+        let bestDist = Infinity;
+
+        for (const t of activeFreeTiles) {
+          const rect = t.el.getBoundingClientRect();
+          // 타일의 바운딩 박스(사주/마작패 실제 렌더링 영역)에 마우스/S펜이 닿아 있는지 검사 (여유 마진 6px)
+          if (clientX >= rect.left - 6 && clientX <= rect.right + 6 &&
+              clientY >= rect.top - 6 && clientY <= rect.bottom + 6) {
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            const dist = Math.hypot(clientX - cx, clientY - cy);
+            if (dist < bestDist) {
+              bestDist = dist;
+              bestTile = t;
+            }
+          }
+        }
+        return bestTile;
       }
 
       /**
