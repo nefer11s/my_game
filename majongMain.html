@@ -4271,6 +4271,34 @@
       }
 
       /**
+       * 타일 DOM 숨김 (2단계: 즉시 시각 숨김 → 다음 프레임 GPU 레이어 해제)
+       * pointer-events:none + visibility:hidden 으로 포인터 시퀀스 단절 방지 후,
+       * rAF에서 display:none + will-change:auto로 GPU 메모리 즉시 해제
+       */
+      hideTileEl(el) {
+        if (!el) return;
+        el.style.pointerEvents = 'none';
+        el.style.visibility = 'hidden';
+        requestAnimationFrame(() => {
+          if (el) {
+            el.style.display = 'none';
+            el.style.willChange = 'auto';
+          }
+        });
+      }
+
+      /**
+       * 타일 DOM 복원 (숨김 해제 + GPU 레이어 재활성화)
+       */
+      showTileEl(el) {
+        if (!el) return;
+        el.style.display = '';
+        el.style.visibility = 'visible';
+        el.style.pointerEvents = '';
+        el.style.willChange = '';
+      }
+
+      /**
        * 타일 클릭: 보드에서 빈 슬롯(트레이)으로 이동
        */
       handleTileClick(tile) {
@@ -4312,18 +4340,16 @@
               this.sound.playFlip();
             }
 
-            // 두 타일을 보드에서 제거 (visibility:hidden으로 포인터 시퀀스 단절 방지)
+            // 두 타일을 보드에서 제거 (2단계 GPU 해제)
             prevRevealed.removed = true;
             if (prevRevealed.el) {
-              prevRevealed.el.style.pointerEvents = 'none';
-              prevRevealed.el.style.visibility = 'hidden';
+              this.hideTileEl(prevRevealed.el);
               prevRevealed.el.classList.remove('selected', 'face-down', 'revealed');
             }
 
             tile.removed = true;
             if (tile.el) {
-              tile.el.style.pointerEvents = 'none';
-              tile.el.style.visibility = 'hidden';
+              this.hideTileEl(tile.el);
               tile.el.classList.remove('selected', 'face-down', 'revealed');
             }
 
@@ -4415,11 +4441,10 @@
         // 블라인드 패였는지 기록
         const wasCovered = tile.isCovered;
 
-        // 보드에서 패 숨김 및 제거 플래그 (visibility:hidden으로 포인터 시퀀스 단절 방지)
+        // 보드에서 패 숨김 및 제거 플래그 (2단계 GPU 해제)
         tile.removed = true;
         if (tile.el) {
-          tile.el.style.pointerEvents = 'none';
-          tile.el.style.visibility = 'hidden';
+          this.hideTileEl(tile.el);
           tile.el.classList.remove('selected', 'face-down', 'revealed');
         }
 
@@ -4563,8 +4588,7 @@
         tile.isRevealed = !item.wasCovered;
 
         if (tile.el) {
-          tile.el.style.visibility = 'visible';
-          tile.el.style.pointerEvents = '';
+          this.showTileEl(tile.el);
           if (tile.isCovered) {
             tile.el.classList.add('face-down');
             tile.el.classList.remove('revealed');
@@ -4683,7 +4707,7 @@
         } else if (Array.isArray(lastAction)) {
           lastAction.forEach(tile => {
             tile.removed = false;
-            if (tile.el) { tile.el.style.visibility = 'visible'; tile.el.style.pointerEvents = ''; }
+            if (tile.el) { this.showTileEl(tile.el); }
           });
           this.updateTileStates();
         }
@@ -4858,8 +4882,8 @@
             document.getElementById('stat-moves').textContent = Math.floor(curActive / 2);
 
             setTimeout(() => {
-              if (t1 && t1.el) t1.el.style.display = 'none';
-              if (t2 && t2.el) t2.el.style.display = 'none';
+              if (t1 && t1.el) this.hideTileEl(t1.el);
+              if (t2 && t2.el) this.hideTileEl(t2.el);
             }, 800);
           }, idx * 350 + 400);
           this.autoClearTimeouts.push(tId);
