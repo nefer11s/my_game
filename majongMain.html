@@ -4278,10 +4278,7 @@
           this.logTouch(`[차단] 게임상태(오버/피날레/딜링:${this.isDealing}/제거:${tile.removed})`, 'warn');
           return;
         }
-        if (this.gestureCooldownUntil && Date.now() < this.gestureCooldownUntil) {
-          this.logTouch('[차단] 두 손가락 핀치 제스처 직후 쿨다운 중', 'warn');
-          return;
-        }
+        // 핀치 제스처 쿨다운은 pointerdown 레벨에서 이미 차단하므로 여기서는 제거 (이중 차단 방지)
 
         const now = performance.now();
 
@@ -4315,16 +4312,18 @@
               this.sound.playFlip();
             }
 
-            // 두 타일을 보드에서 제거
+            // 두 타일을 보드에서 제거 (visibility:hidden으로 포인터 시퀀스 단절 방지)
             prevRevealed.removed = true;
             if (prevRevealed.el) {
-              prevRevealed.el.style.display = 'none';
+              prevRevealed.el.style.pointerEvents = 'none';
+              prevRevealed.el.style.visibility = 'hidden';
               prevRevealed.el.classList.remove('selected', 'face-down', 'revealed');
             }
 
             tile.removed = true;
             if (tile.el) {
-              tile.el.style.display = 'none';
+              tile.el.style.pointerEvents = 'none';
+              tile.el.style.visibility = 'hidden';
               tile.el.classList.remove('selected', 'face-down', 'revealed');
             }
 
@@ -4416,10 +4415,11 @@
         // 블라인드 패였는지 기록
         const wasCovered = tile.isCovered;
 
-        // 보드에서 패 숨김 및 제거 플래그 (아래에 가려진 패들이 즉시 열림!)
+        // 보드에서 패 숨김 및 제거 플래그 (visibility:hidden으로 포인터 시퀀스 단절 방지)
         tile.removed = true;
         if (tile.el) {
-          tile.el.style.display = 'none';
+          tile.el.style.pointerEvents = 'none';
+          tile.el.style.visibility = 'hidden';
           tile.el.classList.remove('selected', 'face-down', 'revealed');
         }
 
@@ -4563,7 +4563,8 @@
         tile.isRevealed = !item.wasCovered;
 
         if (tile.el) {
-          tile.el.style.display = 'flex';
+          tile.el.style.visibility = 'visible';
+          tile.el.style.pointerEvents = '';
           if (tile.isCovered) {
             tile.el.classList.add('face-down');
             tile.el.classList.remove('revealed');
@@ -4682,7 +4683,7 @@
         } else if (Array.isArray(lastAction)) {
           lastAction.forEach(tile => {
             tile.removed = false;
-            if (tile.el) tile.el.style.display = 'flex';
+            if (tile.el) { tile.el.style.visibility = 'visible'; tile.el.style.pointerEvents = ''; }
           });
           this.updateTileStates();
         }
@@ -5146,7 +5147,7 @@
 
         const endTouch = () => {
           if (initialDist > 0) {
-            this.gestureCooldownUntil = Date.now() + 200;
+            this.gestureCooldownUntil = Date.now() + 100;
           }
           initialDist = 0;
         };
