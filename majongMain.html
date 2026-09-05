@@ -2743,7 +2743,6 @@
       </div>
       <div class="modal-btn-group">
         <button class="modal-btn" id="modal-confirm-btn">다음 판 시작 ➔</button>
-        <button class="modal-btn modal-btn-secondary" id="modal-save-exit-btn">저장하고 다음에 계속 💾</button>
       </div>
     </div>
   </div>
@@ -5422,18 +5421,6 @@
           this.saveProgress();
           this.startNewGame(true);
         });
-
-        // 모달에서 '저장하고 다음에 계속' 클릭 시 현재 진행상황 저장 후 인트로 스플래시 화면으로 안전 이동
-        const saveExitBtn = document.getElementById('modal-save-exit-btn');
-        if (saveExitBtn) {
-          saveExitBtn.addEventListener('click', () => {
-            if (this.fireworks) this.fireworks.stop();
-            document.getElementById('modal').classList.remove('active');
-            this.currentStage++; // 다음 시작할 판수로 저장
-            this.saveProgress();
-            this.showSplashScreen();
-          });
-        }
       }
 
       setDifficulty(diffKey) {
@@ -7254,8 +7241,6 @@
         modalTitle.textContent = `제 ${this.currentStage}판 클리어!`;
         modalDesc.textContent = `[${diffCfg.name}] 난이도 제 ${this.currentStage}판 격파 완료! (보너스 +${clearBonus}점, 하트 +1 회복)`;
         confirmBtn.textContent = `다음 판 시작 (제 ${this.currentStage + 1}판) ➔`;
-        const saveExitBtn = document.getElementById('modal-save-exit-btn');
-        if (saveExitBtn) saveExitBtn.textContent = `저장하고 다음에 계속 (제 ${this.currentStage + 1}판) 💾`;
 
         document.getElementById('modal-time').textContent = this.formatTime(this.timerSeconds);
         document.getElementById('modal-score').textContent = this.score.toLocaleString();
