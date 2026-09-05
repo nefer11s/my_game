@@ -838,6 +838,7 @@
 
     /* 선택된 타일: 공중에 떠오른 3D 리프팅 + 비취 에메랄드 오라 */
     .tile.selected {
+      z-index: 10000 !important;
       transform: translate3d(var(--tx), calc(var(--ty) - 14px), calc(var(--tz) + 40px)) !important;
       background: #ffffff;
       border-color: #ffffff;
@@ -6251,7 +6252,7 @@
           el.style.setProperty('--ty', `${finalY}px`);
           el.style.setProperty('--tz', `${finalZ}px`);
           el.style.transform = `translate3d(${finalX}px, ${finalY}px, ${finalZ}px)`;
-          el.style.zIndex = tile.z * 100 + tile.y * 10 + tile.x;
+          el.style.zIndex = tile.z * 2000 + tile.x * 33 + tile.y * 43;
 
           // 패가 층별로 차곡차곡 쌓여 올라가는 딜레이 (층별 130ms + 위치별 캐스케이드)
           const relX = tile.x - bounds.minX;
@@ -6464,9 +6465,9 @@
           if (tile.el) {
             tile.el.classList.toggle('free', free);
             tile.el.classList.toggle('blocked', !free);
-            // 자유 패는 층수와 무관하게 모든 잠긴 패(최대 ~400)를 압도하는 절대 우선권(1000+) 부여
-            const baseZ = tile.z * 100 + tile.y * 10 + tile.x;
-            tile.el.style.zIndex = free ? (baseZ + 1000) : baseZ;
+            // 자연스러운 아이소메트릭 z-index: 우하단 패가 좌상단 패의 그림자를 덮어 평면 높이가 일치되도록 유지
+            const baseZ = tile.z * 2000 + tile.x * 33 + tile.y * 43;
+            tile.el.style.zIndex = baseZ;
 
             // 모든 패의 높이를 동일하게 유지 (extraZ 돌출 없음)
             if (tile.finalX !== undefined && tile.finalY !== undefined && tile.finalZ !== undefined) {
