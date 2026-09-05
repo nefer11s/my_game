@@ -2719,6 +2719,9 @@
           <button class="btn settings-btn" id="btn-auto-blind-match" title="뒤집힌 타일 터치 시 동일한 타일 자동 매칭">
             <span class="btn-icon" id="auto-blind-match-icon">🔒</span> <span id="auto-blind-match-text">뒤집힌패 자동매칭: 꺼짐</span>
           </button>
+          <button class="btn settings-btn" id="btn-auto-free-match" title="자유 패 터치 시 동일한 타일 자동 매칭">
+            <span class="btn-icon" id="auto-free-match-icon">🔒</span> <span id="auto-free-match-text">자유패 자동매칭: 꺼짐</span>
+          </button>
           <button class="btn settings-btn" id="btn-auto-end-match" title="남은 타일 10개 이하 시 자동으로 매칭 진행">
             <span class="btn-icon" id="auto-end-match-icon">🔒</span> <span id="auto-end-match-text">마지막10개 자동매칭: 꺼짐</span>
           </button>
@@ -5107,9 +5110,11 @@
         // 옵션 로컬 스토리지 불러오기 (기본값: 꺼짐/false)
         try {
           this.autoBlindMatch = (localStorage.getItem('siyeon_mahjong_auto_blind_match') || localStorage.getItem('autoBlindMatch')) === '1';
+          this.autoFreeMatch = (localStorage.getItem('siyeon_mahjong_auto_free_match') || localStorage.getItem('autoFreeMatch')) === '1';
           this.autoEndMatch = (localStorage.getItem('siyeon_mahjong_auto_end_match') || localStorage.getItem('autoEndMatch')) === '1';
         } catch (e) {
           this.autoBlindMatch = false;
+          this.autoFreeMatch = false;
           this.autoEndMatch = false;
         }
 
@@ -5447,6 +5452,28 @@
           });
         }
 
+        // 자유 패 자동매칭 토글 버튼 이벤트
+        const btnAutoFreeMatch = document.getElementById('btn-auto-free-match');
+        const updateAutoFreeMatchUI = () => {
+          const icon = document.getElementById('auto-free-match-icon');
+          const text = document.getElementById('auto-free-match-text');
+          if (icon && text) {
+            icon.textContent = this.autoFreeMatch ? '🔓' : '🔒';
+            text.textContent = this.autoFreeMatch ? '자유패 자동매칭: 켜짐' : '자유패 자동매칭: 꺼짐';
+          }
+        };
+        updateAutoFreeMatchUI();
+        if (btnAutoFreeMatch) {
+          btnAutoFreeMatch.addEventListener('click', () => {
+            this.autoFreeMatch = !this.autoFreeMatch;
+            try {
+              localStorage.setItem('autoFreeMatch', this.autoFreeMatch ? '1' : '0');
+              localStorage.setItem('siyeon_mahjong_auto_free_match', this.autoFreeMatch ? '1' : '0');
+            } catch (e) { }
+            updateAutoFreeMatchUI();
+          });
+        }
+
         // 마지막 10개 자동매칭 토글 버튼 이벤트
         const btnAutoEndMatch = document.getElementById('btn-auto-end-match');
         const updateAutoEndMatchUI = () => {
@@ -5521,6 +5548,7 @@
           lives: this.lives,
           timerSeconds: this.timerSeconds,
           autoBlindMatch: this.autoBlindMatch,
+          autoFreeMatch: this.autoFreeMatch,
           autoEndMatch: this.autoEndMatch,
           savedAt: new Date().toLocaleString('ko-KR')
         };
@@ -5572,6 +5600,13 @@
             localStorage.setItem('siyeon_mahjong_auto_blind_match', this.autoBlindMatch ? '1' : '0');
           } catch (e) { }
         }
+        if (saved.autoFreeMatch !== undefined) {
+          this.autoFreeMatch = !!saved.autoFreeMatch;
+          try {
+            localStorage.setItem('autoFreeMatch', this.autoFreeMatch ? '1' : '0');
+            localStorage.setItem('siyeon_mahjong_auto_free_match', this.autoFreeMatch ? '1' : '0');
+          } catch (e) { }
+        }
         if (saved.autoEndMatch !== undefined) {
           this.autoEndMatch = !!saved.autoEndMatch;
           try {
@@ -5584,6 +5619,12 @@
         if (blindIcon && blindText) {
           blindIcon.textContent = this.autoBlindMatch ? '🔓' : '🔒';
           blindText.textContent = this.autoBlindMatch ? '뒤집힌패 자동매칭: 켜짐' : '뒤집힌패 자동매칭: 꺼짐';
+        }
+        const freeIcon = document.getElementById('auto-free-match-icon');
+        const freeText = document.getElementById('auto-free-match-text');
+        if (freeIcon && freeText) {
+          freeIcon.textContent = this.autoFreeMatch ? '🔓' : '🔒';
+          freeText.textContent = this.autoFreeMatch ? '자유패 자동매칭: 켜짐' : '자유패 자동매칭: 꺼짐';
         }
         const endIcon = document.getElementById('auto-end-match-icon');
         const endText = document.getElementById('auto-end-match-text');
@@ -6787,6 +6828,56 @@
         }
         this.lastClickedTileId = tile.id;
         this.lastGlobalTileClickTime = now;
+
+        // [옵션 기능] 자유패 자동매칭: 보드에 짝(동일한 자유패)이 있으면 연속으로 두 패를 자동 매치 소멸
+        if (this.autoFreeMatch) {
+          // A. 트레이에 이미 동일 패가 있는 경우: 기존 흐름대로 트레이로 들어가 즉시 매치 소멸
+          const trayMatch = this.trayTiles.find(t => !t.isMatching && t.def.id === tile.def.id);
+          if (!trayMatch) {
+            // B. 보드 상에 매칭 가능한 동일 짝 타일(자유패 또는 열린 블라인드패) 검색
+            const boardMatch = this.tiles.find(t => !t.removed && t.id !== tile.id && (t.isFree || (t.isCovered && t.isRevealed)) && t.def.id === tile.def.id);
+            if (boardMatch) {
+              this.logTouch(`[자유패 자동매칭] '${tile.def.label}' 2개 패 연속 자동 매치`);
+
+              // 두 타일을 보드에서 제거
+              boardMatch.removed = true;
+              if (boardMatch.el) {
+                this.hideTileEl(boardMatch.el);
+                boardMatch.el.classList.remove('selected', 'face-down', 'revealed');
+              }
+
+              tile.removed = true;
+              if (tile.el) {
+                this.hideTileEl(tile.el);
+                tile.el.classList.remove('selected', 'face-down', 'revealed');
+              }
+
+              this.updateTileStates();
+
+              const item1 = {
+                tile: boardMatch,
+                def: boardMatch.def,
+                id: boardMatch.id,
+                wasCovered: boardMatch.isCovered,
+                isMatching: true
+              };
+              const item2 = {
+                tile: tile,
+                def: tile.def,
+                id: tile.id,
+                wasCovered: tile.isCovered,
+                isMatching: true
+              };
+
+              this.trayTiles.push(item1, item2);
+              this.sound.playSelect();
+              this.renderTray();
+              this.blindMismatchCount = 0;
+              this.checkTrayMatch(item2);
+              return;
+            }
+          }
+        }
 
         // 슬롯 수용 가능 여부 체크 (소멸 애니메이션 중인 패는 즉시 제외하여 연속 터치 씹힘 완전 해결!)
         const activeTrayTiles = this.trayTiles.filter(t => !t.isMatching);
