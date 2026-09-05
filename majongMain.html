@@ -2724,6 +2724,9 @@
           <button class="btn settings-btn" id="btn-auto-end-match" title="남은 타일 10개 이하 시 자동으로 매칭 진행">
             <span class="btn-icon" id="auto-end-match-icon">🔒</span> <span id="auto-end-match-text">마지막10개 자동매칭: 꺼짐</span>
           </button>
+          <button class="btn settings-btn" id="btn-dynamic-zoom" title="남은 패에 맞춰 화면을 자동으로 꽉 채우는 동적 확대">
+            <span class="btn-icon" id="dynamic-zoom-icon">🔒</span> <span id="dynamic-zoom-text">동적확대: 꺼짐</span>
+          </button>
           <div class="settings-divider"></div>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
             Si-Yeon Mahjong Solitaire v1.4.32
@@ -2844,7 +2847,8 @@
             <strong>게임 편의 옵션 안내 (설정 메뉴 ⚙️에서 켜기/끄기)</strong>
             <p style="margin-top: 4px; line-height: 1.6;">
               • <strong>짝선택 자동슬롯 (기본: 꺼짐)</strong>: 뒤집힌 블라인드 패를 뒤집은 상태에서 보드의 동일한 짝(자유 패)을 선택했을 때, 두 패가 한꺼번에 슬롯으로 자동 이동하여 즉시 매칭 소멸되는 옵션입니다. (꺼짐 시 선택한 자유 패만 단독 이동)<br>
-              • <strong>마지막10개 자동매칭 (기본: 꺼짐)</strong>: 남은 타일 수가 10개 이하가 되었을 때, 자동으로 짝을 맞추어 빠르게 클리어하는 피날레 연속 매칭 연출이 진행됩니다.
+              • <strong>마지막10개 자동매칭 (기본: 꺼짐)</strong>: 남은 타일 수가 10개 이하가 되었을 때, 자동으로 짝을 맞추어 빠르게 클리어하는 피날레 연속 매칭 연출이 진행됩니다.<br>
+              • <strong>동적확대 (기본: 꺼짐)</strong>: 남은 패의 수가 줄어들 때, 남은 패들이 화면에 꽉 차도록 보드를 실시간으로 자동 확대(Auto-Fit)해 주는 옵션입니다. (꺼짐 시 안정적인 기본 스케일 유지)
             </p>
           </div>
         </div>
@@ -5120,9 +5124,11 @@
         try {
           this.autoBlindPairMatch = (localStorage.getItem('siyeon_mahjong_auto_blind_pair') || localStorage.getItem('autoBlindPairMatch')) === '1';
           this.autoEndMatch = (localStorage.getItem('siyeon_mahjong_auto_end_match') || localStorage.getItem('autoEndMatch')) === '1';
+          this.dynamicZoom = (localStorage.getItem('siyeon_mahjong_dynamic_zoom') || localStorage.getItem('dynamicZoom')) === '1';
         } catch (e) {
           this.autoBlindPairMatch = false;
           this.autoEndMatch = false;
+          this.dynamicZoom = false;
         }
 
         // 뷰포트 확대/축소 및 자유 이동(Pan & Zoom) 시스템
@@ -5491,6 +5497,29 @@
           });
         }
 
+        // 동적확대 토글 버튼 이벤트
+        const btnDynamicZoom = document.getElementById('btn-dynamic-zoom');
+        const updateDynamicZoomUI = () => {
+          const icon = document.getElementById('dynamic-zoom-icon');
+          const text = document.getElementById('dynamic-zoom-text');
+          if (icon && text) {
+            icon.textContent = this.dynamicZoom ? '🔍' : '🔒';
+            text.textContent = this.dynamicZoom ? '동적확대: 켜짐' : '동적확대: 꺼짐';
+          }
+        };
+        updateDynamicZoomUI();
+        if (btnDynamicZoom) {
+          btnDynamicZoom.addEventListener('click', () => {
+            this.dynamicZoom = !this.dynamicZoom;
+            try {
+              localStorage.setItem('dynamicZoom', this.dynamicZoom ? '1' : '0');
+              localStorage.setItem('siyeon_mahjong_dynamic_zoom', this.dynamicZoom ? '1' : '0');
+            } catch (e) { }
+            updateDynamicZoomUI();
+            this.handleResize(true); // 즉시 화면에 스케일 반영
+          });
+        }
+
         document.getElementById('btn-undo').addEventListener('click', () => this.undo());
         document.getElementById('btn-hint').addEventListener('click', () => this.showHint());
         document.getElementById('btn-shuffle').addEventListener('click', () => this.shuffleRemain());
@@ -5535,6 +5564,7 @@
           timerSeconds: this.timerSeconds,
           autoBlindPairMatch: this.autoBlindPairMatch,
           autoEndMatch: this.autoEndMatch,
+          dynamicZoom: this.dynamicZoom,
           savedAt: new Date().toLocaleString('ko-KR')
         };
         try {
@@ -5592,6 +5622,13 @@
             localStorage.setItem('siyeon_mahjong_auto_end_match', this.autoEndMatch ? '1' : '0');
           } catch (e) { }
         }
+        if (saved.dynamicZoom !== undefined) {
+          this.dynamicZoom = !!saved.dynamicZoom;
+          try {
+            localStorage.setItem('dynamicZoom', this.dynamicZoom ? '1' : '0');
+            localStorage.setItem('siyeon_mahjong_dynamic_zoom', this.dynamicZoom ? '1' : '0');
+          } catch (e) { }
+        }
         const pairIcon = document.getElementById('auto-blind-pair-icon');
         const pairText = document.getElementById('auto-blind-pair-text');
         if (pairIcon && pairText) {
@@ -5603,6 +5640,12 @@
         if (endIcon && endText) {
           endIcon.textContent = this.autoEndMatch ? '⚡' : '🔒';
           endText.textContent = this.autoEndMatch ? '마지막10개 자동매칭: 켜짐' : '마지막10개 자동매칭: 꺼짐';
+        }
+        const zoomIcon = document.getElementById('dynamic-zoom-icon');
+        const zoomText = document.getElementById('dynamic-zoom-text');
+        if (zoomIcon && zoomText) {
+          zoomIcon.textContent = this.dynamicZoom ? '🔍' : '🔒';
+          zoomText.textContent = this.dynamicZoom ? '동적확대: 켜짐' : '동적확대: 꺼짐';
         }
 
         const selectEl = document.getElementById('select-difficulty');
@@ -7589,7 +7632,8 @@
         let offsetCenterX = 0;
         let offsetCenterY = 0;
 
-        if (activeTiles && activeTiles.length > 0) {
+        // 동적 확대(dynamicZoom) 옵션이 켜져 있을 때만 남은 타일 바운딩 박스를 계산하여 화면 꽉 채움 확대
+        if (this.dynamicZoom && activeTiles && activeTiles.length > 0) {
           let minPx = Infinity, maxPx = -Infinity, minPy = Infinity, maxPy = -Infinity;
           activeTiles.forEach(t => {
             // 실제 타일 렌더링 정규화 픽셀 위치 (renderBoard 수식 동기화)
