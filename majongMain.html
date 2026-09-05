@@ -5104,8 +5104,14 @@
         this.isGameOver = false;
         this.blindMismatchCount = 0; // 뒤집기 3회 실패 카운터
         this.hasUsedLastChanceShuffle = false; // 하트 1개일 때 마지막 무료 셔플 사용 여부
-        this.autoBlindMatch = localStorage.getItem('autoBlindMatch') === '1'; // 뒤집힌 타일 자동매칭 (기본: 꺼짐)
-        this.autoEndMatch = localStorage.getItem('autoEndMatch') === '1'; // 마지막 10개 타일 자동매칭 (기본: 꺼짐)
+        // 옵션 로컬 스토리지 불러오기 (기본값: 꺼짐/false)
+        try {
+          this.autoBlindMatch = (localStorage.getItem('siyeon_mahjong_auto_blind_match') || localStorage.getItem('autoBlindMatch')) === '1';
+          this.autoEndMatch = (localStorage.getItem('siyeon_mahjong_auto_end_match') || localStorage.getItem('autoEndMatch')) === '1';
+        } catch (e) {
+          this.autoBlindMatch = false;
+          this.autoEndMatch = false;
+        }
 
         // 뷰포트 확대/축소 및 자유 이동(Pan & Zoom) 시스템
         this.baseScale = 1.0;
@@ -5115,8 +5121,14 @@
         this.isPanning = false;
         this.hasPannedFar = false;
 
-        // 난이도 및 무한 판수(스테이지) 설정
-        this.difficulty = 'normal';
+        // 난이도 및 무한 판수(스테이지) 설정 (로컬 저장소 반영)
+        try {
+          this.difficulty = localStorage.getItem('siyeon_mahjong_difficulty') || 'normal';
+        } catch (e) {
+          this.difficulty = 'normal';
+        }
+        const initialDiffSelect = document.getElementById('select-difficulty');
+        if (initialDiffSelect) initialDiffSelect.value = this.difficulty;
         this.currentStage = 1;
 
         this.bindEvents();
@@ -5427,7 +5439,10 @@
         if (btnAutoBlindMatch) {
           btnAutoBlindMatch.addEventListener('click', () => {
             this.autoBlindMatch = !this.autoBlindMatch;
-            localStorage.setItem('autoBlindMatch', this.autoBlindMatch ? '1' : '0');
+            try {
+              localStorage.setItem('autoBlindMatch', this.autoBlindMatch ? '1' : '0');
+              localStorage.setItem('siyeon_mahjong_auto_blind_match', this.autoBlindMatch ? '1' : '0');
+            } catch (e) { }
             updateAutoBlindMatchUI();
           });
         }
@@ -5446,7 +5461,10 @@
         if (btnAutoEndMatch) {
           btnAutoEndMatch.addEventListener('click', () => {
             this.autoEndMatch = !this.autoEndMatch;
-            localStorage.setItem('autoEndMatch', this.autoEndMatch ? '1' : '0');
+            try {
+              localStorage.setItem('autoEndMatch', this.autoEndMatch ? '1' : '0');
+              localStorage.setItem('siyeon_mahjong_auto_end_match', this.autoEndMatch ? '1' : '0');
+            } catch (e) { }
             updateAutoEndMatchUI();
 
             // 만약 켠 시점에 이미 남은 패가 10개 이하라면 즉시 피날레 가동
@@ -5482,6 +5500,9 @@
       setDifficulty(diffKey) {
         if (!DIFFICULTY_CONFIG[diffKey]) return;
         this.difficulty = diffKey;
+        try {
+          localStorage.setItem('siyeon_mahjong_difficulty', diffKey);
+        } catch (e) { }
         this.currentStage = 1; // 난이도 변경 시 1판부터 시작
         this.clearSavedProgress();
         const selectEl = document.getElementById('select-difficulty');
@@ -5499,6 +5520,8 @@
           score: this.score,
           lives: this.lives,
           timerSeconds: this.timerSeconds,
+          autoBlindMatch: this.autoBlindMatch,
+          autoEndMatch: this.autoEndMatch,
           savedAt: new Date().toLocaleString('ko-KR')
         };
         try {
@@ -5540,6 +5563,34 @@
         this.score = saved.score || 0;
         this.lives = saved.lives !== undefined ? saved.lives : 3;
         this.timerSeconds = saved.timerSeconds || 0;
+
+        // 저장된 옵션 설정 복원
+        if (saved.autoBlindMatch !== undefined) {
+          this.autoBlindMatch = !!saved.autoBlindMatch;
+          try {
+            localStorage.setItem('autoBlindMatch', this.autoBlindMatch ? '1' : '0');
+            localStorage.setItem('siyeon_mahjong_auto_blind_match', this.autoBlindMatch ? '1' : '0');
+          } catch (e) { }
+        }
+        if (saved.autoEndMatch !== undefined) {
+          this.autoEndMatch = !!saved.autoEndMatch;
+          try {
+            localStorage.setItem('autoEndMatch', this.autoEndMatch ? '1' : '0');
+            localStorage.setItem('siyeon_mahjong_auto_end_match', this.autoEndMatch ? '1' : '0');
+          } catch (e) { }
+        }
+        const blindIcon = document.getElementById('auto-blind-match-icon');
+        const blindText = document.getElementById('auto-blind-match-text');
+        if (blindIcon && blindText) {
+          blindIcon.textContent = this.autoBlindMatch ? '🔓' : '🔒';
+          blindText.textContent = this.autoBlindMatch ? '뒤집힌패 자동매칭: 켜짐' : '뒤집힌패 자동매칭: 꺼짐';
+        }
+        const endIcon = document.getElementById('auto-end-match-icon');
+        const endText = document.getElementById('auto-end-match-text');
+        if (endIcon && endText) {
+          endIcon.textContent = this.autoEndMatch ? '⚡' : '🔒';
+          endText.textContent = this.autoEndMatch ? '마지막10개 자동매칭: 켜짐' : '마지막10개 자동매칭: 꺼짐';
+        }
 
         const selectEl = document.getElementById('select-difficulty');
         if (selectEl) selectEl.value = this.difficulty;
