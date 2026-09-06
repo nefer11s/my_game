@@ -2059,6 +2059,163 @@
       animation: bigWinFadeOut 0.32s ease forwards;
     }
 
+    /* 올 블라인드 스테이지 시작 공지 알림 배너 */
+    .all-blind-notice {
+      position: absolute;
+      top: 24%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.95);
+      background: radial-gradient(circle at center, rgba(30, 20, 0, 0.96) 0%, rgba(10, 6, 0, 0.98) 100%);
+      border: 2px solid #ffd700;
+      border-radius: 20px;
+      padding: 18px 28px;
+      text-align: center;
+      color: #ffffff;
+      box-shadow: 0 0 35px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.2);
+      z-index: 8000;
+      pointer-events: none;
+      animation: allBlindBannerIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .all-blind-notice.fade-out {
+      opacity: 0;
+      transform: translate(-50%, -55%) scale(0.9);
+    }
+    .all-blind-icon {
+      font-size: 46px;
+      margin-bottom: 6px;
+      animation: crownBob 1.6s ease-in-out infinite alternate;
+    }
+    .all-blind-title {
+      font-size: 21px;
+      font-weight: 900;
+      color: #ffd700;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+      margin-bottom: 6px;
+    }
+    .all-blind-desc {
+      font-size: 13.5px;
+      color: #f7e6a7;
+      line-height: 1.5;
+    }
+
+    /* 마스터 등극 황금 왕관 피날레 WIN 배너 */
+    .master-crown-win {
+      background: radial-gradient(ellipse at center, rgba(40, 28, 2, 0.96) 0%, rgba(15, 10, 0, 0.98) 100%) !important;
+      border: 3px solid #ffd700 !important;
+      box-shadow: 0 0 55px rgba(255, 215, 0, 0.65), inset 0 0 30px rgba(255, 215, 0, 0.3) !important;
+      padding: 30px 32px 24px !important;
+      max-width: 520px !important;
+      width: 90vw !important;
+      border-radius: 26px !important;
+    }
+    .master-crown-anim-wrap {
+      position: relative;
+      width: 120px;
+      height: 105px;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .master-crown-icon {
+      font-size: 78px;
+      line-height: 1;
+      filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.9));
+      animation: crownDrop 0.85s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, crownGlow 2s ease-in-out infinite alternate;
+      z-index: 2;
+    }
+    .master-crown-glow {
+      position: absolute;
+      width: 135px;
+      height: 135px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.55) 0%, rgba(255, 215, 0, 0) 70%);
+      animation: glowPulse 2s ease-in-out infinite;
+      z-index: 1;
+    }
+    .master-sparkles {
+      font-size: 24px;
+      position: absolute;
+      bottom: -6px;
+      animation: sparkleRotate 3s linear infinite;
+      z-index: 3;
+    }
+    .master-win-title {
+      font-size: clamp(22px, 5.5vw, 28px);
+      font-weight: 900;
+      color: #ffd700;
+      text-shadow: 0 0 16px rgba(255, 215, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.8);
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .master-win-sub {
+      font-size: clamp(12.5px, 3.2vw, 14.5px);
+      color: #f7e6a7;
+      line-height: 1.5;
+      margin-bottom: 12px;
+      white-space: normal;
+      text-align: center;
+    }
+
+    /* 마스터 등극 결과 모달 카드 */
+    .modal-card.master-crown-card {
+      border: 2px solid #ffd700 !important;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 35px rgba(255, 215, 0, 0.4) !important;
+      background: linear-gradient(165deg, rgba(255, 255, 255, 0.99) 0%, rgba(255, 248, 225, 0.97) 100%) !important;
+    }
+
+    @keyframes crownDrop {
+      0% {
+        transform: translateY(-80px) scale(0.3) rotate(-15deg);
+        opacity: 0;
+      }
+      70% {
+        transform: translateY(12px) scale(1.15) rotate(5deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(0) scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    @keyframes crownGlow {
+      0% {
+        filter: drop-shadow(0 0 14px rgba(255, 215, 0, 0.6));
+      }
+      100% {
+        filter: drop-shadow(0 0 26px rgba(255, 215, 0, 0.95)) drop-shadow(0 0 8px #ffffff);
+      }
+    }
+
+    @keyframes crownBob {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-8px); }
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { transform: scale(0.9); opacity: 0.6; }
+      50% { transform: scale(1.2); opacity: 0.95; }
+    }
+
+    @keyframes sparkleRotate {
+      0% { transform: scale(0.9) rotate(0deg); }
+      50% { transform: scale(1.15) rotate(180deg); }
+      100% { transform: scale(0.9) rotate(360deg); }
+    }
+
+    @keyframes allBlindBannerIn {
+      0% {
+        transform: translate(-50%, -70%) scale(0.7);
+        opacity: 0;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+    }
+
     @keyframes bigWinFadeOut {
       0% {
         opacity: 1;
@@ -6822,6 +6979,8 @@
         if (oldShatter) oldShatter.remove();
         const oldBanner = document.getElementById('big-win-banner');
         if (oldBanner) oldBanner.remove();
+        const oldAllBlind = document.getElementById('all-blind-notice');
+        if (oldAllBlind) oldAllBlind.remove();
 
         this.boardEl.style.opacity = '1';
         this.boardEl.style.display = 'block';
@@ -6918,6 +7077,8 @@
         if (oldShatter) oldShatter.remove();
         const oldBanner = document.getElementById('big-win-banner');
         if (oldBanner) oldBanner.remove();
+        const oldAllBlind = document.getElementById('all-blind-notice');
+        if (oldAllBlind) oldAllBlind.remove();
 
         this.boardEl.style.opacity = '1';
         this.boardEl.style.display = 'block';
@@ -7130,8 +7291,23 @@
           }
         }
 
-        // 블라인드(Face-down) 패 분산 무작위 지정 (중앙 몰림 방지)
-        const blindCount = Math.min(diffCfg.blindCount || 0, Math.floor(resultTiles.length / 2));
+        // 블라인드(Face-down) 패 계산 및 지정
+        const totalTiles = resultTiles.length;
+        let blindCount = 0;
+
+        if (this.difficulty === 'master') {
+          // 달인 모드: 판(stage)이 진행될수록 블라인드 개수가 1개씩 점진 증가 (기본 18개 + (판수 - 1))
+          // 50% 캡을 해제하여 최종적으로 모든 패가 다 블라인드인 판(100% All-Blind)에 도달
+          const baseBlind = diffCfg.blindCount || 18;
+          blindCount = Math.min(totalTiles, baseBlind + (this.currentStage - 1));
+          this.isAllBlindStage = (blindCount >= totalTiles);
+        } else {
+          blindCount = Math.min(diffCfg.blindCount || 0, Math.floor(totalTiles / 2));
+          this.isAllBlindStage = false;
+        }
+
+        this.currentStageBlindCount = blindCount;
+        this.currentStageTotalTiles = totalTiles;
 
         resultTiles.forEach(t => {
           t.isCovered = false;
@@ -7139,23 +7315,50 @@
         });
 
         if (blindCount > 0) {
-          // 상위 층(z >= 1)을 1차 후보군으로 추출
-          let upperCandidates = resultTiles.filter(t => t.z >= 1);
-          // 후보군이 부족하면 0층 패들도 추가하여 후보군 확장
-          if (upperCandidates.length < blindCount) {
-            const baseCandidates = resultTiles.filter(t => t.z === 0);
-            upperCandidates = upperCandidates.concat(baseCandidates);
-          }
-          // 균등 분산 랜덤 셔플 (Fisher-Yates)
-          const shuffled = [...upperCandidates];
-          for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-          }
-          // 무작위로 선택하여 맵 전역에 분산 배치
-          for (let i = 0; i < blindCount && i < shuffled.length; i++) {
-            shuffled[i].isCovered = true;
-            shuffled[i].isRevealed = false;
+          if (this.isAllBlindStage) {
+            // 모든 패가 다 블라인드인 최종 결전 판!
+            resultTiles.forEach(t => {
+              t.isCovered = true;
+              t.isRevealed = false;
+            });
+            // 올 블라인드 스테이지 시작 안내 배너 출력
+            setTimeout(() => {
+              if (this.isAllBlindStage && !this.isClear && !this.isGameOver) {
+                const oldNotice = document.getElementById('all-blind-notice');
+                if (oldNotice) oldNotice.remove();
+                const notice = document.createElement('div');
+                notice.className = 'all-blind-notice';
+                notice.id = 'all-blind-notice';
+                notice.innerHTML = `
+                  <div class="all-blind-icon">👑</div>
+                  <div class="all-blind-title">달인 최종 관문: 100% 올 블라인드!</div>
+                  <div class="all-blind-desc">보드의 모든 패가 베일에 싸였습니다.<br>이 판을 격파하면 전설의 마스터에 등극합니다!</div>
+                `;
+                if (this.viewportEl) {
+                  this.viewportEl.appendChild(notice);
+                  setTimeout(() => {
+                    notice.classList.add('fade-out');
+                    setTimeout(() => notice.remove(), 500);
+                  }, 3200);
+                }
+              }
+            }, 500);
+          } else {
+            // 일반 블라인드 분산 무작위 지정 (상위 층 우선 + 0층 확장)
+            let upperCandidates = resultTiles.filter(t => t.z >= 1);
+            if (upperCandidates.length < blindCount) {
+              const baseCandidates = resultTiles.filter(t => t.z === 0);
+              upperCandidates = upperCandidates.concat(baseCandidates);
+            }
+            const shuffled = [...upperCandidates];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+              const j = Math.floor(Math.random() * (i + 1));
+              [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            for (let i = 0; i < blindCount && i < shuffled.length; i++) {
+              shuffled[i].isCovered = true;
+              shuffled[i].isRevealed = false;
+            }
           }
         }
 
@@ -8289,7 +8492,6 @@
         if (this.isClear) return;
         this.isClear = true;
         clearInterval(this.timerId);
-        this.sound.playWin();
 
         // 화려한 불꽃놀이 폭죽 연출 발동
         if (this.fireworks) {
@@ -8299,13 +8501,39 @@
         const oldBanner = document.getElementById('big-win-banner');
         if (oldBanner) oldBanner.remove();
 
+        const isMasterAllBlind = (this.difficulty === 'master' && this.isAllBlindStage);
+
+        if (isMasterAllBlind) {
+          // 마스터 올 블라인드 격파 특수 팡파레 연쇄 효과음
+          this.sound.playWin();
+          setTimeout(() => this.sound.playFirework(), 250);
+          setTimeout(() => this.sound.playChime(), 550);
+          setTimeout(() => this.sound.playFirework(), 850);
+        } else {
+          this.sound.playWin();
+        }
+
         const winBanner = document.createElement('div');
-        winBanner.className = 'big-win-banner';
+        winBanner.className = isMasterAllBlind ? 'big-win-banner master-crown-win' : 'big-win-banner';
         winBanner.id = 'big-win-banner';
-        winBanner.innerHTML = `
-          <span>🏆 WIN!</span>
-          <span class="win-sub-touch">👆 화면을 터치하여 계속하기</span>
-        `;
+
+        if (isMasterAllBlind) {
+          winBanner.innerHTML = `
+            <div class="master-crown-anim-wrap">
+              <div class="master-crown-glow"></div>
+              <div class="master-crown-icon">👑</div>
+              <div class="master-sparkles">✨🌟✨</div>
+            </div>
+            <div class="master-win-title">전설의 마작 마스터 등극!</div>
+            <div class="master-win-sub">모든 패가 베일에 싸인 '100% 올 블라인드' 극한의 판을 완벽하게 격파했습니다!</div>
+            <span class="win-sub-touch">👆 화면을 터치하여 마스터 인증서 확인</span>
+          `;
+        } else {
+          winBanner.innerHTML = `
+            <span>🏆 WIN!</span>
+            <span class="win-sub-touch">👆 화면을 터치하여 계속하기</span>
+          `;
+        }
 
         let dismissed = false;
         const dismissBanner = (e) => {
@@ -8353,17 +8581,36 @@
         const modalDesc = document.getElementById('modal-desc');
         const confirmBtn = document.getElementById('modal-confirm-btn');
 
+        const modalCard = document.querySelector('#modal .modal-card');
+        const modalEmoji = document.getElementById('modal-emoji');
+        const isMasterAllBlind = (this.difficulty === 'master' && this.isAllBlindStage);
+
         // 판 클리어 보너스 점수 및 하트 1 회복
-        const clearBonus = this.currentStage * 500;
+        let clearBonus = this.currentStage * 500;
+        if (isMasterAllBlind) {
+          clearBonus = this.currentStage * 1000 + 10000; // 마스터 등극 특수 보너스 +10,000점!
+        }
         this.score += clearBonus;
         if (this.lives < this.maxLives) {
           this.lives++;
           this.updateLivesUI();
         }
 
-        modalTitle.textContent = `제 ${this.currentStage}판 클리어!`;
-        modalDesc.textContent = `[${diffCfg.name}] 난이도 제 ${this.currentStage}판 격파 완료! (보너스 +${clearBonus}점, 하트 +1 회복)`;
-        confirmBtn.textContent = `다음 판 시작 (제 ${this.currentStage + 1}판) ➔`;
+        if (isMasterAllBlind) {
+          if (modalEmoji) modalEmoji.textContent = '👑';
+          if (modalCard) modalCard.classList.add('master-crown-card');
+          modalTitle.innerHTML = `<span style="color: #b78103; text-shadow: 0 0 14px rgba(255, 215, 0, 0.75);">👑 전설의 마작 마스터 등극! 👑</span>`;
+          modalDesc.innerHTML = `<strong>모든 패가 베일에 싸인 '100% 올 블라인드' 극한의 판을 정복했습니다!</strong><br>진정한 달인의 경지에 도달하셨음을 공인합니다. (마스터 특별 보너스 +${clearBonus.toLocaleString()}점!)`;
+          confirmBtn.textContent = `다음 마스터 도전 (제 ${this.currentStage + 1}판) ➔`;
+          confirmBtn.style.background = 'linear-gradient(135deg, #d4af37 0%, #aa771c 100%)';
+        } else {
+          if (modalEmoji) modalEmoji.textContent = '🎉';
+          if (modalCard) modalCard.classList.remove('master-crown-card');
+          confirmBtn.style.background = '';
+          modalTitle.textContent = `제 ${this.currentStage}판 클리어!`;
+          modalDesc.textContent = `[${diffCfg.name}] 난이도 제 ${this.currentStage}판 격파 완료! (보너스 +${clearBonus}점, 하트 +1 회복)`;
+          confirmBtn.textContent = `다음 판 시작 (제 ${this.currentStage + 1}판) ➔`;
+        }
 
         document.getElementById('modal-time').textContent = this.formatTime(this.timerSeconds);
         document.getElementById('modal-score').textContent = this.score.toLocaleString();
@@ -8381,8 +8628,19 @@
 
         if (stageEl) stageEl.textContent = `${this.currentStage}판`;
         if (diffEl) {
-          diffEl.textContent = diffCfg.name;
-          diffEl.style.backgroundColor = diffCfg.badgeColor;
+          if (this.difficulty === 'master') {
+            if (this.isAllBlindStage) {
+              diffEl.innerHTML = `👑 달인 (올블라인드)`;
+              diffEl.style.backgroundColor = '#d4af37';
+            } else {
+              const blindNum = this.currentStageBlindCount || 18;
+              diffEl.textContent = `달인 (${blindNum}패 숨김)`;
+              diffEl.style.backgroundColor = diffCfg.badgeColor;
+            }
+          } else {
+            diffEl.textContent = diffCfg.name;
+            diffEl.style.backgroundColor = diffCfg.badgeColor;
+          }
         }
         if (layoutEl && this.currentLayout) {
           layoutEl.textContent = `${this.currentLayout.icon} ${this.currentLayout.name} (${this.currentLayout.layers}층)`;
