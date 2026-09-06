@@ -7391,20 +7391,24 @@
         if (tile.removed) return false;
         const activeTiles = this.tiles.filter(t => !t.removed && t.id !== tile.id);
 
+        // 상위 층에 의해 덮여있는지 검사 (부동소수점 오차 방지: 0.05 여유)
         const covered = activeTiles.some(other => {
           if (other.z <= tile.z) return false;
-          return Math.abs(other.x - tile.x) < 2 && Math.abs(other.y - tile.y) < 2;
+          return Math.abs(other.x - tile.x) < 1.95 && Math.abs(other.y - tile.y) < 1.95;
         });
         if (covered) return false;
 
+        // 좌측 또는 우측이 막혀있는지 검사
         const blockedLeft = activeTiles.some(other => {
           if (other.z !== tile.z) return false;
-          return (tile.x - other.x <= 2 && tile.x - other.x > 0) && Math.abs(other.y - tile.y) < 2;
+          const dx = tile.x - other.x;
+          return (dx <= 2.05 && dx > 0.05) && Math.abs(other.y - tile.y) < 1.95;
         });
 
         const blockedRight = activeTiles.some(other => {
           if (other.z !== tile.z) return false;
-          return (other.x - tile.x <= 2 && other.x - tile.x > 0) && Math.abs(other.y - tile.y) < 2;
+          const dx = other.x - tile.x;
+          return (dx <= 2.05 && dx > 0.05) && Math.abs(other.y - tile.y) < 1.95;
         });
 
         return !blockedLeft || !blockedRight;
@@ -7491,8 +7495,9 @@
             if (e && e.cancelable) e.preventDefault();
 
             let targetTile = tile;
-            // 터치 좌표(e.clientX, e.clientY) 기준 최적의 자유 패 정밀 기하학 탐색 (우하단 겹침/잠긴 패 가로챔 100% 구제)
-            if (e && e.clientX !== undefined && e.clientY !== undefined) {
+            // 터치된 본래 패가 자유 패가 아닌 경우(3D 단차 오차/인접 잠긴 패 가로챔 발생 시)에만
+            // 터치 좌표(e.clientX, e.clientY) 기준 최적의 자유 패를 정밀 기하학적(상위 층 우선)으로 구제 탐색
+            if (!this.isTileFree(targetTile) && e && e.clientX !== undefined && e.clientY !== undefined) {
               const freeCandidate = this.findBestFreeTileAtPoint(e.clientX, e.clientY);
               if (freeCandidate) {
                 targetTile = freeCandidate;
@@ -7755,24 +7760,29 @@
       findBestFreeTileAtPoint(clientX, clientY) {
         if (clientX === undefined || clientY === undefined) return null;
         const activeFreeTiles = this.tiles.filter(t => !t.removed && this.isTileFree(t) && t.el);
-        let bestTile = null;
-        let bestDist = Infinity;
+        // 터치 지점에 걸치는 후보 패들을 수집한 뒤, 상위 층(z가 큰 패) 우선, 동일 층이면 중심점 거리순으로 정밀 선택
+        const hits = [];
 
         for (const t of activeFreeTiles) {
           const rect = t.el.getBoundingClientRect();
-          // 타일의 바운딩 박스(사주/마작패 실제 렌더링 영역)에 마우스/S펜이 닿아 있는지 검사 (여유 마진 6px)
+          // 타일의 바운딩 박스(사주/마작패 실제 렌더링 영역)에 마우스/S펜/터치가 닿아 있는지 검사 (여유 마진 6px)
           if (clientX >= rect.left - 6 && clientX <= rect.right + 6 &&
               clientY >= rect.top - 6 && clientY <= rect.bottom + 6) {
             const cx = rect.left + rect.width / 2;
             const cy = rect.top + rect.height / 2;
             const dist = Math.hypot(clientX - cx, clientY - cy);
-            if (dist < bestDist) {
-              bestDist = dist;
-              bestTile = t;
-            }
+            hits.push({ tile: t, z: t.z, dist: dist });
           }
         }
-        return bestTile;
+
+        if (hits.length === 0) return null;
+        // 1순위: 상위 층 (z 역순), 2순위: 터치 중심점과의 최소 거리
+        hits.sort((a, b) => {
+          if (b.z !== a.z) return b.z - a.z;
+          return a.dist - b.dist;
+        });
+
+        return hits[0].tile;
       }
 
       /**
