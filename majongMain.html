@@ -2993,13 +2993,13 @@
     </div>
   </div>
 
-  <!-- 게임방법 간단설명 (한 컷 가이드) 모달 -->
+  <!-- 게임방법 간단설명 (하트 소진 가이드) 모달 -->
   <div class="modal-overlay" id="quick-rules-modal">
     <div class="modal-card quick-rules-card">
       <div class="quick-rules-header">
         <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 22px;">💡</span>
-          <h2 class="modal-title" style="margin-bottom: 0; font-size: 20px; color: #123927;">게임방법 간단설명</h2>
+          <span style="font-size: 22px;">💔</span>
+          <h2 class="modal-title" style="margin-bottom: 0; font-size: 20px; color: #123927;">하트가 깎이는 3가지 경우</h2>
         </div>
         <button class="quick-rules-close-icon" id="btn-quick-rules-close-x" aria-label="닫기">✕</button>
       </div>
@@ -3007,37 +3007,43 @@
       <div class="quick-rules-body">
         <!-- 인포그래픽 이미지 한 컷 -->
         <div class="quick-rules-img-container">
-          <img src="assets/quick_rules_guide.jpg" alt="시연 마작 게임방법 간단 가이드" class="quick-rules-img">
+          <img src="assets/quick_rules_guide.jpg" alt="시연 마작 하트 소진 3가지 규칙 인포그래픽" class="quick-rules-img">
         </div>
 
-        <!-- 3줄 핵심 요약 카드 -->
+        <!-- 하트 소진 3가지 경우 요약 카드 -->
         <div class="quick-rules-summary-box">
           <div class="quick-summary-item">
-            <span class="quick-step-badge">1</span>
+            <span class="quick-step-badge" style="background: linear-gradient(135deg, #e53e3e, #9b2c2c);">1</span>
             <div class="quick-step-content">
-              <strong>짝 맞추기 (슬롯 매칭)</strong>
-              <p>양옆이나 위에 장애물이 없는 자유 패를 터치해 슬롯으로 보내고, 같은 모양 2개를 모아 없앱니다.</p>
+              <strong>블라인드 패 3회 연속 실패 (-1💔)</strong>
+              <p>뒤집힌 물음표 패를 열고 다른 패를 터치해 <strong>3회 연속 매칭에 실패</strong>하면 하트 1개가 소진됩니다. (짝 매칭 성공 시 실패 카운트 리셋)</p>
             </div>
           </div>
           <div class="quick-summary-item">
-            <span class="quick-step-badge">2</span>
+            <span class="quick-step-badge" style="background: linear-gradient(135deg, #e53e3e, #9b2c2c);">2</span>
             <div class="quick-step-content">
-              <strong>뒤집힌 패 & 하트 관리</strong>
-              <p>물음표 패는 1회 터치로 확인하며, 3회 연속 매칭 실패나 셔플 시 하트가 깎이지 않게 신중히 고릅니다.</p>
+              <strong>보관함 슬롯 초과 (-1💔)</strong>
+              <p>임시 보관함 슬롯이 꽉 찬 상태에서 보드의 패를 추가로 터치하면 <strong>슬롯 초과 경고와 함께 하트 1개</strong>가 깎입니다. (마지막 패는 보드로 자동 반환)</p>
             </div>
           </div>
           <div class="quick-summary-item">
-            <span class="quick-step-badge">3</span>
+            <span class="quick-step-badge" style="background: linear-gradient(135deg, #e53e3e, #9b2c2c);">3</span>
             <div class="quick-step-content">
-              <strong>스테이지 클리어</strong>
-              <p>보드의 모든 패를 제거하면 판 클리어! 하트 1개 회복과 함께 다음 판으로 진행합니다.</p>
+              <strong>패 셔플 (🔀 버튼) 사용 (-1💔)</strong>
+              <p>패를 다시 섞는 [🔀 셔플] 사용 시 <strong>하트 1개</strong>가 소진됩니다. (단, <strong>하트가 1개 남았을 때는 판당 1회 '마지막 기회 무료 셔플'</strong> 발동)</p>
             </div>
+          </div>
+
+          <!-- 팁 바 -->
+          <div style="font-size: 12px; color: #1c744f; background: #eaf6ef; border: 1px solid #bfe3cf; border-radius: 8px; padding: 8px 10px; margin-top: 4px; display: flex; align-items: center; gap: 6px;">
+            <span style="font-size: 15px;">💡</span>
+            <span><strong>보너스 팁:</strong> [💡 힌트]는 하트 소진 없이 무료! / 판을 클리어할 때마다 하트 1개 회복!</span>
           </div>
         </div>
       </div>
 
       <div class="quick-rules-footer">
-        <button class="btn-detail-rules-link" id="btn-show-detail-rules">📜 상세 규칙(7개 항목) 보기</button>
+        <button class="btn-detail-rules-link" id="btn-show-detail-rules">📜 전체 상세 규칙(7개 항목) 보기</button>
         <button class="modal-btn" id="btn-quick-rules-close" style="width: auto; padding: 9px 24px;">확인 완료</button>
       </div>
     </div>
