@@ -258,7 +258,7 @@
       display: none;
       flex-direction: column;
       gap: 8px;
-      min-width: 220px;
+      min-width: 270px;
       max-width: calc(100vw - 24px);
       z-index: 1200;
       transform-origin: bottom right;
@@ -278,6 +278,69 @@
       to {
         opacity: 1;
         transform: scale(1) translateY(0);
+      }
+    }
+
+    /* 설정 메뉴 카테고리 탭 */
+    .settings-tabs {
+      display: flex;
+      gap: 3px;
+      background: rgba(228, 243, 234, 0.95);
+      padding: 3px;
+      border-radius: 10px;
+      border: 1px solid rgba(46, 167, 121, 0.22);
+      margin-bottom: 2px;
+    }
+
+    .settings-tab-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 6px 3px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #3b6b52;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .settings-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.65);
+      color: #123e2b;
+    }
+
+    .settings-tab-btn.active {
+      background: #ffffff;
+      color: #123e2b;
+      box-shadow: 0 2px 6px rgba(18, 62, 43, 0.12);
+    }
+
+    .settings-tab-panel {
+      display: none;
+      flex-direction: column;
+      gap: 7px;
+      animation: tabFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .settings-tab-panel.active {
+      display: flex;
+    }
+
+    @keyframes tabFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(3px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
 
@@ -2851,7 +2914,7 @@
       }
 
       .settings-dropdown {
-        min-width: 190px;
+        min-width: 260px;
         bottom: calc(100% + 8px);
         top: auto;
         padding: 10px;
@@ -2927,7 +2990,7 @@
         top: auto;
         padding: 6px;
         gap: 4px;
-        min-width: 170px;
+        min-width: 240px;
       }
 
       .settings-dropdown .diff-select {
@@ -3085,62 +3148,92 @@
           <span class="btn-icon">⚙️</span><span class="btn-label">설정</span>
         </button>
         <div class="settings-dropdown" id="settings-dropdown">
-          <div class="settings-item">
-            <span class="settings-label">🎮 난이도 선택</span>
-            <select class="diff-select" id="select-difficulty" title="난이도 선택">
-              <option value="easy">🌱 쉬움 (14종 · 슬롯 5개 · 공개)</option>
-              <option value="normal" selected>🌿 보통 (39종 · 슬롯 4개 · 블라인드 4개)</option>
-              <option value="hard">🔥 어려움 (63종 · 슬롯 4개 · 블라인드 12개)</option>
-              <option value="master">👑 달인 (89종 · 슬롯 3개 · 블라인드 18개 · 극한 병목)</option>
-            </select>
+          <!-- 기능별 카테고리 탭 헤더 -->
+          <div class="settings-tabs" role="tablist">
+            <button class="settings-tab-btn active" data-tab="game" role="tab" title="게임 진행 및 난이도 설정">
+              <span>🎮</span> 게임
+            </button>
+            <button class="settings-tab-btn" data-tab="assist" role="tab" title="자동 매칭 및 화면 편의 기능">
+              <span>🕹️</span> 편의
+            </button>
+            <button class="settings-tab-btn" data-tab="sound" role="tab" title="효과음 및 화면 모드">
+              <span>🎵</span> 소리/화면
+            </button>
+            <button class="settings-tab-btn" data-tab="info" role="tab" title="게임 규칙, 랭킹 및 타일 도감">
+              <span>📖</span> 안내
+            </button>
           </div>
-          <button class="btn settings-btn" id="btn-save-progress" title="현재 진행 상태 저장">
-            <span class="btn-icon">💾</span> 현재 판 진행 저장
-          </button>
-          <button class="btn settings-btn" id="btn-reset-stage" title="진행 초기화 후 1판부터 시작">
-            <span class="btn-icon">🔄</span> 1판부터 새로하기
-          </button>
-          <div class="settings-divider"></div>
-          <button class="btn settings-btn" id="btn-rules-header" title="게임 방법 안내">
-            <span class="btn-icon">📜</span> 게임 방법
-          </button>
-          <button class="btn settings-btn" id="btn-rank-header" title="명예의 전당">
-            <span class="btn-icon">🏆</span> 명예의 전당 (랭킹)
-          </button>
-          <button class="btn settings-btn" id="btn-tile-gallery" title="전체 타일 도감">
-            <span class="btn-icon">🀄</span> 전체 타일 도감
-          </button>
-                    <div class="settings-item">
-            <span class="settings-label">🎵 효과음 테마</span>
-            <select class="diff-select" id="select-sound-theme" title="효과음 테마 선택">
-              <option value="default" selected>✨ 시연 기본 테마 (리얼 마작 & 첼레스타)</option>
-              <option value="real">🀄 리얼 마작패 (실물 타격·바차임)</option>
-              <option value="wood">🪵 자연의 원목 (우드 & 오르골)</option>
-              <option value="synth">🎮 클래식 신디 (경쾌한 전자음)</option>
-            </select>
-          </div>
-                    <button class="btn settings-btn" id="btn-open-sound-settings" title="타일선택, 매칭, 바차임, 폭죽 소리 개별 변경">
-            <span class="btn-icon">🎛️</span> 효과음 상세 소리 설정...
-          </button>
-          <button class="btn settings-btn" id="btn-sound-toggle" title="효과음 켜기/끄기">
-            <span class="btn-icon" id="sound-toggle-icon">🔊</span> <span id="sound-toggle-text">소리 켜짐</span>
-          </button>
-          <button class="btn settings-btn" id="btn-fullscreen" title="전체화면 모드 토글">
-            <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
-          </button>
 
-          <button class="btn settings-btn" id="btn-auto-blind-pair" title="뒤집힌 패 뒤집은 후 같은 자유패 선택 시 두 패 자동 슬롯 이동">
-            <span class="btn-icon" id="auto-blind-pair-icon">🔒</span> <span id="auto-blind-pair-text">짝선택 자동슬롯: 꺼짐</span>
-          </button>
-          <button class="btn settings-btn" id="btn-auto-end-match" title="남은 타일 10개 이하 시 자동으로 매칭 진행">
-            <span class="btn-icon" id="auto-end-match-icon">🔒</span> <span id="auto-end-match-text">마지막10개 자동매칭: 꺼짐</span>
-          </button>
-          <button class="btn settings-btn" id="btn-dynamic-zoom" title="남은 패에 맞춰 화면을 자동으로 꽉 채우는 동적 확대">
-            <span class="btn-icon" id="dynamic-zoom-icon">🔒</span> <span id="dynamic-zoom-text">동적확대: 꺼짐</span>
-          </button>
+          <!-- 1. 게임 진행 & 난이도 탭 -->
+          <div class="settings-tab-panel active" data-tab="game" role="tabpanel">
+            <div class="settings-item">
+              <span class="settings-label">🎮 난이도 선택</span>
+              <select class="diff-select" id="select-difficulty" title="난이도 선택">
+                <option value="easy">🌱 쉬움 (14종 · 슬롯 5개 · 공개)</option>
+                <option value="normal" selected>🌿 보통 (39종 · 슬롯 4개 · 블라인드 4개)</option>
+                <option value="hard">🔥 어려움 (63종 · 슬롯 4개 · 블라인드 12개)</option>
+                <option value="master">👑 달인 (89종 · 슬롯 3개 · 블라인드 18개 · 극한 병목)</option>
+              </select>
+            </div>
+            <button class="btn settings-btn" id="btn-save-progress" title="현재 진행 상태 저장">
+              <span class="btn-icon">💾</span> 현재 판 진행 저장
+            </button>
+            <button class="btn settings-btn" id="btn-reset-stage" title="진행 초기화 후 1판부터 시작">
+              <span class="btn-icon">🔄</span> 1판부터 새로하기
+            </button>
+          </div>
+
+          <!-- 2. 편의 기능 & 어시스트 탭 -->
+          <div class="settings-tab-panel" data-tab="assist" role="tabpanel">
+            <button class="btn settings-btn" id="btn-auto-blind-pair" title="뒤집힌 패 뒤집은 후 같은 자유패 선택 시 두 패 자동 슬롯 이동">
+              <span class="btn-icon" id="auto-blind-pair-icon">🔒</span> <span id="auto-blind-pair-text">짝선택 자동슬롯: 꺼짐</span>
+            </button>
+            <button class="btn settings-btn" id="btn-auto-end-match" title="남은 타일 10개 이하 시 자동으로 매칭 진행">
+              <span class="btn-icon" id="auto-end-match-icon">🔒</span> <span id="auto-end-match-text">마지막10개 자동매칭: 꺼짐</span>
+            </button>
+            <button class="btn settings-btn" id="btn-dynamic-zoom" title="남은 패에 맞춰 화면을 자동으로 꽉 채우는 동적 확대">
+              <span class="btn-icon" id="dynamic-zoom-icon">🔒</span> <span id="dynamic-zoom-text">동적확대: 꺼짐</span>
+            </button>
+          </div>
+
+          <!-- 3. 사운드 & 화면 모드 탭 -->
+          <div class="settings-tab-panel" data-tab="sound" role="tabpanel">
+            <button class="btn settings-btn" id="btn-sound-toggle" title="효과음 켜기/끄기">
+              <span class="btn-icon" id="sound-toggle-icon">🔊</span> <span id="sound-toggle-text">소리 켜짐</span>
+            </button>
+            <div class="settings-item">
+              <span class="settings-label">🎵 효과음 테마</span>
+              <select class="diff-select" id="select-sound-theme" title="효과음 테마 선택">
+                <option value="default" selected>✨ 시연 기본 테마 (리얼 마작 & 첼레스타)</option>
+                <option value="real">🀄 리얼 마작패 (실물 타격·바차임)</option>
+                <option value="wood">🪵 자연의 원목 (우드 & 오르골)</option>
+                <option value="synth">🎮 클래식 신디 (경쾌한 전자음)</option>
+              </select>
+            </div>
+            <button class="btn settings-btn" id="btn-open-sound-settings" title="타일선택, 매칭, 바차임, 폭죽 소리 개별 변경">
+              <span class="btn-icon">🎛️</span> 효과음 상세 소리 설정...
+            </button>
+            <button class="btn settings-btn" id="btn-fullscreen" title="전체화면 모드 토글">
+              <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
+            </button>
+          </div>
+
+          <!-- 4. 게임 안내 & 도감 탭 -->
+          <div class="settings-tab-panel" data-tab="info" role="tabpanel">
+            <button class="btn settings-btn" id="btn-rules-header" title="게임 방법 안내">
+              <span class="btn-icon">📜</span> 게임 방법
+            </button>
+            <button class="btn settings-btn" id="btn-rank-header" title="명예의 전당">
+              <span class="btn-icon">🏆</span> 명예의 전당 (랭킹)
+            </button>
+            <button class="btn settings-btn" id="btn-tile-gallery" title="전체 타일 도감">
+              <span class="btn-icon">🀄</span> 전체 타일 도감
+            </button>
+          </div>
+
           <div class="settings-divider"></div>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.44
+            Si-Yeon Mahjong Solitaire v1.4.45
           </div>
         </div>
       </div>
@@ -3177,7 +3270,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.44</div>
+        <div class="splash-version-badge">v1.4.45</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -6340,6 +6433,19 @@
             if (rankModal) rankModal.classList.add('active');
           });
         }
+
+        // 설정 드롭다운 카테고리 탭 클릭 이벤트 바인딩
+        const settingsTabBtns = document.querySelectorAll('.settings-tab-btn');
+        const settingsTabPanels = document.querySelectorAll('.settings-tab-panel');
+        settingsTabBtns.forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.sound.playSelect();
+            const tabName = btn.dataset.tab;
+            settingsTabBtns.forEach(b => b.classList.toggle('active', b === btn));
+            settingsTabPanels.forEach(p => p.classList.toggle('active', p.dataset.tab === tabName));
+          });
+        });
 
         // 톱니바퀴 설정 메뉴 토글 및 외부 클릭 처리
         const btnSettings = document.getElementById('btn-settings');
