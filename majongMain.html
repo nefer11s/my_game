@@ -33,6 +33,21 @@
       padding: 0;
     }
 
+    html {
+      background-color: var(--bg-gradient-end);
+      background: radial-gradient(circle at center 30%, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    }
+
+    /* 전체화면 전환 시 브라우저 기본 검은색 화면(Black Backdrop) 플리커링 완벽 방지 */
+    :fullscreen,
+    ::backdrop,
+    :fullscreen::backdrop,
+    :-webkit-full-screen,
+    :-webkit-full-screen::backdrop {
+      background-color: #d6ebd9 !important;
+      background: radial-gradient(circle at center 30%, #eef7f2 0%, #d6ebd9 100%) !important;
+    }
+
     body {
       width: 100vw;
       height: 100vh;
@@ -3119,7 +3134,7 @@
           </button>
           <div class="settings-divider"></div>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.38
+            Si-Yeon Mahjong Solitaire v1.4.39
           </div>
         </div>
       </div>
@@ -3156,7 +3171,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.38</div>
+        <div class="splash-version-badge">v1.4.39</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -5935,7 +5950,7 @@
           { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 },
           { x: 2, y: 4 }, { x: 10, y: 4 },
           { x: 2, y: 8 }, { x: 10, y: 8 },
-          { x: 6, y: 2 }
+          { x: 6, y: 2 }, { x: 6, y: 10 }
         ];
         l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
         const l2 = [
@@ -6182,7 +6197,7 @@
           });
         }
 
-        // 초기화면에서 게임 시작 / 이어하기 시 전체화면으로 즉시 진입
+        // 초기화면에서 게임 시작 / 이어하기 시 전체화면 및 부드러운 전환 처리
         const btnSplashResume = document.getElementById('btn-splash-resume');
         if (btnSplashResume) {
           btnSplashResume.addEventListener('click', () => {
@@ -6202,13 +6217,25 @@
               }
               this.clearSavedProgress();
             }
+            // 전체화면 요청 선행
             this.enterFullscreen();
-            if (splashEl) splashEl.classList.remove('active');
+            // 보드 및 패들을 백그라운드에 먼저 렌더링 완료하여 검은 프레임 노출 원천 차단
             this.currentStage = 1;
             this.score = 0;
             this.hasStarted = true;
             this.startNewGame();
+            // 렌더링 준비 후 스플래시 오버레이 부드럽게 페이드아웃
+            if (splashEl) {
+              splashEl.classList.remove('active');
+            }
           });
+        }
+
+        // 스플래시 화면 아무 곳이나 터치/클릭 시에도 선제적으로 전체화면 전환 활성화
+        if (splashEl) {
+          splashEl.addEventListener('pointerdown', () => {
+            this.enterFullscreen();
+          }, { passive: true });
         }
 
         const quickRulesModal = document.getElementById('quick-rules-modal');
@@ -8960,16 +8987,17 @@
       const game = new MahjongGame();
       window.tileGalleryManager = new TileGalleryManager(game.sound);
 
-      // 초기화면 시작할 때 즉시 전체화면으로 전환
+      // 초기화면 시작할 때 즉시 전체화면 시도
       game.enterFullscreen();
 
-      // 브라우저 User Gesture 보안 정책 대응: 초기화면 첫 인터랙션(터치/클릭/키입력) 즉시 전체화면 진입 보장
-      const ensureFullscreenOnFirstAction = () => {
+      // 브라우저 보안 정책 대응: 초기화면 첫 터치/클릭/키입력 즉시 전체화면 진입
+      const ensureFullscreen = () => {
         game.enterFullscreen();
       };
-      window.addEventListener('pointerdown', ensureFullscreenOnFirstAction, { capture: true, once: true });
-      window.addEventListener('keydown', ensureFullscreenOnFirstAction, { capture: true, once: true });
-      window.addEventListener('click', ensureFullscreenOnFirstAction, { capture: true, once: true });
+      window.addEventListener('pointerdown', ensureFullscreen, { capture: true, passive: true });
+      window.addEventListener('touchstart', ensureFullscreen, { capture: true, passive: true });
+      window.addEventListener('keydown', ensureFullscreen, { capture: true, passive: true });
+      window.addEventListener('click', ensureFullscreen, { capture: true, passive: true });
     });
   </script>
 </body>
