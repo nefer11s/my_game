@@ -281,6 +281,33 @@
       }
     }
 
+    /* 직행 완료 플로팅 토스트 배너 */
+    .warp-toast {
+      position: fixed;
+      top: 54px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: linear-gradient(135deg, rgba(18, 62, 43, 0.95) 0%, rgba(10, 36, 25, 0.98) 100%);
+      color: #ffffff;
+      padding: 10px 22px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 800;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35), 0 0 0 1.5px rgba(46, 167, 121, 0.6);
+      z-index: 10001;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .warp-toast.active {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
     /* 레벨 & 판 직행 이동 모달 */
     .stage-warp-card {
       width: 92%;
@@ -3415,7 +3442,7 @@
 
           <div class="settings-divider"></div>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.47
+            Si-Yeon Mahjong Solitaire v1.4.48
           </div>
         </div>
       </div>
@@ -3507,7 +3534,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.47</div>
+        <div class="splash-version-badge">v1.4.48</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -6724,7 +6751,7 @@
           });
         }
 
-        // 레벨 & 판 직행 모달 연동
+        // 레벨 & 판 직행 모달 연동 (터치/S펜 듀얼 바인딩 및 완벽 동작 보장)
         const btnOpenStageWarp = document.getElementById('btn-open-stage-warp');
         const stageWarpModal = document.getElementById('stage-warp-modal');
         const btnStageWarpCloseX = document.getElementById('btn-stage-warp-close-x');
@@ -6749,46 +6776,63 @@
           warpInfoBadge.innerHTML = `💡 <strong>${diffName} 모드 제 ${stage}판</strong>${extra}으로 즉시 직행합니다.`;
         };
 
+        const openStageWarpModal = (e) => {
+          if (e && e.stopPropagation) e.stopPropagation();
+          this.sound.playSelect();
+          if (settingsDropdown) {
+            settingsDropdown.classList.remove('active');
+            if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
+          }
+          if (warpSelectDiff) warpSelectDiff.value = this.difficulty;
+          if (warpStageInput) warpStageInput.value = this.currentStage;
+          updateWarpInfoBadge();
+          if (stageWarpModal) stageWarpModal.classList.add('active');
+        };
+
         if (btnOpenStageWarp) {
-          btnOpenStageWarp.addEventListener('click', () => {
-            this.sound.playSelect();
-            if (settingsDropdown) {
-              settingsDropdown.classList.remove('active');
-              if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
-            }
-            if (warpSelectDiff) warpSelectDiff.value = this.difficulty;
-            if (warpStageInput) warpStageInput.value = this.currentStage;
-            updateWarpInfoBadge();
-            if (stageWarpModal) stageWarpModal.classList.add('active');
-          });
+          btnOpenStageWarp.addEventListener('pointerdown', openStageWarpModal);
+          btnOpenStageWarp.addEventListener('click', openStageWarpModal);
         }
 
-        const closeStageWarpModal = () => {
+        const closeStageWarpModal = (e) => {
+          if (e && e.stopPropagation) e.stopPropagation();
           this.sound.playSelect();
           if (stageWarpModal) stageWarpModal.classList.remove('active');
         };
 
-        if (btnStageWarpCloseX) btnStageWarpCloseX.addEventListener('click', closeStageWarpModal);
-        if (btnStageWarpCancel) btnStageWarpCancel.addEventListener('click', closeStageWarpModal);
+        if (btnStageWarpCloseX) {
+          btnStageWarpCloseX.addEventListener('pointerdown', closeStageWarpModal);
+          btnStageWarpCloseX.addEventListener('click', closeStageWarpModal);
+        }
+        if (btnStageWarpCancel) {
+          btnStageWarpCancel.addEventListener('pointerdown', closeStageWarpModal);
+          btnStageWarpCancel.addEventListener('click', closeStageWarpModal);
+        }
 
-        if (btnWarpMinus && warpStageInput) {
-          btnWarpMinus.addEventListener('click', () => {
-            this.sound.playSelect();
-            let val = Math.max(1, parseInt(warpStageInput.value, 10) || 1);
-            if (val > 1) {
-              warpStageInput.value = val - 1;
-              updateWarpInfoBadge();
+        // 모달 바깥 어두운 배경 터치 시 닫기
+        if (stageWarpModal) {
+          stageWarpModal.addEventListener('pointerdown', (e) => {
+            if (e.target === stageWarpModal) {
+              closeStageWarpModal(e);
             }
           });
         }
 
-        if (btnWarpPlus && warpStageInput) {
-          btnWarpPlus.addEventListener('click', () => {
-            this.sound.playSelect();
-            let val = Math.max(1, parseInt(warpStageInput.value, 10) || 1);
-            warpStageInput.value = val + 1;
-            updateWarpInfoBadge();
-          });
+        const stepWarpStage = (delta) => {
+          this.sound.playSelect();
+          let val = Math.max(1, parseInt(warpStageInput ? warpStageInput.value : 1, 10) || 1);
+          val = Math.max(1, Math.min(999, val + delta));
+          if (warpStageInput) warpStageInput.value = val;
+          updateWarpInfoBadge();
+        };
+
+        if (btnWarpMinus) {
+          btnWarpMinus.addEventListener('pointerdown', (e) => { e.stopPropagation(); stepWarpStage(-1); });
+          btnWarpMinus.addEventListener('click', (e) => { e.stopPropagation(); });
+        }
+        if (btnWarpPlus) {
+          btnWarpPlus.addEventListener('pointerdown', (e) => { e.stopPropagation(); stepWarpStage(1); });
+          btnWarpPlus.addEventListener('click', (e) => { e.stopPropagation(); });
         }
 
         if (warpSelectDiff) warpSelectDiff.addEventListener('change', updateWarpInfoBadge);
@@ -6796,45 +6840,81 @@
 
         const quickChips = document.querySelectorAll('.warp-chip');
         quickChips.forEach(chip => {
-          chip.addEventListener('click', () => {
+          const handleChip = (e) => {
+            e.stopPropagation();
             this.sound.playSelect();
             const s = chip.dataset.stage;
             if (s && warpStageInput) {
               warpStageInput.value = s;
               updateWarpInfoBadge();
             }
-          });
+          };
+          chip.addEventListener('pointerdown', handleChip);
+          chip.addEventListener('click', handleChip);
         });
 
-        if (btnStageWarpConfirm) {
-          btnStageWarpConfirm.addEventListener('click', () => {
-            const targetDiff = warpSelectDiff ? warpSelectDiff.value : this.difficulty;
-            const targetStage = Math.max(1, parseInt(warpStageInput ? warpStageInput.value : 1, 10) || 1);
+        // 직행 실행 함수
+        let warpExecuting = false;
+        const executeStageWarp = (e) => {
+          if (warpExecuting) return;
+          warpExecuting = true;
+          if (e && e.stopPropagation) e.stopPropagation();
 
-            this.sound.playMatchSuccess();
-            if (stageWarpModal) stageWarpModal.classList.remove('active');
+          const targetDiff = warpSelectDiff ? warpSelectDiff.value : this.difficulty;
+          const targetStage = Math.max(1, parseInt(warpStageInput ? warpStageInput.value : 1, 10) || 1);
 
-            // 목표 난이도 및 스테이지 적용
-            this.difficulty = targetDiff;
-            try {
-              localStorage.setItem('siyeon_mahjong_difficulty', targetDiff);
-            } catch (e) { }
+          this.sound.playMatchSuccess();
+          if (stageWarpModal) stageWarpModal.classList.remove('active');
 
-            const diffSelectEl = document.getElementById('select-difficulty');
-            if (diffSelectEl) diffSelectEl.value = targetDiff;
+          // 스플래시 화면이 아직 켜져 있는 상태라면 스플래시 즉시 제거
+          const splashScreen = document.getElementById('splash-screen');
+          if (splashScreen) splashScreen.classList.remove('active');
 
-            this.currentStage = targetStage;
-            this.score = Math.max(0, (targetStage - 1) * 500);
-            this.hasStarted = true;
-            this.saveProgress();
-            this.startNewGame(false);
+          // 목표 난이도 및 스테이지 적용
+          this.difficulty = targetDiff;
+          try {
+            localStorage.setItem('siyeon_mahjong_difficulty', targetDiff);
+          } catch (e) { }
 
-            const diffName = DIFFICULTY_CONFIG[targetDiff] ? DIFFICULTY_CONFIG[targetDiff].name : targetDiff;
-            alert(`[🚀 직행 완료] ${diffName} 모드 제 ${targetStage}판으로 직행하였습니다!`);
+          const diffSelectEl = document.getElementById('select-difficulty');
+          if (diffSelectEl) diffSelectEl.value = targetDiff;
+
+          this.currentStage = targetStage;
+          this.score = Math.max(0, (targetStage - 1) * 500);
+          this.hasStarted = true;
+          this.saveProgress();
+
+          // 새 보드 생성 및 타이머 재시작 (keepScore = true)
+          this.startNewGame(true);
+          this.updateHeaderUI();
+
+          // 화면 중앙 상단에 플로팅 토스트 배너 출력 (alert 대신 부드러운 인게임 배너)
+          const diffName = DIFFICULTY_CONFIG[targetDiff] ? DIFFICULTY_CONFIG[targetDiff].name : targetDiff;
+          const oldToast = document.querySelector('.warp-toast');
+          if (oldToast) oldToast.remove();
+
+          const toast = document.createElement('div');
+          toast.className = 'warp-toast';
+          toast.innerHTML = `<span>🚀</span> <strong>${diffName} 모드 제 ${targetStage}판</strong>으로 직행 완료!`;
+          document.body.appendChild(toast);
+
+          requestAnimationFrame(() => {
+            toast.classList.add('active');
+            setTimeout(() => {
+              toast.classList.remove('active');
+              setTimeout(() => toast.remove(), 400);
+            }, 2600);
           });
+
+          setTimeout(() => { warpExecuting = false; }, 300);
+        };
+
+        if (btnStageWarpConfirm) {
+          btnStageWarpConfirm.addEventListener('pointerdown', executeStageWarp);
+          btnStageWarpConfirm.addEventListener('click', executeStageWarp);
         }
 
-        const btnResetStage = document.getElementById('btn-reset-stage');
+                const btnResetStage = document.getElementById('btn-reset-stage');
         if (btnResetStage) {
           btnResetStage.addEventListener('click', () => {
             this.sound.playSelect();
@@ -8029,12 +8109,14 @@
             if (e && e.cancelable) e.preventDefault();
 
             let targetTile = tile;
-            // 터치된 본래 패가 자유 패가 아닌 경우(3D 단차 오차/인접 잠긴 패 가로챔 발생 시)에만
-            // 터치 좌표(e.clientX, e.clientY) 기준 최적의 자유 패를 정밀 기하학적(상위 층 우선)으로 구제 탐색
-            if (!this.isTileFree(targetTile) && e && e.clientX !== undefined && e.clientY !== undefined) {
+            // [스마트 자석 스냅] 터치 지점 주변에 더 높은 층의 자유 패가 있거나 현재 패가 잠겨 있는 경우 최적 자유 패로 즉각 스냅
+            if (e && e.clientX !== undefined && e.clientY !== undefined) {
               const freeCandidate = this.findBestFreeTileAtPoint(e.clientX, e.clientY);
               if (freeCandidate) {
-                targetTile = freeCandidate;
+                // 현재 패가 잠겨있거나, 후보 패가 현재 패보다 더 상위 층인 경우 타겟 승격
+                if (!this.isTileFree(targetTile) || freeCandidate.z > targetTile.z) {
+                  targetTile = freeCandidate;
+                }
               }
             }
 
@@ -8291,32 +8373,39 @@
        * 화면 절대 좌표(clientX, clientY) 기반 최적의 자유 패 기하학적 정밀 탐색
        * 3D 단차나 인접 타일(우하단) 겹침으로 포인터가 가로채졌을 때 100% 자유 패 우선권 라우팅
        */
+      /**
+       * [터치 좌표 정밀 보정 엔진] 화면 절대 좌표(clientX, clientY) 기반 스마트 자석 스냅
+       * 1. 가로 66px × 세로 88px 직사각형 외곽 테두리(Edge) 최단거리 정밀 측정
+       * 2. 감지 마진을 22px(하프 그리드 반 칸 약 65%)로 확장하여 지그재그 경계선 및 미스 터치 완벽 흡수
+       * 3. 상위 층(tile.z)에 16px 상당의 우선 흡착 가중치 부여 (아랫패 대신 윗패 자석 선택)
+       */
       findBestFreeTileAtPoint(clientX, clientY) {
         if (clientX === undefined || clientY === undefined) return null;
         const activeFreeTiles = this.tiles.filter(t => !t.removed && this.isTileFree(t) && t.el);
-        // 터치 지점에 걸치는 후보 패들을 수집한 뒤, 상위 층(z가 큰 패) 우선, 동일 층이면 중심점 거리순으로 정밀 선택
-        const hits = [];
+        if (activeFreeTiles.length === 0) return null;
+
+        const candidates = [];
+        const SNAP_MARGIN = 22; // 22px 스마트 스냅 반경
 
         for (const t of activeFreeTiles) {
           const rect = t.el.getBoundingClientRect();
-          // 타일의 바운딩 박스(사주/마작패 실제 렌더링 영역)에 마우스/S펜/터치가 닿아 있는지 검사 (여유 마진 6px)
-          if (clientX >= rect.left - 6 && clientX <= rect.right + 6 &&
-              clientY >= rect.top - 6 && clientY <= rect.bottom + 6) {
-            const cx = rect.left + rect.width / 2;
-            const cy = rect.top + rect.height / 2;
-            const dist = Math.hypot(clientX - cx, clientY - cy);
-            hits.push({ tile: t, z: t.z, dist: dist });
+          // 직사각형 테두리(Clamped Box) 최단거리 계산
+          const dx = Math.max(0, rect.left - clientX, clientX - rect.right);
+          const dy = Math.max(0, rect.top - clientY, clientY - rect.bottom);
+          const edgeDist = Math.hypot(dx, dy);
+
+          if (edgeDist <= SNAP_MARGIN) {
+            // 상위 층 타일에 16px 상당의 거리 우대 가중치 적용 (아랫패와 겹칠 때 윗패 100% 선택)
+            const weightedScore = edgeDist - (t.z * 16);
+            candidates.push({ tile: t, z: t.z, edgeDist: edgeDist, score: weightedScore });
           }
         }
 
-        if (hits.length === 0) return null;
-        // 1순위: 상위 층 (z 역순), 2순위: 터치 중심점과의 최소 거리
-        hits.sort((a, b) => {
-          if (b.z !== a.z) return b.z - a.z;
-          return a.dist - b.dist;
-        });
+        if (candidates.length === 0) return null;
 
-        return hits[0].tile;
+        // 최종 선택: 보정 점수(score) 최소값 (상위 층 우선 + 최근접 타일)
+        candidates.sort((a, b) => a.score - b.score);
+        return candidates[0].tile;
       }
 
       /**
