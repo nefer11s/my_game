@@ -1549,6 +1549,151 @@
       margin: 0;
     }
 
+    /* 게임방법 간단설명 (한 컷 인포그래픽) 모달 스타일 */
+    .quick-rules-card {
+      max-width: 620px;
+      width: 94vw;
+      max-height: 90vh;
+      padding: 20px 18px 16px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+
+    .quick-rules-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      border-bottom: 1.5px solid #e5f0ea;
+      padding-bottom: 10px;
+      flex-shrink: 0;
+    }
+
+    .quick-rules-close-icon {
+      background: none;
+      border: none;
+      font-size: 20px;
+      color: #7b9e8e;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 8px;
+      line-height: 1;
+      transition: all 0.15s ease;
+    }
+
+    .quick-rules-close-icon:hover {
+      background: #e8f3ec;
+      color: #1a4230;
+    }
+
+    .quick-rules-body {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-bottom: 14px;
+      flex: 1;
+    }
+
+    .quick-rules-img-container {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #d2e4db;
+      box-shadow: 0 4px 16px rgba(18, 57, 39, 0.1);
+      background: #0d281a;
+      flex-shrink: 0;
+    }
+
+    .quick-rules-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.25s ease;
+    }
+
+    .quick-rules-img-container:hover .quick-rules-img {
+      transform: scale(1.01);
+    }
+
+    .quick-rules-summary-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #f4f9f6;
+      border: 1px solid #e1eee6;
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+
+    .quick-summary-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .quick-step-badge {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2ea779, #1c744f);
+      color: #ffffff;
+      font-size: 12.5px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+      box-shadow: 0 2px 5px rgba(28, 116, 79, 0.25);
+    }
+
+    .quick-step-content strong {
+      font-size: 13.5px;
+      color: #1a4230;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .quick-step-content p {
+      font-size: 12px;
+      color: #557967;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .quick-rules-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #edf4f0;
+      flex-shrink: 0;
+    }
+
+    .btn-detail-rules-link {
+      background: #f0f7f3;
+      border: 1px solid #c9e0d4;
+      color: #245e43;
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 9px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-detail-rules-link:hover {
+      background: #e1efe7;
+      border-color: #2ea779;
+      color: #123927;
+    }
+
     
     /* 사운드 개별 설정 모달 스타일 */
     .sound-config-item {
@@ -2838,12 +2983,62 @@
             <span class="btn-icon">🎮</span> 게임 시작
           </button>
           <button class="splash-btn-rules" id="btn-splash-rules">
-            <span class="btn-icon">📜</span> 게임 방법
+            <span class="btn-icon">📜</span> 게임방법 간단설명
           </button>
           <button class="splash-btn-rank" id="btn-splash-rank">
             <span class="btn-icon">🏆</span> 명예의 전당
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 게임방법 간단설명 (한 컷 가이드) 모달 -->
+  <div class="modal-overlay" id="quick-rules-modal">
+    <div class="modal-card quick-rules-card">
+      <div class="quick-rules-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 22px;">💡</span>
+          <h2 class="modal-title" style="margin-bottom: 0; font-size: 20px; color: #123927;">게임방법 간단설명</h2>
+        </div>
+        <button class="quick-rules-close-icon" id="btn-quick-rules-close-x" aria-label="닫기">✕</button>
+      </div>
+
+      <div class="quick-rules-body">
+        <!-- 인포그래픽 이미지 한 컷 -->
+        <div class="quick-rules-img-container">
+          <img src="assets/quick_rules_guide.jpg" alt="시연 마작 게임방법 간단 가이드" class="quick-rules-img">
+        </div>
+
+        <!-- 3줄 핵심 요약 카드 -->
+        <div class="quick-rules-summary-box">
+          <div class="quick-summary-item">
+            <span class="quick-step-badge">1</span>
+            <div class="quick-step-content">
+              <strong>짝 맞추기 (슬롯 매칭)</strong>
+              <p>양옆이나 위에 장애물이 없는 자유 패를 터치해 슬롯으로 보내고, 같은 모양 2개를 모아 없앱니다.</p>
+            </div>
+          </div>
+          <div class="quick-summary-item">
+            <span class="quick-step-badge">2</span>
+            <div class="quick-step-content">
+              <strong>뒤집힌 패 & 하트 관리</strong>
+              <p>물음표 패는 1회 터치로 확인하며, 3회 연속 매칭 실패나 셔플 시 하트가 깎이지 않게 신중히 고릅니다.</p>
+            </div>
+          </div>
+          <div class="quick-summary-item">
+            <span class="quick-step-badge">3</span>
+            <div class="quick-step-content">
+              <strong>스테이지 클리어</strong>
+              <p>보드의 모든 패를 제거하면 판 클리어! 하트 1개 회복과 함께 다음 판으로 진행합니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-rules-footer">
+        <button class="btn-detail-rules-link" id="btn-show-detail-rules">📜 상세 규칙(7개 항목) 보기</button>
+        <button class="modal-btn" id="btn-quick-rules-close" style="width: auto; padding: 9px 24px;">확인 완료</button>
       </div>
     </div>
   </div>
@@ -2856,6 +3051,11 @@
         <h2 class="modal-title" style="margin-bottom: 0; font-size: 22px;">게임 방법 안내</h2>
       </div>
       <div class="rules-body">
+        <div style="margin-bottom: 2px;">
+          <button class="btn-detail-rules-link" id="btn-back-to-quick-rules" style="width: 100%; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px;">
+            <span>💡</span> <strong>한 컷 요약 가이드 보기</strong>
+          </button>
+        </div>
         <div class="rule-item">
           <div class="rule-num">1</div>
           <div class="rule-text">
@@ -5813,11 +6013,49 @@
           });
         }
 
+        const quickRulesModal = document.getElementById('quick-rules-modal');
+        const btnQuickRulesClose = document.getElementById('btn-quick-rules-close');
+        const btnQuickRulesCloseX = document.getElementById('btn-quick-rules-close-x');
+        const btnShowDetailRules = document.getElementById('btn-show-detail-rules');
+        const btnBackToQuickRules = document.getElementById('btn-back-to-quick-rules');
+
+        const closeQuickRules = () => {
+          this.sound.playSelect();
+          if (quickRulesModal) quickRulesModal.classList.remove('active');
+        };
+
+        if (btnQuickRulesClose) btnQuickRulesClose.addEventListener('click', closeQuickRules);
+        if (btnQuickRulesCloseX) btnQuickRulesCloseX.addEventListener('click', closeQuickRules);
+
+        if (btnShowDetailRules) {
+          btnShowDetailRules.addEventListener('click', () => {
+            this.sound.playSelect();
+            if (quickRulesModal) quickRulesModal.classList.remove('active');
+            if (rulesModal) rulesModal.classList.add('active');
+          });
+        }
+
+        if (btnBackToQuickRules) {
+          btnBackToQuickRules.addEventListener('click', () => {
+            this.sound.playSelect();
+            if (rulesModal) rulesModal.classList.remove('active');
+            if (quickRulesModal) quickRulesModal.classList.add('active');
+          });
+        }
+
+        if (quickRulesModal) {
+          quickRulesModal.addEventListener('click', (e) => {
+            if (e.target === quickRulesModal) {
+              closeQuickRules();
+            }
+          });
+        }
+
         if (btnSplashRules) {
           btnSplashRules.addEventListener('click', () => {
             enterFullscreenAuto();
             this.sound.playSelect();
-            if (rulesModal) rulesModal.classList.add('active');
+            if (quickRulesModal) quickRulesModal.classList.add('active');
           });
         }
 
@@ -5895,7 +6133,7 @@
               settingsDropdown.classList.remove('active');
               if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
             }
-            if (rulesModal) rulesModal.classList.add('active');
+            if (quickRulesModal) quickRulesModal.classList.add('active');
           });
         }
 
