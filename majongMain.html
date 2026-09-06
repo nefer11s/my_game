@@ -5970,29 +5970,12 @@
         const goSubmitRank = document.getElementById('go-submit-rank');
         const goRestartBtn = document.getElementById('go-restart-btn');
 
-        // 기본적으로 스플래시 화면 첫 터치/클릭부터 전체화면 모드 자동 진입
-        const enterFullscreenAuto = () => {
-          const doc = document;
-          const isFull = !!(doc.fullscreenElement || doc.webkitFullscreenElement);
-          if (!isFull) {
-            const docEl = document.documentElement;
-            if (docEl.requestFullscreen) {
-              docEl.requestFullscreen().catch(() => { });
-            } else if (docEl.webkitRequestFullscreen) {
-              docEl.webkitRequestFullscreen();
-            }
-          }
-        };
-
-        // 스플래시 화면 어디든 터치/클릭 시 전체화면 시도
-        if (splashEl) {
-          splashEl.addEventListener('pointerdown', () => enterFullscreenAuto(), { once: true });
-        }
+        // [개선] 초기화면 클릭 시 강제 전체화면 전환으로 인한 모니터 화면 깜빡임/블랙아웃(검은 화면) 방지
+        // 전체화면은 사용자가 필요할 때 하단 설정의 [전체화면] 버튼을 통해 수동 전환 가능
 
         const btnSplashResume = document.getElementById('btn-splash-resume');
         if (btnSplashResume) {
           btnSplashResume.addEventListener('click', () => {
-            enterFullscreenAuto();
             this.sound.playSelect();
             this.resumeSavedGame();
           });
@@ -6000,7 +5983,6 @@
 
         if (btnSplashStart) {
           btnSplashStart.addEventListener('click', () => {
-            enterFullscreenAuto();
             this.sound.playSelect();
             const saved = this.getSavedProgress();
             if (saved && saved.stage > 1) {
@@ -6057,7 +6039,6 @@
 
         if (btnSplashRules) {
           btnSplashRules.addEventListener('click', () => {
-            enterFullscreenAuto();
             this.sound.playSelect();
             if (quickRulesModal) quickRulesModal.classList.add('active');
           });
@@ -6065,7 +6046,6 @@
 
         if (btnSplashRank) {
           btnSplashRank.addEventListener('click', () => {
-            enterFullscreenAuto();
             this.sound.playSelect();
             this.renderHallOfFame();
             if (rankModal) rankModal.classList.add('active');
