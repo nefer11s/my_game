@@ -5951,6 +5951,7 @@
         this.initViewportGestures();
         this.updateResumeButtonUI();
         this.startNewGame();
+        this.enterFullscreen();
       }
 
       /**
@@ -8397,12 +8398,16 @@
       enterFullscreen() {
         const doc = document;
         const docEl = document.documentElement;
-        const isFull = !!(doc.fullscreenElement || doc.webkitFullscreenElement);
+        const isFull = !!(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement);
         if (!isFull) {
-          if (docEl.requestFullscreen) {
-            docEl.requestFullscreen().catch(() => { });
-          } else if (docEl.webkitRequestFullscreen) {
-            docEl.webkitRequestFullscreen();
+          const req = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
+          if (req) {
+            try {
+              const res = req.call(docEl);
+              if (res && res.catch) {
+                res.catch(() => { });
+              }
+            } catch (e) { }
           }
         }
       }
@@ -8682,6 +8687,17 @@
     window.addEventListener('DOMContentLoaded', () => {
       const game = new MahjongGame();
       window.tileGalleryManager = new TileGalleryManager(game.sound);
+
+      // 초기화면 시작할 때 즉시 전체화면으로 전환
+      game.enterFullscreen();
+
+      // 브라우저 User Gesture 보안 정책 대응: 초기화면 첫 인터랙션(터치/클릭/키입력) 즉시 전체화면 진입 보장
+      const ensureFullscreenOnFirstAction = () => {
+        game.enterFullscreen();
+      };
+      window.addEventListener('pointerdown', ensureFullscreenOnFirstAction, { capture: true, once: true });
+      window.addEventListener('keydown', ensureFullscreenOnFirstAction, { capture: true, once: true });
+      window.addEventListener('click', ensureFullscreenOnFirstAction, { capture: true, once: true });
     });
   </script>
 </body>
