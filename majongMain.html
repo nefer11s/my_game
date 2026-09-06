@@ -3447,7 +3447,7 @@
 
           <div class="settings-divider"></div>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.50
+            Si-Yeon Mahjong Solitaire v1.4.51
           </div>
         </div>
       </div>
@@ -3539,7 +3539,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.50</div>
+        <div class="splash-version-badge">v1.4.51</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -4568,6 +4568,15 @@
           osc.start(t);
           osc.stop(t + 0.55);
         });
+      }
+
+      // 안전 호환용 별칭 메서드 (미정의 호출로 인한 TypeError 방지)
+      playMatchSuccess(overrideType = null) {
+        this.playMatch(overrideType);
+      }
+
+      playChime(startTime = null, overrideType = null) {
+        this.playWindChime(startTime, overrideType);
       }
     }
 
@@ -6871,7 +6880,7 @@
           const targetDiff = warpSelectDiff ? warpSelectDiff.value : this.difficulty;
           const targetStage = Math.max(1, parseInt(warpStageInput ? warpStageInput.value : 1, 10) || 1);
 
-          this.sound.playMatchSuccess();
+          this.sound.playMatch();
           if (stageWarpModal) stageWarpModal.classList.remove('active');
 
           // 스플래시 화면이 아직 켜져 있는 상태라면 스플래시 즉시 제거
@@ -9148,7 +9157,7 @@
           // 마스터 올 블라인드 격파 특수 팡파레 연쇄 효과음
           this.sound.playWin();
           setTimeout(() => this.sound.playFirework(), 250);
-          setTimeout(() => this.sound.playChime(), 550);
+          setTimeout(() => this.sound.playWindChime(), 550);
           setTimeout(() => this.sound.playFirework(), 850);
         } else {
           this.sound.playWin();
