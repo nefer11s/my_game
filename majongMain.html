@@ -1356,97 +1356,6 @@
       50% { box-shadow: 0 8px 28px rgba(243, 156, 18, 0.7); }
     }
 
-    /* 전체화면 시작 게이트 */
-    .fullscreen-gate {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at 50% 40%, rgba(14, 46, 32, 0.96) 0%, rgba(6, 20, 14, 0.98) 100%);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      opacity: 1;
-      transition: opacity 0.35s ease, visibility 0.35s ease;
-      cursor: pointer;
-    }
-
-    .fullscreen-gate.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .fullscreen-gate-card {
-      background: linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 248, 243, 0.95) 100%);
-      width: 90%;
-      max-width: 380px;
-      padding: 32px 24px;
-      border-radius: 24px;
-      text-align: center;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.8);
-      transform: translateY(0);
-      animation: gatePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    @keyframes gatePop {
-      from { transform: scale(0.9) translateY(20px); opacity: 0; }
-      to { transform: scale(1) translateY(0); opacity: 1; }
-    }
-
-    .gate-logo {
-      font-size: 52px;
-      line-height: 1;
-      margin-bottom: 12px;
-      filter: drop-shadow(0 4px 10px rgba(46, 167, 121, 0.35));
-    }
-
-    .gate-title {
-      font-family: 'Noto Serif KR', serif;
-      font-size: 24px;
-      font-weight: 900;
-      color: #123e2b;
-      margin-bottom: 6px;
-      letter-spacing: -0.5px;
-    }
-
-    .gate-sub {
-      font-size: 13px;
-      color: #4a755d;
-      margin-bottom: 22px;
-      line-height: 1.4;
-    }
-
-    .gate-btn {
-      width: 100%;
-      height: 52px;
-      background: linear-gradient(135deg, #2ea779 0%, #1e7a56 100%);
-      color: #ffffff;
-      border: none;
-      border-radius: 14px;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      box-shadow: 0 8px 20px rgba(46, 167, 121, 0.38);
-      animation: gatePulse 2s infinite ease-in-out;
-    }
-
-    @keyframes gatePulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 8px 20px rgba(46, 167, 121, 0.38); }
-      50% { transform: scale(1.03); box-shadow: 0 12px 28px rgba(46, 167, 121, 0.55); }
-    }
-
-    .gate-hint {
-      margin-top: 14px;
-      font-size: 12px;
-      color: #7b998a;
-    }
-
     /* 스플래시 화면 오버레이 */
     .splash-overlay {
       position: fixed;
@@ -3231,7 +3140,7 @@
           </button>
           <div class="settings-divider"></div>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.41
+            Si-Yeon Mahjong Solitaire v1.4.42
           </div>
         </div>
       </div>
@@ -3260,19 +3169,6 @@
     </div>
   </div>
 
-  <!-- 전체화면 시작 게이트: 터치 즉시 브라우저를 전체화면으로 전환 후 스플래시 화면 진입 -->
-  <div class="fullscreen-gate" id="fullscreen-gate">
-    <div class="fullscreen-gate-card">
-      <div class="gate-logo">🀄</div>
-      <h2 class="gate-title">시연이네 그림맞추기</h2>
-      <p class="gate-sub">몰입도 높은 전체화면 플레이 환경을 제공합니다</p>
-      <button class="gate-btn" id="btn-gate-enter">
-        <span class="gate-btn-icon">⛶</span> 터치하여 전체화면 시작
-      </button>
-      <div class="gate-hint">화면 어디를 터치하셔도 즉시 전체화면으로 시작됩니다</div>
-    </div>
-  </div>
-
   <!-- 스플래시 인트로 화면 -->
   <div class="splash-overlay active" id="splash-screen">
     <div class="splash-card">
@@ -3281,7 +3177,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.41</div>
+        <div class="splash-version-badge">v1.4.42</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -9097,36 +8993,10 @@
       const game = new MahjongGame();
       window.tileGalleryManager = new TileGalleryManager(game.sound);
 
-      // 초기화면 시작할 때 즉시 전체화면 시도
+      // 초기 스플래시 화면 시작 시 즉시 전체화면으로 전환
       game.enterFullscreen();
 
-      // 전체화면 시작 게이트 처리: 화면 터치 즉시 전체화면으로 전환하여 스플래시 화면부터 전체화면 보장
-      const gateEl = document.getElementById('fullscreen-gate');
-      if (gateEl) {
-        const isAlreadyFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
-        if (isAlreadyFullscreen) {
-          gateEl.remove();
-        } else {
-          let gateHandled = false;
-          const handleGateEnter = (e) => {
-            if (gateHandled) return;
-            gateHandled = true;
-            if (e && e.stopPropagation) e.stopPropagation();
-            game.enterFullscreen();
-            if (game.sound) game.sound.initAudio();
-            gateEl.classList.add('hidden');
-            setTimeout(() => {
-              if (gateEl && gateEl.parentNode) gateEl.remove();
-            }, 400);
-          };
-
-          gateEl.addEventListener('pointerdown', handleGateEnter, { once: true });
-          gateEl.addEventListener('touchstart', handleGateEnter, { once: true, passive: true });
-          gateEl.addEventListener('click', handleGateEnter, { once: true });
-        }
-      }
-
-      // 브라우저 보안 정책 대응: 이후 모든 화면 상호작용에서도 전체화면 보장
+      // 브라우저 보안 정책 대응: 초기화면 첫 인터랙션(터치/클릭/키입력) 즉시 전체화면 진입 보장
       const ensureFullscreen = () => {
         game.enterFullscreen();
       };
