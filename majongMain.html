@@ -281,6 +281,185 @@
       }
     }
 
+    /* 레벨 & 판 직행 이동 모달 */
+    .stage-warp-card {
+      width: 92%;
+      max-width: 420px;
+      padding: 22px 20px;
+      border-radius: 20px;
+      background: linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(240, 248, 243, 0.96) 100%);
+      box-shadow: 0 20px 50px rgba(18, 62, 43, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.85);
+      text-align: left;
+    }
+
+    .stage-warp-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1.5px solid rgba(46, 167, 121, 0.2);
+    }
+
+    .stage-warp-close-btn {
+      background: rgba(230, 244, 236, 0.9);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 16px;
+      font-weight: 700;
+      color: #3b6b52;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s ease;
+    }
+
+    .stage-warp-close-btn:hover {
+      background: #e74c3c;
+      color: #fff;
+    }
+
+    .warp-field-group {
+      margin-bottom: 14px;
+    }
+
+    .warp-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      color: #24583e;
+      margin-bottom: 6px;
+    }
+
+    .warp-select {
+      width: 100%;
+      height: 40px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 12px;
+      border: 1.5px solid rgba(46, 167, 121, 0.35);
+      background: #ffffff;
+      padding: 0 10px;
+    }
+
+    .warp-stage-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .warp-stepper-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(46, 167, 121, 0.3);
+      background: #ffffff;
+      font-size: 18px;
+      font-weight: 800;
+      color: #2ea779;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .warp-stepper-btn:hover {
+      background: #2ea779;
+      color: #ffffff;
+    }
+
+    .warp-stage-input {
+      flex: 1;
+      height: 40px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(46, 167, 121, 0.35);
+      background: #ffffff;
+      font-size: 18px;
+      font-weight: 900;
+      color: #123e2b;
+      text-align: center;
+    }
+
+    .warp-unit-label {
+      font-size: 14px;
+      font-weight: 800;
+      color: #4a755d;
+      padding-right: 4px;
+    }
+
+    .warp-quick-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .warp-chip {
+      background: rgba(230, 244, 236, 0.9);
+      border: 1px solid rgba(46, 167, 121, 0.25);
+      color: #1e5a3c;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .warp-chip:hover {
+      background: #2ea779;
+      color: #ffffff;
+    }
+
+    .warp-info-badge {
+      background: rgba(46, 167, 121, 0.1);
+      border: 1px solid rgba(46, 167, 121, 0.3);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #175438;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+
+    .stage-warp-footer {
+      display: flex;
+      gap: 8px;
+    }
+
+    .warp-cancel-btn {
+      flex: 1;
+      height: 42px;
+      background: rgba(220, 230, 225, 0.8);
+      color: #4a6657;
+      border: none;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .warp-confirm-btn {
+      flex: 2;
+      height: 42px;
+      background: linear-gradient(135deg, #2ea779 0%, #1e7a56 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(46, 167, 121, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
     /* 설정 메뉴 카테고리 탭 */
     .settings-tabs {
       display: flex;
@@ -3181,6 +3360,9 @@
             <button class="btn settings-btn" id="btn-reset-stage" title="진행 초기화 후 1판부터 시작">
               <span class="btn-icon">🔄</span> 1판부터 새로하기
             </button>
+            <button class="btn settings-btn" id="btn-open-stage-warp" title="원하는 난이도와 판(Stage)으로 직행">
+              <span class="btn-icon">🚀</span> 레벨/판 직행 이동...
+            </button>
           </div>
 
           <!-- 2. 편의 기능 & 어시스트 탭 -->
@@ -3233,12 +3415,67 @@
 
           <div class="settings-divider"></div>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.45
+            Si-Yeon Mahjong Solitaire v1.4.46
           </div>
         </div>
       </div>
     </div>
   </footer>
+
+  <!-- 레벨 & 판 직행 이동 모달 -->
+  <div class="modal-overlay" id="stage-warp-modal">
+    <div class="modal-card stage-warp-card">
+      <div class="stage-warp-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 22px;">🚀</span>
+          <h2 class="modal-title" style="margin-bottom: 0; font-size: 19px; color: #123e2b;">레벨 &amp; 판 직행 이동</h2>
+        </div>
+        <button class="stage-warp-close-btn" id="btn-stage-warp-close-x" aria-label="닫기">✕</button>
+      </div>
+
+      <div class="stage-warp-body">
+        <div class="warp-field-group">
+          <label class="warp-label">🎮 목표 난이도</label>
+          <select class="diff-select warp-select" id="warp-select-difficulty">
+            <option value="easy">🌱 쉬움 (14종 · 슬롯 5개 · 공개)</option>
+            <option value="normal">🌿 보통 (39종 · 슬롯 4개 · 블라인드 4개)</option>
+            <option value="hard">🔥 어려움 (63종 · 슬롯 4개 · 블라인드 12개)</option>
+            <option value="master" selected>👑 달인 (89종 · 슬롯 3개 · 점진 블라인드)</option>
+          </select>
+        </div>
+
+        <div class="warp-field-group">
+          <label class="warp-label">🎯 목표 판 (Stage)</label>
+          <div class="warp-stage-input-wrap">
+            <button type="button" class="warp-stepper-btn" id="btn-warp-stage-minus">－</button>
+            <input type="number" id="warp-stage-input" class="warp-stage-input" min="1" max="999" value="1">
+            <button type="button" class="warp-stepper-btn" id="btn-warp-stage-plus">＋</button>
+            <span class="warp-unit-label">판</span>
+          </div>
+          <!-- 빠른 바로가기 칩 버튼 -->
+          <div class="warp-quick-chips">
+            <button type="button" class="warp-chip" data-stage="1">1판</button>
+            <button type="button" class="warp-chip" data-stage="5">5판</button>
+            <button type="button" class="warp-chip" data-stage="10">10판</button>
+            <button type="button" class="warp-chip" data-stage="20">20판</button>
+            <button type="button" class="warp-chip" data-stage="30">30판</button>
+            <button type="button" class="warp-chip" data-stage="50">50판</button>
+          </div>
+        </div>
+
+        <div class="warp-info-badge" id="warp-info-badge">
+          💡 달인 모드 제 20판: 블라인드 37개 고난도 스테이지로 즉시 직행합니다.
+        </div>
+      </div>
+
+      <div class="stage-warp-footer">
+        <button class="btn warp-cancel-btn" id="btn-stage-warp-cancel">취소</button>
+        <button class="btn warp-confirm-btn" id="btn-stage-warp-confirm">
+          <span class="btn-icon">🚀</span> 해당 판으로 직행
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- 승리 및 알림 모달 -->
   <div class="modal-overlay" id="modal">
@@ -3270,7 +3507,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.45</div>
+        <div class="splash-version-badge">v1.4.46</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -6484,6 +6721,116 @@
             }
             this.saveProgress();
             alert(`[저장 완료] 제 ${this.currentStage}판 진행 상태(점수: ${this.score.toLocaleString()}점)가 안전하게 저장되었습니다.\n나중에 첫 화면의 '이어하기'로 언제든 다시 진행할 수 있습니다.`);
+          });
+        }
+
+        // 레벨 & 판 직행 모달 연동
+        const btnOpenStageWarp = document.getElementById('btn-open-stage-warp');
+        const stageWarpModal = document.getElementById('stage-warp-modal');
+        const btnStageWarpCloseX = document.getElementById('btn-stage-warp-close-x');
+        const btnStageWarpCancel = document.getElementById('btn-stage-warp-cancel');
+        const btnStageWarpConfirm = document.getElementById('btn-stage-warp-confirm');
+        const warpSelectDiff = document.getElementById('warp-select-difficulty');
+        const warpStageInput = document.getElementById('warp-stage-input');
+        const btnWarpMinus = document.getElementById('btn-warp-stage-minus');
+        const btnWarpPlus = document.getElementById('btn-warp-stage-plus');
+        const warpInfoBadge = document.getElementById('warp-info-badge');
+
+        const updateWarpInfoBadge = () => {
+          if (!warpInfoBadge || !warpSelectDiff || !warpStageInput) return;
+          const diff = warpSelectDiff.value;
+          const stage = Math.max(1, parseInt(warpStageInput.value, 10) || 1);
+          const diffName = DIFFICULTY_CONFIG[diff] ? DIFFICULTY_CONFIG[diff].name : diff;
+          let extra = '';
+          if (diff === 'master') {
+            const blinds = Math.min(60, 18 + (stage - 1));
+            extra = ` (블라인드 패: ${blinds}개)`;
+          }
+          warpInfoBadge.innerHTML = `💡 <strong>${diffName} 모드 제 ${stage}판</strong>${extra}으로 즉시 직행합니다.`;
+        };
+
+        if (btnOpenStageWarp) {
+          btnOpenStageWarp.addEventListener('click', () => {
+            this.sound.playSelect();
+            if (settingsDropdown) {
+              settingsDropdown.classList.remove('active');
+              if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
+            }
+            if (warpSelectDiff) warpSelectDiff.value = this.difficulty;
+            if (warpStageInput) warpStageInput.value = this.currentStage;
+            updateWarpInfoBadge();
+            if (stageWarpModal) stageWarpModal.classList.add('active');
+          });
+        }
+
+        const closeStageWarpModal = () => {
+          this.sound.playSelect();
+          if (stageWarpModal) stageWarpModal.classList.remove('active');
+        };
+
+        if (btnStageWarpCloseX) btnStageWarpCloseX.addEventListener('click', closeStageWarpModal);
+        if (btnStageWarpCancel) btnStageWarpCancel.addEventListener('click', closeStageWarpModal);
+
+        if (btnWarpMinus && warpStageInput) {
+          btnWarpMinus.addEventListener('click', () => {
+            this.sound.playSelect();
+            let val = Math.max(1, parseInt(warpStageInput.value, 10) || 1);
+            if (val > 1) {
+              warpStageInput.value = val - 1;
+              updateWarpInfoBadge();
+            }
+          });
+        }
+
+        if (btnWarpPlus && warpStageInput) {
+          btnWarpPlus.addEventListener('click', () => {
+            this.sound.playSelect();
+            let val = Math.max(1, parseInt(warpStageInput.value, 10) || 1);
+            warpStageInput.value = val + 1;
+            updateWarpInfoBadge();
+          });
+        }
+
+        if (warpSelectDiff) warpSelectDiff.addEventListener('change', updateWarpInfoBadge);
+        if (warpStageInput) warpStageInput.addEventListener('input', updateWarpInfoBadge);
+
+        const quickChips = document.querySelectorAll('.warp-chip');
+        quickChips.forEach(chip => {
+          chip.addEventListener('click', () => {
+            this.sound.playSelect();
+            const s = chip.dataset.stage;
+            if (s && warpStageInput) {
+              warpStageInput.value = s;
+              updateWarpInfoBadge();
+            }
+          });
+        });
+
+        if (btnStageWarpConfirm) {
+          btnStageWarpConfirm.addEventListener('click', () => {
+            const targetDiff = warpSelectDiff ? warpSelectDiff.value : this.difficulty;
+            const targetStage = Math.max(1, parseInt(warpStageInput ? warpStageInput.value : 1, 10) || 1);
+
+            this.sound.playMatchSuccess();
+            if (stageWarpModal) stageWarpModal.classList.remove('active');
+
+            // 목표 난이도 및 스테이지 적용
+            this.difficulty = targetDiff;
+            try {
+              localStorage.setItem('siyeon_mahjong_difficulty', targetDiff);
+            } catch (e) { }
+
+            const diffSelectEl = document.getElementById('select-difficulty');
+            if (diffSelectEl) diffSelectEl.value = targetDiff;
+
+            this.currentStage = targetStage;
+            this.score = Math.max(0, (targetStage - 1) * 500);
+            this.hasStarted = true;
+            this.saveProgress();
+            this.startNewGame(false);
+
+            const diffName = DIFFICULTY_CONFIG[targetDiff] ? DIFFICULTY_CONFIG[targetDiff].name : targetDiff;
+            alert(`[🚀 직행 완료] ${diffName} 모드 제 ${targetStage}판으로 직행하였습니다!`);
           });
         }
 
