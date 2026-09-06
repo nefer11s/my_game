@@ -2862,8 +2862,8 @@
       <button class="btn btn-dock" id="btn-undo" title="한 수 되돌리기">
         <span class="btn-icon">↩</span><span class="btn-label">되돌리기</span>
       </button>
-      <button class="btn btn-dock" id="btn-hint" title="매치 짝 힌트">
-        <span class="btn-icon">💡</span><span class="btn-label">힌트</span>
+      <button class="btn btn-dock" id="btn-hint" title="매치 짝 힌트 (판당 최대 3회)">
+        <span class="btn-icon">💡</span><span class="btn-label" id="hint-label">힌트 (3)</span>
       </button>
       <button class="btn btn-dock" id="btn-shuffle" title="패 섞기 (하트 1개 소모)">
         <span class="btn-icon">🔀</span><span class="btn-label">셔플</span>
@@ -2993,13 +2993,13 @@
     </div>
   </div>
 
-  <!-- 게임방법 간단설명 (하트 소진 가이드) 모달 -->
+  <!-- 게임방법 간단설명 (하트 소진 2가지 가이드) 모달 -->
   <div class="modal-overlay" id="quick-rules-modal">
     <div class="modal-card quick-rules-card">
       <div class="quick-rules-header">
         <div style="display: flex; align-items: center; gap: 8px;">
           <span style="font-size: 22px;">💔</span>
-          <h2 class="modal-title" style="margin-bottom: 0; font-size: 20px; color: #123927;">하트가 깎이는 3가지 경우</h2>
+          <h2 class="modal-title" style="margin-bottom: 0; font-size: 20px; color: #123927;">하트가 깎이는 2가지 경우</h2>
         </div>
         <button class="quick-rules-close-icon" id="btn-quick-rules-close-x" aria-label="닫기">✕</button>
       </div>
@@ -3007,10 +3007,10 @@
       <div class="quick-rules-body">
         <!-- 인포그래픽 이미지 한 컷 -->
         <div class="quick-rules-img-container">
-          <img src="assets/quick_rules_guide.jpg" alt="시연 마작 하트 소진 3가지 규칙 인포그래픽" class="quick-rules-img">
+          <img src="assets/quick_rules_guide.jpg" alt="시연 마작 하트 소진 2가지 규칙 인포그래픽" class="quick-rules-img">
         </div>
 
-        <!-- 하트 소진 3가지 경우 요약 카드 -->
+        <!-- 하트 소진 2가지 경우 및 안전 규칙 요약 카드 -->
         <div class="quick-rules-summary-box">
           <div class="quick-summary-item">
             <span class="quick-step-badge" style="background: linear-gradient(135deg, #e53e3e, #9b2c2c);">1</span>
@@ -3022,22 +3022,21 @@
           <div class="quick-summary-item">
             <span class="quick-step-badge" style="background: linear-gradient(135deg, #e53e3e, #9b2c2c);">2</span>
             <div class="quick-step-content">
-              <strong>보관함 슬롯 초과 (-1💔)</strong>
-              <p>임시 보관함 슬롯이 꽉 찬 상태에서 보드의 패를 추가로 터치하면 <strong>슬롯 초과 경고와 함께 하트 1개</strong>가 깎입니다. (마지막 패는 보드로 자동 반환)</p>
-            </div>
-          </div>
-          <div class="quick-summary-item">
-            <span class="quick-step-badge" style="background: linear-gradient(135deg, #e53e3e, #9b2c2c);">3</span>
-            <div class="quick-step-content">
               <strong>패 셔플 (🔀 버튼) 사용 (-1💔)</strong>
               <p>패를 다시 섞는 [🔀 셔플] 사용 시 <strong>하트 1개</strong>가 소진됩니다. (단, <strong>하트가 1개 남았을 때는 판당 1회 '마지막 기회 무료 셔플'</strong> 발동)</p>
             </div>
           </div>
 
-          <!-- 팁 바 -->
-          <div style="font-size: 12px; color: #1c744f; background: #eaf6ef; border: 1px solid #bfe3cf; border-radius: 8px; padding: 8px 10px; margin-top: 4px; display: flex; align-items: center; gap: 6px;">
-            <span style="font-size: 15px;">💡</span>
-            <span><strong>보너스 팁:</strong> [💡 힌트]는 하트 소진 없이 무료! / 판을 클리어할 때마다 하트 1개 회복!</span>
+          <!-- 보관함 안전 안내 바 -->
+          <div style="font-size: 12.5px; color: #155734; background: #eaf6ef; border: 1px solid #bfe3cf; border-radius: 8px; padding: 8px 10px; display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 16px;">🛡️</span>
+            <div><strong>보관함 슬롯 초과 시:</strong> 하트 소진 없음! (경고음 및 흔들림만 발생)</div>
+          </div>
+
+          <!-- 힌트 안내 바 -->
+          <div style="font-size: 12.5px; color: #744210; background: #fefcbf; border: 1px solid #f6e05e; border-radius: 8px; padding: 8px 10px; display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 16px;">💡</span>
+            <div><strong>힌트 기능:</strong> 한 판에 <strong>최대 3회</strong> 사용 가능! (하트 소진 없음)</div>
           </div>
         </div>
       </div>
@@ -3081,7 +3080,7 @@
           <div class="rule-num">3</div>
           <div class="rule-text">
             <strong>임시 보관함 슬롯 한도 (난이도별 5~3개)</strong>
-            <p>난이도에 따라 기본 5~3개의 슬롯이 고정 부여됩니다. 슬롯이 꽉 차면 더 이상 패를 넣을 수 없으므로, 같은 모양 2개를 모아 빠르게 비워내야 합니다.</p>
+            <p>난이도에 따라 기본 5~3개의 슬롯이 고정 부여됩니다. 슬롯이 꽉 차면 더 이상 패를 넣을 수 없으며, 이때 보드의 패를 터치하면 <strong>경고음과 흔들림만 발생하고 하트는 소진되지 않습니다</strong>. (보관함의 패를 터치하여 다시 보드로 반환하거나 짝을 맞춰 슬롯을 비울 수 있습니다.)</p>
           </div>
         </div>
         <div class="rule-item">
@@ -3095,9 +3094,8 @@
         <div class="rule-item">
           <div class="rule-num">5</div>
           <div class="rule-text">
-            <strong>도움 기능 & 하트 관리</strong>
-            <p>[🔀 셔플] 사용 시 하트 1개가 소진됩니다. (단, <strong>하트가 1개 남았을 때는 판당 1회 '마지막 기회 무료 셔플'</strong>이 발동됩니다.) 각 판을 클리어하면 하트
-              1개가 회복되며, [💡 힌트]는 하트 소진 없이 사용할 수 있습니다.</p>
+            <strong>도움 기능 (힌트 판당 3회 제한 & 셔플 하트 소진)</strong>
+            <p>[💡 힌트]는 하트 소진 없이 <strong>한 판당 최대 3회까지</strong> 사용할 수 있습니다. [🔀 셔플]은 사용 시 <strong>하트 1개가 소진</strong>됩니다. (단, <strong>하트가 1개 남았을 때는 판당 1회 '마지막 기회 무료 셔플'</strong>이 발동됩니다.) 각 판을 클리어하면 하트 1개가 회복됩니다.</p>
           </div>
         </div>
         <div class="rule-item">
@@ -6801,7 +6799,8 @@
 
         document.getElementById('btn-undo').disabled = true;
         document.getElementById('btn-shuffle').disabled = false;
-        document.getElementById('btn-hint').disabled = false;
+        this.hintsRemaining = 3;
+        this.updateHintUI();
         this.hasUsedLastChanceShuffle = false;
 
         this.buildSolvableBoard();
@@ -6896,7 +6895,8 @@
 
         document.getElementById('btn-undo').disabled = true;
         document.getElementById('btn-shuffle').disabled = false;
-        document.getElementById('btn-hint').disabled = false;
+        this.hintsRemaining = 3;
+        this.updateHintUI();
 
         // 해당 판의 초기 타일 배치 복원 (cloneTileData 사용으로 render 함수 보존)
         if (this.initialTiles && this.initialTiles.length > 0) {
@@ -7812,15 +7812,6 @@
        */
       handleTrayOverflow(lastItem) {
         this.sound.playMiss();
-        if (this.sound.playDamage) this.sound.playDamage();
-
-        const flash = document.getElementById('damage-flash');
-        if (flash) {
-          flash.classList.remove('active');
-          void flash.offsetWidth;
-          flash.classList.add('active');
-          setTimeout(() => flash.classList.remove('active'), 500);
-        }
 
         const trayEl = document.getElementById('tray-container');
         if (trayEl) {
@@ -7829,11 +7820,7 @@
           trayEl.classList.add('danger');
         }
 
-        // 하트 1개 소진
-        this.loseLife();
-
-        if (this.isGameOver) return;
-
+        // 규칙 변경: 보관함 포화 시 하트는 깎이지 않으며 경고음 및 흔들림만 발생
         // 슬롯 동적 확장 없이 마지막으로 들어온 패를 보드로 강제 반환
         setTimeout(() => {
           if (this.trayTiles.length >= this.maxSlots) {
@@ -7901,12 +7888,32 @@
         return pairs;
       }
 
+      updateHintUI() {
+        const btnHint = document.getElementById('btn-hint');
+        const hintLabel = document.getElementById('hint-label');
+        if (hintLabel) {
+          hintLabel.textContent = `힌트 (${this.hintsRemaining})`;
+        }
+        if (btnHint) {
+          btnHint.title = `매치 짝 힌트 (남은 횟수: ${this.hintsRemaining}/3)`;
+          btnHint.disabled = (this.hintsRemaining <= 0);
+        }
+      }
+
       showHint() {
-        if (this.isAutoClearing) return;
+        if (this.isAutoClearing || this.isGameOver || this.isClear) return;
+        if (this.hintsRemaining <= 0) {
+          this.sound.playMiss();
+          alert("이번 판에서 사용 가능한 힌트(3회)를 모두 소진했습니다!");
+          return;
+        }
+
         this.clearHints();
         const pairs = this.getAvailablePairs();
 
         if (pairs.length > 0) {
+          this.hintsRemaining--;
+          this.updateHintUI();
           this.sound.playSelect();
           const [t1, t2] = pairs[0];
           if (t1 && t1.el && !t1.removed) t1.el.classList.add('hinted');
@@ -7926,6 +7933,8 @@
           const freeTiles = activeTiles.filter(t => this.isTileFree(t));
 
           if (this.trayTiles.length < this.maxSlots && freeTiles.length > 0) {
+            this.hintsRemaining--;
+            this.updateHintUI();
             this.sound.playSelect();
             // 아래층 패를 가리고 있는 자유 패 우선 추천
             const candidate = freeTiles.find(t => {
@@ -7936,9 +7945,9 @@
               candidate.el.classList.add('hinted');
               setTimeout(() => this.clearHints(), 3200);
             }
-            alert("현재 즉시 맞는 짝은 없지만 슬롯에 여유가 있습니다!\n빛나는 패를 슬롯에 담아 아래층 패를 열어보세요.");
+            alert(`[힌트 사용 (남은 횟수: ${this.hintsRemaining}회)]\n현재 즉시 맞는 짝은 없지만 슬롯에 여유가 있습니다!\n빛나는 패를 슬롯에 담아 아래층 패를 열어보세요.`);
           } else {
-            alert("현재 진행할 수 있는 수가 없습니다. 패를 섞거나(셔플) 되돌리기를 사용하세요.");
+            alert("현재 진행할 수 있는 수가 없습니다. 패를 섞거나(셔플) 되돌리기를 사용하세요. (힌트 횟수는 차감되지 않았습니다)");
           }
         }
       }
