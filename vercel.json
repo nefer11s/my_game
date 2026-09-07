@@ -2,6 +2,8 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/", "destination": "/my_game.html" }
+    { "source": "/", "destination": "/my_game.html" },
+    { "source": "/oryong", "destination": "/oryong_mahjong/o-ryong_majong.html" },
+    { "source": "/oryong-mahjong", "destination": "/oryong_mahjong/o-ryong_majong.html" }
   ]
 }

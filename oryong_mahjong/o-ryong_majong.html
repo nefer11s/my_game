@@ -3351,8 +3351,8 @@
       <button class="btn btn-dock" id="btn-restart" title="현재 판 다시 시작">
         <span class="btn-icon">🔄</span><span class="btn-label">재도전</span>
       </button>
-      <a class="btn btn-dock" href="/oryong" title="오룡이 마작 - 황금용두 테마 전용 페이지" style="text-decoration:none;">
-        <span class="btn-icon">🐲</span><span class="btn-label">오룡이</span>
+      <a class="btn btn-dock" href="/" title="메인 마작 페이지로 이동" style="text-decoration:none;">
+        <span class="btn-icon">🏠</span><span class="btn-label">메인</span>
       </a>
 
       <!-- 톱니바퀴 설정 메뉴 (하단 바로 이동) -->
@@ -3547,7 +3547,7 @@
   <div class="splash-overlay active" id="splash-screen">
     <div class="splash-card">
       <div class="splash-img-wrap">
-        <img src="assets/mahjong_splash.jpg" alt="시연이네 그림맞추기" class="splash-hero-img">
+        <img src="../assets/mahjong_splash.jpg" alt="시연이네 그림맞추기" class="splash-hero-img">
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
@@ -3590,7 +3590,7 @@
       <div class="quick-rules-body">
         <!-- 인포그래픽 이미지 한 컷 -->
         <div class="quick-rules-img-container">
-          <img src="assets/quick_rules_guide.jpg" alt="시연 마작 핵심 가이드 및 하트 규칙 인포그래픽" class="quick-rules-img">
+          <img src="../assets/quick_rules_guide.jpg" alt="시연 마작 핵심 가이드 및 하트 규칙 인포그래픽" class="quick-rules-img">
         </div>
 
         <!-- 핵심 게임 방법 및 하트 소진 규칙 요약 카드 -->
@@ -5558,7 +5558,7 @@
           <svg class="tile-svg saju-hybrid-svg" viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg">
             <!-- 1. 초고화질 3D 실물 마작패 이미지 (중심 기준 1.10배 스케일로 외곽 베젤을 자연스럽게 클리핑하여 기존 패와 1:1 심볼 크기 일치) -->
             <g transform="translate(120, 150) scale(1.10) translate(-120, -150)">
-              <image href="${(() => { const gid = (window.oryongDragonStyle === 'gold' && SvgFactory.ORYONG_GOLD_MAP[id]) ? SvgFactory.ORYONG_GOLD_MAP[id] : id; return (gid.startsWith('dragon_gold_') || gid.startsWith('dragon_head_')) ? 'assets/dragons/' + gid + '.png' : 'assets/tiles/' + id + '.webp'; })()}" x="0" y="0" width="240" height="300" preserveAspectRatio="none" />
+              <image href="${(() => { const gid = (window.oryongDragonStyle === 'gold' && SvgFactory.ORYONG_GOLD_MAP[id]) ? SvgFactory.ORYONG_GOLD_MAP[id] : id; return (gid.startsWith('dragon_gold_') || gid.startsWith('dragon_head_')) ? '../assets/dragons/' + gid + '.png' : '../assets/tiles/' + id + '.webp'; })()}" x="0" y="0" width="240" height="300" preserveAspectRatio="none" />
             </g>
             <!-- 2. 좌상단 SVG 전통 단청 배지 -->
             ${badgeSvg}
@@ -5988,9 +5988,9 @@
       }
 
       getActiveDefinitions() {
-        const savedSaju = localStorage.getItem('siyeon_mahjong_use_saju_tiles');
+        const savedSaju = localStorage.getItem('oryong_mahjong_use_saju_tiles');
         const useSaju = savedSaju === null ? true : savedSaju === '1';
-        const savedOryong = localStorage.getItem('siyeon_mahjong_use_oryong_tiles');
+        const savedOryong = localStorage.getItem('oryong_mahjong_use_oryong_tiles');
         const useOryong = savedOryong === null ? true : savedOryong === '1';
         const sajuSuits = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'];
 
@@ -6007,9 +6007,9 @@
       }
 
       buildGallery() {
-        const savedSaju = localStorage.getItem('siyeon_mahjong_use_saju_tiles');
+        const savedSaju = localStorage.getItem('oryong_mahjong_use_saju_tiles');
         const useSaju = savedSaju === null ? true : savedSaju === '1';
-        const savedOryong = localStorage.getItem('siyeon_mahjong_use_oryong_tiles');
+        const savedOryong = localStorage.getItem('oryong_mahjong_use_oryong_tiles');
         const useOryong = savedOryong === null ? true : savedOryong === '1';
         const sajuSuits = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'];
         const activeDefs = this.getActiveDefinitions();
@@ -6619,9 +6619,9 @@
           this.autoBlindPairMatch = (localStorage.getItem('siyeon_mahjong_auto_blind_pair') || localStorage.getItem('autoBlindPairMatch')) === '1';
           this.autoEndMatch = (localStorage.getItem('siyeon_mahjong_auto_end_match') || localStorage.getItem('autoEndMatch')) === '1';
           this.dynamicZoom = (localStorage.getItem('siyeon_mahjong_dynamic_zoom') || localStorage.getItem('dynamicZoom')) === '1';
-          const savedSaju = localStorage.getItem('siyeon_mahjong_use_saju_tiles');
+          const savedSaju = localStorage.getItem('oryong_mahjong_use_saju_tiles');
           this.useSajuTiles = savedSaju === null ? true : savedSaju === '1';
-          const savedOryong = localStorage.getItem('siyeon_mahjong_use_oryong_tiles');
+          const savedOryong = localStorage.getItem('oryong_mahjong_use_oryong_tiles');
           this.useOryongTiles = savedOryong === null ? true : savedOryong === '1';
         } catch (e) {
           this.autoBlindPairMatch = false;
@@ -6853,7 +6853,7 @@
             this.sound.playSelect();
             this.useSajuTiles = !this.useSajuTiles;
             try {
-              localStorage.setItem('siyeon_mahjong_use_saju_tiles', this.useSajuTiles ? '1' : '0');
+              localStorage.setItem('oryong_mahjong_use_saju_tiles', this.useSajuTiles ? '1' : '0');
             } catch (e) { }
             updateToggleSajuUI();
             if (window.tileGalleryManager) {
@@ -6886,7 +6886,7 @@
             this.sound.playSelect();
             this.useOryongTiles = !this.useOryongTiles;
             try {
-              localStorage.setItem('siyeon_mahjong_use_oryong_tiles', this.useOryongTiles ? '1' : '0');
+              localStorage.setItem('oryong_mahjong_use_oryong_tiles', this.useOryongTiles ? '1' : '0');
             } catch (e) { }
             updateToggleOryongUI();
             if (window.tileGalleryManager) {
@@ -6899,7 +6899,7 @@
 
         // 황금용두 스타일 전환 토글
         window.oryongDragonStyle = 'default';
-        try { window.oryongDragonStyle = localStorage.getItem('siyeon_mahjong_oryong_dragon_style') || 'default'; } catch(e) {}
+        try { window.oryongDragonStyle = localStorage.getItem('oryong_mahjong_dragon_style') || 'gold'; } catch(e) {}
         const btnToggleOryongDragonStyle = document.getElementById('btn-toggle-oryong-dragon-style');
         const updateOryongDragonStyleUI = () => {
           const icon = document.getElementById('oryong-dragon-style-icon');
@@ -6919,7 +6919,7 @@
           btnToggleOryongDragonStyle.addEventListener('click', () => {
             this.sound.playSelect();
             window.oryongDragonStyle = window.oryongDragonStyle === 'gold' ? 'default' : 'gold';
-            try { localStorage.setItem('siyeon_mahjong_oryong_dragon_style', window.oryongDragonStyle); } catch(e) {}
+            try { localStorage.setItem('oryong_mahjong_dragon_style', window.oryongDragonStyle); } catch(e) {}
             updateOryongDragonStyleUI();
             // DOM에서 오룡 7용 타일 이미지 실시간 교체
             const gmap = SvgFactory.ORYONG_GOLD_MAP;
@@ -6929,8 +6929,8 @@
                 const imgEl = el.querySelector('image');
                 if (imgEl) {
                   imgEl.setAttribute('href', window.oryongDragonStyle === 'gold'
-                    ? `assets/dragons/${gmap[tid]}.png`
-                    : `assets/tiles/${tid}.webp`);
+                    ? `../assets/dragons/${gmap[tid]}.png`
+                    : `../assets/tiles/${tid}.webp`);
                 }
               }
             });
@@ -7579,13 +7579,13 @@
         if (saved.useSajuTiles !== undefined) {
           this.useSajuTiles = !!saved.useSajuTiles;
           try {
-            localStorage.setItem('siyeon_mahjong_use_saju_tiles', this.useSajuTiles ? '1' : '0');
+            localStorage.setItem('oryong_mahjong_use_saju_tiles', this.useSajuTiles ? '1' : '0');
           } catch (e) { }
         }
         if (saved.useOryongTiles !== undefined) {
           this.useOryongTiles = !!saved.useOryongTiles;
           try {
-            localStorage.setItem('siyeon_mahjong_use_oryong_tiles', this.useOryongTiles ? '1' : '0');
+            localStorage.setItem('oryong_mahjong_use_oryong_tiles', this.useOryongTiles ? '1' : '0');
           } catch (e) { }
         }
         const sajuIcon = document.getElementById('toggle-saju-tiles-icon');
