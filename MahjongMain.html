@@ -1257,16 +1257,17 @@
     .tray-container {
       width: 100%;
       max-width: 580px;
-      margin: 0 auto 3px;
-      padding: 5px 14px 6px;
+      margin: 0 auto 2px;
+      padding: 3px 8px 3px;
       background: linear-gradient(135deg, rgba(20, 54, 38, 0.95), rgba(12, 38, 26, 0.97));
       border: 1.5px solid rgba(212, 175, 55, 0.55);
-      border-radius: 16px;
-      box-shadow: 0 6px 20px rgba(10, 30, 20, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(10, 30, 20, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.2);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 3px;
+      justify-content: center;
+      gap: 0;
       z-index: 90;
       position: relative;
       user-select: none;
@@ -1329,14 +1330,18 @@
     }
 
     .tray-count-badge {
-      background: rgba(0, 0, 0, 0.35);
-      padding: 2px 10px;
-      border-radius: 12px;
-      font-size: 12px;
+      position: absolute;
+      right: 8px;
+      top: 3px;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 1px 7px;
+      border-radius: 10px;
+      font-size: 10px;
       font-weight: 800;
       color: #dfcaa2;
-      border: 1px solid rgba(212, 175, 55, 0.3);
+      border: 1px solid rgba(212, 175, 55, 0.35);
       transition: all 0.2s ease;
+      z-index: 5;
     }
 
     .tray-count-badge.warning {
@@ -1360,16 +1365,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       width: 100%;
-      min-height: 64px;
+      min-height: 46px;
       flex-wrap: wrap;
     }
 
     .tray-slot-box {
-      width: 48px;
-      height: 60px;
-      border-radius: 8px;
+      width: 38px;
+      height: 46px;
+      border-radius: 7px;
       background: rgba(6, 22, 15, 0.7);
       border: 1.5px dashed rgba(212, 175, 55, 0.35);
       box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6);
@@ -1382,12 +1387,12 @@
 
     /* 슬롯 내부의 마작 패 */
     .tray-tile {
-      width: 44px;
-      height: 56px;
-      border-radius: 6px;
+      width: 34px;
+      height: 42px;
+      border-radius: 5px;
       background: linear-gradient(145deg, #ffffff 0%, #faf6ee 55%, #eae0ce 100%);
       border: 1px solid #dcd1be;
-      box-shadow: 1px 1px 0 #ede5d4, 2px 2px 0 #dfd5bf, 3px 3px 0 #287756, 4px 5px 8px rgba(0, 0, 0, 0.35);
+      box-shadow: 1px 1px 0 #ede5d4, 2px 2px 0 #dfd5bf, 2px 2px 0 #287756, 3px 3px 5px rgba(0, 0, 0, 0.32);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1456,8 +1461,8 @@
     }
 
     .tray-tile .tile-graphic-wrap {
-      width: 32px;
-      height: 38px;
+      width: 25px;
+      height: 30px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -3214,6 +3219,76 @@
         font-size: 11px;
       }
     }
+
+    /* 앱 종료 버튼 */
+    .btn-exit-app {
+      background: linear-gradient(135deg, rgba(220, 53, 69, 0.12), rgba(180, 40, 40, 0.2)) !important;
+      border: 1.5px solid rgba(220, 53, 69, 0.45) !important;
+      color: #e53e3e !important;
+      font-weight: 800 !important;
+      margin-top: 4px;
+      transition: all 0.2s ease !important;
+    }
+
+    .btn-exit-app:hover {
+      background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%) !important;
+      border-color: #c53030 !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 12px rgba(229, 62, 62, 0.35) !important;
+    }
+
+    /* 초기화면 설정 버튼 */
+    .splash-btn-settings {
+      width: 100%;
+      height: 44px;
+      border-radius: 14px;
+      background: rgba(20, 54, 38, 0.08);
+      border: 1.5px solid rgba(46, 167, 121, 0.45);
+      color: #1a5638;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .splash-btn-settings:hover {
+      background: rgba(46, 167, 121, 0.18);
+      border-color: #2ea779;
+      color: #123e2b;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(46, 167, 121, 0.2);
+    }
+
+    /* 설정 드롭다운이 모달 팝업으로 뜰 때 (스플래시 화면 등) */
+    .settings-dropdown.modal-mode {
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      bottom: auto !important;
+      right: auto !important;
+      z-index: 9500 !important;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), 0 0 0 100vmax rgba(0, 0, 0, 0.45);
+      animation: settingsModalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes settingsModalPop {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -46%) scale(0.92);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
   </style>
 </head>
 
@@ -3304,14 +3379,9 @@
     </div>
   </header>
 
-  <!-- 상단 임시 보관함 트레이 (상단 전진 배치: Zen Match 상용 스타일) -->
+  <!-- 상단 슬롯 트레이 (슬롯 높이 컴팩트 최적화, 텍스트 제거) -->
   <div class="tray-container top-tray" id="tray-container">
-    <div class="tray-header">
-      <div class="tray-title">
-        <span class="tray-icon">📥</span> <strong>임시 보관함</strong>
-      </div>
-      <div class="tray-count-badge" id="tray-count-badge">0 / 4</div>
-    </div>
+    <div class="tray-count-badge" id="tray-count-badge">0 / 4</div>
     <div class="tray-slots" id="tray-slots">
       <!-- 동적 슬롯 박스 -->
     </div>
@@ -3456,6 +3526,9 @@
           </div>
 
           <div class="settings-divider"></div>
+          <button class="btn settings-btn btn-exit-app" id="btn-exit-app" title="게임을 종료하고 브라우저 창을 닫습니다">
+            <span class="btn-icon">🚪</span> 앱 종료
+          </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
             Si-Yeon Mahjong Solitaire v1.4.57
           </div>
@@ -3562,6 +3635,9 @@
           </button>
           <button class="splash-btn-start" id="btn-splash-start">
             <span class="btn-icon">🎮</span> 게임 시작
+          </button>
+          <button class="splash-btn-settings" id="btn-splash-settings" title="게임 난이도 및 환경 설정">
+            <span class="btn-icon">⚙️</span> 게임 설정
           </button>
           <button class="splash-btn-rules" id="btn-splash-rules">
             <span class="btn-icon">📜</span> 게임방법 간단설명
@@ -6932,10 +7008,39 @@
         // 톱니바퀴 설정 메뉴 토글 및 외부 클릭 처리
         const btnSettings = document.getElementById('btn-settings');
         const settingsDropdown = document.getElementById('settings-dropdown');
+        const btnSplashSettings = document.getElementById('btn-splash-settings');
+        const btnExitApp = document.getElementById('btn-exit-app');
+
+        // 초기화면의 설정 버튼 클릭 시 모달 모드로 설정창 팝업
+        if (btnSplashSettings && settingsDropdown) {
+          btnSplashSettings.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.sound.playSelect();
+            settingsDropdown.classList.add('modal-mode');
+            settingsDropdown.classList.toggle('active');
+          });
+        }
+
+        // 앱 종료 버튼 클릭 시 창 닫기
+        if (btnExitApp) {
+          btnExitApp.addEventListener('click', () => {
+            this.sound.playSelect();
+            if (confirm('게임을 종료하고 창을 닫으시겠습니까?')) {
+              window.close();
+              setTimeout(() => {
+                if (!window.closed) {
+                  alert('브라우저 보안 설정으로 인해 창이 자동으로 닫히지 않았습니다.\n현재 브라우저 창이나 탭을 직접 닫아주세요.');
+                }
+              }, 400);
+            }
+          });
+        }
+
         if (btnSettings && settingsDropdown) {
           btnSettings.addEventListener('click', (e) => {
             e.stopPropagation();
             this.sound.playSelect();
+            settingsDropdown.classList.remove('modal-mode');
             const isOpen = settingsDropdown.classList.toggle('active');
             btnSettings.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
           });
@@ -6948,8 +7053,10 @@
           // 바깥 영역 클릭/터치 시 메뉴 닫기
           document.addEventListener('pointerdown', (e) => {
             if (settingsDropdown.classList.contains('active')) {
-              if (!settingsDropdown.contains(e.target) && !btnSettings.contains(e.target)) {
+              const clickedSplashBtn = btnSplashSettings && btnSplashSettings.contains(e.target);
+              if (!settingsDropdown.contains(e.target) && !btnSettings.contains(e.target) && !clickedSplashBtn) {
                 settingsDropdown.classList.remove('active');
+                settingsDropdown.classList.remove('modal-mode');
                 btnSettings.setAttribute('aria-expanded', 'false');
               }
             }
