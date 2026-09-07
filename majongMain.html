@@ -3389,6 +3389,9 @@
             <button class="btn settings-btn" id="btn-toggle-saju-tiles" title="10간, 12지, 10십신, 음양오행 등 39종 사주 명리학 이미지셋 사용 여부 설정">
               <span class="btn-icon" id="toggle-saju-tiles-icon">☯️</span> <span id="toggle-saju-tiles-text">사주 명리학 패: 켜짐</span>
             </button>
+            <button class="btn settings-btn" id="btn-toggle-oryong-tiles" title="오룡이 슬롯머신 신수·보물 10종 이미지셋 사용 여부 설정">
+              <span class="btn-icon" id="toggle-oryong-tiles-icon">🐲</span> <span id="toggle-oryong-tiles-text">오룡이 테마 패: 켜짐</span>
+            </button>
             <button class="btn settings-btn" id="btn-save-progress" title="현재 진행 상태 저장">
               <span class="btn-icon">💾</span> 현재 판 진행 저장
             </button>
@@ -3450,7 +3453,7 @@
 
           <div class="settings-divider"></div>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.53
+            Si-Yeon Mahjong Solitaire v1.4.54
           </div>
         </div>
       </div>
@@ -3542,7 +3545,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.53</div>
+        <div class="splash-version-badge">v1.4.54</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -5669,7 +5672,18 @@
       { id: 'wx_fire', suit: 'wuxing', val: 'fire', label: '火行', badge: '火', render: () => SvgFactory.sajuHybrid('wx_fire', '火', '#d32f2f', '화행', '火行') },
       { id: 'wx_earth', suit: 'wuxing', val: 'earth', label: '土行', badge: '土', render: () => SvgFactory.sajuHybrid('wx_earth', '土', '#b78103', '토행', '土行') },
       { id: 'wx_metal', suit: 'wuxing', val: 'metal', label: '金行', badge: '金', render: () => SvgFactory.sajuHybrid('wx_metal', '金', '#c29000', '금행', '金行') },
-      { id: 'wx_water', suit: 'wuxing', val: 'water', label: '水行', badge: '水', render: () => SvgFactory.sajuHybrid('wx_water', '水', '#0288d1', '수행', '水行') }
+      { id: 'wx_water', suit: 'wuxing', val: 'water', label: '水行', badge: '水', render: () => SvgFactory.sajuHybrid('wx_water', '水', '#0288d1', '수행', '水行') },
+      // 오룡이 (五龍 10종: 오룡 슬롯머신 신수·보물 테마 - 3D 실물 WebP + 실시간 SVG 텍스트 하이브리드)
+      { id: 'oryong_white', suit: 'oryong', val: 'white', label: '白龍', badge: '白', render: () => SvgFactory.sajuHybrid('oryong_white', '白', '#546e7a', '백룡', '白龍') },
+      { id: 'oryong_red', suit: 'oryong', val: 'red', label: '赤龍', badge: '赤', render: () => SvgFactory.sajuHybrid('oryong_red', '赤', '#e53935', '적룡', '赤龍') },
+      { id: 'oryong_black', suit: 'oryong', val: 'black', label: '黑龍', badge: '黑', render: () => SvgFactory.sajuHybrid('oryong_black', '黑', '#263238', '흑룡', '黑龍') },
+      { id: 'oryong_blue', suit: 'oryong', val: 'blue', label: '靑龍', badge: '靑', render: () => SvgFactory.sajuHybrid('oryong_blue', '靑', '#1e88e5', '청룡', '靑龍') },
+      { id: 'oryong_yellow', suit: 'oryong', val: 'yellow', label: '黃龍', badge: '黃', render: () => SvgFactory.sajuHybrid('oryong_yellow', '黃', '#fbc02d', '황룡', '黃龍') },
+      { id: 'oryong_koi', suit: 'oryong', val: 'koi', label: '錦鯉', badge: '鯉', render: () => SvgFactory.sajuHybrid('oryong_koi', '鯉', '#fb8c00', '금붕', '錦鯉') },
+      { id: 'oryong_turtle', suit: 'oryong', val: 'turtle', label: '靈龜', badge: '龜', render: () => SvgFactory.sajuHybrid('oryong_turtle', '龜', '#43a047', '영구', '靈龜') },
+      { id: 'oryong_tiger', suit: 'oryong', val: 'tiger', label: '白虎', badge: '虎', render: () => SvgFactory.sajuHybrid('oryong_tiger', '虎', '#78909c', '백호', '白虎') },
+      { id: 'oryong_coin', suit: 'oryong', val: 'coin', label: '金錢', badge: '錢', render: () => SvgFactory.sajuHybrid('oryong_coin', '錢', '#ffb300', '금전', '金錢') },
+      { id: 'oryong_envelope', suit: 'oryong', val: 'envelope', label: '紅包', badge: '喜', render: () => SvgFactory.sajuHybrid('oryong_envelope', '喜', '#c2185b', '홍포', '紅包') }
     ];
 
     /**
@@ -5688,7 +5702,8 @@
       { id: 'gan', name: '10천간 (10)' },
       { id: 'zhi', name: '12지지 (12)' },
       { id: 'shin', name: '10십신 (10)' },
-      { id: 'yinyang_wuxing', name: '음양·오행 (7)' }
+      { id: 'yinyang_wuxing', name: '음양·오행 (7)' },
+      { id: 'oryong', name: '오룡이 (10)' }
     ];
 
     const TILE_SECTIONS = [
@@ -5701,7 +5716,8 @@
       { id: 'sec_gan', title: '天干 사주 10천간 (자연 오행 정령 10종)', suits: ['gan'] },
       { id: 'sec_zhi', title: '地支 사주 12지지 (12간지 수호동물 12종)', suits: ['zhi'] },
       { id: 'sec_shin', title: '十神 사주 10십신 (운명의 페르소나 10종)', suits: ['shin'] },
-      { id: 'sec_yinyang_wuxing', title: '陰陽·五行 사주 음양 & 오행 수호신 (7종)', suits: ['yinyang', 'wuxing'] }
+      { id: 'sec_yinyang_wuxing', title: '陰陽·五行 사주 음양 & 오행 수호신 (7종)', suits: ['yinyang', 'wuxing'] },
+      { id: 'sec_oryong', title: '五龍 오룡이 슬롯머신 신수·보물패 (10종)', suits: ['oryong'] }
     ];
 
     function getTileDetailInfo(def, index, totalCount) {
@@ -5777,6 +5793,11 @@
           cat = '사주 오행 (五行)';
           title = `${def.label} (오행)`;
           desc = `우주 만물을 구성하는 5대 원소 신수 마스코트 (${def.label})`;
+          break;
+        case 'oryong':
+          cat = '오룡이 슬롯머신 (五龍)';
+          title = `${def.label} (오룡이)`;
+          desc = `오룡 슬롯머신 테마의 신수 및 행운의 보물 캐릭터 (${def.label})`;
           break;
       }
 
@@ -5942,8 +5963,15 @@
       getActiveDefinitions() {
         const savedSaju = localStorage.getItem('siyeon_mahjong_use_saju_tiles');
         const useSaju = savedSaju === null ? true : savedSaju === '1';
+        const savedOryong = localStorage.getItem('siyeon_mahjong_use_oryong_tiles');
+        const useOryong = savedOryong === null ? true : savedOryong === '1';
         const sajuSuits = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'];
-        return useSaju ? TILE_DEFINITIONS : TILE_DEFINITIONS.filter(d => !sajuSuits.includes(d.suit));
+
+        return TILE_DEFINITIONS.filter(d => {
+          if (!useSaju && sajuSuits.includes(d.suit)) return false;
+          if (!useOryong && d.suit === 'oryong') return false;
+          return true;
+        });
       }
 
       rebuildGallery() {
@@ -5954,6 +5982,8 @@
       buildGallery() {
         const savedSaju = localStorage.getItem('siyeon_mahjong_use_saju_tiles');
         const useSaju = savedSaju === null ? true : savedSaju === '1';
+        const savedOryong = localStorage.getItem('siyeon_mahjong_use_oryong_tiles');
+        const useOryong = savedOryong === null ? true : savedOryong === '1';
         const sajuSuits = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'];
         const activeDefs = this.getActiveDefinitions();
 
@@ -5972,6 +6002,7 @@
           this.filterBar.innerHTML = '';
           const visibleCategories = TILE_CATEGORY_GROUPS.filter(cat => {
             if (!useSaju && ['gan', 'zhi', 'shin', 'yinyang_wuxing'].includes(cat.id)) return false;
+            if (!useOryong && cat.id === 'oryong') return false;
             return true;
           });
           visibleCategories.forEach(cat => {
@@ -5993,6 +6024,7 @@
           this.galleryBody.innerHTML = '';
           const visibleSections = TILE_SECTIONS.filter(sec => {
             if (!useSaju && sec.suits.some(s => sajuSuits.includes(s))) return false;
+            if (!useOryong && sec.suits.includes('oryong')) return false;
             return true;
           });
           visibleSections.forEach(sec => {
@@ -6562,11 +6594,14 @@
           this.dynamicZoom = (localStorage.getItem('siyeon_mahjong_dynamic_zoom') || localStorage.getItem('dynamicZoom')) === '1';
           const savedSaju = localStorage.getItem('siyeon_mahjong_use_saju_tiles');
           this.useSajuTiles = savedSaju === null ? true : savedSaju === '1';
+          const savedOryong = localStorage.getItem('siyeon_mahjong_use_oryong_tiles');
+          this.useOryongTiles = savedOryong === null ? true : savedOryong === '1';
         } catch (e) {
           this.autoBlindPairMatch = false;
           this.autoEndMatch = false;
           this.dynamicZoom = false;
           this.useSajuTiles = true;
+          this.useOryongTiles = true;
         }
 
         // 뷰포트 확대/축소 및 자유 이동(Pan & Zoom) 시스템
@@ -6800,6 +6835,37 @@
             // 알림 및 새 판 갱신 안내
             this.showFloatingNotice(this.useSajuTiles ? '☯️ 사주 명리학 39종 패셋이 활성화되었습니다.' : '🀄 전통 마작 패셋만 사용하도록 변경되었습니다.');
             // 현재 판 재시작 시 새 타일 풀로 즉시 갱신
+            this.startNewGame(false);
+          });
+        }
+
+        // 오룡이 슬롯머신 이미지셋 ON/OFF 토글 버튼 이벤트
+        const btnToggleOryong = document.getElementById('btn-toggle-oryong-tiles');
+        const updateToggleOryongUI = () => {
+          const icon = document.getElementById('toggle-oryong-tiles-icon');
+          const text = document.getElementById('toggle-oryong-tiles-text');
+          if (icon && text) {
+            icon.textContent = this.useOryongTiles ? '🐲' : '🔒';
+            text.textContent = this.useOryongTiles ? '오룡이 테마 패: 켜짐' : '오룡이 테마 패: 꺼짐';
+          }
+          if (btnToggleOryong) {
+            btnToggleOryong.style.borderColor = this.useOryongTiles ? 'rgba(230, 81, 0, 0.6)' : 'rgba(180, 190, 185, 0.6)';
+            btnToggleOryong.style.background = this.useOryongTiles ? 'rgba(255, 243, 224, 0.95)' : 'rgba(244, 245, 245, 0.95)';
+          }
+        };
+        updateToggleOryongUI();
+        if (btnToggleOryong) {
+          btnToggleOryong.addEventListener('click', () => {
+            this.sound.playSelect();
+            this.useOryongTiles = !this.useOryongTiles;
+            try {
+              localStorage.setItem('siyeon_mahjong_use_oryong_tiles', this.useOryongTiles ? '1' : '0');
+            } catch (e) { }
+            updateToggleOryongUI();
+            if (window.tileGalleryManager) {
+              window.tileGalleryManager.rebuildGallery();
+            }
+            this.showFloatingNotice(this.useOryongTiles ? '🐲 오룡이 슬롯머신 10종 패셋이 활성화되었습니다.' : '🀄 오룡이 패셋이 비활성화되었습니다.');
             this.startNewGame(false);
           });
         }
@@ -7375,6 +7441,7 @@
           autoEndMatch: this.autoEndMatch,
           dynamicZoom: this.dynamicZoom,
           useSajuTiles: this.useSajuTiles,
+          useOryongTiles: this.useOryongTiles,
           savedAt: new Date().toLocaleString('ko-KR')
         };
         try {
@@ -7445,6 +7512,12 @@
             localStorage.setItem('siyeon_mahjong_use_saju_tiles', this.useSajuTiles ? '1' : '0');
           } catch (e) { }
         }
+        if (saved.useOryongTiles !== undefined) {
+          this.useOryongTiles = !!saved.useOryongTiles;
+          try {
+            localStorage.setItem('siyeon_mahjong_use_oryong_tiles', this.useOryongTiles ? '1' : '0');
+          } catch (e) { }
+        }
         const sajuIcon = document.getElementById('toggle-saju-tiles-icon');
         const sajuText = document.getElementById('toggle-saju-tiles-text');
         const btnSajuEl = document.getElementById('btn-toggle-saju-tiles');
@@ -7455,6 +7528,17 @@
         if (btnSajuEl) {
           btnSajuEl.style.borderColor = this.useSajuTiles ? 'rgba(46, 167, 121, 0.6)' : 'rgba(180, 190, 185, 0.6)';
           btnSajuEl.style.background = this.useSajuTiles ? 'rgba(235, 248, 240, 0.95)' : 'rgba(244, 245, 245, 0.95)';
+        }
+        const oryongIcon = document.getElementById('toggle-oryong-tiles-icon');
+        const oryongText = document.getElementById('toggle-oryong-tiles-text');
+        const btnOryongEl = document.getElementById('btn-toggle-oryong-tiles');
+        if (oryongIcon && oryongText) {
+          oryongIcon.textContent = this.useOryongTiles ? '🐲' : '🔒';
+          oryongText.textContent = this.useOryongTiles ? '오룡이 테마 패: 켜짐' : '오룡이 테마 패: 꺼짐';
+        }
+        if (btnOryongEl) {
+          btnOryongEl.style.borderColor = this.useOryongTiles ? 'rgba(230, 81, 0, 0.6)' : 'rgba(180, 190, 185, 0.6)';
+          btnOryongEl.style.background = this.useOryongTiles ? 'rgba(255, 243, 224, 0.95)' : 'rgba(244, 245, 245, 0.95)';
         }
         const pairIcon = document.getElementById('auto-blind-pair-icon');
         const pairText = document.getElementById('auto-blind-pair-text');
@@ -7934,10 +8018,18 @@
         let availablePool = TILE_DEFINITIONS.filter(diffCfg.filter);
         if (this.useSajuTiles === false) {
           availablePool = availablePool.filter(def => !sajuSuits.includes(def.suit));
-          // 사주 제외 후 가용 풀이 너무 작아지면 전통 마작패 전체(50종)로 자동 보완
-          if (availablePool.length < numPairs) {
-            availablePool = TILE_DEFINITIONS.filter(def => !sajuSuits.includes(def.suit));
-          }
+        }
+        if (this.useOryongTiles === false) {
+          availablePool = availablePool.filter(def => def.suit !== 'oryong');
+        }
+        // 활성화된 패만으로 구성된 기본 풀
+        const baseAllowedPool = TILE_DEFINITIONS.filter(def => {
+          if (this.useSajuTiles === false && sajuSuits.includes(def.suit)) return false;
+          if (this.useOryongTiles === false && def.suit === 'oryong') return false;
+          return true;
+        });
+        if (availablePool.length < numPairs) {
+          availablePool = baseAllowedPool;
         }
 
         const chosenDefs = [];
