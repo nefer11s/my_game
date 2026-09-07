@@ -5556,7 +5556,7 @@
           <svg class="tile-svg saju-hybrid-svg" viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg">
             <!-- 1. 초고화질 3D 실물 마작패 이미지 (중심 기준 1.10배 스케일로 외곽 베젤을 자연스럽게 클리핑하여 기존 패와 1:1 심볼 크기 일치) -->
             <g transform="translate(120, 150) scale(1.10) translate(-120, -150)">
-              <image href="${(() => { const gid = SvgFactory.ORYONG_GOLD_MAP[id] || id; return (gid.startsWith('dragon_gold_') || gid.startsWith('dragon_head_')) ? 'assets/dragons/' + gid + '.png' : 'assets/tiles/' + id + '.webp'; })()}" x="0" y="0" width="240" height="300" preserveAspectRatio="none" />
+              <image href="${(() => { if (id.startsWith('oryong_body_')) return 'assets/tiles/oryong_' + id.replace('oryong_body_', '') + '.webp'; const gid = SvgFactory.ORYONG_GOLD_MAP[id] || id; return (gid.startsWith('dragon_gold_') || gid.startsWith('dragon_head_')) ? 'assets/dragons/' + gid + '.png' : 'assets/tiles/' + id + '.webp'; })()}" x="0" y="0" width="240" height="300" preserveAspectRatio="none" />
             </g>
             <!-- 2. 좌상단 SVG 전통 단청 배지 -->
             ${badgeSvg}
@@ -5708,7 +5708,16 @@
       { id: 'dragon_gold_purple_tile', suit: 'dragon_gold', val: 'purple', label: '紫金龍', badge: '紫', render: () => SvgFactory.sajuHybrid('dragon_gold_purple_tile', '紫', '#8e24aa', '자금용두', '紫金龍') },
       { id: 'dragon_gold_blue_tile',   suit: 'dragon_gold', val: 'blue',   label: '靑金龍', badge: '靑', render: () => SvgFactory.sajuHybrid('dragon_gold_blue_tile',   '靑', '#1e88e5', '청금용두', '靑金龍') },
       { id: 'dragon_gold_yellow_tile', suit: 'dragon_gold', val: 'yellow', label: '黃金龍', badge: '黃', render: () => SvgFactory.sajuHybrid('dragon_gold_yellow_tile', '黃', '#fbc02d', '황금용두', '黃金龍') },
-      { id: 'dragon_gold_green_tile',  suit: 'dragon_gold', val: 'green',  label: '綠金龍', badge: '綠', render: () => SvgFactory.sajuHybrid('dragon_gold_green_tile',  '綠', '#43a047', '녹금용두', '綠金龍') }
+      { id: 'dragon_gold_green_tile',  suit: 'dragon_gold', val: 'green',  label: '綠金龍', badge: '綠', render: () => SvgFactory.sajuHybrid('dragon_gold_green_tile',  '綠', '#43a047', '녹금용두', '綠金龍') },
+
+      // 오룡이 7용 먼통 풀바디 7종 (assets/tiles/oryong_*.webp 원본 이미지)
+      { id: 'oryong_body_white',  suit: 'oryong', val: 'body_white',  label: '白龍體', badge: '白', render: () => SvgFactory.sajuHybrid('oryong_body_white',  '白', '#546e7a', '백룡체', '白龍') },
+      { id: 'oryong_body_red',    suit: 'oryong', val: 'body_red',    label: '赤龍體', badge: '赤', render: () => SvgFactory.sajuHybrid('oryong_body_red',    '赤', '#e53935', '적룡체', '赤龍') },
+      { id: 'oryong_body_black',  suit: 'oryong', val: 'body_black',  label: '黑龍體', badge: '黑', render: () => SvgFactory.sajuHybrid('oryong_body_black',  '黑', '#263238', '흑룡체', '黑龍') },
+      { id: 'oryong_body_blue',   suit: 'oryong', val: 'body_blue',   label: '鴱龍體', badge: '鴱', render: () => SvgFactory.sajuHybrid('oryong_body_blue',   '鴱', '#1e88e5', '청룡체', '鴱龍') },
+      { id: 'oryong_body_yellow', suit: 'oryong', val: 'body_yellow', label: '黄龍體', badge: '黄', render: () => SvgFactory.sajuHybrid('oryong_body_yellow', '黄', '#fbc02d', '황룡체', '黄龍') },
+      { id: 'oryong_body_purple', suit: 'oryong', val: 'body_purple', label: '紫龍體', badge: '紫', render: () => SvgFactory.sajuHybrid('oryong_body_purple', '紫', '#8e24aa', '자룡체', '紫龍') },
+      { id: 'oryong_body_green',  suit: 'oryong', val: 'body_green',  label: '綠龍體', badge: '綠', render: () => SvgFactory.sajuHybrid('oryong_body_green',  '綠', '#2e7d32', '녹룡체', '綠龍') }
     ];
 
     /**
