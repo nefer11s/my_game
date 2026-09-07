@@ -6044,7 +6044,7 @@
             const secTiles = activeDefs.filter(t => sec.suits.includes(t.suit));
             secTiles.forEach(def => {
               const index = activeDefs.indexOf(def);
-              const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'].includes(def.suit);
+              const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong'].includes(def.suit);
 
               const card = document.createElement('div');
               card.className = 'gallery-tile-item';
@@ -6159,7 +6159,7 @@
         if (!def) return;
 
         const info = getTileDetailInfo(def, this.currentIndex, activeDefs.length);
-        const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'].includes(def.suit);
+        const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong'].includes(def.suit);
 
         if (this.lightboxBadge) this.lightboxBadge.textContent = info.badgeText;
         if (this.lightboxTitle) this.lightboxTitle.textContent = info.title;
@@ -7951,7 +7951,7 @@
           const item = this.trayTiles[i];
           if (item) {
             const tileDiv = document.createElement('div');
-            const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'].includes(item.def.suit);
+            const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong'].includes(item.def.suit);
             tileDiv.className = 'tray-tile' + (item.isMatching ? ' matching' : '') + (isSaju ? ' saju-tile' : '');
             tileDiv.dataset.trayIndex = i;
             tileDiv.title = `${item.def.name || item.def.label} (클릭 시 보드로 반환)`;
@@ -8261,7 +8261,7 @@
 
         sorted.forEach(tile => {
           const el = document.createElement('div');
-          const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'].includes(tile.def.suit);
+          const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong'].includes(tile.def.suit);
           el.className = `tile layer-${tile.z} dealing${isSaju ? ' saju-tile' : ''}`;
           if (tile.isCovered) el.classList.add('face-down');
           if (tile.isRevealed) el.classList.add('revealed');
@@ -9125,7 +9125,7 @@
           tile.def = activeDefs[i];
           if (!tile.el) return;
 
-          const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'].includes(tile.def.suit);
+          const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong'].includes(tile.def.suit);
           tile.el.classList.toggle('saju-tile', isSaju);
 
           const badgeEl = tile.el.querySelector('.tile-corner-badge');
