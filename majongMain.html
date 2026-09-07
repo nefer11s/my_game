@@ -3386,6 +3386,9 @@
                 <option value="master">👑 달인 (89종 · 슬롯 3개 · 블라인드 18개 · 극한 병목)</option>
               </select>
             </div>
+            <button class="btn settings-btn" id="btn-toggle-saju-tiles" title="10간, 12지, 10십신, 음양오행 등 39종 사주 명리학 이미지셋 사용 여부 설정">
+              <span class="btn-icon" id="toggle-saju-tiles-icon">☯️</span> <span id="toggle-saju-tiles-text">사주 명리학 패: 켜짐</span>
+            </button>
             <button class="btn settings-btn" id="btn-save-progress" title="현재 진행 상태 저장">
               <span class="btn-icon">💾</span> 현재 판 진행 저장
             </button>
@@ -3447,7 +3450,7 @@
 
           <div class="settings-divider"></div>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.52
+            Si-Yeon Mahjong Solitaire v1.4.53
           </div>
         </div>
       </div>
@@ -3539,7 +3542,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.52</div>
+        <div class="splash-version-badge">v1.4.53</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -5701,8 +5704,8 @@
       { id: 'sec_yinyang_wuxing', title: '陰陽·五行 사주 음양 & 오행 수호신 (7종)', suits: ['yinyang', 'wuxing'] }
     ];
 
-    function getTileDetailInfo(def, index) {
-      const total = TILE_DEFINITIONS.length;
+    function getTileDetailInfo(def, index, totalCount) {
+      const total = totalCount || TILE_DEFINITIONS.length;
       let cat = '마작패';
       let title = def.label;
       let desc = '';
@@ -5936,18 +5939,47 @@
         });
       }
 
+      getActiveDefinitions() {
+        const savedSaju = localStorage.getItem('siyeon_mahjong_use_saju_tiles');
+        const useSaju = savedSaju === null ? true : savedSaju === '1';
+        const sajuSuits = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'];
+        return useSaju ? TILE_DEFINITIONS : TILE_DEFINITIONS.filter(d => !sajuSuits.includes(d.suit));
+      }
+
+      rebuildGallery() {
+        this.isBuilt = false;
+        this.buildGallery();
+      }
+
       buildGallery() {
-        if (this.isBuilt) return;
-        this.isBuilt = true;
+        const savedSaju = localStorage.getItem('siyeon_mahjong_use_saju_tiles');
+        const useSaju = savedSaju === null ? true : savedSaju === '1';
+        const sajuSuits = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'];
+        const activeDefs = this.getActiveDefinitions();
+
+        // 0. 도감 카운트 배지 갱신
+        const countBadge = document.getElementById('gallery-count-badge');
+        if (countBadge) {
+          countBadge.textContent = `${activeDefs.length}종`;
+        }
+        const lightboxBadgeTotal = document.getElementById('lightbox-badge-info');
+        if (lightboxBadgeTotal) {
+          lightboxBadgeTotal.textContent = `전체 ${activeDefs.length}종`;
+        }
 
         // 1. 카테고리 필터 탭 생성
         if (this.filterBar) {
           this.filterBar.innerHTML = '';
-          TILE_CATEGORY_GROUPS.forEach(cat => {
+          const visibleCategories = TILE_CATEGORY_GROUPS.filter(cat => {
+            if (!useSaju && ['gan', 'zhi', 'shin', 'yinyang_wuxing'].includes(cat.id)) return false;
+            return true;
+          });
+          visibleCategories.forEach(cat => {
+            const catName = cat.id === 'all' ? `전체 (${activeDefs.length})` : cat.name;
             const tab = document.createElement('button');
             tab.className = `gallery-tab${cat.id === 'all' ? ' active' : ''}`;
             tab.dataset.catId = cat.id;
-            tab.textContent = cat.name;
+            tab.textContent = catName;
             tab.addEventListener('click', () => {
               if (this.sound) this.sound.playSelect();
               this.applyFilter(cat.id);
@@ -5959,7 +5991,11 @@
         // 2. 섹션별 그리드 및 타일 카드 생성
         if (this.galleryBody) {
           this.galleryBody.innerHTML = '';
-          TILE_SECTIONS.forEach(sec => {
+          const visibleSections = TILE_SECTIONS.filter(sec => {
+            if (!useSaju && sec.suits.some(s => sajuSuits.includes(s))) return false;
+            return true;
+          });
+          visibleSections.forEach(sec => {
             const sectionEl = document.createElement('div');
             sectionEl.className = 'gallery-section';
             sectionEl.id = sec.id;
@@ -5973,9 +6009,9 @@
             const gridEl = document.createElement('div');
             gridEl.className = 'gallery-grid';
 
-            const secTiles = TILE_DEFINITIONS.filter(t => sec.suits.includes(t.suit));
+            const secTiles = activeDefs.filter(t => sec.suits.includes(t.suit));
             secTiles.forEach(def => {
-              const index = TILE_DEFINITIONS.indexOf(def);
+              const index = activeDefs.indexOf(def);
               const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'].includes(def.suit);
 
               const card = document.createElement('div');
@@ -6056,7 +6092,8 @@
       }
 
       openLightbox(index) {
-        if (index < 0 || index >= TILE_DEFINITIONS.length) index = 0;
+        const activeDefs = this.getActiveDefinitions();
+        if (index < 0 || index >= activeDefs.length) index = 0;
         this.currentIndex = index;
         this.renderLightboxTile();
         if (this.lightboxModal) {
@@ -6071,22 +6108,25 @@
       }
 
       prevTile() {
-        const total = TILE_DEFINITIONS.length;
+        const activeDefs = this.getActiveDefinitions();
+        const total = activeDefs.length;
         this.currentIndex = (this.currentIndex - 1 + total) % total;
         this.renderLightboxTile();
       }
 
       nextTile() {
-        const total = TILE_DEFINITIONS.length;
+        const activeDefs = this.getActiveDefinitions();
+        const total = activeDefs.length;
         this.currentIndex = (this.currentIndex + 1) % total;
         this.renderLightboxTile();
       }
 
       renderLightboxTile() {
-        const def = TILE_DEFINITIONS[this.currentIndex];
+        const activeDefs = this.getActiveDefinitions();
+        const def = activeDefs[this.currentIndex];
         if (!def) return;
 
-        const info = getTileDetailInfo(def, this.currentIndex);
+        const info = getTileDetailInfo(def, this.currentIndex, activeDefs.length);
         const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'].includes(def.suit);
 
         if (this.lightboxBadge) this.lightboxBadge.textContent = info.badgeText;
@@ -6515,15 +6555,18 @@
         this.isGameOver = false;
         this.blindMismatchCount = 0; // 뒤집기 3회 실패 카운터
         this.hasUsedLastChanceShuffle = false; // 하트 1개일 때 마지막 무료 셔플 사용 여부
-        // 옵션 로컬 스토리지 불러오기 (기본값: 꺼짐/false)
+        // 옵션 로컬 스토리지 불러오기 (기본값: 꺼짐/false, 사주패 기본값: 켜짐/true)
         try {
           this.autoBlindPairMatch = (localStorage.getItem('siyeon_mahjong_auto_blind_pair') || localStorage.getItem('autoBlindPairMatch')) === '1';
           this.autoEndMatch = (localStorage.getItem('siyeon_mahjong_auto_end_match') || localStorage.getItem('autoEndMatch')) === '1';
           this.dynamicZoom = (localStorage.getItem('siyeon_mahjong_dynamic_zoom') || localStorage.getItem('dynamicZoom')) === '1';
+          const savedSaju = localStorage.getItem('siyeon_mahjong_use_saju_tiles');
+          this.useSajuTiles = savedSaju === null ? true : savedSaju === '1';
         } catch (e) {
           this.autoBlindPairMatch = false;
           this.autoEndMatch = false;
           this.dynamicZoom = false;
+          this.useSajuTiles = true;
         }
 
         // 뷰포트 확대/축소 및 자유 이동(Pan & Zoom) 시스템
@@ -6727,6 +6770,39 @@
             settingsTabPanels.forEach(p => p.classList.toggle('active', p.dataset.tab === tabName));
           });
         });
+
+        // 사주 명리학 이미지셋 ON/OFF 토글 버튼 이벤트
+        const btnToggleSaju = document.getElementById('btn-toggle-saju-tiles');
+        const updateToggleSajuUI = () => {
+          const icon = document.getElementById('toggle-saju-tiles-icon');
+          const text = document.getElementById('toggle-saju-tiles-text');
+          if (icon && text) {
+            icon.textContent = this.useSajuTiles ? '☯️' : '🔒';
+            text.textContent = this.useSajuTiles ? '사주 명리학 패: 켜짐' : '사주 명리학 패: 꺼짐';
+          }
+          if (btnToggleSaju) {
+            btnToggleSaju.style.borderColor = this.useSajuTiles ? 'rgba(46, 167, 121, 0.6)' : 'rgba(180, 190, 185, 0.6)';
+            btnToggleSaju.style.background = this.useSajuTiles ? 'rgba(235, 248, 240, 0.95)' : 'rgba(244, 245, 245, 0.95)';
+          }
+        };
+        updateToggleSajuUI();
+        if (btnToggleSaju) {
+          btnToggleSaju.addEventListener('click', () => {
+            this.sound.playSelect();
+            this.useSajuTiles = !this.useSajuTiles;
+            try {
+              localStorage.setItem('siyeon_mahjong_use_saju_tiles', this.useSajuTiles ? '1' : '0');
+            } catch (e) { }
+            updateToggleSajuUI();
+            if (window.tileGalleryManager) {
+              window.tileGalleryManager.rebuildGallery();
+            }
+            // 알림 및 새 판 갱신 안내
+            this.showFloatingNotice(this.useSajuTiles ? '☯️ 사주 명리학 39종 패셋이 활성화되었습니다.' : '🀄 전통 마작 패셋만 사용하도록 변경되었습니다.');
+            // 현재 판 재시작 시 새 타일 풀로 즉시 갱신
+            this.startNewGame(false);
+          });
+        }
 
         // 톱니바퀴 설정 메뉴 토글 및 외부 클릭 처리
         const btnSettings = document.getElementById('btn-settings');
@@ -7298,6 +7374,7 @@
           autoBlindPairMatch: this.autoBlindPairMatch,
           autoEndMatch: this.autoEndMatch,
           dynamicZoom: this.dynamicZoom,
+          useSajuTiles: this.useSajuTiles,
           savedAt: new Date().toLocaleString('ko-KR')
         };
         try {
@@ -7361,6 +7438,23 @@
             localStorage.setItem('dynamicZoom', this.dynamicZoom ? '1' : '0');
             localStorage.setItem('siyeon_mahjong_dynamic_zoom', this.dynamicZoom ? '1' : '0');
           } catch (e) { }
+        }
+        if (saved.useSajuTiles !== undefined) {
+          this.useSajuTiles = !!saved.useSajuTiles;
+          try {
+            localStorage.setItem('siyeon_mahjong_use_saju_tiles', this.useSajuTiles ? '1' : '0');
+          } catch (e) { }
+        }
+        const sajuIcon = document.getElementById('toggle-saju-tiles-icon');
+        const sajuText = document.getElementById('toggle-saju-tiles-text');
+        const btnSajuEl = document.getElementById('btn-toggle-saju-tiles');
+        if (sajuIcon && sajuText) {
+          sajuIcon.textContent = this.useSajuTiles ? '☯️' : '🔒';
+          sajuText.textContent = this.useSajuTiles ? '사주 명리학 패: 켜짐' : '사주 명리학 패: 꺼짐';
+        }
+        if (btnSajuEl) {
+          btnSajuEl.style.borderColor = this.useSajuTiles ? 'rgba(46, 167, 121, 0.6)' : 'rgba(180, 190, 185, 0.6)';
+          btnSajuEl.style.background = this.useSajuTiles ? 'rgba(235, 248, 240, 0.95)' : 'rgba(244, 245, 245, 0.95)';
         }
         const pairIcon = document.getElementById('auto-blind-pair-icon');
         const pairText = document.getElementById('auto-blind-pair-text');
@@ -7836,7 +7930,15 @@
         this.currentLayoutBounds = { minX, maxX, minY, maxY, maxZ, padX, padY };
 
         const diffCfg = DIFFICULTY_CONFIG[this.difficulty] || DIFFICULTY_CONFIG.normal;
-        const availablePool = TILE_DEFINITIONS.filter(diffCfg.filter);
+        const sajuSuits = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'];
+        let availablePool = TILE_DEFINITIONS.filter(diffCfg.filter);
+        if (this.useSajuTiles === false) {
+          availablePool = availablePool.filter(def => !sajuSuits.includes(def.suit));
+          // 사주 제외 후 가용 풀이 너무 작아지면 전통 마작패 전체(50종)로 자동 보완
+          if (availablePool.length < numPairs) {
+            availablePool = TILE_DEFINITIONS.filter(def => !sajuSuits.includes(def.suit));
+          }
+        }
 
         const chosenDefs = [];
         const poolCopy = [...availablePool];
