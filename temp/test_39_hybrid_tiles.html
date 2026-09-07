@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사주 39종 + 오룡이 10종 + 슬롯머신 7용두 3D 하이브리드 타일 시스템 검증</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;900&family=Pretendard:wght@400;600;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0b0f17;
+      --card-bg: rgba(22, 30, 46, 0.85);
+      --border-color: rgba(255, 215, 64, 0.2);
+      --accent-gold: #ffd54f;
+      --text-main: #f0f4f8;
+      --text-sub: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 10%, #151e30 0%, #080c14 100%);
+      color: var(--text-main);
+      font-family: 'Pretendard', sans-serif;
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+
+    header {
+      max-width: 1280px;
+      margin: 0 auto 32px;
+      text-align: center;
+    }
+
+    h1 {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 30px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #fff 0%, #ffd54f 60%, #ffb300 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    p.subtitle {
+      color: var(--text-sub);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 780px;
+      margin: 0 auto 24px;
+    }
+
+    /* 컨트롤 바 */
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 14px 24px;
+      border-radius: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      max-width: 700px;
+      margin: 0 auto 40px;
+    }
+
+    .size-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #cbd5e1;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .size-btn:hover {
+      background: rgba(255, 215, 64, 0.2);
+      color: #fff;
+    }
+
+    .size-btn.active {
+      background: linear-gradient(135deg, #ffd54f 0%, #ffb300 100%);
+      color: #0b0f17;
+      border-color: #ffd54f;
+      font-weight: 800;
+      box-shadow: 0 4px 12px rgba(255, 213, 79, 0.35);
+    }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #ffd54f;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 12px;
+    }
+
+    .toggle-label input {
+      accent-color: #ffd54f;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    /* 카테고리 섹션 */
+    .category-section {
+      max-width: 1280px;
+      margin: 0 auto 48px;
+    }
+
+    .cat-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 20px;
+      font-weight: 900;
+      color: #e2e8f0;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 10px;
+    }
+
+    .cat-badge {
+      font-family: 'Pretendard', sans-serif;
+      font-size: 12px;
+      background: rgba(255, 215, 64, 0.15);
+      color: #ffd54f;
+      padding: 3px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 215, 64, 0.3);
+    }
+
+    .tile-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: flex-start;
+    }
+
+    /* 타일 래퍼 */
+    .tile-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .tile-item:hover {
+      transform: translateY(-6px) scale(1.03);
+    }
+
+    .tile-svg-container {
+      transition: width 0.2s, height 0.2s;
+    }
+
+    /* 뷰포트 크기 제어 클래스 */
+    .view-small .tile-svg-container { width: 56px; height: 70px; }
+    .view-medium .tile-svg-container { width: 96px; height: 120px; }
+    .view-large .tile-svg-container { width: 160px; height: 200px; }
+
+    .tile-svg-container svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+    }
+
+    .tile-name {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #94a3b8;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* 라이트박스 모달 */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(4, 7, 12, 0.85);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #141b29;
+      border: 1px solid rgba(255, 215, 64, 0.3);
+      border-radius: 24px;
+      padding: 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+      max-width: 440px;
+      width: 90%;
+    }
+
+    .modal-tile-box {
+      width: 240px;
+      height: 300px;
+      margin-bottom: 24px;
+    }
+
+    .modal-tile-box svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .modal-info {
+      text-align: center;
+    }
+
+    .modal-info h3 {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 24px;
+      color: #ffd54f;
+      margin-bottom: 8px;
+    }
+
+    .modal-info p {
+      color: #94a3b8;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 24px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="view-medium">
+
+  <header>
+    <h1>사주 39종 실물 3D 타일 + SVG 실시간 텍스트 검증</h1>
+    <p class="subtitle">
+      AI가 생성한 <strong>순수 3D 실물 마작패 이미지(WebP)</strong>를 바탕에 깔고, 
+      그 위에 <strong>SVG 벡터 뱃지 & 한자/한글 텍스트</strong>를 실시간으로 합성 렌더링한 하이브리드 시스템입니다.
+      모바일 48px 축소 화면부터 240px 전체화면까지 글자가 절대 번지거나 깨지지 않습니다.
+    </p>
+
+    <div class="controls">
+      <span style="font-size: 14px; color: #94a3b8;">뷰포트 크기:</span>
+      <button class="size-btn" onclick="setSize('small', this)">인게임 (56x70)</button>
+      <button class="size-btn active" onclick="setSize('medium', this)">도감 (96x120)</button>
+      <button class="size-btn" onclick="setSize('large', this)">대형 (160x200)</button>
+
+      <label class="toggle-label">
+        <input type="checkbox" id="toggleSvg" checked onchange="toggleSvgOverlay()">
+        SVG 실시간 글씨 레이어 켜기
+      </label>
+    </div>
+  </header>
+
+  <main id="app"></main>
+
+  <!-- 라이트박스 모달 -->
+  <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal()">&times;</button>
+      <div class="modal-tile-box" id="modalTileBox"></div>
+      <div class="modal-info" id="modalInfo"></div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 39종 타일 정밀 메타데이터 정의
+    // =========================================================================
+    const TILES_DATA = {
+      gan: {
+        title: "십간(十干) 10종",
+        desc: "우주 생명 에너지의 10대 천간 (갑~계)",
+        items: [
+          { id: 'g_jia', badge: '甲', color: '#2e7d32', sub: '갑목', seal: '甲木', name: '갑목 (분재 소나무)' },
+          { id: 'g_yi', badge: '乙', color: '#43a047', sub: '을목', seal: '乙木', name: '을목 (매화 가지)' },
+          { id: 'g_bing', badge: '丙', color: '#d32f2f', sub: '병화', seal: '丙火', name: '병화 (타오르는 태양)' },
+          { id: 'g_ding', badge: '丁', color: '#ff6f00', sub: '정화', seal: '丁火', name: '정화 (황동 등불)' },
+          { id: 'g_wu', badge: '戊', color: '#795548', sub: '무토', seal: '戊土', name: '무토 (웅장한 바위산)' },
+          { id: 'g_ji', badge: '己', color: '#b78103', sub: '기토', seal: '己土', name: '기토 (황금 다락논)' },
+          { id: 'g_geng', badge: '庚', color: '#546e7a', sub: '경금', seal: '庚金', name: '경금 (조선 환도)' },
+          { id: 'g_xin', badge: '辛', color: '#00897b', sub: '신금', seal: '辛金', name: '신금 (백옥 용패물)' },
+          { id: 'g_ren', badge: '壬', color: '#0288d1', sub: '임수', seal: '壬水', name: '임수 (거대한 대양 파도)' },
+          { id: 'g_gui', badge: '癸', color: '#00acc1', sub: '계수', seal: '癸水', name: '계수 (연잎 아침이슬)' }
+        ]
+      },
+      zhi: {
+        title: "십이지(十二支) 12종",
+        desc: "지상 생태계와 시간의 12대 지신 (자~해)",
+        items: [
+          { id: 'z_zi', badge: '子', color: '#0d47a1', sub: '자(쥐)', seal: '子水', name: '자수 (쌀자루 쥐)' },
+          { id: 'z_chou', badge: '丑', color: '#b78103', sub: '축(소)', seal: '丑土', name: '축토 (금방울 검은소)' },
+          { id: 'z_yin', badge: '寅', color: '#00897b', sub: '인(호)', seal: '寅木', name: '인목 (대나무 호랑이)' },
+          { id: 'z_mao', badge: '卯', color: '#2e7d32', sub: '묘(토)', seal: '卯木', name: '묘목 (달빛 옥토끼)' },
+          { id: 'z_chen', badge: '辰', color: '#b78103', sub: '진(용)', seal: '辰土', name: '진토 (여의주 청룡)' },
+          { id: 'z_si', badge: '巳', color: '#d32f2f', sub: '사(뱀)', seal: '巳火', name: '사화 (붉은 똬리뱀)' },
+          { id: 'z_wu', badge: '午', color: '#e53935', sub: '오(말)', seal: '午火', name: '오화 (안장 두른 야생마)' },
+          { id: 'z_wei', badge: '未', color: '#b78103', sub: '미(양)', seal: '未土', name: '미토 (풀밭의 온순한 양)' },
+          { id: 'z_shen', badge: '申', color: '#455a64', sub: '신(원)', seal: '申金', name: '신금 (선도복숭아 원숭이)' },
+          { id: 'z_you', badge: '酉', color: '#37474f', sub: '유(닭)', seal: '酉金', name: '유금 (바위 위 수탉)' },
+          { id: 'z_xu', badge: '戌', color: '#b78103', sub: '술(개)', seal: '戌土', name: '술토 (충직한 진돗개)' },
+          { id: 'z_hai', badge: '亥', color: '#1565c0', sub: '해(돈)', seal: '亥水', name: '해수 (황금 엽전돼지)' }
+        ]
+      },
+      yinyang: {
+        title: "음양(陰陽) 2종",
+        desc: "빛과 어둠, 낮과 밤의 태극 에너지",
+        items: [
+          { id: 'yy_yang', badge: '陽', color: '#e65100', sub: '태양', seal: '太陽', name: '태양 (황금 빛살)' },
+          { id: 'yy_yin', badge: '陰', color: '#303f9f', sub: '태음', seal: '太陰', name: '태음 (구름 보름달)' }
+        ]
+      },
+      wuxing: {
+        title: "오행(五行) 5종",
+        desc: "목화토금수 천지 만물의 다섯 원소",
+        items: [
+          { id: 'wx_wood', badge: '木', color: '#2e7d32', sub: '목행', seal: '木行', name: '목행 (생명의 새싹 나무)' },
+          { id: 'wx_fire', badge: '火', color: '#d32f2f', sub: '화행', seal: '火行', name: '화행 (신성한 모닥불)' },
+          { id: 'wx_earth', badge: '土', color: '#b78103', sub: '토행', seal: '土行', name: '토행 (대지의 흙과 바위)' },
+          { id: 'wx_metal', badge: '金', color: '#c29000', sub: '금행', seal: '金行', name: '금행 (황금 금원보 금괴)' },
+          { id: 'wx_water', badge: '水', color: '#0288d1', sub: '수행', seal: '水行', name: '수행 (소용돌이 푸른 물살)' }
+        ]
+      },
+      shin: {
+        title: "십신(十神) 10종",
+        desc: "사주 운명의 10대 페르소나 (운명의 별 10종)",
+        items: [
+          { id: 's_bijian', badge: '比肩', isDouble: true, color: '#00796b', sub: '비견', seal: '比肩', name: '비견 (동심결 매듭의 두 선비)' },
+          { id: 's_geobjae', badge: '劫財', isDouble: true, color: '#004d40', sub: '겁재', seal: '劫財', name: '겁재 (끊어진 매듭과 엽전 쟁탈)' },
+          { id: 's_siksin', badge: '食神', isDouble: true, color: '#e65100', sub: '식신', seal: '食神', name: '식신 (수라상 잔칫상)' },
+          { id: 's_sangpwan', badge: '傷官', isDouble: true, color: '#bf360c', sub: '상관', seal: '傷官', name: '상관 (하회 양반탈)' },
+          { id: 's_pyeonjae', badge: '偏財', isDouble: true, color: '#f57f17', sub: '편재', seal: '偏財', name: '편재 (황금 보물상자)' },
+          { id: 's_jeongjae', badge: '正財', isDouble: true, color: '#ffd600', sub: '정재', seal: '正財', name: '정재 (전통 원목 주판)' },
+          { id: 's_pyeongwan', badge: '七殺', isDouble: true, color: '#c2185b', sub: '칠살', seal: '七殺', name: '칠살/편관 (가면과 쌍검)' },
+          { id: 's_jeonggwan', badge: '正官', isDouble: true, color: '#455a64', sub: '정관', seal: '正官', name: '정관 (조선 관료 사모관모)' },
+          { id: 's_pyeonin', badge: '偏印', isDouble: true, color: '#512da8', sub: '편인', seal: '偏印', name: '편인 (나뭇가지 위 부엉이 - 효신)' },
+          { id: 's_jeongin', badge: '正印', isDouble: true, color: '#311b92', sub: '정인', seal: '正印', name: '정인 (서책과 벼루 붓)' }
+        ]
+      },
+      oryong: {
+        title: "오룡이(五龍) 슬롯머신 신수·보물 10종",
+        desc: "오룡 슬롯머신 테마의 5대 용과 수호신수 및 행운의 보물 패",
+        items: [
+          { id: 'oryong_white', badge: '白', color: '#546e7a', sub: '백룡', seal: '白龍', name: '백룡 (눈꽃 서리 백룡)' },
+          { id: 'oryong_red', badge: '赤', color: '#e53935', sub: '적룡', seal: '赤龍', name: '적룡 (불꽃 화염 적룡)' },
+          { id: 'oryong_black', badge: '黑', color: '#263238', sub: '흑룡', seal: '黑龍', name: '흑룡 (먹구름 뇌전 흑룡)' },
+          { id: 'oryong_blue', badge: '靑', color: '#1e88e5', sub: '청룡', seal: '靑龍', name: '청룡 (파도 소용돌이 청룡)' },
+          { id: 'oryong_yellow', badge: '黃', color: '#fbc02d', sub: '황룡', seal: '黃龍', name: '황룡 (여의주 황금룡)' },
+          { id: 'oryong_koi', badge: '鯉', color: '#fb8c00', sub: '금붕', seal: '錦鯉', name: '금붕 (물살 가르는 황금 비단잉어)' },
+          { id: 'oryong_turtle', badge: '龜', color: '#43a047', sub: '영구', seal: '靈龜', name: '영구 (장수와 지혜의 신령거북)' },
+          { id: 'oryong_tiger', badge: '虎', color: '#78909c', sub: '백호', seal: '白虎', name: '백호 (비취 목걸이를 한 용맹한 백호)' },
+          { id: 'oryong_coin', badge: '錢', color: '#ffb300', sub: '금전', seal: '金錢', name: '금전 (24K 순금 건륭통보 엽전)' },
+          { id: 'oryong_envelope', badge: '喜', color: '#c2185b', sub: '홍포', seal: '紅包', name: '홍포 (복과 재물을 부르는 황금용 세뱃돈봉투)' }
+        ]
+      },
+      dragon_heads: {
+        title: "오룡이 슬롯머신 상단 7용두(龍頭) 캐릭터 7종",
+        desc: "슬롯머신 상단 전광판에 등장하는 7가지 색상별 정면 3D 용머리 패",
+        items: [
+          { id: 'dragon_head_white_tile', badge: '白', color: '#78909c', sub: '백용두', seal: '白龍', name: '백용두 (순은빛 설산 백룡 머리)' },
+          { id: 'dragon_head_red_tile', badge: '赤', color: '#e53935', sub: '적용두', seal: '赤龍', name: '적용두 (작열하는 화염 적룡 머리)' },
+          { id: 'dragon_head_black_tile', badge: '黑', color: '#37474f', sub: '흑용두', seal: '黑龍', name: '흑용두 (흑요석 뇌전 흑룡 머리)' },
+          { id: 'dragon_head_purple_tile', badge: '紫', color: '#8e24aa', sub: '자용두', seal: '紫龍', name: '자용두 (미스터리 보라 용머리 - Mystery Choice)' },
+          { id: 'dragon_head_blue_tile', badge: '靑', color: '#1e88e5', sub: '청용두', seal: '靑龍', name: '청용두 (심해 사파이어 청룡 머리)' },
+          { id: 'dragon_head_yellow_tile', badge: '黃', color: '#fbc02d', sub: '황용두', seal: '黃龍', name: '황용두 (24K 순금 황금룡 머리)' },
+          { id: 'dragon_head_green_tile', badge: '綠', color: '#43a047', sub: '녹용두', seal: '綠龍', name: '녹용두 (비취 비단 에메랄드 녹룡 머리)' }
+        ]
+      },
+      dragon_gold: {
+        title: "황금 용두(黃金龍頭) 누끼 1종",
+        desc: "사용자 업로드 이미지에서 누끼 추출한 24K 황금 정면 용머리",
+        items: [
+          { id: 'dragon_gold_master', badge: '金', color: '#b8860b', sub: '황금용', seal: '黃金龍', name: '황금용두 (24K 누끼 황금 용머리)', isPng: true }
+        ]
+      }
+    };
+
+    let showSvgOverlay = true;
+
+    // =========================================================================
+    // SVG 하이브리드 렌더러 함수 (3D 무글자 WebP + SVG 실시간 벡터 텍스트/뱃지)
+    // =========================================================================
+    function renderHybridTileSvg(tile, enableSvg = true) {
+      const { id, badge, color, sub, seal, isDouble } = tile;
+
+      // 파스텔 낙관 배경색 (단청 색상 15% + 상아색 85% 부드러운 조화)
+      const sealBg = `color-mix(in srgb, ${color} 14%, #fcf9f2)`;
+
+      let badgeSvg = '';
+      if (enableSvg) {
+        if (isDouble && badge.length >= 2) {
+          // 십성 2글자 세로형 황실 단청 배지
+          badgeSvg = `
+            <g class="svg-badge">
+              <!-- 그림자 -->
+              <rect x="15" y="14" width="58" height="92" rx="12" ry="12" fill="rgba(0,0,0,0.35)" />
+              <!-- 본체 단청 솔리드 + 황금 림 -->
+              <rect x="14" y="12" width="58" height="92" rx="12" ry="12" fill="${color}" stroke="#FFD54F" stroke-width="2.5" />
+              <!-- 안쪽 미세 테두리 -->
+              <rect x="16.5" y="14.5" width="53" height="87" rx="10" ry="10" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+              <!-- 서예 명조 2글자 텍스트 -->
+              <text x="43" y="49" text-anchor="middle" font-family="'Noto Serif KR', serif" font-weight="900" font-size="28" fill="#FFFFFF" letter-spacing="-1">${badge[0]}</text>
+              <text x="43" y="87" text-anchor="middle" font-family="'Noto Serif KR', serif" font-weight="900" font-size="28" fill="#FFFFFF" letter-spacing="-1">${badge[1]}</text>
+            </g>
+          `;
+        } else {
+          // 1글자 사각 황실 단청 배지
+          badgeSvg = `
+            <g class="svg-badge">
+              <!-- 그림자 -->
+              <rect x="15" y="14" width="58" height="60" rx="12" ry="12" fill="rgba(0,0,0,0.35)" />
+              <!-- 본체 단청 솔리드 + 황금 림 -->
+              <rect x="14" y="12" width="58" height="60" rx="12" ry="12" fill="${color}" stroke="#FFD54F" stroke-width="2.5" />
+              <!-- 안쪽 미세 테두리 -->
+              <rect x="16.5" y="14.5" width="53" height="55" rx="10" ry="10" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+              <!-- 서예 명조 한자 텍스트 -->
+              <text x="43" y="55" text-anchor="middle" font-family="'Noto Serif KR', serif" font-weight="900" font-size="34" fill="#FFFFFF">${badge}</text>
+            </g>
+          `;
+        }
+      }
+
+      let bottomSvg = '';
+      if (enableSvg) {
+        bottomSvg = `
+          <g class="svg-bottom">
+            <!-- 좌하단 한글 약칭 (또렷하고 굵은 Pretendard) -->
+            <!-- 텍스트 하이라이트/외곽선 -->
+            <text x="20" y="274" font-family="'Pretendard', sans-serif" font-weight="900" font-size="26" fill="rgba(255,255,255,0.9)" stroke="rgba(255,255,255,0.8)" stroke-width="4" stroke-linejoin="round">${sub}</text>
+            <text x="20" y="274" font-family="'Pretendard', sans-serif" font-weight="900" font-size="26" fill="${color}">${sub}</text>
+
+            <!-- 우하단 조선 어보 스타일 낙관 인장 -->
+            <g transform="translate(142, 244)">
+              <rect x="1" y="2" width="82" height="40" rx="7" ry="7" fill="rgba(0,0,0,0.25)" />
+              <rect x="0" y="0" width="82" height="40" rx="7" ry="7" fill="${sealBg}" stroke="${color}" stroke-width="2.2" />
+              <rect x="3" y="3" width="76" height="34" rx="5" ry="5" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1" />
+              <text x="41" y="27" text-anchor="middle" font-family="'Noto Serif KR', serif" font-weight="900" font-size="20" fill="${color}" letter-spacing="1">${seal}</text>
+            </g>
+          </g>
+        `;
+      }
+
+      return `
+        <svg viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg">
+          <!-- 1. 초고화질 무글자 3D 실물 마작패 이미지 -->
+          <image href="${tile.isPng ? '../assets/dragons/' + id + '.png' : id.startsWith('dragon_head_') ? '../assets/dragons/' + id + '.webp' : '../assets/tiles/' + id + '.webp'}" x="0" y="0" width="240" height="300" preserveAspectRatio="none" />
+
+          <!-- 2. 좌상단 SVG 전통 단청 배지 -->
+          ${badgeSvg}
+
+          <!-- 3. 하단 실시간 SVG 텍스트 (한글 명칭 + 낙관 인장) -->
+          ${bottomSvg}
+        </svg>
+      `;
+    }
+
+    // =========================================================================
+    // 페이지 렌더링
+    // =========================================================================
+    function renderApp() {
+      const app = document.getElementById('app');
+      let html = '';
+
+      for (const [key, section] of Object.entries(TILES_DATA)) {
+        html += `
+          <section class="category-section">
+            <h2 class="cat-title">
+              ${section.title}
+              <span class="cat-badge">${section.items.length}종</span>
+              <span style="font-size: 13px; color: #64748b; font-weight: 400; margin-left: auto;">${section.desc}</span>
+            </h2>
+            <div class="tile-grid">
+              ${section.items.map(tile => `
+                <div class="tile-item" onclick="openModal('${tile.id}')">
+                  <div class="tile-svg-container" id="tile_wrap_${tile.id}">
+                    ${renderHybridTileSvg(tile, showSvgOverlay)}
+                  </div>
+                  <span class="tile-name">${tile.sub}</span>
+                </div>
+              `).join('')}
+            </div>
+          </section>
+        `;
+      }
+
+      app.innerHTML = html;
+    }
+
+    // =========================================================================
+    // 크기 제어 & 인터랙션
+    // =========================================================================
+    function setSize(sizeClass, btn) {
+      document.body.className = `view-${sizeClass}`;
+      document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function toggleSvgOverlay() {
+      showSvgOverlay = document.getElementById('toggleSvg').checked;
+      for (const section of Object.values(TILES_DATA)) {
+        for (const tile of section.items) {
+          const wrap = document.getElementById(`tile_wrap_${tile.id}`);
+          if (wrap) {
+            wrap.innerHTML = renderHybridTileSvg(tile, showSvgOverlay);
+          }
+        }
+      }
+    }
+
+    // =========================================================================
+    // 라이트박스 모달
+    // =========================================================================
+    function findTile(id) {
+      for (const sec of Object.values(TILES_DATA)) {
+        const found = sec.items.find(t => t.id === id);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    function openModal(id) {
+      const tile = findTile(id);
+      if (!tile) return;
+
+      document.getElementById('modalTileBox').innerHTML = renderHybridTileSvg(tile, true);
+      document.getElementById('modalInfo').innerHTML = `
+        <h3>${tile.name}</h3>
+        <p>식별 ID: <code>assets/tiles/${tile.id}.webp</code></p>
+        <p style="margin-top: 6px; color: #ffd54f;">실시간 SVG: 좌상단 단청 배지('${tile.badge}') + 한글('${tile.sub}') + 어보 낙관('${tile.seal}')</p>
+      `;
+      document.getElementById('modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+    // 초기 실행
+    renderApp();
+  </script>
+</body>
+</html>
