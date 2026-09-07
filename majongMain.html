@@ -3392,6 +3392,9 @@
             <button class="btn settings-btn" id="btn-toggle-oryong-tiles" title="오룡이 슬롯머신 신수·보물 10종 이미지셋 사용 여부 설정">
               <span class="btn-icon" id="toggle-oryong-tiles-icon">🐲</span> <span id="toggle-oryong-tiles-text">오룡이 테마 패: 켜짐</span>
             </button>
+            <button class="btn settings-btn" id="btn-toggle-oryong-dragon-style" title="오룡 7용 이미지를 기본 용 / 황금용두(龍頭)로 전환">
+              <span class="btn-icon" id="oryong-dragon-style-icon">🐉</span> <span id="oryong-dragon-style-text">오룡 용 이미지: 기본</span>
+            </button>
             <button class="btn settings-btn" id="btn-save-progress" title="현재 진행 상태 저장">
               <span class="btn-icon">💾</span> 현재 판 진행 저장
             </button>
@@ -5502,6 +5505,14 @@
         `;
       },
 
+      // 오룡 7용 → 황금용두 매핑 (스타일 전환용)
+      ORYONG_GOLD_MAP: {
+        'oryong_white': 'dragon_gold_white_tile', 'oryong_red': 'dragon_gold_red_tile',
+        'oryong_black': 'dragon_gold_black_tile', 'oryong_blue': 'dragon_gold_blue_tile',
+        'oryong_yellow': 'dragon_gold_yellow_tile', 'oryong_purple': 'dragon_gold_purple_tile',
+        'oryong_green': 'dragon_gold_green_tile'
+      },
+
       // 사주 39종 하이브리드 타일 (3D 무글자 이미지 WebP + SVG 실시간 벡터 텍스트/뱃지/낙관)
       sajuHybrid(id, badge, color, sub, seal, isDouble = false) {
         const sealBg = `color-mix(in srgb, ${color} 14%, #fcf9f2)`;
@@ -5544,7 +5555,7 @@
           <svg class="tile-svg saju-hybrid-svg" viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg">
             <!-- 1. 초고화질 3D 실물 마작패 이미지 (중심 기준 1.10배 스케일로 외곽 베젤을 자연스럽게 클리핑하여 기존 패와 1:1 심볼 크기 일치) -->
             <g transform="translate(120, 150) scale(1.10) translate(-120, -150)">
-              <image href="${(id.startsWith('dragon_head_') || id.startsWith('dragon_gold_')) ? 'assets/dragons/' + id + '.png' : 'assets/tiles/' + id + '.webp'}" x="0" y="0" width="240" height="300" preserveAspectRatio="none" />
+              <image href="${(() => { const gid = (window.oryongDragonStyle === 'gold' && SvgFactory.ORYONG_GOLD_MAP[id]) ? SvgFactory.ORYONG_GOLD_MAP[id] : id; return (gid.startsWith('dragon_gold_') || gid.startsWith('dragon_head_')) ? 'assets/dragons/' + gid + '.png' : 'assets/tiles/' + id + '.webp'; })()}" x="0" y="0" width="240" height="300" preserveAspectRatio="none" />
             </g>
             <!-- 2. 좌상단 SVG 전통 단청 배지 -->
             ${badgeSvg}
@@ -6880,6 +6891,49 @@
             }
             this.showFloatingNotice(this.useOryongTiles ? '🐲 오룡이 슬롯머신 10종 패셋이 활성화되었습니다.' : '🀄 오룡이 패셋이 비활성화되었습니다.');
             this.startNewGame(false);
+          });
+        }
+
+        // 황금용두 스타일 전환 토글
+        window.oryongDragonStyle = 'default';
+        try { window.oryongDragonStyle = localStorage.getItem('siyeon_mahjong_oryong_dragon_style') || 'default'; } catch(e) {}
+        const btnToggleOryongDragonStyle = document.getElementById('btn-toggle-oryong-dragon-style');
+        const updateOryongDragonStyleUI = () => {
+          const icon = document.getElementById('oryong-dragon-style-icon');
+          const text = document.getElementById('oryong-dragon-style-text');
+          const isGold = window.oryongDragonStyle === 'gold';
+          if (icon && text) {
+            icon.textContent = isGold ? '✨' : '🐉';
+            text.textContent = isGold ? '오룡 용 이미지: 황금용두' : '오룡 용 이미지: 기본';
+          }
+          if (btnToggleOryongDragonStyle) {
+            btnToggleOryongDragonStyle.style.borderColor = isGold ? 'rgba(255,180,0,0.7)' : 'rgba(180,190,185,0.6)';
+            btnToggleOryongDragonStyle.style.background = isGold ? 'rgba(255,248,220,0.95)' : 'rgba(244,245,245,0.95)';
+          }
+        };
+        updateOryongDragonStyleUI();
+        if (btnToggleOryongDragonStyle) {
+          btnToggleOryongDragonStyle.addEventListener('click', () => {
+            this.sound.playSelect();
+            window.oryongDragonStyle = window.oryongDragonStyle === 'gold' ? 'default' : 'gold';
+            try { localStorage.setItem('siyeon_mahjong_oryong_dragon_style', window.oryongDragonStyle); } catch(e) {}
+            updateOryongDragonStyleUI();
+            // DOM에서 오룡 7용 타일 이미지 실시간 교체
+            const gmap = SvgFactory.ORYONG_GOLD_MAP;
+            document.querySelectorAll('.tile-item[data-id]').forEach(el => {
+              const tid = el.dataset.id;
+              if (gmap[tid]) {
+                const imgEl = el.querySelector('image');
+                if (imgEl) {
+                  imgEl.setAttribute('href', window.oryongDragonStyle === 'gold'
+                    ? `assets/dragons/${gmap[tid]}.png`
+                    : `assets/tiles/${tid}.webp`);
+                }
+              }
+            });
+            this.showFloatingNotice(window.oryongDragonStyle === 'gold'
+              ? '✨ 오룡 황금용두(黃金龍頭) 이미지로 전환되었습니다.'
+              : '🐉 오룡 기본 용 이미지로 전환되었습니다.');
           });
         }
 
