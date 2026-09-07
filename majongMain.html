@@ -5544,7 +5544,7 @@
           <svg class="tile-svg saju-hybrid-svg" viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg">
             <!-- 1. 초고화질 3D 실물 마작패 이미지 (중심 기준 1.10배 스케일로 외곽 베젤을 자연스럽게 클리핑하여 기존 패와 1:1 심볼 크기 일치) -->
             <g transform="translate(120, 150) scale(1.10) translate(-120, -150)">
-              <image href="assets/tiles/${id}.webp" x="0" y="0" width="240" height="300" preserveAspectRatio="none" />
+              <image href="${(id.startsWith('dragon_head_') || id.startsWith('dragon_gold_')) ? 'assets/dragons/' + id + '.png' : 'assets/tiles/' + id + '.webp'}" x="0" y="0" width="240" height="300" preserveAspectRatio="none" />
             </g>
             <!-- 2. 좌상단 SVG 전통 단청 배지 -->
             ${badgeSvg}
@@ -5683,7 +5683,24 @@
       { id: 'oryong_turtle', suit: 'oryong', val: 'turtle', label: '靈龜', badge: '龜', render: () => SvgFactory.sajuHybrid('oryong_turtle', '龜', '#43a047', '영구', '靈龜') },
       { id: 'oryong_tiger', suit: 'oryong', val: 'tiger', label: '白虎', badge: '虎', render: () => SvgFactory.sajuHybrid('oryong_tiger', '虎', '#78909c', '백호', '白虎') },
       { id: 'oryong_coin', suit: 'oryong', val: 'coin', label: '金錢', badge: '錢', render: () => SvgFactory.sajuHybrid('oryong_coin', '錢', '#ffb300', '금전', '金錢') },
-      { id: 'oryong_envelope', suit: 'oryong', val: 'envelope', label: '紅包', badge: '喜', render: () => SvgFactory.sajuHybrid('oryong_envelope', '喜', '#c2185b', '홍포', '紅包') }
+      { id: 'oryong_envelope', suit: 'oryong', val: 'envelope', label: '紅包', badge: '喜', render: () => SvgFactory.sajuHybrid('oryong_envelope', '喜', '#c2185b', '홍포', '紅包') },
+      // 슬롯머신 7용두(龍頭) 7종
+      { id: 'dragon_head_white_tile',  suit: 'dragon_head', val: 'white',  label: '白龍', badge: '白', render: () => SvgFactory.sajuHybrid('dragon_head_white_tile',  '白', '#78909c', '백용두', '白龍') },
+      { id: 'dragon_head_red_tile',    suit: 'dragon_head', val: 'red',    label: '赤龍', badge: '赤', render: () => SvgFactory.sajuHybrid('dragon_head_red_tile',    '赤', '#e53935', '적용두', '赤龍') },
+      { id: 'dragon_head_black_tile',  suit: 'dragon_head', val: 'black',  label: '黑龍', badge: '黑', render: () => SvgFactory.sajuHybrid('dragon_head_black_tile',  '黑', '#37474f', '흑용두', '黑龍') },
+      { id: 'dragon_head_purple_tile', suit: 'dragon_head', val: 'purple', label: '紫龍', badge: '紫', render: () => SvgFactory.sajuHybrid('dragon_head_purple_tile', '紫', '#8e24aa', '자용두', '紫龍') },
+      { id: 'dragon_head_blue_tile',   suit: 'dragon_head', val: 'blue',   label: '靑龍', badge: '靑', render: () => SvgFactory.sajuHybrid('dragon_head_blue_tile',   '靑', '#1e88e5', '청용두', '靑龍') },
+      { id: 'dragon_head_yellow_tile', suit: 'dragon_head', val: 'yellow', label: '黃龍', badge: '黃', render: () => SvgFactory.sajuHybrid('dragon_head_yellow_tile', '黃', '#fbc02d', '황용두', '黃龍') },
+      { id: 'dragon_head_green_tile',  suit: 'dragon_head', val: 'green',  label: '綠龍', badge: '綠', render: () => SvgFactory.sajuHybrid('dragon_head_green_tile',  '綠', '#43a047', '녹용두', '綠龍') },
+
+      // 황금용두 누끼 7색 변형 7종
+      { id: 'dragon_gold_white_tile',  suit: 'dragon_gold', val: 'white',  label: '白金龍', badge: '白', render: () => SvgFactory.sajuHybrid('dragon_gold_white_tile',  '白', '#78909c', '백금용두', '白金龍') },
+      { id: 'dragon_gold_red_tile',    suit: 'dragon_gold', val: 'red',    label: '赤金龍', badge: '赤', render: () => SvgFactory.sajuHybrid('dragon_gold_red_tile',    '赤', '#e53935', '적금용두', '赤金龍') },
+      { id: 'dragon_gold_black_tile',  suit: 'dragon_gold', val: 'black',  label: '黑金龍', badge: '黑', render: () => SvgFactory.sajuHybrid('dragon_gold_black_tile',  '黑', '#37474f', '흑금용두', '黑金龍') },
+      { id: 'dragon_gold_purple_tile', suit: 'dragon_gold', val: 'purple', label: '紫金龍', badge: '紫', render: () => SvgFactory.sajuHybrid('dragon_gold_purple_tile', '紫', '#8e24aa', '자금용두', '紫金龍') },
+      { id: 'dragon_gold_blue_tile',   suit: 'dragon_gold', val: 'blue',   label: '靑金龍', badge: '靑', render: () => SvgFactory.sajuHybrid('dragon_gold_blue_tile',   '靑', '#1e88e5', '청금용두', '靑金龍') },
+      { id: 'dragon_gold_yellow_tile', suit: 'dragon_gold', val: 'yellow', label: '黃金龍', badge: '黃', render: () => SvgFactory.sajuHybrid('dragon_gold_yellow_tile', '黃', '#fbc02d', '황금용두', '黃金龍') },
+      { id: 'dragon_gold_green_tile',  suit: 'dragon_gold', val: 'green',  label: '綠金龍', badge: '綠', render: () => SvgFactory.sajuHybrid('dragon_gold_green_tile',  '綠', '#43a047', '녹금용두', '綠金龍') }
     ];
 
     /**
@@ -5692,7 +5709,7 @@
      * ========================================================
      */
     const TILE_CATEGORY_GROUPS = [
-      { id: 'all', name: '전체 (89)' },
+      { id: 'all', name: '전체 (103)' },
       { id: 'wan', name: '만수 (9)' },
       { id: 'tong', name: '통수 (9)' },
       { id: 'tiao', name: '삭수 (9)' },
@@ -6044,7 +6061,7 @@
             const secTiles = activeDefs.filter(t => sec.suits.includes(t.suit));
             secTiles.forEach(def => {
               const index = activeDefs.indexOf(def);
-              const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong'].includes(def.suit);
+              const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong', 'dragon_head', 'dragon_gold'].includes(def.suit);
 
               const card = document.createElement('div');
               card.className = 'gallery-tile-item';
@@ -6159,7 +6176,7 @@
         if (!def) return;
 
         const info = getTileDetailInfo(def, this.currentIndex, activeDefs.length);
-        const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong'].includes(def.suit);
+        const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong', 'dragon_head', 'dragon_gold'].includes(def.suit);
 
         if (this.lightboxBadge) this.lightboxBadge.textContent = info.badgeText;
         if (this.lightboxTitle) this.lightboxTitle.textContent = info.title;
@@ -7951,7 +7968,7 @@
           const item = this.trayTiles[i];
           if (item) {
             const tileDiv = document.createElement('div');
-            const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong'].includes(item.def.suit);
+            const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong', 'dragon_head', 'dragon_gold'].includes(item.def.suit);
             tileDiv.className = 'tray-tile' + (item.isMatching ? ' matching' : '') + (isSaju ? ' saju-tile' : '');
             tileDiv.dataset.trayIndex = i;
             tileDiv.title = `${item.def.name || item.def.label} (클릭 시 보드로 반환)`;
@@ -8261,7 +8278,7 @@
 
         sorted.forEach(tile => {
           const el = document.createElement('div');
-          const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong'].includes(tile.def.suit);
+          const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong', 'dragon_head', 'dragon_gold'].includes(tile.def.suit);
           el.className = `tile layer-${tile.z} dealing${isSaju ? ' saju-tile' : ''}`;
           if (tile.isCovered) el.classList.add('face-down');
           if (tile.isRevealed) el.classList.add('revealed');
@@ -9125,7 +9142,7 @@
           tile.def = activeDefs[i];
           if (!tile.el) return;
 
-          const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong'].includes(tile.def.suit);
+          const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong', 'dragon_head', 'dragon_gold'].includes(tile.def.suit);
           tile.el.classList.toggle('saju-tile', isSaju);
 
           const badgeEl = tile.el.querySelector('.tile-corner-badge');
