@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>5 Dragons (오룡이) 카지노 슬롯머신</title>
+  <link rel="stylesheet" href="css/slot_cabinet.css">
+</head>
+<body>
+  <div class="slot-app-container">
+    <!-- 상단 잭팟 & 테마 전광판 -->
+    <header class="slot-marquee">
+      <div class="marquee-title">
+        <span class="dragon-icon">🐲</span>
+        <h1>5 DRAGONS</h1>
+        <span class="dragon-icon">🐲</span>
+      </div>
+      <div class="marquee-subtitle">243 WAYS TO WIN • REEL POWER</div>
+    </header>
+
+    <!-- 메인 5x3 릴 캐비닛 -->
+    <main class="slot-cabinet">
+      <div class="reels-frame">
+        <div class="reel-column" id="reel-0"></div>
+        <div class="reel-column" id="reel-1"></div>
+        <div class="reel-column" id="reel-2"></div>
+        <div class="reel-column" id="reel-3"></div>
+        <div class="reel-column" id="reel-4"></div>
+      </div>
+    </main>
+
+    <!-- 하단 카지노 베팅 & 컨트롤 패널 -->
+    <footer class="slot-dashboard">
+      <div class="dash-stat">
+        <span class="stat-label">BALANCE</span>
+        <span class="stat-value" id="stat-balance">10,000</span>
+      </div>
+      <div class="dash-stat">
+        <span class="stat-label">TOTAL BET</span>
+        <span class="stat-value" id="stat-bet">30</span>
+      </div>
+      <div class="dash-stat win-stat">
+        <span class="stat-label">WIN</span>
+        <span class="stat-value" id="stat-win">0</span>
+      </div>
+      <div class="dash-controls">
+        <button class="dash-btn" id="btn-bet-down">-</button>
+        <button class="dash-btn" id="btn-bet-up">+</button>
+        <button class="dash-btn" id="btn-auto">AUTO</button>
+        <button class="dash-btn btn-spin" id="btn-spin">SPIN</button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
