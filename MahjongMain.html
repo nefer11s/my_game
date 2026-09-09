@@ -3542,7 +3542,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.61
+            Si-Yeon Mahjong Solitaire v1.4.62
           </div>
         </div>
       </div>
@@ -3634,7 +3634,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.61</div>
+        <div class="splash-version-badge">v1.4.62</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -9956,6 +9956,20 @@
     window.addEventListener('DOMContentLoaded', () => {
       const game = new MahjongGame();
       window.tileGalleryManager = new TileGalleryManager(game.sound);
+
+      // 카카오톡이 아닌 정식 브라우저(Chrome/Safari 등)로 진입 시 사용자 첫 터치 시점에 즉시 매끄러운 전체화면 전환 보장
+      const ua = (navigator.userAgent || '').toLowerCase();
+      if (!ua.includes('kakaotalk')) {
+        const onFirstInteractionFullscreen = () => {
+          game.enterFullscreen();
+          ['pointerdown', 'touchstart', 'click'].forEach(evt => {
+            window.removeEventListener(evt, onFirstInteractionFullscreen, { capture: true });
+          });
+        };
+        ['pointerdown', 'touchstart', 'click'].forEach(evt => {
+          window.addEventListener(evt, onFirstInteractionFullscreen, { capture: true, once: true, passive: true });
+        });
+      }
     });
   </script>
 </body>
