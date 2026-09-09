@@ -3576,7 +3576,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.68
+            Si-Yeon Mahjong Solitaire v1.4.69
           </div>
         </div>
       </div>
@@ -3668,7 +3668,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.68</div>
+        <div class="splash-version-badge">v1.4.69</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -5678,7 +5678,7 @@
           <svg class="tile-svg saju-hybrid-svg" viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg">
             <!-- 1. 초고화질 3D 실물 마작패 이미지 (중심 기준 1.10배 스케일로 외곽 베젤을 자연스럽게 클리핑하여 기존 패와 1:1 심볼 크기 일치) -->
             <g transform="translate(120, 150) scale(1.10) translate(-120, -150)">
-              <image href="${(() => { if (id.startsWith('oryong_body_')) return 'assets/tiles/oryong_' + id.replace('oryong_body_', '') + '.webp'; const gid = SvgFactory.ORYONG_GOLD_MAP[id] || id; return (gid.startsWith('dragon_gold_') || gid.startsWith('dragon_head_')) ? 'assets/dragons/' + gid + '.png' : 'assets/tiles/' + id + '.webp'; })()}" x="0" y="0" width="240" height="300" preserveAspectRatio="none" />
+              <image href="${(() => { if (id.startsWith('oryong_body_')) return 'assets/tiles/oryong_' + id.replace('oryong_body_', '') + '.webp'; if (id.startsWith('dragon_gold_') || id.startsWith('dragon_head_')) return 'assets/dragons/' + id + '.png'; return 'assets/tiles/' + id + '.webp'; })()}" x="0" y="0" width="240" height="300" preserveAspectRatio="none" />
             </g>
             <!-- 2. 좌상단 SVG 전통 단청 배지 -->
             ${badgeSvg}
@@ -6752,6 +6752,8 @@
           this.useSajuTiles = savedSaju === null ? true : savedSaju === '1';
           const savedOryong = localStorage.getItem('siyeon_mahjong_use_oryong_tiles');
           this.useOryongTiles = savedOryong === null ? true : savedOryong === '1';
+          localStorage.removeItem('siyeon_mahjong_oryong_dragon_style');
+          localStorage.removeItem('oryong_mahjong_dragon_style');
         } catch (e) {
           this.autoBlindPairMatch = false;
           this.autoEndMatch = false;
