@@ -3542,7 +3542,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.60
+            Si-Yeon Mahjong Solitaire v1.4.61
           </div>
         </div>
       </div>
@@ -3634,7 +3634,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.60</div>
+        <div class="splash-version-badge">v1.4.61</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -6808,11 +6808,12 @@
           });
         }
 
-        // 초기화면에서 게임 시작 / 이어하기 시 부드러운 전환 처리
+        // 초기화면에서 게임 시작 / 이어하기 시 전체화면 진입 및 부드러운 전환 처리
         const btnSplashResume = document.getElementById('btn-splash-resume');
         if (btnSplashResume) {
           btnSplashResume.addEventListener('click', () => {
             this.sound.playSelect();
+            this.enterFullscreen();
             this.resumeSavedGame();
           });
         }
@@ -6827,6 +6828,8 @@
               }
               this.clearSavedProgress();
             }
+            // 게임 시작 터치 제스처 시점에 깔끔하게 전체화면 전환
+            this.enterFullscreen();
             this.currentStage = 1;
             this.score = 0;
             this.hasStarted = true;
