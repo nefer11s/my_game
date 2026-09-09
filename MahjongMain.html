@@ -2,6 +2,20 @@
 <html lang="ko">
 
 <head>
+  <script>
+    // 카카오톡 인앱 브라우저 감지 시 시스템 기본 브라우저(Chrome/Safari)로 즉시 강제 전환
+    (function () {
+      var ua = navigator.userAgent.toLowerCase();
+      if (ua.indexOf('kakaotalk') !== -1) {
+        var currentUrl = location.href;
+        if (ua.indexOf('android') !== -1) {
+          location.href = 'intent://' + currentUrl.replace(/^https?:\/\//i, '') + '#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=com.android.chrome;end';
+        } else if (ua.indexOf('iphone') !== -1 || ua.indexOf('ipad') !== -1 || ua.indexOf('ipod') !== -1) {
+          location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(currentUrl);
+        }
+      }
+    })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
