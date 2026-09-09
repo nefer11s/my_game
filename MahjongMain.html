@@ -1343,19 +1343,51 @@
       }
     }
 
-    .tray-count-badge {
+    .tray-side-ctrls {
       position: absolute;
       right: 8px;
-      top: 3px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      z-index: 10;
+    }
+
+    .tray-count-badge {
       background: rgba(0, 0, 0, 0.45);
-      padding: 1px 7px;
-      border-radius: 10px;
+      padding: 1px 6px;
+      border-radius: 8px;
       font-size: 10px;
       font-weight: 800;
       color: #dfcaa2;
       border: 1px solid rgba(212, 175, 55, 0.35);
       transition: all 0.2s ease;
-      z-index: 5;
+      white-space: nowrap;
+    }
+
+    .tray-oryong-btn {
+      width: 28px;
+      height: 22px;
+      border-radius: 6px;
+      background: rgba(230, 81, 0, 0.22);
+      border: 1px solid rgba(230, 81, 0, 0.6);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      transition: all 0.15s ease;
+      padding: 0;
+      line-height: 1;
+    }
+
+    .tray-oryong-btn:hover {
+      background: rgba(230, 81, 0, 0.45);
+      border-color: #ff9800;
+      transform: scale(1.08);
     }
 
     .tray-count-badge.warning {
@@ -3370,13 +3402,13 @@
   </svg>
 
 
-  <!-- 상단 상태 바 (스테이지, 난이도, 하트, 시간, 점수, 설정) -->
+  <!-- 상단 상태 바 (하트, 스테이지, 난이도, 시간, 점수, 설정) -->
   <header class="game-top-bar">
     <div class="top-left">
+      <div class="hud-lives" id="stat-lives" title="남은 하트">❤️❤️❤️❤️</div>
       <div class="stage-badge" id="stat-stage" title="진행 판수">1판</div>
       <div class="diff-badge" id="stat-diff" title="난이도">보통</div>
       <span id="stat-layout" style="display:none;"></span>
-      <div class="hud-lives" id="stat-lives" title="남은 하트">❤️❤️❤️❤️</div>
     </div>
 
     <div class="top-center">
@@ -3393,7 +3425,12 @@
 
   <!-- 상단 슬롯 트레이 (슬롯 높이 컴팩트 최적화, 텍스트 제거) -->
   <div class="tray-container top-tray" id="tray-container">
-    <div class="tray-count-badge" id="tray-count-badge">0 / 4</div>
+    <div class="tray-side-ctrls">
+      <div class="tray-count-badge" id="tray-count-badge">0 / 4</div>
+      <button class="tray-oryong-btn" id="btn-oryong-mode" title="오룡이 달인 모드: 오룡이 ON · 사주패 OFF · 달인 난이도">
+        <span class="btn-icon">🐲</span>
+      </button>
+    </div>
     <div class="tray-slots" id="tray-slots">
       <!-- 동적 슬롯 박스 -->
     </div>
@@ -3432,9 +3469,6 @@
       </button>
       <button class="btn btn-dock" id="btn-restart" title="현재 판 다시 시작">
         <span class="btn-icon">🔄</span><span class="btn-label">재도전</span>
-      </button>
-      <button class="btn btn-dock" id="btn-oryong-mode" title="오룡이 달인 모드: 오룡이 ON · 사주패 OFF · 달인 난이도">
-        <span class="btn-icon">🐲</span><span class="btn-label">오룡이</span>
       </button>
 
       <!-- 톱니바퀴 설정 메뉴 (하단 바로 이동) -->
@@ -3542,7 +3576,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.66
+            Si-Yeon Mahjong Solitaire v1.4.67
           </div>
         </div>
       </div>
@@ -3634,7 +3668,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.66</div>
+        <div class="splash-version-badge">v1.4.67</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -9634,14 +9668,8 @@
         if (stageEl) stageEl.textContent = `${this.currentStage}판`;
         if (diffEl) {
           if (this.difficulty === 'master') {
-            if (this.isAllBlindStage) {
-              diffEl.innerHTML = `👑 달인 (올블라인드)`;
-              diffEl.style.backgroundColor = '#d4af37';
-            } else {
-              const blindNum = this.currentStageBlindCount || 18;
-              diffEl.textContent = `달인 (${blindNum}패 숨김)`;
-              diffEl.style.backgroundColor = diffCfg.badgeColor;
-            }
+            diffEl.textContent = this.isAllBlindStage ? '👑 달인' : '달인';
+            diffEl.style.backgroundColor = this.isAllBlindStage ? '#d4af37' : diffCfg.badgeColor;
           } else {
             diffEl.textContent = diffCfg.name;
             diffEl.style.backgroundColor = diffCfg.badgeColor;
