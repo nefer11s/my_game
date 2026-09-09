@@ -3542,7 +3542,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.64
+            Si-Yeon Mahjong Solitaire v1.4.65
           </div>
         </div>
       </div>
@@ -3634,7 +3634,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.64</div>
+        <div class="splash-version-badge">v1.4.65</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -6808,18 +6808,16 @@
           });
         }
 
-        // 초기화면에서 게임 시작 / 이어하기 시 전체화면 진입 및 부드러운 전환 처리
+        // 초기화면에서 게임 시작 / 이어하기 시 전체화면 진입 및 부드러운 스무스 전환 처리
         const btnSplashResume = document.getElementById('btn-splash-resume');
         if (btnSplashResume) {
           btnSplashResume.addEventListener('click', () => {
             this.sound.playSelect();
             this.enterFullscreen();
-            requestAnimationFrame(() => {
+            if (splashEl) splashEl.classList.remove('active');
+            setTimeout(() => {
               this.resumeSavedGame();
-              if (splashEl) {
-                splashEl.classList.remove('active');
-              }
-            });
+            }, 140);
           });
         }
 
@@ -6833,22 +6831,17 @@
               }
               this.clearSavedProgress();
             }
-            // 게임 시작 터치 시점에 전체화면 전환 후, 뷰포트 확정 후 보드 렌더링 (깜빡임 완벽 차단)
+            // 1. 전체화면 전환 요청
             this.enterFullscreen();
             this.currentStage = 1;
             this.score = 0;
             this.hasStarted = true;
 
-            requestAnimationFrame(() => {
-              if (!this.tiles || this.tiles.length === 0) {
-                this.startNewGame();
-              } else {
-                this.startTimer();
-              }
-              if (splashEl) {
-                splashEl.classList.remove('active');
-              }
-            });
+            // 2. 스플래시 화면이 부드럽게 걷히는 바로 그 순간(140ms), 하늘에서 144개 타일이 쏟아져 내리는 낙하 쇼 가동!
+            if (splashEl) splashEl.classList.remove('active');
+            setTimeout(() => {
+              this.startNewGame(false);
+            }, 140);
           });
         }
 
