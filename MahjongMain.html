@@ -3542,7 +3542,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.63
+            Si-Yeon Mahjong Solitaire v1.4.64
           </div>
         </div>
       </div>
@@ -3634,7 +3634,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.63</div>
+        <div class="splash-version-badge">v1.4.64</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -9962,6 +9962,29 @@
     window.addEventListener('DOMContentLoaded', () => {
       const game = new MahjongGame();
       window.tileGalleryManager = new TileGalleryManager(game.sound);
+
+      // 스플래시가 다 로드된 다음 전체화면으로 전환하여 [게임 시작] 대기
+      const initFullscreenAfterSplash = () => {
+        // 1. 스플래시 로드 완료 시점 자동 전체화면 호출
+        game.enterFullscreen();
+
+        // 2. 브라우저 보안 제스처 요구 환경 대응: 스플래시 화면 터치 시 즉시 전체화면 전환 후 시작 대기
+        const splashEl = document.getElementById('splash-screen');
+        if (splashEl) {
+          splashEl.addEventListener('pointerdown', () => {
+            game.enterFullscreen();
+          }, { passive: true });
+        }
+      };
+
+      // 스플래시 화면 및 모든 에셋이 완전히 로드된 후 전체화면 전환 발동
+      if (document.readyState === 'complete') {
+        setTimeout(initFullscreenAfterSplash, 150);
+      } else {
+        window.addEventListener('load', () => {
+          setTimeout(initFullscreenAfterSplash, 150);
+        });
+      }
     });
   </script>
 </body>
