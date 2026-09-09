@@ -3576,7 +3576,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.67
+            Si-Yeon Mahjong Solitaire v1.4.68
           </div>
         </div>
       </div>
@@ -3668,7 +3668,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.67</div>
+        <div class="splash-version-badge">v1.4.68</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -8610,52 +8610,14 @@
        */
       logTouch(msg, level = 'info') {
         const timeStr = new Date().toTimeString().split(' ')[0] + '.' + String(Date.now() % 1000).padStart(3, '0');
-        const formatted = `[터치] ${msg}`;
         if (level === 'warn') {
           console.warn(`[TOUCH ${timeStr}] ${msg}`);
         } else {
           console.log(`[TOUCH ${timeStr}] ${msg}`);
         }
-
-        // 온스크린 실시간 진단 바 (모바일에서 즉시 시각 확인)
-        let bar = document.getElementById('touch-debug-bar');
-        if (!bar) {
-          bar = document.createElement('div');
-          bar.id = 'touch-debug-bar';
-          bar.style.cssText = `
-            position: fixed;
-            top: 48px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(15, 23, 42, 0.9);
-            color: #38ef7d;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 5px 14px;
-            border-radius: 20px;
-            border: 1px solid rgba(56, 239, 125, 0.4);
-            box-shadow: 0 4px 14px rgba(0,0,0,0.3);
-            z-index: 99999;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.18s ease;
-            white-space: nowrap;
-            max-width: 90vw;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          `;
-          document.body.appendChild(bar);
-        }
-        bar.textContent = formatted;
-        bar.style.color = level === 'warn' ? '#ff7675' : '#55efc4';
-        bar.style.borderColor = level === 'warn' ? 'rgba(255, 118, 117, 0.5)' : 'rgba(85, 239, 196, 0.4)';
-        bar.style.opacity = '1';
-
-        clearTimeout(this._debugBarTimer);
-        this._debugBarTimer = setTimeout(() => {
-          if (bar) bar.style.opacity = '0';
-        }, 1600);
+        // 사용자의 요청에 따라 게임 화면 상단의 '~ 패 성공' 등 온스크린 진단 바 알림 노출 비활성화
+        const bar = document.getElementById('touch-debug-bar');
+        if (bar) bar.remove();
       }
 
       /**
