@@ -6796,21 +6796,11 @@
           });
         }
 
-        if (splashEl) {
-          splashEl.addEventListener('click', (e) => {
-            // 설명/명예의전당/버튼 클릭이 아닌 스플래시 배경 클릭 시 전체화면 시도
-            if (e.target === splashEl) {
-              this.enterFullscreen();
-            }
-          });
-        }
-
-        // 초기화면에서 게임 시작 / 이어하기 시 전체화면 및 부드러운 전환 처리
+        // 초기화면에서 게임 시작 / 이어하기 시 부드러운 전환 처리
         const btnSplashResume = document.getElementById('btn-splash-resume');
         if (btnSplashResume) {
           btnSplashResume.addEventListener('click', () => {
             this.sound.playSelect();
-            this.enterFullscreen();
             this.resumeSavedGame();
           });
         }
@@ -6825,8 +6815,6 @@
               }
               this.clearSavedProgress();
             }
-            // 전체화면 요청 선행 (유저 터치 제스처 시점이므로 정상 진입)
-            this.enterFullscreen();
             this.currentStage = 1;
             this.score = 0;
             this.hasStarted = true;
@@ -6841,13 +6829,6 @@
               splashEl.classList.remove('active');
             }
           });
-        }
-
-        // 스플래시 화면 아무 곳이나 터치/클릭 시에도 선제적으로 전체화면 전환 활성화
-        if (splashEl) {
-          splashEl.addEventListener('pointerdown', () => {
-            this.enterFullscreen();
-          }, { passive: true });
         }
 
         const quickRulesModal = document.getElementById('quick-rules-modal');
@@ -9664,6 +9645,11 @@
       }
 
       enterFullscreen() {
+        // 카카오톡 등 인앱 브라우저에서는 Fullscreen API가 뷰포트 충돌 및 깜빡임을 유발하므로 차단
+        const ua = (navigator.userAgent || '').toLowerCase();
+        if (ua.includes('kakaotalk') || ua.includes('naver') || ua.includes('fbav') || ua.includes('instagram')) {
+          return;
+        }
         const doc = document;
         const docEl = document.documentElement;
         const isFull = !!(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement);
@@ -9955,17 +9941,6 @@
     window.addEventListener('DOMContentLoaded', () => {
       const game = new MahjongGame();
       window.tileGalleryManager = new TileGalleryManager(game.sound);
-
-      // 브라우저 정책 준수: 사용자 첫 터치/클릭 시 부드럽게 전체화면 진입 보장 (1회성 리스너)
-      const tryEnterFullscreenOnce = () => {
-        game.enterFullscreen();
-        ['pointerdown', 'touchstart', 'click'].forEach(evt => {
-          window.removeEventListener(evt, tryEnterFullscreenOnce, { capture: true });
-        });
-      };
-      ['pointerdown', 'touchstart', 'click'].forEach(evt => {
-        window.addEventListener(evt, tryEnterFullscreenOnce, { capture: true, once: true, passive: true });
-      });
     });
   </script>
 </body>
