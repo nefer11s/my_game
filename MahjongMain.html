@@ -1644,13 +1644,11 @@
       50% { box-shadow: 0 8px 28px rgba(243, 156, 18, 0.7); }
     }
 
-    /* 스플래시 화면 오버레이: 첫 로드 시 깜빡임이나 검은 암전 없이 즉시 산뜻하게 렌더링 */
+    /* 스플래시 화면 오버레이: 불투명 솔리드 배경으로 First Paint 깜빡임 및 GPU 블러 부하 원천 차단 */
     .splash-overlay {
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at 50% 40%, rgba(20, 68, 48, 0.72) 0%, rgba(12, 40, 28, 0.86) 100%);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: radial-gradient(circle at 50% 40%, #174431 0%, #0d281d 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -3544,7 +3542,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.59
+            Si-Yeon Mahjong Solitaire v1.4.60
           </div>
         </div>
       </div>
@@ -3632,11 +3630,11 @@
   <div class="splash-overlay active" id="splash-screen">
     <div class="splash-card">
       <div class="splash-img-wrap">
-        <img src="assets/mahjong_splash.jpg" alt="시연이네 그림맞추기" class="splash-hero-img">
+        <img src="assets/mahjong_splash.jpg" alt="시연이네 그림맞추기" class="splash-hero-img" decoding="sync" fetchpriority="high">
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.59</div>
+        <div class="splash-version-badge">v1.4.60</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -6749,7 +6747,7 @@
         this.bindEvents();
         this.initViewportGestures();
         this.updateResumeButtonUI();
-        this.startNewGame();
+        // 스플래시 화면 대기 중 불필요한 백그라운드 144개 타일 DOM 렌더링 방지 (게임 시작 터치 시 1회 지연 생성)
       }
 
       /**
