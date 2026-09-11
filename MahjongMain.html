@@ -8861,12 +8861,21 @@
           if (prevRevealed) {
             // 새로 연 패와 기존에 열린 패가 다른 종류면 기존 패는 다시 닫힘
             if (tile.def.id !== prevRevealed.def.id) {
-              this.logTouch(`[블라인드 불일치] '${prevRevealed.def.label}' 닫힘 (${this.blindMismatchCount + 1}/3)`);
-              this.flipTileBack(prevRevealed);
-              this.blindMismatchCount++;
-              if (this.blindMismatchCount >= 3) {
+              const activeTrayTiles = this.trayTiles.filter(t => !t.isMatching);
+              const willMatchTray = activeTrayTiles.some(t => t.def.id === tile.def.id);
+              if (willMatchTray) {
+                // 새로 연 패가 이미 슬롯에 대기 중인 패와 일치하는 경우: 정당한 짝 찾기이므로 실패 카운트 리셋
+                this.logTouch(`[슬롯 매칭 연계] '${prevRevealed.def.label}' 닫힘 (새로 연 패가 슬롯 패와 일치)`);
+                this.flipTileBack(prevRevealed);
                 this.blindMismatchCount = 0;
-                this.loseLife();
+              } else {
+                this.logTouch(`[블라인드 불일치] '${prevRevealed.def.label}' 닫힘 (${this.blindMismatchCount + 1}/3)`);
+                this.flipTileBack(prevRevealed);
+                this.blindMismatchCount++;
+                if (this.blindMismatchCount >= 3) {
+                  this.blindMismatchCount = 0;
+                  this.loseLife();
+                }
               }
             } else {
               // 새로 연 패와 기존에 열린 패가 같은 종류면 실패 카운트 리셋 (둘 다 보드에 앞면 공개 상태 유지)
@@ -8953,12 +8962,21 @@
             }
           } else {
             // 다른 종류의 패를 클릭한 경우 기존 열려있던 패 닫기
-            this.logTouch(`[블라인드 불일치] '${prevRevealed.def.label}' 닫힘 (${this.blindMismatchCount + 1}/3)`);
-            this.flipTileBack(prevRevealed);
-            this.blindMismatchCount++;
-            if (this.blindMismatchCount >= 3) {
+            const activeTrayTiles = this.trayTiles.filter(t => !t.isMatching);
+            const willMatchTray = activeTrayTiles.some(t => t.def.id === tile.def.id);
+            if (willMatchTray) {
+              // 사용자가 슬롯에 있는 패와 짝을 맞추기 위해 선택한 경우: 실패가 아니므로 카운트 리셋
+              this.logTouch(`[슬롯 매칭 연계] '${prevRevealed.def.label}' 닫힘 (슬롯의 동일 패와 매칭 성공)`);
+              this.flipTileBack(prevRevealed);
               this.blindMismatchCount = 0;
-              this.loseLife();
+            } else {
+              this.logTouch(`[블라인드 불일치] '${prevRevealed.def.label}' 닫힘 (${this.blindMismatchCount + 1}/3)`);
+              this.flipTileBack(prevRevealed);
+              this.blindMismatchCount++;
+              if (this.blindMismatchCount >= 3) {
+                this.blindMismatchCount = 0;
+                this.loseLife();
+              }
             }
           }
         }
