@@ -10508,6 +10508,7 @@
         const btnWarpPlus = document.getElementById('btn-warp-stage-plus');
         const warpInfoBadge = document.getElementById('warp-info-badge');
 
+        let modalOpenTimestamp = 0;
         const updateWarpInfoBadge = () => {
           if (!warpInfoBadge || !warpSelectDiff || !warpStageInput) return;
           const diff = warpSelectDiff.value;
@@ -10522,7 +10523,11 @@
         };
 
         const openStageWarpModal = (e) => {
-          if (e && e.stopPropagation) e.stopPropagation();
+          if (e) {
+            if (e.stopPropagation) e.stopPropagation();
+            if (e.preventDefault) e.preventDefault();
+          }
+          modalOpenTimestamp = Date.now();
           this.sound.playSelect();
           if (settingsDropdown) {
             settingsDropdown.classList.remove('active');
@@ -10535,28 +10540,44 @@
         };
 
         if (btnOpenStageWarp) {
-          btnOpenStageWarp.addEventListener('pointerdown', openStageWarpModal);
           btnOpenStageWarp.addEventListener('click', openStageWarpModal);
         }
 
+        // 인게임 상단 헤더의 스테이지/난이도 뱃지 탭 시에도 즉시 레벨 직행창 오픈
+        const statStageBadge = document.getElementById('stat-stage');
+        if (statStageBadge) {
+          statStageBadge.style.cursor = 'pointer';
+          statStageBadge.setAttribute('title', '탭하여 원하는 레벨/판으로 직행 이동');
+          statStageBadge.addEventListener('click', (e) => {
+            openStageWarpModal(e);
+          });
+        }
+        const statDiffBadge = document.getElementById('stat-diff');
+        if (statDiffBadge) {
+          statDiffBadge.style.cursor = 'pointer';
+          statDiffBadge.setAttribute('title', '탭하여 원하는 레벨/판으로 직행 이동');
+          statDiffBadge.addEventListener('click', (e) => {
+            openStageWarpModal(e);
+          });
+        }
+
         const closeStageWarpModal = (e) => {
+          if (Date.now() - modalOpenTimestamp < 350) return; // 열린 직후 잔여 터치 관통 방지
           if (e && e.stopPropagation) e.stopPropagation();
           this.sound.playSelect();
           if (stageWarpModal) stageWarpModal.classList.remove('active');
         };
 
         if (btnStageWarpCloseX) {
-          btnStageWarpCloseX.addEventListener('pointerdown', closeStageWarpModal);
           btnStageWarpCloseX.addEventListener('click', closeStageWarpModal);
         }
         if (btnStageWarpCancel) {
-          btnStageWarpCancel.addEventListener('pointerdown', closeStageWarpModal);
           btnStageWarpCancel.addEventListener('click', closeStageWarpModal);
         }
 
         // 모달 바깥 어두운 배경 터치 시 닫기
         if (stageWarpModal) {
-          stageWarpModal.addEventListener('pointerdown', (e) => {
+          stageWarpModal.addEventListener('click', (e) => {
             if (e.target === stageWarpModal) {
               closeStageWarpModal(e);
             }
@@ -10572,12 +10593,10 @@
         };
 
         if (btnWarpMinus) {
-          btnWarpMinus.addEventListener('pointerdown', (e) => { e.stopPropagation(); stepWarpStage(-1); });
-          btnWarpMinus.addEventListener('click', (e) => { e.stopPropagation(); });
+          btnWarpMinus.addEventListener('click', (e) => { e.stopPropagation(); stepWarpStage(-1); });
         }
         if (btnWarpPlus) {
-          btnWarpPlus.addEventListener('pointerdown', (e) => { e.stopPropagation(); stepWarpStage(1); });
-          btnWarpPlus.addEventListener('click', (e) => { e.stopPropagation(); });
+          btnWarpPlus.addEventListener('click', (e) => { e.stopPropagation(); stepWarpStage(1); });
         }
 
         if (warpSelectDiff) warpSelectDiff.addEventListener('change', updateWarpInfoBadge);
@@ -10585,7 +10604,7 @@
 
         const quickChips = document.querySelectorAll('.warp-chip');
         quickChips.forEach(chip => {
-          const handleChip = (e) => {
+          chip.addEventListener('click', (e) => {
             e.stopPropagation();
             this.sound.playSelect();
             const s = chip.dataset.stage;
@@ -10593,14 +10612,13 @@
               warpStageInput.value = s;
               updateWarpInfoBadge();
             }
-          };
-          chip.addEventListener('pointerdown', handleChip);
-          chip.addEventListener('click', handleChip);
+          });
         });
 
         // 직행 실행 함수
         let warpExecuting = false;
         const executeStageWarp = (e) => {
+          if (Date.now() - modalOpenTimestamp < 400) return; // 모달이 뜬 직후 Ghost Click 터치 관통 원천 차단
           if (warpExecuting) return;
           warpExecuting = true;
           if (e && e.stopPropagation) e.stopPropagation();
@@ -10655,7 +10673,6 @@
         };
 
         if (btnStageWarpConfirm) {
-          btnStageWarpConfirm.addEventListener('pointerdown', executeStageWarp);
           btnStageWarpConfirm.addEventListener('click', executeStageWarp);
         }
 
