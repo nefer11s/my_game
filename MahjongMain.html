@@ -2557,24 +2557,45 @@
       border-radius: 4px;
     }
 
-    /* 대형 WIN 배너 애니메이션 */
+    /* 대형 WIN 배너 풀스크린 오버레이 및 애니메이션 */
+    .big-win-overlay {
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      background: radial-gradient(circle at center, rgba(12, 36, 24, 0.92) 0%, rgba(3, 14, 8, 0.97) 100%) !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      z-index: 99999 !important;
+      pointer-events: auto !important;
+      cursor: pointer !important;
+      user-select: none !important;
+      -webkit-tap-highlight-color: transparent !important;
+      animation: bigWinOverlayFadeIn 0.35s ease forwards;
+    }
+
+    @keyframes bigWinOverlayFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
     .big-win-banner {
-      position: absolute;
-      top: 48%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.2);
-      font-size: clamp(52px, 14vw, 92px);
+      position: relative;
+      font-size: clamp(48px, 12vw, 84px);
       font-weight: 900;
       color: #ffd700;
       text-shadow:
-        0 0 12px rgba(255, 215, 0, 0.85),
-        0 0 30px rgba(255, 140, 0, 0.8),
-        0 6px 20px rgba(0, 0, 0, 0.45);
-      z-index: 1800;
+        0 0 16px rgba(255, 215, 0, 0.9),
+        0 0 36px rgba(255, 140, 0, 0.85),
+        0 6px 24px rgba(0, 0, 0, 0.5);
+      z-index: 100000;
       pointer-events: auto;
       cursor: pointer;
       opacity: 0;
-      letter-spacing: 6px;
+      letter-spacing: 5px;
       animation: bigWinPop 0.85s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
       white-space: nowrap;
       display: flex;
@@ -2583,6 +2604,8 @@
       gap: 12px;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
+      padding: 16px;
+      text-align: center;
     }
 
     .big-win-banner .win-sub-touch {
@@ -4568,8 +4591,9 @@
       </div>
 
       <div style="display: flex; gap: 8px;">
-        <button class="modal-btn" style="background: #e2e8f0; color: #4a5568;" id="btn-rank-clear">기록 초기화</button>
-        <button class="modal-btn" id="btn-rank-close">닫기</button>
+        <button class="modal-btn" style="flex: 1; background: #e2e8f0; color: #4a5568;" id="btn-rank-clear">기록 초기화</button>
+        <button class="modal-btn" id="btn-rank-easter" style="flex: 1.2; background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; font-weight: 800; box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4);">✨ 보석 전당</button>
+        <button class="modal-btn" style="flex: 1;" id="btn-rank-close">닫기</button>
       </div>
     </div>
   </div>
@@ -5417,7 +5441,7 @@
             width: 100vw;
             height: 100vh;
             pointer-events: none;
-            z-index: 1050;
+            z-index: 99998;
             display: none;
           `;
           document.body.appendChild(canvas);
@@ -5438,7 +5462,10 @@
         if (this.isRunning) return;
         this.isRunning = true;
         this.resize();
-        this.canvas.style.display = 'block';
+        if (this.canvas) {
+          this.canvas.style.zIndex = '99998';
+          this.canvas.style.display = 'block';
+        }
         this.particles = [];
         if (Array.isArray(customColors) && customColors.length > 0) {
           this.activeColors = customColors;
@@ -10845,12 +10872,28 @@
 
 
         
-        // 🏆 명예의 전당 트로피 7회 연속 터치 이스터에그 리스너
+        // 🏆 명예의 전당 트로피 연속 터치 이스터에그 리스너 & 보석 전당 버튼
         const trophyBtn = document.getElementById('rank-trophy-easter-btn');
         const easterModal = document.getElementById('celebration-easter-modal');
         const btnEasterClose = document.getElementById('btn-easter-modal-close');
+        const btnRankEaster = document.getElementById('btn-rank-easter');
         let trophyClickCount = 0;
         let trophyClickTimer = null;
+
+        const openEasterHall = () => {
+          this.sound.playClear();
+          if (rankModal) rankModal.classList.remove('active');
+          if (easterModal) easterModal.classList.add('active');
+          this.showFloatingNotice('✨ 비밀의 30판 보석 축하 전당이 열렸습니다!');
+        };
+
+        if (btnRankEaster) {
+          btnRankEaster.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.sound.playSelect();
+            openEasterHall();
+          });
+        }
 
         if (trophyBtn) {
           trophyBtn.addEventListener('click', (e) => {
@@ -10860,19 +10903,19 @@
             clearTimeout(trophyClickTimer);
             trophyClickTimer = setTimeout(() => {
               trophyClickCount = 0;
-            }, 3000); // 3초 내에 7번 터치해야 성공
+            }, 3000); // 3초 내에 연속 터치
 
             // 터치 피드백 애니메이션
-            trophyBtn.style.transform = `scale(${1 + trophyClickCount * 0.05}) rotate(${(trophyClickCount % 2 === 0 ? 1 : -1) * 8}deg)`;
-            setTimeout(() => { trophyBtn.style.transform = ''; }, 120);
+            trophyBtn.style.transform = `scale(${1 + trophyClickCount * 0.12}) rotate(${(trophyClickCount % 2 === 0 ? 1 : -1) * 12}deg)`;
+            setTimeout(() => { trophyBtn.style.transform = ''; }, 140);
 
-            if (trophyClickCount >= 7) {
+            const needCount = 3;
+            if (trophyClickCount < needCount) {
+              this.showFloatingNotice(`🏆 트로피 터치 (${trophyClickCount}/${needCount}) - 비밀 전당 개방 중!`);
+            } else {
               trophyClickCount = 0;
               clearTimeout(trophyClickTimer);
-              this.sound.playClear();
-              if (rankModal) rankModal.classList.remove('active');
-              if (easterModal) easterModal.classList.add('active');
-              this.showFloatingNotice('✨ 비밀의 30판 보석 축하 전당이 열렸습니다!');
+              openEasterHall();
             }
           });
         }
@@ -11391,7 +11434,24 @@
       getHallOfFame() {
         try {
           const raw = localStorage.getItem('siyeon_mahjong_hall_of_fame');
-          if (raw) return JSON.parse(raw);
+          if (raw) {
+            const list = JSON.parse(raw);
+            if (Array.isArray(list) && list.length > 0) {
+              // 기존 캐시 데이터에 30판 기록이 전혀 없다면, 30판 명예 보석 랭커 샘플을 자동 병합하여 보석 뱃지 활성화
+              if (!list.some(item => (item.stage >= 30 || item.gem))) {
+                const defaults = [
+                  { name: '시연마스터', diff: '달인', diffKey: 'master', stage: 30, score: 98500, gem: '왕관', date: '2026.09.12' },
+                  { name: '진홍의루비', diff: '어려움', diffKey: 'hard', stage: 30, score: 76000, gem: '루비', date: '2026.09.11' },
+                  { name: '사파이어현자', diff: '보통', diffKey: 'normal', stage: 30, score: 57500, gem: '사파이어', date: '2026.09.10' },
+                  { name: '영롱비취', diff: '쉬움', diffKey: 'easy', stage: 30, score: 42000, gem: '비취', date: '2026.09.09' }
+                ];
+                const merged = [...defaults, ...list].sort((a, b) => b.score - a.score).slice(0, 10);
+                try { localStorage.setItem('siyeon_mahjong_hall_of_fame', JSON.stringify(merged)); } catch (e) { }
+                return merged;
+              }
+              return list;
+            }
+          }
         } catch (e) { }
         return [
           { name: '시연마스터', diff: '달인', diffKey: 'master', stage: 30, score: 98500, gem: '왕관', date: '2026.09.12' },
@@ -11430,47 +11490,64 @@
         const celebration = this.getStage30CelebrationData(diffKey);
         if (!celebration) return;
 
-        // 1. rank 모달 잠시 닫기
+        // 1. rank 모달 및 easter 모달 닫기
         const rankModal = document.getElementById('rank-modal');
         if (rankModal) rankModal.classList.remove('active');
         const easterModal = document.getElementById('celebration-easter-modal');
         if (easterModal) easterModal.classList.remove('active');
 
-        // 2. 고유 컬러 폭죽 쇼 점화
+        // 2. 고유 컬러 폭죽 쇼 점화 (z-index: 99998 보장)
         if (this.fireworks) {
+          if (this.fireworks.canvas) {
+            this.fireworks.canvas.style.zIndex = '99998';
+            this.fireworks.canvas.style.display = 'block';
+          }
           this.fireworks.start(celebration.colors);
         }
 
-        // 3. 대형 WIN 배너 팝업 연출
+        // 기존 배너 오버레이 클린업
+        document.querySelectorAll('.big-win-overlay, .big-win-banner').forEach(el => el.remove());
+
+        // 3. 풀스크린 오버레이 생성 (document.body 직속 추가로 스플래시 화면 및 모든 모달 최상단 보장)
+        const overlay = document.createElement('div');
+        overlay.className = 'big-win-overlay';
+
         const winBanner = document.createElement('div');
         winBanner.className = `big-win-banner ${celebration.bannerClass}`;
         winBanner.innerHTML = `
           <div class="master-crown-anim-wrap">
             <div class="master-crown-glow"></div>
             <img src="${celebration.imageSrc}" class="win-banner-emblem-img ${celebration.imageClass}" alt="${celebration.bannerTitle}">
-            <div class="master-sparkles">✨</div>
+            <div class="master-sparkles">✨🌟✨</div>
           </div>
           <div class="master-win-title">${celebration.bannerTitle}</div>
           <div class="master-win-sub">${celebration.bannerSub}</div>
           <span class="win-sub-touch">👆 화면을 터치하여 축하 카드 보기</span>
         `;
 
+        overlay.appendChild(winBanner);
+
         let dismissed = false;
         const dismissBanner = (e) => {
-          if (e) e.stopPropagation();
+          if (e) {
+            if (e.stopPropagation) e.stopPropagation();
+            if (e.preventDefault) e.preventDefault();
+          }
           if (dismissed) return;
           dismissed = true;
           this.sound.playSelect();
           winBanner.classList.add('closing');
+          overlay.style.transition = 'opacity 0.28s ease';
+          overlay.style.opacity = '0';
           setTimeout(() => {
-            if (winBanner.parentNode) winBanner.remove();
+            if (overlay.parentNode) overlay.remove();
             this.showVictoryModal(diffKey);
           }, 280);
         };
 
-        winBanner.addEventListener('pointerdown', dismissBanner);
-        const host = this.boardEl ? this.boardEl.parentNode : document.body;
-        host.appendChild(winBanner);
+        overlay.addEventListener('click', dismissBanner);
+        overlay.addEventListener('pointerdown', dismissBanner);
+        document.body.appendChild(overlay);
       }
 
       renderHallOfFame() {
@@ -13271,13 +13348,16 @@
 
         const celebration = this.getStage30CelebrationData();
 
-        // 화려한 불꽃놀이 폭죽 연출 발동 (30판은 고유 테마 컬러로 발사)
+        // 화려한 불꽃놀이 폭죽 연출 발동 (30판은 고유 테마 컬러로 발사, 최상단 보장)
         if (this.fireworks) {
+          if (this.fireworks.canvas) {
+            this.fireworks.canvas.style.zIndex = '99998';
+            this.fireworks.canvas.style.display = 'block';
+          }
           this.fireworks.start(celebration ? celebration.colors : null);
         }
 
-        const oldBanner = document.getElementById('big-win-banner');
-        if (oldBanner) oldBanner.remove();
+        document.querySelectorAll('.big-win-overlay, .big-win-banner').forEach(el => el.remove());
 
         if (celebration) {
           // 30판 격파 특수 팡파레 연쇄 효과음
@@ -13288,6 +13368,9 @@
         } else {
           this.sound.playWin();
         }
+
+        const overlay = document.createElement('div');
+        overlay.className = 'big-win-overlay';
 
         const winBanner = document.createElement('div');
         winBanner.className = celebration ? `big-win-banner ${celebration.bannerClass}` : 'big-win-banner';
@@ -13311,24 +13394,30 @@
           `;
         }
 
+        overlay.appendChild(winBanner);
+
         let dismissed = false;
         const dismissBanner = (e) => {
           if (e) {
-            e.stopPropagation();
+            if (e.stopPropagation) e.stopPropagation();
+            if (e.preventDefault) e.preventDefault();
           }
           if (dismissed) return;
           dismissed = true;
 
           this.sound.playSelect();
           winBanner.classList.add('closing');
+          overlay.style.transition = 'opacity 0.28s ease';
+          overlay.style.opacity = '0';
           setTimeout(() => {
-            if (winBanner.parentNode) winBanner.remove();
+            if (overlay.parentNode) overlay.remove();
             this.showVictoryModal();
           }, 280);
         };
 
-        winBanner.addEventListener('pointerdown', dismissBanner);
-        this.boardEl.parentNode.appendChild(winBanner);
+        overlay.addEventListener('click', dismissBanner);
+        overlay.addEventListener('pointerdown', dismissBanner);
+        document.body.appendChild(overlay);
       }
 
       showVictoryModal(previewDiffKey = null) {
@@ -13371,7 +13460,11 @@
           if (modalCard) modalCard.classList.add(celebration.cardClass);
           modalTitle.innerHTML = `<span style="text-shadow: 0 0 14px rgba(255, 215, 0, 0.75);">${celebration.title}</span>`;
           modalDesc.innerHTML = celebration.desc;
-          confirmBtn.textContent = celebration.btnText;
+          if (isPreview) {
+            confirmBtn.textContent = '🏆 명예의 전당으로 복귀';
+          } else {
+            confirmBtn.textContent = celebration.btnText;
+          }
           confirmBtn.style.background = celebration.btnGrad;
         } else {
           if (modalEmoji) modalEmoji.textContent = '🎉';
