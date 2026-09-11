@@ -2639,6 +2639,67 @@
       text-align: center;
     }
 
+    /* 30판 전용 엠블럼 고화질 이미지 렌더링 스타일 */
+    .modal-emblem-img {
+      width: 102px;
+      height: 102px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 28px rgba(255, 215, 0, 0.6), 0 8px 24px rgba(0, 0, 0, 0.5);
+      border: 3px solid #ffd700;
+      animation: emblemFloat 2.4s ease-in-out infinite alternate;
+      display: inline-block;
+    }
+    .modal-emblem-img.emblem-jade {
+      border-color: #10b981;
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.7), 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+    .modal-emblem-img.emblem-sapphire {
+      border-color: #0284c7;
+      box-shadow: 0 0 30px rgba(2, 132, 199, 0.7), 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+    .modal-emblem-img.emblem-ruby {
+      border-color: #ea580c;
+      box-shadow: 0 0 32px rgba(234, 88, 12, 0.75), 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+    .modal-emblem-img.emblem-crown {
+      border-color: #ffd700;
+      box-shadow: 0 0 36px rgba(255, 215, 0, 0.85), 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    @keyframes emblemFloat {
+      0% { transform: translateY(0) scale(0.96) rotate(-2deg); }
+      100% { transform: translateY(-8px) scale(1.04) rotate(2deg); }
+    }
+
+    /* 승리 배너 엠블럼 이미지 */
+    .win-banner-emblem-img {
+      width: 115px;
+      height: 115px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 32px rgba(255, 215, 0, 0.75);
+      border: 3px solid #ffd700;
+      animation: crownBob 1.8s ease-in-out infinite alternate;
+      display: inline-block;
+    }
+    .win-banner-emblem-img.emblem-jade {
+      border-color: #34d399;
+      box-shadow: 0 0 34px rgba(52, 211, 153, 0.85);
+    }
+    .win-banner-emblem-img.emblem-sapphire {
+      border-color: #38bdf8;
+      box-shadow: 0 0 34px rgba(56, 189, 248, 0.85);
+    }
+    .win-banner-emblem-img.emblem-ruby {
+      border-color: #f97316;
+      box-shadow: 0 0 36px rgba(249, 115, 22, 0.9);
+    }
+    .win-banner-emblem-img.emblem-crown {
+      border-color: #ffd700;
+      box-shadow: 0 0 40px rgba(255, 215, 0, 0.95);
+    }
+
     /* 30판 난이도별 특화 모달 카드 스타일 */
     .modal-card.easy-crown-card {
       border: 2.5px solid #10b981 !important;
@@ -4021,7 +4082,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.93
+            Si-Yeon Mahjong Solitaire v1.4.94
           </div>
         </div>
       </div>
@@ -4113,7 +4174,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.93</div>
+        <div class="splash-version-badge">v1.4.94</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -12786,52 +12847,53 @@
       /**
        * 대형 황금 WIN 배너 연출 (터치/클릭해야 사라지며 승리 모달로 전환)
        */
-      showWinBanner() {
-        if (this.isClear) return;
-        this.isClear = true;
-        clearInterval(this.timerId);
-
-        // 30판(블라인드 정점 관문) 여부 및 난이도별 축하 메타데이터 판별
+      getStage30CelebrationData() {
         const isStage30 = (this.currentStage === 30 || (this.isAllBlindStage && this.difficulty === 'master'));
-        const diffKey = this.difficulty || 'normal';
+        if (!isStage30) return null;
 
-        const STAGE_30_DATA = {
+        const diffKey = this.difficulty || 'normal';
+        const nextStage = this.currentStage + 1;
+
+        const DATA = {
           easy: {
-            title: '🌿 에메랄드 비취의 관문 돌파! 🌿',
-            desc: '<strong>70% 블라인드의 안개를 뚫고 쉬움 모드 30개 전 관문을 정복하셨습니다!</strong><br>기초를 넘어 진정한 마작 솔리테어의 혜안을 얻으신 <strong>[청풍명월 비취의 수호자]</strong>로 인정합니다. (비취 관문 돌파 특수 보너스 +15,000점! / 하트 +1 회복)',
-            bannerTitle: '에메랄드 비취의 관문 완파!',
+            title: '💎 비취의 관문 돌파! 💎',
+            desc: '<strong>70% 블라인드의 안개를 뚫고 쉬움 모드 30개 전 관문을 정복하셨습니다!</strong><br>은은하고 맑은 옥빛 광채를 지닌 <strong>[청아한 영롱 비취의 수호자]</strong>로 인정합니다. (비취 관문 돌파 특수 보너스 +15,000점! / 하트 +1 회복)',
+            bannerTitle: '비취의 관문 완파!',
             bannerSub: '70% 블라인드를 뚫고 쉬움 모드 30개 전 관문을 완벽히 정복했습니다!',
-            emoji: '🌿',
+            imageSrc: 'assets/emblems/jade.jpg',
+            imageClass: 'emblem-jade',
             cardClass: 'easy-crown-card',
             bannerClass: 'easy-crown-win',
             bonus: 15000,
-            btnText: `보통 모드로 도약하기 (제 ${this.currentStage + 1}판 무한 순환) ➔`,
+            btnText: `보통 모드로 도약하기 (제 ${nextStage}판 무한 순환) ➔`,
             btnGrad: 'linear-gradient(135deg, #10b981 0%, #047857 100%)',
             colors: ['#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#ffd700', '#ffffff']
           },
           normal: {
             title: '🔷 사파이어의 지혜, 30강 대결전 완승! 🔷',
-            desc: '<strong>80% 블라인드의 짙은 장막 속에서도 흔들림 없는 수읽기로 30판 대결전을 제패했습니다!</strong><br>날카로운 직관과 전략적 지혜를 갖춘 <strong>[벽공천상 사파이어의 현자]</strong>로 공인합니다. (사파이어 결전 완승 특수 보너스 +20,000점! / 하트 +1 회복)',
+            desc: '<strong>80% 블라인드의 짙은 장막 속에서도 흔들림 없는 수읽기로 30판 대결전을 제패했습니다!</strong><br>깊고 푸른 직관과 전략적 지혜를 갖춘 <strong>[벽공천상 사파이어의 현자]</strong>로 공인합니다. (사파이어 결전 완승 특수 보너스 +20,000점! / 하트 +1 회복)',
             bannerTitle: '사파이어의 지혜, 30강 완승!',
             bannerSub: '80% 블라인드를 뚫고 보통 모드 30판 대결전을 압도적으로 제패했습니다!',
-            emoji: '🔷',
+            imageSrc: 'assets/emblems/sapphire.jpg',
+            imageClass: 'emblem-sapphire',
             cardClass: 'normal-crown-card',
             bannerClass: 'normal-crown-win',
             bonus: 20000,
-            btnText: `어려움 모드로 도전하기 (제 ${this.currentStage + 1}판 무한 순환) ➔`,
+            btnText: `어려움 모드로 도전하기 (제 ${nextStage}판 무한 순환) ➔`,
             btnGrad: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
             colors: ['#0284c7', '#38bdf8', '#7dd3fc', '#bae6fd', '#ffd700', '#ffffff']
           },
           hard: {
-            title: '🔥 90% 극한 블라인드 격파! 불패의 루비 정복자! 🔥',
-            desc: '<strong>단 10%의 단서만 남겨진 90% 블라인드의 지옥을 뚫고 어려움 30판을 굴복시켰습니다!</strong><br>어떤 가혹한 시련도 돌파해내는 압도적 승부사 <strong>[홍련불패 루비의 지휘관]</strong>으로 등극하셨습니다. (루비 지휘관 등극 특수 보너스 +25,000점! / 하트 +1 회복)',
+            title: '🔴 루비의 결전 격파! 불패의 루비 정복자! 🔴',
+            desc: '<strong>단 10%의 단서만 남겨진 90% 블라인드의 한계를 뚫고 어려움 30판을 굴복시켰습니다!</strong><br>강렬한 붉은 광채처럼 어떤 시련도 돌파해내는 압도적 승부사 <strong>[고귀무쌍 루비의 지휘관]</strong>으로 등극하셨습니다. (루비 지휘관 등극 특수 보너스 +25,000점! / 하트 +1 회복)',
             bannerTitle: '90% 블라인드 격파! 루비 정복자!',
             bannerSub: '단 10%의 단서로 90% 암흑의 어려움 30판을 완벽하게 굴복시켰습니다!',
-            emoji: '🔥',
+            imageSrc: 'assets/emblems/ruby.jpg',
+            imageClass: 'emblem-ruby',
             cardClass: 'hard-crown-card',
             bannerClass: 'hard-crown-win',
             bonus: 25000,
-            btnText: `최종 달인(Master) 영역 진입 (제 ${this.currentStage + 1}판) ➔`,
+            btnText: `최종 달인(Master) 영역 진입 (제 ${nextStage}판) ➔`,
             btnGrad: 'linear-gradient(135deg, #ea580c 0%, #b91c1c 100%)',
             colors: ['#ea580c', '#fb923c', '#fdba74', '#ef4444', '#f59e0b', '#ffd700']
           },
@@ -12840,17 +12902,26 @@
             desc: '<strong>모든 패가 완벽한 암흑에 싸인 \'100% 올 블라인드\' 극한의 신화를 완성했습니다!</strong><br>마작 솔리테어의 모든 경지를 초월한 최고 존엄 <strong>[천상천하 전설의 마작 황제]</strong>로 영구 공인합니다. (황실 마스터 등극 궁극 보너스 +30,000점! / 하트 +1 회복)',
             bannerTitle: '전설의 마작 마스터 등극!',
             bannerSub: '모든 패가 베일에 싸인 100% 올 블라인드 극한의 판을 완벽하게 격파했습니다!',
-            emoji: '👑',
+            imageSrc: 'assets/emblems/crown.jpg',
+            imageClass: 'emblem-crown',
             cardClass: 'master-crown-card',
             bannerClass: 'master-crown-win',
             bonus: 30000,
-            btnText: `전설의 무한 마스터 순환 계속 (제 ${this.currentStage + 1}판) ➔`,
+            btnText: `전설의 무한 마스터 순환 계속 (제 ${nextStage}판) ➔`,
             btnGrad: 'linear-gradient(135deg, #d4af37 0%, #aa771c 100%)',
             colors: ['#ffd700', '#facc15', '#fef08a', '#c084fc', '#a855f7', '#ffffff']
           }
         };
 
-        const celebration = isStage30 ? (STAGE_30_DATA[diffKey] || STAGE_30_DATA.normal) : null;
+        return DATA[diffKey] || DATA.normal;
+      }
+
+      showWinBanner() {
+        if (this.isClear) return;
+        this.isClear = true;
+        clearInterval(this.timerId);
+
+        const celebration = this.getStage30CelebrationData();
 
         // 화려한 불꽃놀이 폭죽 연출 발동 (30판은 고유 테마 컬러로 발사)
         if (this.fireworks) {
@@ -12878,7 +12949,7 @@
           winBanner.innerHTML = `
             <div class="master-crown-anim-wrap">
               <div class="master-crown-glow"></div>
-              <div class="master-crown-icon">${celebration.emoji}</div>
+              <img src="${celebration.imageSrc}" class="win-banner-emblem-img ${celebration.imageClass}" alt="${celebration.bannerTitle}">
               <div class="master-sparkles">✨🌟✨</div>
             </div>
             <div class="master-win-title">${celebration.bannerTitle}</div>
@@ -12922,49 +12993,7 @@
         const modalEmoji = document.getElementById('modal-emoji');
 
         // 30판 특화 축하 데이터
-        const isStage30 = (this.currentStage === 30 || (this.isAllBlindStage && this.difficulty === 'master'));
-        const diffKey = this.difficulty || 'normal';
-
-        const STAGE_30_DATA = {
-          easy: {
-            title: '🌿 에메랄드 비취의 관문 돌파! 🌿',
-            desc: '<strong>70% 블라인드의 안개를 뚫고 쉬움 모드 30개 전 관문을 정복하셨습니다!</strong><br>기초를 넘어 진정한 마작 솔리테어의 혜안을 얻으신 <strong>[청풍명월 비취의 수호자]</strong>로 인정합니다. (비취 관문 돌파 특수 보너스 +15,000점! / 하트 +1 회복)',
-            emoji: '🌿',
-            cardClass: 'easy-crown-card',
-            bonus: 15000,
-            btnText: `보통 모드로 도약하기 (제 ${this.currentStage + 1}판 무한 순환) ➔`,
-            btnGrad: 'linear-gradient(135deg, #10b981 0%, #047857 100%)'
-          },
-          normal: {
-            title: '🔷 사파이어의 지혜, 30강 대결전 완승! 🔷',
-            desc: '<strong>80% 블라인드의 짙은 장막 속에서도 흔들림 없는 수읽기로 30판 대결전을 제패했습니다!</strong><br>날카로운 직관과 전략적 지혜를 갖춘 <strong>[벽공천상 사파이어의 현자]</strong>로 공인합니다. (사파이어 결전 완승 특수 보너스 +20,000점! / 하트 +1 회복)',
-            emoji: '🔷',
-            cardClass: 'normal-crown-card',
-            bonus: 20000,
-            btnText: `어려움 모드로 도전하기 (제 ${this.currentStage + 1}판 무한 순환) ➔`,
-            btnGrad: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)'
-          },
-          hard: {
-            title: '🔥 90% 극한 블라인드 격파! 불패의 루비 정복자! 🔥',
-            desc: '<strong>단 10%의 단서만 남겨진 90% 블라인드의 지옥을 뚫고 어려움 30판을 굴복시켰습니다!</strong><br>어떤 가혹한 시련도 돌파해내는 압도적 승부사 <strong>[홍련불패 루비의 지휘관]</strong>으로 등극하셨습니다. (루비 지휘관 등극 특수 보너스 +25,000점! / 하트 +1 회복)',
-            emoji: '🔥',
-            cardClass: 'hard-crown-card',
-            bonus: 25000,
-            btnText: `최종 달인(Master) 영역 진입 (제 ${this.currentStage + 1}판) ➔`,
-            btnGrad: 'linear-gradient(135deg, #ea580c 0%, #b91c1c 100%)'
-          },
-          master: {
-            title: '👑 전설의 마작 마스터 등극! 천상천하 유아독존! 👑',
-            desc: '<strong>모든 패가 완벽한 암흑에 싸인 \'100% 올 블라인드\' 극한의 신화를 완성했습니다!</strong><br>마작 솔리테어의 모든 경지를 초월한 최고 존엄 <strong>[천상천하 전설의 마작 황제]</strong>로 영구 공인합니다. (황실 마스터 등극 궁극 보너스 +30,000점! / 하트 +1 회복)',
-            emoji: '👑',
-            cardClass: 'master-crown-card',
-            bonus: 30000,
-            btnText: `전설의 무한 마스터 순환 계속 (제 ${this.currentStage + 1}판) ➔`,
-            btnGrad: 'linear-gradient(135deg, #d4af37 0%, #aa771c 100%)'
-          }
-        };
-
-        const celebration = isStage30 ? (STAGE_30_DATA[diffKey] || STAGE_30_DATA.normal) : null;
+        const celebration = this.getStage30CelebrationData();
 
         // 판 클리어 보너스 점수 및 하트 1 회복
         let clearBonus = this.currentStage * 500;
@@ -12983,7 +13012,9 @@
         }
 
         if (celebration) {
-          if (modalEmoji) modalEmoji.textContent = celebration.emoji;
+          if (modalEmoji) {
+            modalEmoji.innerHTML = `<img src="${celebration.imageSrc}" class="modal-emblem-img ${celebration.imageClass}" alt="${celebration.title}">`;
+          }
           if (modalCard) modalCard.classList.add(celebration.cardClass);
           modalTitle.innerHTML = `<span style="text-shadow: 0 0 14px rgba(255, 215, 0, 0.75);">${celebration.title}</span>`;
           modalDesc.innerHTML = celebration.desc;
