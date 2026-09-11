@@ -2270,6 +2270,137 @@
     }
 
     /* 명예의 전당 모달 */
+    
+    /* 명예의 전당 보석 뱃지 및 인터랙션 */
+    .rank-trophy-btn {
+      font-size: 28px;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.12s ease;
+    }
+    .rank-trophy-btn:active {
+      transform: scale(1.3) rotate(-10deg);
+    }
+    .rank-gem-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      vertical-align: middle;
+      user-select: none;
+    }
+    .rank-gem-badge:hover {
+      transform: translateY(-1px) scale(1.05);
+    }
+    .rank-gem-badge:active {
+      transform: scale(0.95);
+    }
+    .rank-gem-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: inline-block;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    }
+    .gem-badge-jade {
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+      color: #065f46;
+      border-color: #10b981;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+    }
+    .gem-badge-sapphire {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      color: #075985;
+      border-color: #0284c7;
+      box-shadow: 0 0 8px rgba(2, 132, 199, 0.4);
+    }
+    .gem-badge-ruby {
+      background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+      color: #9a3412;
+      border-color: #ea580c;
+      box-shadow: 0 0 8px rgba(234, 88, 12, 0.45);
+    }
+    .gem-badge-crown {
+      background: linear-gradient(135deg, #fefce8 0%, #fef08a 100%);
+      color: #854d0e;
+      border-color: #eab308;
+      box-shadow: 0 0 10px rgba(234, 179, 8, 0.5);
+    }
+
+    /* 이스터에그 모달 그리드 카드 */
+    .easter-gem-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 16px 0 20px;
+    }
+    .easter-gem-card {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+      user-select: none;
+    }
+    .easter-gem-card:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    }
+    .easter-gem-card:active {
+      transform: scale(0.97);
+    }
+    .easter-gem-card.card-jade {
+      border-color: #10b981;
+      background: linear-gradient(160deg, #ffffff 60%, #ecfdf5 100%);
+    }
+    .easter-gem-card.card-sapphire {
+      border-color: #0284c7;
+      background: linear-gradient(160deg, #ffffff 60%, #f0f9ff 100%);
+    }
+    .easter-gem-card.card-ruby {
+      border-color: #ea580c;
+      background: linear-gradient(160deg, #ffffff 60%, #fff7ed 100%);
+    }
+    .easter-gem-card.card-crown {
+      border-color: #ffd700;
+      background: linear-gradient(160deg, #ffffff 60%, #fef9c3 100%);
+    }
+    .easter-card-img {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+      border: 2px solid rgba(255,255,255,0.9);
+    }
+    .easter-card-name {
+      font-size: 14px;
+      font-weight: 800;
+      color: #1e293b;
+    }
+    .easter-card-sub {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+    }
+
     .rank-card {
       max-width: 500px;
       width: 92%;
@@ -4414,7 +4545,7 @@
   <div class="modal-overlay" id="rank-modal">
     <div class="modal-card rank-card">
       <div class="rank-header">
-        <span style="font-size: 28px;">🏆</span>
+        <span class="rank-trophy-btn" id="rank-trophy-easter-btn" title="비밀의 트로피 (7회 터치)">🏆</span>
         <h2 class="modal-title" style="margin-bottom: 0; font-size: 23px;">명예의 전당</h2>
       </div>
       <p style="font-size: 13px; color: #698d7b; margin-bottom: 12px;">최고의 마작 솔리테어 달인 기록</p>
@@ -4440,6 +4571,43 @@
         <button class="modal-btn" style="background: #e2e8f0; color: #4a5568;" id="btn-rank-clear">기록 초기화</button>
         <button class="modal-btn" id="btn-rank-close">닫기</button>
       </div>
+    </div>
+  </div>
+
+  
+  <!-- 난이도별 축하 애니메이션 이스터에그 선택 팝업 -->
+  <div class="modal-overlay" id="celebration-easter-modal">
+    <div class="modal-card" style="max-width: 480px; width: 92%; padding: 24px 20px; text-align: center;">
+      <div style="font-size: 34px; margin-bottom: 4px;">✨🏆✨</div>
+      <h2 class="modal-title" style="font-size: 22px; color: #1a4230; margin-bottom: 6px;">명예의 보석 축하 전당</h2>
+      <p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">
+        각 난이도 30판 정복자에게 바치는<br>고유 보석 엠블럼과 특별 축하 연출을 감상하세요!
+      </p>
+
+      <div class="easter-gem-grid">
+        <div class="easter-gem-card card-jade" data-diff="easy">
+          <img src="assets/emblems/jade.jpg" class="easter-card-img" alt="비취">
+          <span class="easter-card-name">💎 쉬움 (비취)</span>
+          <span class="easter-card-sub">청아한 영롱 비취의 수호자</span>
+        </div>
+        <div class="easter-gem-card card-sapphire" data-diff="normal">
+          <img src="assets/emblems/sapphire.jpg" class="easter-card-img" alt="사파이어">
+          <span class="easter-card-name">🔷 보통 (사파이어)</span>
+          <span class="easter-card-sub">벽공천상 사파이어의 현자</span>
+        </div>
+        <div class="easter-gem-card card-ruby" data-diff="hard">
+          <img src="assets/emblems/ruby.jpg" class="easter-card-img" alt="루비">
+          <span class="easter-card-name">🔴 어려움 (루비)</span>
+          <span class="easter-card-sub">고귀무쌍 루비의 지휘관</span>
+        </div>
+        <div class="easter-gem-card card-crown" data-diff="master">
+          <img src="assets/emblems/crown.jpg" class="easter-card-img" alt="황금 왕관">
+          <span class="easter-card-name">👑 달인 (황금 왕관)</span>
+          <span class="easter-card-sub">천상천하 전설의 마작 황제</span>
+        </div>
+      </div>
+
+      <button class="modal-btn" id="btn-easter-modal-close" style="height: 42px; margin: 0; background: #2ea779;">돌아가기</button>
     </div>
   </div>
 
@@ -10659,6 +10827,67 @@
         }
 
 
+        
+        // 🏆 명예의 전당 트로피 7회 연속 터치 이스터에그 리스너
+        const trophyBtn = document.getElementById('rank-trophy-easter-btn');
+        const easterModal = document.getElementById('celebration-easter-modal');
+        const btnEasterClose = document.getElementById('btn-easter-modal-close');
+        let trophyClickCount = 0;
+        let trophyClickTimer = null;
+
+        if (trophyBtn) {
+          trophyBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.sound.playSelect();
+            trophyClickCount++;
+            clearTimeout(trophyClickTimer);
+            trophyClickTimer = setTimeout(() => {
+              trophyClickCount = 0;
+            }, 3000); // 3초 내에 7번 터치해야 성공
+
+            // 터치 피드백 애니메이션
+            trophyBtn.style.transform = `scale(${1 + trophyClickCount * 0.05}) rotate(${(trophyClickCount % 2 === 0 ? 1 : -1) * 8}deg)`;
+            setTimeout(() => { trophyBtn.style.transform = ''; }, 120);
+
+            if (trophyClickCount >= 7) {
+              trophyClickCount = 0;
+              clearTimeout(trophyClickTimer);
+              this.sound.playClear();
+              if (rankModal) rankModal.classList.remove('active');
+              if (easterModal) easterModal.classList.add('active');
+              this.showFloatingNotice('✨ 비밀의 30판 보석 축하 전당이 열렸습니다!');
+            }
+          });
+        }
+
+        if (btnEasterClose) {
+          btnEasterClose.addEventListener('click', () => {
+            this.sound.playSelect();
+            if (easterModal) easterModal.classList.remove('active');
+            if (rankModal) rankModal.classList.add('active');
+          });
+        }
+
+        if (easterModal) {
+          easterModal.addEventListener('click', (e) => {
+            if (e.target === easterModal) {
+              this.sound.playSelect();
+              easterModal.classList.remove('active');
+              if (rankModal) rankModal.classList.add('active');
+            }
+          });
+          // 카드 클릭 시 해당 난이도 축하 애니메이션 발동
+          easterModal.querySelectorAll('.easter-gem-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const diffKey = card.dataset.diff;
+              if (diffKey) {
+                this.playCelebrationAnimation(diffKey);
+              }
+            });
+          });
+        }
+
         if (btnRankClear) {
           btnRankClear.addEventListener('click', () => {
             this.sound.playSelect();
@@ -10847,10 +11076,19 @@
           this.restartCurrentGame();
         });
 
-        // 모달에서 '다음 판 시작' 클릭 시 다음 판으로 계속 진행 (자동 저장)
+        // 모달에서 '다음 판 시작' 클릭 시 다음 판으로 계속 진행 (프리뷰 모드에서는 그냥 닫기)
         document.getElementById('modal-confirm-btn').addEventListener('click', () => {
           if (this.fireworks) this.fireworks.stop();
           document.getElementById('modal').classList.remove('active');
+          if (this.isCelebrationPreview) {
+            this.isCelebrationPreview = false;
+            // 명예의 전당 열려있던 경우 명예의 전당 복귀
+            const rankModal = document.getElementById('rank-modal');
+            if (rankModal && !rankModal.classList.contains('active')) {
+              rankModal.classList.add('active');
+            }
+            return;
+          }
           this.currentStage++;
           this.hasStarted = true;
           this.saveProgress();
@@ -11118,28 +11356,46 @@
         if (goModal) goModal.classList.add('active');
       }
 
+      getGemInfoByDiff(diffKey) {
+        const GEMS = {
+          easy: { key: 'easy', name: '비취', badgeClass: 'gem-badge-jade', icon: 'assets/emblems/jade.jpg', label: '비취' },
+          normal: { key: 'normal', name: '사파이어', badgeClass: 'gem-badge-sapphire', icon: 'assets/emblems/sapphire.jpg', label: '사파이어' },
+          hard: { key: 'hard', name: '루비', badgeClass: 'gem-badge-ruby', icon: 'assets/emblems/ruby.jpg', label: '루비' },
+          master: { key: 'master', name: '왕관', badgeClass: 'gem-badge-crown', icon: 'assets/emblems/crown.jpg', label: '황금왕관' }
+        };
+        // 한글 난이도명으로도 매핑 가능하도록 지원
+        if (diffKey === '쉬움') return GEMS.easy;
+        if (diffKey === '보통') return GEMS.normal;
+        if (diffKey === '어려움') return GEMS.hard;
+        if (diffKey === '달인') return GEMS.master;
+        return GEMS[diffKey] || null;
+      }
+
       getHallOfFame() {
         try {
           const raw = localStorage.getItem('siyeon_mahjong_hall_of_fame');
           if (raw) return JSON.parse(raw);
         } catch (e) { }
         return [
-          { name: '시연마스터', diff: '달인', stage: 5, score: 4850, date: '2026.09.01' },
-          { name: '옥빛비취', diff: '어려움', stage: 4, score: 3600, date: '2026.09.02' },
-          { name: '천리안', diff: '보통', stage: 3, score: 2750, date: '2026.09.03' },
-          { name: '대나무바람', diff: '보통', stage: 2, score: 1900, date: '2026.09.03' },
-          { name: '초보탈출', diff: '쉬움', stage: 1, score: 1200, date: '2026.09.03' }
+          { name: '시연마스터', diff: '달인', diffKey: 'master', stage: 30, score: 98500, gem: '왕관', date: '2026.09.12' },
+          { name: '진홍의루비', diff: '어려움', diffKey: 'hard', stage: 30, score: 76000, gem: '루비', date: '2026.09.11' },
+          { name: '사파이어현자', diff: '보통', diffKey: 'normal', stage: 30, score: 57500, gem: '사파이어', date: '2026.09.10' },
+          { name: '영롱비취', diff: '쉬움', diffKey: 'easy', stage: 30, score: 42000, gem: '비취', date: '2026.09.09' },
+          { name: '초보탈출', diff: '쉬움', diffKey: 'easy', stage: 5, score: 3200, date: '2026.09.03' }
         ];
       }
 
       saveScoreToHallOfFame(name) {
         const playerName = (name || '익명 달인').trim().slice(0, 8) || '익명 달인';
         const diffCfg = DIFFICULTY_CONFIG[this.difficulty] || DIFFICULTY_CONFIG.normal;
+        const gemInfo = (this.currentStage >= 30) ? this.getGemInfoByDiff(this.difficulty) : null;
         const record = {
           name: playerName,
           diff: diffCfg.name,
+          diffKey: this.difficulty,
           stage: this.currentStage,
           score: this.score,
+          gem: gemInfo ? gemInfo.name : null,
           date: new Date().toLocaleDateString('ko-KR')
         };
         const list = this.getHallOfFame();
@@ -11150,6 +11406,54 @@
           localStorage.setItem('siyeon_mahjong_hall_of_fame', JSON.stringify(top10));
         } catch (e) { }
         this.renderHallOfFame();
+      }
+
+      playCelebrationAnimation(diffKey) {
+        this.sound.playClear();
+        const celebration = this.getStage30CelebrationData(diffKey);
+        if (!celebration) return;
+
+        // 1. rank 모달 잠시 닫기
+        const rankModal = document.getElementById('rank-modal');
+        if (rankModal) rankModal.classList.remove('active');
+        const easterModal = document.getElementById('celebration-easter-modal');
+        if (easterModal) easterModal.classList.remove('active');
+
+        // 2. 고유 컬러 폭죽 쇼 점화
+        if (this.fireworks) {
+          this.fireworks.start(celebration.colors);
+        }
+
+        // 3. 대형 WIN 배너 팝업 연출
+        const winBanner = document.createElement('div');
+        winBanner.className = `big-win-banner ${celebration.bannerClass}`;
+        winBanner.innerHTML = `
+          <div class="master-crown-anim-wrap">
+            <div class="master-crown-glow"></div>
+            <img src="${celebration.imageSrc}" class="win-banner-emblem-img ${celebration.imageClass}" alt="${celebration.bannerTitle}">
+            <div class="master-sparkles">✨</div>
+          </div>
+          <div class="master-win-title">${celebration.bannerTitle}</div>
+          <div class="master-win-sub">${celebration.bannerSub}</div>
+          <span class="win-sub-touch">👆 화면을 터치하여 축하 카드 보기</span>
+        `;
+
+        let dismissed = false;
+        const dismissBanner = (e) => {
+          if (e) e.stopPropagation();
+          if (dismissed) return;
+          dismissed = true;
+          this.sound.playSelect();
+          winBanner.classList.add('closing');
+          setTimeout(() => {
+            if (winBanner.parentNode) winBanner.remove();
+            this.showVictoryModal(diffKey);
+          }, 280);
+        };
+
+        winBanner.addEventListener('pointerdown', dismissBanner);
+        const host = this.boardEl ? this.boardEl.parentNode : document.body;
+        host.appendChild(winBanner);
       }
 
       renderHallOfFame() {
@@ -11164,14 +11468,39 @@
           else if (idx === 1) medal = '🥈 2';
           else if (idx === 2) medal = '🥉 3';
 
+          // 30판 이상인 경우 해당 난이도 고유 보석 뱃지 생성
+          let diffCellHTML = `<span class="diff-badge" style="font-size: 11px; padding: 2px 6px;">${item.diff}</span>`;
+          if (item.stage >= 30) {
+            const gemInfo = this.getGemInfoByDiff(item.diffKey || item.diff);
+            if (gemInfo) {
+              diffCellHTML = `
+                <span class="rank-gem-badge ${gemInfo.badgeClass}" data-gem-diff="${gemInfo.key}" title="[30판 정복 보석] 클릭 시 축하 애니메이션 감상">
+                  <img src="${gemInfo.icon}" class="rank-gem-icon" alt="${gemInfo.name}">
+                  <span>${gemInfo.name}</span>
+                </span>
+              `;
+            }
+          }
+
           tr.innerHTML = `
             <td class="rank-medal">${medal}</td>
             <td style="font-weight: 800; color: #1a4230;">${item.name}</td>
-            <td><span class="diff-badge" style="font-size: 11px; padding: 2px 6px;">${item.diff}</span></td>
+            <td>${diffCellHTML}</td>
             <td>${item.stage}판</td>
             <td class="rank-score">${item.score.toLocaleString()}</td>
           `;
           tbody.appendChild(tr);
+        });
+
+        // 30판 이상 보석 뱃지 클릭 이벤트 바인딩
+        tbody.querySelectorAll('.rank-gem-badge').forEach(badge => {
+          badge.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const diffKey = badge.dataset.gemDiff;
+            if (diffKey) {
+              this.playCelebrationAnimation(diffKey);
+            }
+          });
         });
       }
 
@@ -12847,11 +13176,13 @@
       /**
        * 대형 황금 WIN 배너 연출 (터치/클릭해야 사라지며 승리 모달로 전환)
        */
-      getStage30CelebrationData() {
-        const isStage30 = (this.currentStage === 30 || (this.isAllBlindStage && this.difficulty === 'master'));
-        if (!isStage30) return null;
+      getStage30CelebrationData(diffKeyOverride = null) {
+        if (!diffKeyOverride) {
+          const isStage30 = (this.currentStage === 30 || (this.isAllBlindStage && this.difficulty === 'master'));
+          if (!isStage30) return null;
+        }
 
-        const diffKey = this.difficulty || 'normal';
+        const diffKey = diffKeyOverride || this.difficulty || 'normal';
         const nextStage = this.currentStage + 1;
 
         const DATA = {
@@ -12983,8 +13314,11 @@
         this.boardEl.parentNode.appendChild(winBanner);
       }
 
-      showVictoryModal() {
-        const diffCfg = DIFFICULTY_CONFIG[this.difficulty] || DIFFICULTY_CONFIG.normal;
+      showVictoryModal(previewDiffKey = null) {
+        const isPreview = Boolean(previewDiffKey);
+        this.isCelebrationPreview = isPreview;
+        const targetDiff = previewDiffKey || this.difficulty;
+        const diffCfg = DIFFICULTY_CONFIG[targetDiff] || DIFFICULTY_CONFIG.normal;
         const modalTitle = document.getElementById('modal-title');
         const modalDesc = document.getElementById('modal-desc');
         const confirmBtn = document.getElementById('modal-confirm-btn');
@@ -12992,18 +13326,20 @@
         const modalCard = document.querySelector('#modal .modal-card');
         const modalEmoji = document.getElementById('modal-emoji');
 
-        // 30판 특화 축하 데이터
-        const celebration = this.getStage30CelebrationData();
+        // 30판 특화 축하 데이터 (프리뷰 모드일 경우 해당 난이도로 강제 조회)
+        const celebration = this.getStage30CelebrationData(previewDiffKey);
 
-        // 판 클리어 보너스 점수 및 하트 1 회복
+        // 판 클리어 보너스 점수 및 하트 1 회복 (프리뷰 모드에서는 점수/목숨 변동 없음)
         let clearBonus = this.currentStage * 500;
         if (celebration) {
-          clearBonus = celebration.bonus; // 난이도별 30판 특수 보너스
+          clearBonus = celebration.bonus;
         }
-        this.score += clearBonus;
-        if (this.lives < this.maxLives) {
-          this.lives++;
-          this.updateLivesUI();
+        if (!isPreview) {
+          this.score += clearBonus;
+          if (this.lives < this.maxLives) {
+            this.lives++;
+            this.updateLivesUI();
+          }
         }
 
         // 이전 카드 특수 클래스 클린업
