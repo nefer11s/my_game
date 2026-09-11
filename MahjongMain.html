@@ -4600,7 +4600,7 @@
 
   
   <!-- 난이도별 축하 애니메이션 이스터에그 선택 팝업 -->
-  <div class="modal-overlay" id="celebration-easter-modal">
+  <div class="modal-overlay" id="celebration-easter-modal" style="z-index: 10005;">
     <div class="modal-card" style="max-width: 480px; width: 92%; padding: 24px 20px; text-align: center;">
       <div style="font-size: 34px; margin-bottom: 4px;">✨🏆✨</div>
       <h2 class="modal-title" style="font-size: 22px; color: #1a4230; margin-bottom: 6px;">명예의 보석 축하 전당</h2>
@@ -5322,6 +5322,10 @@
           osc.start(t);
           osc.stop(t + 0.8);
         });
+      }
+
+      playClear() {
+        this.playWin();
       }
 
       // 판 파괴 및 유리/도자기 깨짐 효과음
@@ -10192,6 +10196,24 @@
         return builder();
       }
 
+      showFloatingNotice(message) {
+        let toast = document.getElementById('floating-notice-toast');
+        if (!toast) {
+          toast = document.createElement('div');
+          toast.id = 'floating-notice-toast';
+          toast.style.cssText = 'position:fixed;top:28px;left:50%;transform:translateX(-50%) translateY(-24px);background:rgba(15,35,25,0.96);color:#ffd700;padding:11px 24px;border-radius:30px;font-size:14.5px;font-weight:800;box-shadow:0 10px 28px rgba(0,0,0,0.45);border:1.5px solid rgba(255,215,0,0.6);z-index:999999;opacity:0;pointer-events:none;transition:opacity 0.22s ease,transform 0.22s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;';
+          document.body.appendChild(toast);
+        }
+        toast.textContent = message;
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateX(-50%) translateY(0)';
+        clearTimeout(this._floatingNoticeTimer);
+        this._floatingNoticeTimer = setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateX(-50%) translateY(-24px)';
+        }, 2200);
+      }
+
       bindEvents() {
         window.addEventListener('resize', () => this.handleResize());
         window.addEventListener('orientationchange', () => {
@@ -10872,57 +10894,73 @@
 
 
         
-        // 🏆 명예의 전당 트로피 연속 터치 이스터에그 리스너 & 보석 전당 버튼
+        // 🏆 명예의 전당 트로피 7회 연속 터치 이스터에그 리스너 & 보석 전당 버튼
         const trophyBtn = document.getElementById('rank-trophy-easter-btn');
         const easterModal = document.getElementById('celebration-easter-modal');
         const btnEasterClose = document.getElementById('btn-easter-modal-close');
         const btnRankEaster = document.getElementById('btn-rank-easter');
         let trophyClickCount = 0;
         let trophyClickTimer = null;
+        let lastTrophyTapTime = 0;
 
         const openEasterHall = () => {
-          this.sound.playClear();
+          if (this.sound && this.sound.playClear) {
+            this.sound.playClear();
+          } else if (this.sound && this.sound.playWin) {
+            this.sound.playWin();
+          }
           if (rankModal) rankModal.classList.remove('active');
           if (easterModal) easterModal.classList.add('active');
           this.showFloatingNotice('✨ 비밀의 30판 보석 축하 전당이 열렸습니다!');
         };
 
         if (btnRankEaster) {
-          btnRankEaster.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.sound.playSelect();
+          const handleEasterBtn = (e) => {
+            if (e) e.stopPropagation();
+            if (this.sound && this.sound.playSelect) this.sound.playSelect();
             openEasterHall();
-          });
+          };
+          btnRankEaster.addEventListener('click', handleEasterBtn);
         }
 
         if (trophyBtn) {
-          trophyBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.sound.playSelect();
+          const handleTrophyTap = (e) => {
+            const now = Date.now();
+            if (now - lastTrophyTapTime < 160) return; // 연속 중복 이벤트 방지
+            lastTrophyTapTime = now;
+
+            if (e) {
+              if (e.stopPropagation) e.stopPropagation();
+              if (e.cancelable && e.type !== 'click') e.preventDefault();
+            }
+            if (this.sound && this.sound.playSelect) this.sound.playSelect();
             trophyClickCount++;
             clearTimeout(trophyClickTimer);
             trophyClickTimer = setTimeout(() => {
               trophyClickCount = 0;
-            }, 3000); // 3초 내에 연속 터치
+            }, 3800); // 3.8초 내에 7회 연속 터치
 
             // 터치 피드백 애니메이션
-            trophyBtn.style.transform = `scale(${1 + trophyClickCount * 0.12}) rotate(${(trophyClickCount % 2 === 0 ? 1 : -1) * 12}deg)`;
-            setTimeout(() => { trophyBtn.style.transform = ''; }, 140);
+            trophyBtn.style.transform = `scale(${1 + trophyClickCount * 0.08}) rotate(${(trophyClickCount % 2 === 0 ? 1 : -1) * 12}deg)`;
+            setTimeout(() => { trophyBtn.style.transform = ''; }, 130);
 
-            const needCount = 3;
+            const needCount = 7;
             if (trophyClickCount < needCount) {
-              this.showFloatingNotice(`🏆 트로피 터치 (${trophyClickCount}/${needCount}) - 비밀 전당 개방 중!`);
+              this.showFloatingNotice(`🏆 비밀의 트로피 (${trophyClickCount}/${needCount}) - ${needCount - trophyClickCount}번 더 터치하세요!`);
             } else {
               trophyClickCount = 0;
               clearTimeout(trophyClickTimer);
               openEasterHall();
             }
-          });
+          };
+
+          trophyBtn.addEventListener('click', handleTrophyTap);
+          trophyBtn.addEventListener('pointerdown', handleTrophyTap);
         }
 
         if (btnEasterClose) {
           btnEasterClose.addEventListener('click', () => {
-            this.sound.playSelect();
+            if (this.sound && this.sound.playSelect) this.sound.playSelect();
             if (easterModal) easterModal.classList.remove('active');
             if (rankModal) rankModal.classList.add('active');
           });
@@ -10931,20 +10969,26 @@
         if (easterModal) {
           easterModal.addEventListener('click', (e) => {
             if (e.target === easterModal) {
-              this.sound.playSelect();
+              if (this.sound && this.sound.playSelect) this.sound.playSelect();
               easterModal.classList.remove('active');
               if (rankModal) rankModal.classList.add('active');
             }
           });
           // 카드 클릭 시 해당 난이도 축하 애니메이션 발동
           easterModal.querySelectorAll('.easter-gem-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-              e.stopPropagation();
+            let lastCardTap = 0;
+            const handleCardSelect = (e) => {
+              const now = Date.now();
+              if (now - lastCardTap < 300) return;
+              lastCardTap = now;
+              if (e && e.stopPropagation) e.stopPropagation();
               const diffKey = card.dataset.diff;
               if (diffKey) {
                 this.playCelebrationAnimation(diffKey);
               }
-            });
+            };
+            card.addEventListener('click', handleCardSelect);
+            card.addEventListener('pointerdown', handleCardSelect);
           });
         }
 
@@ -11486,7 +11530,11 @@
       }
 
       playCelebrationAnimation(diffKey) {
-        this.sound.playClear();
+        if (this.sound && this.sound.playClear) {
+          this.sound.playClear();
+        } else if (this.sound && this.sound.playWin) {
+          this.sound.playWin();
+        }
         const celebration = this.getStage30CelebrationData(diffKey);
         if (!celebration) return;
 
@@ -11535,7 +11583,7 @@
           }
           if (dismissed) return;
           dismissed = true;
-          this.sound.playSelect();
+          if (this.sound && this.sound.playSelect) this.sound.playSelect();
           winBanner.classList.add('closing');
           overlay.style.transition = 'opacity 0.28s ease';
           overlay.style.opacity = '0';
@@ -11586,15 +11634,21 @@
           tbody.appendChild(tr);
         });
 
-        // 30판 이상 보석 뱃지 클릭 이벤트 바인딩
+        // 30판 이상 보석 뱃지 클릭 이벤트 바인딩 (모바일 터치 및 데스크톱 클릭 지원)
         tbody.querySelectorAll('.rank-gem-badge').forEach(badge => {
-          badge.addEventListener('click', (e) => {
-            e.stopPropagation();
+          let lastBadgeTap = 0;
+          const handleBadgeTap = (e) => {
+            const now = Date.now();
+            if (now - lastBadgeTap < 300) return;
+            lastBadgeTap = now;
+            if (e && e.stopPropagation) e.stopPropagation();
             const diffKey = badge.dataset.gemDiff;
             if (diffKey) {
               this.playCelebrationAnimation(diffKey);
             }
-          });
+          };
+          badge.addEventListener('click', handleBadgeTap);
+          badge.addEventListener('pointerdown', handleBadgeTap);
         });
       }
 
@@ -13276,7 +13330,10 @@
           if (!isStage30) return null;
         }
 
-        const diffKey = diffKeyOverride || this.difficulty || 'normal';
+        const diffMap = { '쉬움': 'easy', '보통': 'normal', '어려움': 'hard', '달인': 'master' };
+        let diffKey = diffKeyOverride || this.difficulty || 'normal';
+        if (diffMap[diffKey]) diffKey = diffMap[diffKey];
+
         const nextStage = this.currentStage + 1;
 
         const DATA = {
