@@ -2583,7 +2583,11 @@
 
     .big-win-banner {
       position: relative;
-      font-size: clamp(48px, 12vw, 84px);
+      box-sizing: border-box;
+      max-width: min(92vw, 480px);
+      width: 100%;
+      margin: auto;
+      font-size: clamp(30px, 7.5vw, 56px);
       font-weight: 900;
       color: #ffd700;
       text-shadow:
@@ -2594,30 +2598,33 @@
       pointer-events: auto;
       cursor: pointer;
       opacity: 0;
-      letter-spacing: 5px;
-      animation: bigWinPop 0.85s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-      white-space: nowrap;
+      letter-spacing: 1px;
+      animation: bigWinPop 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      white-space: normal;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 12px;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
-      padding: 16px;
+      padding: 20px 16px;
       text-align: center;
+      transform-origin: center center;
     }
 
     .big-win-banner .win-sub-touch {
-      font-size: clamp(14px, 3.5vw, 20px);
+      font-size: clamp(13px, 3.5vw, 17px);
       font-weight: 700;
       color: #ffffff;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 215, 0, 0.6);
-      background: rgba(16, 65, 43, 0.85);
-      padding: 6px 18px;
+      background: rgba(16, 65, 43, 0.9);
+      padding: 8px 20px;
       border-radius: 24px;
-      border: 1px solid rgba(255, 215, 0, 0.5);
+      border: 1px solid rgba(255, 215, 0, 0.6);
       animation: touchGuideBlink 1.2s infinite alternate ease-in-out;
+      margin-top: 6px;
     }
 
     @keyframes touchGuideBlink {
@@ -2776,12 +2783,15 @@
       z-index: 3;
     }
     .master-win-title {
-      font-size: clamp(22px, 5.5vw, 28px);
+      font-size: clamp(20px, 5.2vw, 28px);
       font-weight: 900;
       color: #ffd700;
       text-shadow: 0 0 16px rgba(255, 215, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.8);
       letter-spacing: -0.5px;
       margin-bottom: 8px;
+      word-break: keep-all;
+      text-align: center;
+      line-height: 1.3;
     }
     .master-win-sub {
       font-size: clamp(12.5px, 3.2vw, 14.5px);
@@ -2789,6 +2799,7 @@
       line-height: 1.5;
       margin-bottom: 12px;
       white-space: normal;
+      word-break: keep-all;
       text-align: center;
     }
 
@@ -2980,29 +2991,29 @@
     @keyframes bigWinFadeOut {
       0% {
         opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
+        transform: scale(1);
       }
 
       100% {
         opacity: 0;
-        transform: translate(-50%, -50%) scale(0.8);
+        transform: scale(0.85);
       }
     }
 
     @keyframes bigWinPop {
       0% {
         opacity: 0;
-        transform: translate(-50%, -50%) scale(0.2) rotate(-8deg);
+        transform: scale(0.25) rotate(-8deg);
       }
 
-      50% {
+      60% {
         opacity: 1;
-        transform: translate(-50%, -50%) scale(1.18) rotate(2deg);
+        transform: scale(1.06) rotate(2deg);
       }
 
       100% {
         opacity: 1;
-        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+        transform: scale(1) rotate(0deg);
       }
     }
 
@@ -11551,19 +11562,15 @@
         const easterModal = document.getElementById('celebration-easter-modal');
         if (easterModal) easterModal.classList.remove('active');
 
-        // 2. 고유 컬러 폭죽 쇼 점화 (z-index: 99998 보장)
+        // [순차 진행 1단계] 등극 카드 표시 중에는 폭죽 쇼를 정지하여 모바일 GPU 렉 및 다중 화면 중첩을 완전히 방지
         if (this.fireworks) {
-          if (this.fireworks.canvas) {
-            this.fireworks.canvas.style.zIndex = '99998';
-            this.fireworks.canvas.style.display = 'block';
-          }
-          this.fireworks.start(celebration.colors);
+          this.fireworks.stop();
         }
 
         // 기존 배너 오버레이 클린업
         document.querySelectorAll('.big-win-overlay, .big-win-banner').forEach(el => el.remove());
 
-        // 3. 풀스크린 오버레이 생성 (document.body 직속 추가로 스플래시 화면 및 모든 모달 최상단 보장)
+        // 2. 풀스크린 등극 카드 오버레이 생성 (정중앙 단독 표시)
         const overlay = document.createElement('div');
         overlay.className = 'big-win-overlay';
 
@@ -11583,7 +11590,11 @@
         overlay.appendChild(winBanner);
 
         let dismissed = false;
+        let lastTapTime = 0;
         const dismissBanner = (e) => {
+          const now = Date.now();
+          if (now - lastTapTime < 300) return;
+          lastTapTime = now;
           if (e) {
             if (e.stopPropagation) e.stopPropagation();
             if (e.preventDefault) e.preventDefault();
@@ -11596,12 +11607,20 @@
           overlay.style.opacity = '0';
           setTimeout(() => {
             if (overlay.parentNode) overlay.remove();
+
+            // [순차 진행 2단계] 앞 화면(등극 카드) 터치 완료 후: 폭죽 쇼 가동 및 축하 카드 모달 순차 표시
+            if (this.fireworks) {
+              if (this.fireworks.canvas) {
+                this.fireworks.canvas.style.zIndex = '99998';
+                this.fireworks.canvas.style.display = 'block';
+              }
+              this.fireworks.start(celebration.colors);
+            }
             this.showVictoryModal(diffKey, fromEasterModal);
           }, 280);
         };
 
         overlay.addEventListener('click', dismissBanner);
-        overlay.addEventListener('pointerdown', dismissBanner);
         document.body.appendChild(overlay);
       }
 
@@ -13411,23 +13430,18 @@
 
         const celebration = this.getStage30CelebrationData();
 
-        // 화려한 불꽃놀이 폭죽 연출 발동 (30판은 고유 테마 컬러로 발사, 최상단 보장)
+        // 앞 배너 화면 표시 중에는 폭죽을 정지하여 렉 및 화면 중첩 방지
         if (this.fireworks) {
-          if (this.fireworks.canvas) {
-            this.fireworks.canvas.style.zIndex = '99998';
-            this.fireworks.canvas.style.display = 'block';
-          }
-          this.fireworks.start(celebration ? celebration.colors : null);
+          this.fireworks.stop();
         }
 
         document.querySelectorAll('.big-win-overlay, .big-win-banner').forEach(el => el.remove());
 
         if (celebration) {
-          // 30판 격파 특수 팡파레 연쇄 효과음
+          // 30판 격파 특수 팡파레 효과음
           this.sound.playWin();
           setTimeout(() => this.sound.playFirework(), 250);
           setTimeout(() => this.sound.playWindChime(), 550);
-          setTimeout(() => this.sound.playFirework(), 850);
         } else {
           this.sound.playWin();
         }
@@ -13460,7 +13474,11 @@
         overlay.appendChild(winBanner);
 
         let dismissed = false;
+        let lastTapTime = 0;
         const dismissBanner = (e) => {
+          const now = Date.now();
+          if (now - lastTapTime < 300) return;
+          lastTapTime = now;
           if (e) {
             if (e.stopPropagation) e.stopPropagation();
             if (e.preventDefault) e.preventDefault();
@@ -13474,12 +13492,20 @@
           overlay.style.opacity = '0';
           setTimeout(() => {
             if (overlay.parentNode) overlay.remove();
+
+            // 앞 화면 터치 완료 후: 폭죽 쇼 및 승리 모달 순차 개방
+            if (this.fireworks) {
+              if (this.fireworks.canvas) {
+                this.fireworks.canvas.style.zIndex = '99998';
+                this.fireworks.canvas.style.display = 'block';
+              }
+              this.fireworks.start(celebration ? celebration.colors : null);
+            }
             this.showVictoryModal();
           }, 280);
         };
 
         overlay.addEventListener('click', dismissBanner);
-        overlay.addEventListener('pointerdown', dismissBanner);
         document.body.appendChild(overlay);
       }
 
