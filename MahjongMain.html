@@ -3847,8 +3847,8 @@
               </select>
             </div>
             <div class="settings-item" id="senior-mode-wrapper" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
-              <span class="settings-label">👓 시니어 돋보기 모드 (6열 이상 시 가동)</span>
-              <select class="diff-select" id="select-senior-mode" title="어르신 및 저시력자를 위한 패 확대 및 실수 방지 모드 (남은 패가 6열 이상일 때만 동작)">
+              <span class="settings-label">👓 시니어 돋보기 모드</span>
+              <select class="diff-select" id="select-senior-mode" title="어르신 및 저시력자를 위한 패 확대 및 실수 방지 모드">
                 <option value="off" selected>사용 안 함 (기본)</option>
                 <option value="longpress">1. 꾹 누르기 (손가락 위 확대 팝업)</option>
                 <option value="hud">2. 상단 HUD (탭하여 크게 보기 & 2단 확인)</option>
@@ -9773,38 +9773,68 @@
       }
 
       /**
-       * 시니어 돋보기 모드 가동 조건 검사 (남은 패가 6열 이상일 때만 동작)
+       * 시니어 모드 실제 발동 유효성 판정
+       * - 동적확대(dynamicZoom)가 동작 중일 때는 패가 6열 이상(작게 보일 때)일 때만 동작하고,
+       *   패가 줄어들어 5열 이하로 커졌을 때는 시니어 모드를 자동으로 끄고 일반 탭으로 진행
        */
-      isSeniorModeApplicable() {
+      isSeniorModeEffective() {
         if (!this.seniorMode || this.seniorMode === 'off') return false;
-        if (!this.tiles || this.tiles.length === 0) return false;
-        const activeTiles = this.tiles.filter(t => !t.removed);
-        if (activeTiles.length === 0) return false;
+        if (this.dynamicZoom) {
+          const vw = (this.viewportEl && this.viewportEl.clientWidth) ? this.viewportEl.clientWidth : (window.innerWidth || 412);
+          const tileW = 70 * (this.baseScale || 1.0);
+          const colsOnScreen = vw / tileW;
 
-        let minX = Infinity, maxX = -Infinity;
-        activeTiles.forEach(t => {
-          if (t.x < minX) minX = t.x;
-          if (t.x > maxX) maxX = t.x;
-        });
+          // 남은 활성 타일들의 가로 열(Column) 범위 계산
+          let spanCols = 10;
+          if (this.tiles && this.tiles.length > 0) {
+            const activeTiles = this.tiles.filter(t => !t.removed);
+            if (activeTiles.length > 0) {
+              let minX = Infinity, maxX = -Infinity;
+              activeTiles.forEach(t => {
+                if (t.x < minX) minX = t.x;
+                if (t.x > maxX) maxX = t.x;
+              });
+              spanCols = Math.round((maxX - minX) / 2) + 1;
+            }
+          }
 
-        // 타일 x좌표는 2간격당 1열 점유 -> 점유 열 수 계산
-        const cols = Math.round((maxX - minX) / 2) + 1;
-        return cols >= 6;
+          // 화면상 실효 열 수가 6열 미만(5.85열 미만)이거나 남은 패 배치가 6열 미만이면 패가 이미 충분히 크므로 시니어 모드 비활성화
+          if (colsOnScreen < 5.85 || spanCols < 6) {
+            return false;
+          }
+        }
+        return true;
       }
 
       /**
-       * 시니어 돋보기 모드 UI 가시성 및 상태 동기화 (남은 패 6열 이상 조건 반영)
+       * 화면 스케일 변화 시 상단 HUD 바 가시성 실시간 동기화
        */
-      updateSeniorModeUI() {
+      syncSeniorHudVisibility() {
+        const hudBar = document.getElementById('senior-hud-bar');
+        if (!hudBar) return;
+        if (this.seniorMode === 'hud') {
+          const isEffective = this.isSeniorModeEffective();
+          if (isEffective) {
+            hudBar.classList.remove('hidden');
+          } else {
+            hudBar.classList.add('hidden');
+            this.clearSeniorFocus();
+          }
+        }
+      }
+
+      /**
+       * 시니어 돋보기 모드 UI 가시성 및 상태 동기화 (옵션 전환 시 잔여 UI 완벽 청소)
+       */
+      updateSeniorModeUI(recalcResize = true) {
         // 1. 기존에 떠 있던 롱프레스 팝업 무조건 닫기
         this.hideSeniorPopup();
 
+        const isEffective = this.isSeniorModeEffective();
         const hudBar = document.getElementById('senior-hud-bar');
-        const isApplicable = this.isSeniorModeApplicable();
-
         if (hudBar) {
-          if (this.seniorMode === 'hud' && isApplicable) {
-            // HUD 모드이면서 남은 패가 6열 이상일 때만 상단 바 노출
+          if (this.seniorMode === 'hud' && isEffective) {
+            // HUD 모드: 6열 이상일 때만 상단 바 노출
             hudBar.classList.remove('hidden');
             if (this._seniorSelectedTile && !this._seniorSelectedTile.removed) {
               this.showSeniorHud(this._seniorSelectedTile);
@@ -9812,14 +9842,16 @@
               this.resetSeniorHudDefault();
             }
           } else {
-            // 패가 5열 이하로 줄었거나, longpress 또는 off 모드: 상단 바 완전 숨김 및 포커스 해제
+            // 6열 미만 또는 longpress/off 모드: 상단 바 완전 숨김 및 포커스 해제
             hudBar.classList.add('hidden');
             this.clearSeniorFocus();
           }
         } else {
           this.clearSeniorFocus();
         }
-        this.handleResize(false);
+        if (recalcResize) {
+          this.handleResize(false);
+        }
       }
 
       /**
@@ -10800,9 +10832,10 @@
             if (e && e.cancelable) e.preventDefault();
 
             const targetTile = getEffectiveTargetTile(e);
+            const isSeniorActive = this.isSeniorModeEffective();
 
-            // [시니어 HUD 모드]: 패가 6열 이상일 때만 2단계 확인 터치 (5열 이하이면 즉시 슬롯 이동)
-            if (this.seniorMode === 'hud' && this.isSeniorModeApplicable()) {
+            // [시니어 HUD 모드]: 동적확대 6열 이상일 때만 2단계 확인 터치 동작 (5열 이하로 확대되면 일반 즉각 이동)
+            if (isSeniorActive && this.seniorMode === 'hud') {
               if (this._seniorSelectedTile === targetTile) {
                 // 이미 확인된 타일을 다시 누름 -> 슬롯으로 전송
                 this.clearSeniorFocus();
@@ -10829,7 +10862,7 @@
                 }
               }
             } else {
-              // 일반 모드 및 패가 5열 이하로 줄어든 경우: 바로 정상 슬롯 이동 처리
+              // 일반 모드 및 6열 미만 확대 상태: 바로 정상 처리
               this.handleTileClick(targetTile);
             }
 
@@ -10846,15 +10879,16 @@
 
             if (this.gestureCooldownUntil && Date.now() < this.gestureCooldownUntil) return;
 
-            // 1) 롱프레스 팝업 전용 모드: 패가 6열 이상일 때만 260ms 꾹 누르면 대형 팝업 노출 (5열 이하이면 0ms 즉각 슬롯 이동)
-            if (this.seniorMode === 'longpress' && this.isSeniorModeApplicable()) {
+            const isSeniorActive = this.isSeniorModeEffective();
+            // 1) 롱프레스 팝업 전용 모드: 동적확대 6열 이상일 때만 260ms 꾹 누르면 대형 팝업 노출
+            if (isSeniorActive && this.seniorMode === 'longpress') {
               const targetTile = getEffectiveTargetTile(e);
               longPressTimer = setTimeout(() => {
                 longPressTriggered = true;
                 this.showSeniorPopup(targetTile);
               }, 260);
             } else {
-              // 2) 일반 모드 및 상단 HUD 모드 (또는 5열 이하): 0ms 즉각 반응
+              // 2) 일반 모드 및 6열 미만 확대 상태: 0ms 즉각 반응
               executeTileAction(e);
             }
           }, { passive: false });
@@ -10884,7 +10918,8 @@
               return;
             }
 
-            if (this.seniorMode === 'longpress' && this.isSeniorModeApplicable()) {
+            const isSeniorActive = this.isSeniorModeEffective();
+            if (isSeniorActive && this.seniorMode === 'longpress') {
               // 롱프레스 모드에서 짧은 탭으로 손을 뗀 경우: 정상 슬롯 이동 실행
               const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
               const duration = performance.now() - pDownTime;
@@ -12328,6 +12363,7 @@
         }
 
         this.applyBoardTransform(animated);
+        this.syncSeniorHudVisibility();
       }
     }
 
