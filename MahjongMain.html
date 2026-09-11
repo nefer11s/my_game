@@ -3382,12 +3382,205 @@
         opacity: 0;
         transform: translate(-50%, -46%) scale(0.92);
       }
-      to {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-      }
+    /* ========================================================
+       시니어 돋보기 모드 (Senior Magnifier Mode) 스타일링
+       ======================================================== */
+    /* 1) 롱프레스 초대형 팝업 오버레이 */
+    .senior-inspect-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(10, 25, 18, 0.65);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 99999;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.16s ease;
+    }
+    .senior-inspect-popup.active {
+      opacity: 1;
+    }
+    .senior-inspect-card {
+      background: linear-gradient(135deg, #ffffff 0%, #f4faf6 100%);
+      border: 3px solid #2ea779;
+      border-radius: 24px;
+      padding: 24px 28px;
+      box-shadow: 0 20px 60px rgba(0, 40, 20, 0.45), 0 0 0 4px rgba(255, 255, 255, 0.8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      max-width: 90vw;
+      width: 320px;
+      transform: scale(0.92);
+      transition: transform 0.18s cubic-bezier(0.18, 0.9, 0.3, 1.2);
+    }
+    .senior-inspect-popup.active .senior-inspect-card {
+      transform: scale(1);
+    }
+    .senior-inspect-tile-slot {
+      width: 132px;
+      height: 176px;
+      position: relative;
+      perspective: 800px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .senior-inspect-tile-slot .tile {
+      position: relative !important;
+      transform: scale(1.8) !important;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3) !important;
+      pointer-events: none !important;
+    }
+    .senior-inspect-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 6px;
+      width: 100%;
+    }
+    .senior-inspect-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #1a4d36;
+      letter-spacing: -0.5px;
+    }
+    .senior-inspect-desc {
+      font-size: 14px;
+      font-weight: 600;
+      color: #4a6b5d;
+      line-height: 1.4;
+    }
+    .senior-inspect-status {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .senior-badge {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .senior-badge.free {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #a5d6a7;
+    }
+    .senior-badge.locked {
+      background: #ffebee;
+      color: #c62828;
+      border: 1px solid #ef9a9a;
+    }
+    .senior-badge.blind {
+      background: #fff8e1;
+      color: #f57f17;
+      border: 1px solid #ffe082;
+    }
+    .senior-badge.remain {
+      background: #e0f2fe;
+      color: #0284c7;
+      border: 1px solid #bae6fd;
     }
 
+    /* 2) 상단 HUD 고정 미리보기 바 */
+    .senior-hud-bar {
+      width: 100%;
+      background: linear-gradient(180deg, rgba(244, 252, 248, 0.98) 0%, rgba(230, 246, 238, 0.95) 100%);
+      border-bottom: 2px solid #2ea779;
+      box-shadow: 0 4px 16px rgba(0, 30, 15, 0.12);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 100;
+      transition: all 0.22s ease;
+      min-height: 68px;
+    }
+    .senior-hud-bar.hidden {
+      display: none !important;
+    }
+    .senior-hud-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+    }
+    .senior-hud-tile-wrap {
+      width: 52px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      border: 1.5px solid #2ea779;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+      flex-shrink: 0;
+      overflow: visible;
+      position: relative;
+    }
+    .senior-hud-tile-wrap .tile {
+      position: relative !important;
+      transform: scale(0.72) !important;
+      box-shadow: none !important;
+      pointer-events: none !important;
+    }
+    .senior-hud-text {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .senior-hud-main {
+      font-size: 15px;
+      font-weight: 800;
+      color: #1a4d36;
+      line-height: 1.2;
+    }
+    .senior-hud-sub {
+      font-size: 12px;
+      font-weight: 600;
+      color: #5c8772;
+      line-height: 1.3;
+    }
+    .senior-hud-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    /* 3) 포커스된 타일 강조 애니메이션 */
+    .tile.senior-focused {
+      box-shadow: 0 0 0 3.5px #ffb300, 0 0 20px rgba(255, 179, 0, 0.85), inset 0 0 10px rgba(255, 235, 59, 0.5) !important;
+      animation: seniorFocusPulse 1.2s infinite alternate ease-in-out !important;
+      z-index: 9999 !important;
+    }
+    @keyframes seniorFocusPulse {
+      from {
+        box-shadow: 0 0 0 3px #ffb300, 0 0 12px rgba(255, 179, 0, 0.7);
+        transform: translate3d(var(--tx), var(--ty), calc(var(--tz) + 12px)) scale(1.06);
+      }
+      to {
+        box-shadow: 0 0 0 5px #ff9800, 0 0 24px rgba(255, 152, 0, 0.95);
+        transform: translate3d(var(--tx), var(--ty), calc(var(--tz) + 16px)) scale(1.10);
+      }
+    }
   </style>
 </head>
 
@@ -3488,6 +3681,37 @@
     </div>
     <div class="tray-slots" id="tray-slots">
       <!-- 동적 슬롯 박스 -->
+    </div>
+  </div>
+
+  <!-- 시니어 돋보기 상단 고정 HUD 바 -->
+  <div class="senior-hud-bar hidden" id="senior-hud-bar">
+    <div class="senior-hud-left">
+      <div class="senior-hud-tile-wrap" id="senior-hud-tile-wrap">
+        <span style="font-size: 20px; color: #8fa89b;">🀄</span>
+      </div>
+      <div class="senior-hud-text">
+        <div class="senior-hud-main" id="senior-hud-main">패를 누르면 여기에 크게 보입니다</div>
+        <div class="senior-hud-sub" id="senior-hud-sub">한 번 더 누르면 슬롯으로 이동합니다</div>
+      </div>
+    </div>
+    <div class="senior-hud-right" id="senior-hud-right">
+      <span class="senior-badge" id="senior-hud-badge" style="background: #e0f2fe; color: #0284c7;">대기 중</span>
+    </div>
+  </div>
+
+  <!-- 시니어 롱프레스 초대형 돋보기 팝업 -->
+  <div class="senior-inspect-popup" id="senior-inspect-popup">
+    <div class="senior-inspect-card">
+      <div class="senior-inspect-tile-slot" id="senior-popup-tile-slot"></div>
+      <div class="senior-inspect-info">
+        <div class="senior-inspect-title" id="senior-popup-title">타일 이름</div>
+        <div class="senior-inspect-desc" id="senior-popup-desc">타일 상세 설명</div>
+        <div class="senior-inspect-status" id="senior-popup-status">
+          <span class="senior-badge free" id="senior-popup-badge-free">🟢 선택 가능</span>
+          <span class="senior-badge remain" id="senior-popup-badge-remain">보드 3장 남음</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -3605,6 +3829,14 @@
                 <option value="6">6열까지 (완만한 확대)</option>
                 <option value="7">7열까지 (약간 확대)</option>
                 <option value="8">8열까지 (최소 확대)</option>
+              </select>
+            </div>
+            <div class="settings-item" id="senior-mode-wrapper" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
+              <span class="settings-label">👓 시니어 돋보기 모드</span>
+              <select class="diff-select" id="select-senior-mode" title="어르신 및 저시력자를 위한 패 확대 및 실수 방지 모드">
+                <option value="off" selected>사용 안 함 (기본)</option>
+                <option value="longpress">1. 꾹 누르기 (손가락 위 확대 팝업)</option>
+                <option value="hud">2. 상단 HUD (탭하여 크게 보기 & 2단 확인)</option>
               </select>
             </div>
           </div>
@@ -3890,6 +4122,7 @@
               • <strong>짝선택 자동슬롯 (기본: 꺼짐)</strong>: 뒤집힌 블라인드 패를 뒤집은 상태에서 보드의 동일한 짝(자유 패)을 선택했을 때, 두 패가 한꺼번에 슬롯으로 자동 이동하여 즉시 매칭 소멸되는 옵션입니다. (꺼짐 시 선택한 자유 패만 단독 이동)<br>
               • <strong>마지막10개 자동매칭 (기본: 꺼짐)</strong>: 남은 타일 수가 10개 이하가 되었을 때, 자동으로 짝을 맞추어 빠르게 클리어하는 피날레 연속 매칭 연출이 진행됩니다.<br>
               • <strong>동적확대 (기본: 꺼짐, 디폴트 5열)</strong>: 남은 패의 수가 줄어들 때 남은 패들에 맞춰 보드를 실시간으로 자동 확대(Auto-Fit)합니다. 설정 메뉴에서 지정한 열 수(기본 5열) 크기까지만 확대되어 타일이 과도하게 커지지 않고 안정적인 시야를 유지합니다.<br>
+              • <strong>시니어 돋보기 모드 (기본: 꺼짐)</strong>: 노안이나 저시력으로 작은 패가 잘 안 보이는 어르신들을 위한 특화 옵션입니다. <strong>1. 꾹 누르기</strong>를 선택하면 타일을 꾹 누르는 동안 3배 크기 팝업과 상세 한자 음훈이 뜨며, <strong>2. 상단 HUD</strong>를 선택하면 1차 탭 시 상단에 큼직한 패와 설명이 먼저 뜨고 한 번 더 눌러야 슬롯으로 이동하는 2단계 실수 방지 확인 터치가 가동됩니다.<br>
               • <strong>효과음 테마 (기본: 시연 기본 테마 - 리얼 마작패 · 도자기 맑은 · 첼레스타 · 축하 팝)</strong>: 리얼 마작패(실물 타격·바차임), 크리스탈 벨(청아한 종소리), 클래식 신디(경쾌한 전자음) 중 취향에 맞게 소리를 고를 수 있으며, 볼륨 평탄화가 적용되어 균일하게 출력됩니다.
             </p>
           </div>
@@ -8356,6 +8589,11 @@
           this.dynamicZoom = (localStorage.getItem('siyeon_mahjong_dynamic_zoom') || localStorage.getItem('dynamicZoom')) === '1';
           const savedZoomCols = parseInt(localStorage.getItem('siyeon_mahjong_dynamic_zoom_cols') || localStorage.getItem('dynamicZoomCols') || '5', 10);
           this.dynamicZoomCols = (!isNaN(savedZoomCols) && savedZoomCols >= 3 && savedZoomCols <= 10) ? savedZoomCols : 5;
+          const savedSeniorMode = localStorage.getItem('siyeon_mahjong_senior_mode') || 'off';
+          this.seniorMode = ['off', 'longpress', 'hud'].includes(savedSeniorMode) ? savedSeniorMode : 'off';
+          this._seniorSelectedTile = null;
+          this._longPressTimer = null;
+          this._isLongPressActive = false;
           // 테마 기본값: 무조건 '명리학'('saju')을 디폴트로 적용
           let savedTheme = localStorage.getItem('siyeon_mahjong_active_theme');
           const defaultThemeMigrated = localStorage.getItem('siyeon_mahjong_default_theme_v1478');
@@ -9311,6 +9549,19 @@
           });
         }
 
+        const selectSeniorMode = document.getElementById('select-senior-mode');
+        if (selectSeniorMode) {
+          selectSeniorMode.value = this.seniorMode || 'off';
+          selectSeniorMode.addEventListener('change', (e) => {
+            const val = e.target.value;
+            this.seniorMode = ['off', 'longpress', 'hud'].includes(val) ? val : 'off';
+            try {
+              localStorage.setItem('siyeon_mahjong_senior_mode', this.seniorMode);
+            } catch (err) { }
+            this.updateSeniorModeUI();
+          });
+        }
+
         document.getElementById('btn-undo').addEventListener('click', () => this.undo());
         document.getElementById('btn-hint').addEventListener('click', () => this.showHint());
         document.getElementById('btn-shuffle').addEventListener('click', () => this.shuffleRemain());
@@ -9357,6 +9608,7 @@
           autoEndMatch: this.autoEndMatch,
           dynamicZoom: this.dynamicZoom,
           dynamicZoomCols: this.dynamicZoomCols,
+          seniorMode: this.seniorMode,
           activeTheme: this.activeTheme,
           savedAt: new Date().toLocaleString('ko-KR')
         };
@@ -9464,6 +9716,17 @@
         if (selectDynamicZoomCols) {
           selectDynamicZoomCols.value = String(this.dynamicZoomCols || 5);
         }
+        if (saved.seniorMode !== undefined) {
+          this.seniorMode = ['off', 'longpress', 'hud'].includes(saved.seniorMode) ? saved.seniorMode : 'off';
+          try {
+            localStorage.setItem('siyeon_mahjong_senior_mode', this.seniorMode);
+          } catch (e) { }
+        }
+        const selectSeniorMode = document.getElementById('select-senior-mode');
+        if (selectSeniorMode) {
+          selectSeniorMode.value = this.seniorMode || 'off';
+        }
+        this.updateSeniorModeUI();
 
         const selectEl = document.getElementById('select-difficulty');
         if (selectEl) selectEl.value = this.difficulty;
@@ -9492,6 +9755,249 @@
         } else {
           resumeBtn.style.display = 'none';
         }
+      }
+
+      /**
+       * 시니어 돋보기 모드 UI 가시성 및 상태 동기화
+       */
+      updateSeniorModeUI() {
+        const hudBar = document.getElementById('senior-hud-bar');
+        if (hudBar) {
+          if (this.seniorMode === 'hud') {
+            hudBar.classList.remove('hidden');
+            if (this._seniorSelectedTile && !this._seniorSelectedTile.removed) {
+              this.showSeniorHud(this._seniorSelectedTile);
+            } else {
+              this.resetSeniorHudDefault();
+            }
+          } else {
+            hudBar.classList.add('hidden');
+            this.clearSeniorFocus();
+          }
+        }
+        this.handleResize(false);
+      }
+
+      /**
+       * 시니어 모드용 상세 한국어 설명 및 상태 헬퍼
+       */
+      getSeniorTileInfo(tile) {
+        if (!tile || !tile.def) return { title: '선택 없음', desc: '', isFree: false, isCovered: false, remainCount: 0 };
+        const def = tile.def;
+        let title = def.label;
+        let desc = '';
+
+        const DETAIL_MAP = {
+          'g_jia': { title: '甲木 (갑목)', desc: '천간 1번 · 푸른 큰 나무 (양목)' },
+          'g_yi': { title: '乙木 (을목)', desc: '천간 2번 · 부드러운 풀잎·화초 (음목)' },
+          'g_bing': { title: '丙火 (병화)', desc: '천간 3번 · 밝은 태양의 큰 불 (양화)' },
+          'g_ding': { title: '丁火 (정화)', desc: '천간 4번 · 따뜻한 등불·모닥불 (음화)' },
+          'g_wu': { title: '戊土 (무토)', desc: '천간 5번 · 넓고 웅장한 산 (양토)' },
+          'g_ji': { title: '己土 (기토)', desc: '천간 6번 · 기름진 들판·텃밭 (음토)' },
+          'g_geng': { title: '庚金 (경금)', desc: '천간 7번 · 단단한 바위·쇠 (양금)' },
+          'g_xin': { title: '辛金 (신금)', desc: '천간 8번 · 섬세한 보석·칼 (음금)' },
+          'g_ren': { title: '壬水 (임수)', desc: '천간 9번 · 넓은 바다와 큰 강 (양수)' },
+          'g_gui': { title: '癸水 (계수)', desc: '천간 10번 · 맑은 옹달샘·단비 (음수)' },
+          'z_zi': { title: '子水 (자수 - 쥐)', desc: '십이지 1번 · 한겨울 밤의 깊은 물' },
+          'z_chou': { title: '丑土 (축토 - 소)', desc: '십이지 2번 · 겨울 끝자락의 비옥한 흙' },
+          'z_yin': { title: '寅木 (인목 - 호랑이)', desc: '십이지 3번 · 초봄의 힘찬 생명력' },
+          'z_mao': { title: '卯木 (묘목 - 토끼)', desc: '십이지 4번 · 한봄의 파릇한 새싹' },
+          'z_chen': { title: '辰土 (진토 - 용)', desc: '십이지 5번 · 봄 끝의 풍요로운 습토' },
+          'z_si': { title: '巳火 (사화 - 뱀)', desc: '십이지 6번 · 초여름의 뜨거운 열기' },
+          'z_wu': { title: '午火 (오화 - 말)', desc: '십이지 7번 · 한낮의 가장 눈부신 불' },
+          'z_wei': { title: '未土 (미토 - 양)', desc: '십이지 8번 · 여름 끝의 따스한 흙' },
+          'z_shen': { title: '申金 (신금 - 원숭이)', desc: '십이지 9번 · 초가을의 굳센 쇠기운' },
+          'z_you': { title: '酉金 (유금 - 닭)', desc: '십이지 10번 · 한가을의 빛나는 결실' },
+          'z_xu': { title: '戌土 (술토 - 개)', desc: '십이지 11번 · 늦가을의 단단한 대지' },
+          'z_hai': { title: '亥水 (해수 - 돼지)', desc: '십이지 12번 · 초겨울의 맑은 물기운' },
+          's_bijian': { title: '比肩 (비견)', desc: '나와 어깨를 나란히 하는 벗·형제' },
+          's_geobjae': { title: '劫財 (겁재)', desc: '용기와 경쟁력·승부욕의 별' },
+          's_siksin': { title: '食神 (식신)', desc: '풍요와 재능·복록의 길신' },
+          's_sangpwan': { title: '傷官 (상관)', desc: '총명함과 예술·표현의 별' },
+          's_pyeonjae': { title: '偏財 (편재)', desc: '역동적인 기회와 큰 재물' },
+          's_jeongjae': { title: '正財 (정재)', desc: '성실하고 정직한 알짜배기 재물' },
+          's_pyeongwan': { title: '七殺 / 偏官 (편관)', desc: '카리스마와 리더십·권위' },
+          's_jeonggwan': { title: '正官 (정관)', desc: '바른 규범과 명예·신뢰' },
+          's_pyeonin': { title: '偏印 (편인)', desc: '깊은 학문과 지혜·직관력' },
+          's_jeongin': { title: '正印 (정인)', desc: '자애로운 학문과 복덕의 별' },
+          'yy_yang': { title: '太陽 (태양 - 양)', desc: '밝고 드높은 하늘의 양기' },
+          'yy_yin': { title: '太陰 (태음 - 음)', desc: '차분하고 깊은 땅의 음기' },
+          'wx_wood': { title: '木行 (목기운)', desc: '뻗어나가는 나무의 생명력' },
+          'wx_fire': { title: '火行 (화기운)', desc: '타오르는 불꽃의 열정' },
+          'wx_earth': { title: '土行 (토기운)', desc: '만물을 품어주는 대지' },
+          'wx_metal': { title: '金行 (금기운)', desc: '결실을 맺는 쇠와 바위' },
+          'wx_water': { title: '水行 (수기운)', desc: '지혜롭게 흐르는 물' },
+          'hc': { title: '紅中 (홍중)', desc: '삼원패 · 붉은 중심' },
+          'hf': { title: '發財 (발재)', desc: '삼원패 · 부귀와 큰 발전' },
+          'hb': { title: '白板 (백판)', desc: '삼원패 · 순백의 도자기' },
+          'de': { title: '東風 (동풍)', desc: '사풍패 · 봄을 부르는 동쪽 바람' },
+          'ds': { title: '南風 (남풍)', desc: '사풍패 · 여름의 따뜻한 남쪽 바람' },
+          'dw': { title: '西風 (서풍)', desc: '사풍패 · 가을의 시원한 서쪽 바람' },
+          'dn': { title: '北風 (북풍)', desc: '사풍패 · 겨울의 굳센 북쪽 바람' },
+          'f_mei': { title: '梅花 (매화)', desc: '사군자 · 눈 속에 피어나는 꽃' },
+          'f_lan': { title: '蘭草 (난초)', desc: '사군자 · 그윽한 향기의 풀' },
+          'f_zhu': { title: '竹葉 (대나무)', desc: '사군자 · 사계절 푸른 절개' },
+          'f_ju': { title: '菊花 (국화)', desc: '사군자 · 늦가을 서리를 이기는 꽃' },
+          'f_chun': { title: '春陽 (봄)', desc: '계절패 · 따뜻한 봄 햇살' },
+          'f_xia': { title: '夏荷 (여름)', desc: '계절패 · 푸른 연꽃의 여름' },
+          'f_qiu': { title: '秋楓 (가을)', desc: '계절패 · 붉은 단풍의 가을' },
+          'f_dong': { title: '冬雪 (겨울)', desc: '계절패 · 하얀 눈의 겨울' }
+        };
+
+        if (DETAIL_MAP[def.id]) {
+          title = DETAIL_MAP[def.id].title;
+          desc = DETAIL_MAP[def.id].desc;
+        } else if (def.suit === 'wan') {
+          title = `${def.val}萬 (${def.val}만)`;
+          desc = `전통 만수패 ${def.val}번`;
+        } else if (def.suit === 'tong') {
+          title = `${def.val}筒 (${def.val}통)`;
+          desc = `전통 통수패 ${def.val}번 (동그라미)`;
+        } else if (def.suit === 'tiao') {
+          title = `${def.val}索 (${def.val}삭)`;
+          desc = `전통 삭수패 ${def.val}번 (대나무)`;
+        } else if (def.suit === 'oryong') {
+          title = `${def.label}`;
+          desc = `오룡이 신수·보물 테마`;
+        } else if (def.suit === 'dragon_gold') {
+          title = `${def.label}`;
+          desc = `황금용두 럭키 패`;
+        } else {
+          title = `${def.label} (${def.badge})`;
+        }
+
+        const isFree = this.isTileFree(tile);
+        const isCovered = !!(tile.isCovered && !tile.isRevealed);
+        const remainCount = this.tiles ? this.tiles.filter(t => !t.removed && t.def.id === def.id).length : 0;
+
+        return { title, desc, isFree, isCovered, remainCount };
+      }
+
+      /**
+       * 롱프레스 돋보기 팝업 열기
+       */
+      showSeniorPopup(tile) {
+        if (!tile || !tile.def) return;
+        const popup = document.getElementById('senior-inspect-popup');
+        const slot = document.getElementById('senior-popup-tile-slot');
+        const titleEl = document.getElementById('senior-popup-title');
+        const descEl = document.getElementById('senior-popup-desc');
+        const badgeFree = document.getElementById('senior-popup-badge-free');
+        const badgeRemain = document.getElementById('senior-popup-badge-remain');
+        if (!popup || !slot) return;
+
+        const info = this.getSeniorTileInfo(tile);
+        if (titleEl) titleEl.textContent = info.title;
+        if (descEl) descEl.textContent = info.desc;
+
+        if (badgeFree) {
+          if (info.isCovered) {
+            badgeFree.className = 'senior-badge blind';
+            badgeFree.textContent = '❓ 뒤집힌 패 (누르면 공개)';
+          } else if (info.isFree) {
+            badgeFree.className = 'senior-badge free';
+            badgeFree.textContent = '🟢 선택 가능 (자유패)';
+          } else {
+            badgeFree.className = 'senior-badge locked';
+            badgeFree.textContent = '🔒 좌우 또는 위가 막힘';
+          }
+        }
+        if (badgeRemain) {
+          badgeRemain.textContent = `보드에 ${info.remainCount}장 있음`;
+        }
+
+        slot.innerHTML = '';
+        if (tile.el) {
+          const clone = tile.el.cloneNode(true);
+          clone.className = 'tile';
+          clone.style.transform = '';
+          clone.style.position = 'relative';
+          clone.style.animationDelay = '0s';
+          slot.appendChild(clone);
+        }
+
+        popup.classList.add('active');
+        if (navigator.vibrate) {
+          try { navigator.vibrate(35); } catch (e) { }
+        }
+      }
+
+      /**
+       * 롱프레스 돋보기 팝업 닫기
+       */
+      hideSeniorPopup() {
+        const popup = document.getElementById('senior-inspect-popup');
+        if (popup) popup.classList.remove('active');
+      }
+
+      /**
+       * 상단 HUD 고정 미리보기 바 갱신
+       */
+      showSeniorHud(tile) {
+        if (!tile || !tile.def) return;
+        const hudBar = document.getElementById('senior-hud-bar');
+        const slot = document.getElementById('senior-hud-tile-wrap');
+        const mainEl = document.getElementById('senior-hud-main');
+        const subEl = document.getElementById('senior-hud-sub');
+        const badgeEl = document.getElementById('senior-hud-badge');
+        if (!hudBar || !slot) return;
+
+        const info = this.getSeniorTileInfo(tile);
+        if (mainEl) mainEl.textContent = info.title;
+        if (subEl) subEl.textContent = info.desc;
+
+        if (badgeEl) {
+          if (info.isCovered) {
+            badgeEl.className = 'senior-badge blind';
+            badgeEl.textContent = '❓ 뒤집힌 패';
+          } else if (info.isFree) {
+            badgeEl.className = 'senior-badge free';
+            badgeEl.textContent = `🟢 선택 가능 (${info.remainCount}장)`;
+          } else {
+            badgeEl.className = 'senior-badge locked';
+            badgeEl.textContent = `🔒 막힌 패 (${info.remainCount}장)`;
+          }
+        }
+
+        slot.innerHTML = '';
+        if (tile.el) {
+          const clone = tile.el.cloneNode(true);
+          clone.className = 'tile';
+          clone.style.transform = '';
+          clone.style.position = 'relative';
+          clone.style.animationDelay = '0s';
+          slot.appendChild(clone);
+        }
+
+        hudBar.classList.remove('hidden');
+      }
+
+      /**
+       * 상단 HUD 바 기본 대기 텍스트로 초기화
+       */
+      resetSeniorHudDefault() {
+        const slot = document.getElementById('senior-hud-tile-wrap');
+        const mainEl = document.getElementById('senior-hud-main');
+        const subEl = document.getElementById('senior-hud-sub');
+        const badgeEl = document.getElementById('senior-hud-badge');
+        if (slot) slot.innerHTML = '<span style="font-size: 20px; color: #8fa89b;">🀄</span>';
+        if (mainEl) mainEl.textContent = '패를 누르면 여기에 크게 보입니다';
+        if (subEl) subEl.textContent = '한 번 더 누르면 슬롯으로 이동합니다';
+        if (badgeEl) {
+          badgeEl.className = 'senior-badge remain';
+          badgeEl.textContent = '대기 중';
+        }
+      }
+
+      /**
+       * 시니어 타일 포커스 테두리 모두 해제
+       */
+      clearSeniorFocus() {
+        if (this._seniorSelectedTile && this._seniorSelectedTile.el) {
+          this._seniorSelectedTile.el.classList.remove('senior-focused');
+        }
+        this._seniorSelectedTile = null;
+        this.resetSeniorHudDefault();
       }
 
       /**
@@ -9660,6 +10166,8 @@
         this.isAutoClearing = false;
         this.isGameOver = false;
         this.blindMismatchCount = 0;
+        this.clearSeniorFocus();
+        this.updateSeniorModeUI();
 
         // 난이도에 따른 하트(목숨) 3~5개 설정 (쉬움:5, 보통:4, 어려움:3, 달인:3)
         const diffCfg = DIFFICULTY_CONFIG[this.difficulty] || DIFFICULTY_CONFIG.normal;
@@ -10224,26 +10732,61 @@
           // [모바일/S펜 초정밀 터치 엔진] 브라우저 3D 히트테스팅 오차 및 잠긴 패 가로챔 완벽 구제
           let pDownX = 0, pDownY = 0, pDownTime = 0;
           let isHandled = false;
+          let longPressTriggered = false;
+          let longPressTimer = null;
+
+          const getEffectiveTargetTile = (e) => {
+            let targetTile = tile;
+            if (e && e.clientX !== undefined && e.clientY !== undefined) {
+              const freeCandidate = this.findBestFreeTileAtPoint(e.clientX, e.clientY);
+              if (freeCandidate) {
+                if (!this.isTileFree(targetTile) || freeCandidate.z > targetTile.z) {
+                  targetTile = freeCandidate;
+                }
+              }
+            }
+            return targetTile;
+          };
 
           const executeTileAction = (e) => {
             if (isHandled) return;
             isHandled = true;
             if (e && e.cancelable) e.preventDefault();
 
-            let targetTile = tile;
-            // [스마트 자석 스냅] 터치 지점 주변에 더 높은 층의 자유 패가 있거나 현재 패가 잠겨 있는 경우 최적 자유 패로 즉각 스냅
-            if (e && e.clientX !== undefined && e.clientY !== undefined) {
-              const freeCandidate = this.findBestFreeTileAtPoint(e.clientX, e.clientY);
-              if (freeCandidate) {
-                // 현재 패가 잠겨있거나, 후보 패가 현재 패보다 더 상위 층인 경우 타겟 승격
-                if (!this.isTileFree(targetTile) || freeCandidate.z > targetTile.z) {
-                  targetTile = freeCandidate;
+            const targetTile = getEffectiveTargetTile(e);
+
+            // [시니어 HUD 모드]: 2단계 확인 터치 (1차 탭: 상단 HUD 대형 프리뷰 & 포커스, 2차 탭: 슬롯 이동)
+            if (this.seniorMode === 'hud') {
+              if (this._seniorSelectedTile === targetTile) {
+                // 이미 확인된 타일을 다시 누름 -> 슬롯으로 전송
+                this.clearSeniorFocus();
+                this.handleTileClick(targetTile);
+              } else {
+                // 1차 탭: HUD에 대형 표시 및 포커스 테두리 활성화
+                if (this._seniorSelectedTile && this._seniorSelectedTile.el) {
+                  this._seniorSelectedTile.el.classList.remove('senior-focused');
+                }
+                this._seniorSelectedTile = targetTile;
+                if (targetTile.el) targetTile.el.classList.add('senior-focused');
+                this.showSeniorHud(targetTile);
+
+                if (!this.isTileFree(targetTile)) {
+                  if (this.sound && this.sound.playMiss) this.sound.playMiss();
+                  if (targetTile.el) {
+                    targetTile.el.classList.remove('wiggle');
+                    void targetTile.el.offsetWidth;
+                    targetTile.el.classList.add('wiggle');
+                    setTimeout(() => { if (targetTile.el) targetTile.el.classList.remove('wiggle'); }, 300);
+                  }
+                } else if (this.sound && this.sound.playTileSelect) {
+                  this.sound.playTileSelect();
                 }
               }
+            } else {
+              // 일반 모드 및 롱프레스 모드: 바로 정상 처리
+              this.handleTileClick(targetTile);
             }
 
-            this.handleTileClick(targetTile);
-            // 더블 터치 방지용 140ms 후 플래그 해제 (신속한 연타 보장)
             setTimeout(() => { isHandled = false; }, 140);
           };
 
@@ -10253,33 +10796,77 @@
             pDownY = e.clientY;
             pDownTime = performance.now();
             isHandled = false;
+            longPressTriggered = false;
 
-            // 두 손가락 핀치 제스처 쿨다운 중에는 터치 차단
             if (this.gestureCooldownUntil && Date.now() < this.gestureCooldownUntil) return;
 
-            // 손가락 터치, 삼성 S펜(pen), PC 마우스 등 모든 입력 장치 0ms 즉시 반응!
-            executeTileAction(e);
+            // 시니어 모드(longpress 또는 hud)가 켜져 있으면 롱프레스 타이머 가동 (260ms)
+            if (this.seniorMode === 'longpress' || this.seniorMode === 'hud') {
+              const targetTile = getEffectiveTargetTile(e);
+              longPressTimer = setTimeout(() => {
+                longPressTriggered = true;
+                this.showSeniorPopup(targetTile);
+              }, 260);
+            } else {
+              // 일반 모드: 0ms 즉각 반응
+              executeTileAction(e);
+            }
           }, { passive: false });
 
-          el.addEventListener('pointerup', (e) => {
-            if (e.button !== undefined && e.button !== 0) return;
-            if (isHandled) return;
-
-            // 혹시 pointerdown에서 누락된 포인터 구제 (35px 이내, 750ms 미만)
-            const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
-            const duration = performance.now() - pDownTime;
-
-            if (dist < 35 && duration < 750) {
-              executeTileAction(e);
+          el.addEventListener('pointermove', (e) => {
+            if (longPressTimer) {
+              const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
+              if (dist > 14) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+              }
             }
           });
 
-          // 모바일 스크롤/제스처 시작으로 pointercancel 발생 시에도 미세 이동(30px 이내)인 경우 정상 탭 구제
-          el.addEventListener('pointercancel', (e) => {
-            if (isHandled) return;
+          el.addEventListener('pointerup', (e) => {
+            if (e.button !== undefined && e.button !== 0) return;
+            if (longPressTimer) {
+              clearTimeout(longPressTimer);
+              longPressTimer = null;
+            }
 
+            if (longPressTriggered) {
+              this.hideSeniorPopup();
+              longPressTriggered = false;
+              isHandled = true;
+              setTimeout(() => { isHandled = false; }, 140);
+              return;
+            }
+
+            if (this.seniorMode === 'longpress' || this.seniorMode === 'hud') {
+              const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
+              const duration = performance.now() - pDownTime;
+              if (dist < 20 && duration < 750) {
+                executeTileAction(e);
+              }
+            } else {
+              if (isHandled) return;
+              const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
+              const duration = performance.now() - pDownTime;
+              if (dist < 35 && duration < 750) {
+                executeTileAction(e);
+              }
+            }
+          });
+
+          el.addEventListener('pointercancel', (e) => {
+            if (longPressTimer) {
+              clearTimeout(longPressTimer);
+              longPressTimer = null;
+            }
+            if (longPressTriggered) {
+              this.hideSeniorPopup();
+              longPressTriggered = false;
+              return;
+            }
+            if (isHandled) return;
             const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
-            if (dist < 30) {
+            if (dist < 20) {
               executeTileAction(e);
             }
           });
@@ -10319,6 +10906,7 @@
         this.dealAnimationTimeouts.push(endTimer);
 
         this.updateTileStates();
+        this.updateSeniorModeUI();
       }
 
       /**
@@ -10597,8 +11185,9 @@
               tile.removed = true;
               if (tile.el) {
                 this.hideTileEl(tile.el);
-                tile.el.classList.remove('selected', 'face-down', 'revealed');
+                tile.el.classList.remove('selected', 'face-down', 'revealed', 'senior-focused');
               }
+              this.clearSeniorFocus();
 
               this.updateTileStates();
 
@@ -10682,7 +11271,10 @@
         tile.removed = true;
         if (tile.el) {
           this.hideTileEl(tile.el);
-          tile.el.classList.remove('selected', 'face-down', 'revealed');
+          tile.el.classList.remove('selected', 'face-down', 'revealed', 'senior-focused');
+        }
+        if (this._seniorSelectedTile === tile) {
+          this.clearSeniorFocus();
         }
 
         // 보드 상태 즉시 갱신 (자유 패 및 가능한 수 재계산)
@@ -11694,6 +12286,7 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       const game = new MahjongGame();
+      game.updateSeniorModeUI();
       window.tileGalleryManager = new TileGalleryManager(game.sound);
       if (typeof window.tileGalleryManager._applyTheme === 'function') {
         window.tileGalleryManager._applyTheme(game.activeTheme);
