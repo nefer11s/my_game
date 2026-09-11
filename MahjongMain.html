@@ -6179,6 +6179,15 @@
       { id: 'oryong_purple',   suit: 'oryong', val: 'purple',  label: '紫龍', badge: '紫', render: () => SvgFactory.sajuHybrid('oryong_purple',   '紫', '#8e24aa', '자룡', '紫龍') },
       { id: 'oryong_green',    suit: 'oryong', val: 'green',   label: '綠龍', badge: '綠', render: () => SvgFactory.sajuHybrid('oryong_green',    '綠', '#2e7d32', '녹룡', '綠龍') },
 
+      // 슬롯머신 7용두(龍頭) 7종 (오룡이 테마 - 3D 실물 WebP + 실시간 SVG 텍스트 하이브리드)
+      { id: 'dragon_head_white_tile',  suit: 'dragon_head', val: 'white',  label: '白龍', badge: '白', render: () => SvgFactory.sajuHybrid('dragon_head_white_tile',  '白', '#78909c', '백용두', '白龍') },
+      { id: 'dragon_head_red_tile',    suit: 'dragon_head', val: 'red',    label: '赤龍', badge: '赤', render: () => SvgFactory.sajuHybrid('dragon_head_red_tile',    '赤', '#e53935', '적용두', '赤龍') },
+      { id: 'dragon_head_black_tile',  suit: 'dragon_head', val: 'black',  label: '黑龍', badge: '黑', render: () => SvgFactory.sajuHybrid('dragon_head_black_tile',  '黑', '#37474f', '흑용두', '黑龍') },
+      { id: 'dragon_head_purple_tile', suit: 'dragon_head', val: 'purple', label: '紫龍', badge: '紫', render: () => SvgFactory.sajuHybrid('dragon_head_purple_tile', '紫', '#8e24aa', '자용두', '紫龍') },
+      { id: 'dragon_head_blue_tile',   suit: 'dragon_head', val: 'blue',   label: '靑龍', badge: '靑', render: () => SvgFactory.sajuHybrid('dragon_head_blue_tile',   '靑', '#1e88e5', '청용두', '靑龍') },
+      { id: 'dragon_head_yellow_tile', suit: 'dragon_head', val: 'yellow', label: '黃龍', badge: '黃', render: () => SvgFactory.sajuHybrid('dragon_head_yellow_tile', '黃', '#fbc02d', '황용두', '黃龍') },
+      { id: 'dragon_head_green_tile',  suit: 'dragon_head', val: 'green',  label: '綠龍', badge: '綠', render: () => SvgFactory.sajuHybrid('dragon_head_green_tile',  '綠', '#43a047', '녹용두', '綠龍') },
+
       // 황금용두 누끼 7색 변형 7종
       { id: 'dragon_gold_white_tile',  suit: 'dragon_gold', val: 'white',  label: '白金龍', badge: '白', render: () => SvgFactory.sajuHybrid('dragon_gold_white_tile',  '白', '#78909c', '백금용두', '白金龍') },
       { id: 'dragon_gold_red_tile',    suit: 'dragon_gold', val: 'red',    label: '赤金龍', badge: '赤', render: () => SvgFactory.sajuHybrid('dragon_gold_red_tile',    '赤', '#e53935', '적금용두', '赤金龍') },
@@ -6195,7 +6204,7 @@
      * ========================================================
      */
     const TILE_CATEGORY_GROUPS = [
-      { id: 'all', name: '전체 (109)' },
+      { id: 'all', name: '전체 (116)' },
       { id: 'wan', name: '만수 (9)' },
       { id: 'tong', name: '통수 (9)' },
       { id: 'tiao', name: '삭수 (9)' },
@@ -6206,7 +6215,7 @@
       { id: 'zhi', name: '12지지 (12)' },
       { id: 'shin', name: '10십신 (10)' },
       { id: 'yinyang_wuxing', name: '음양·오행 (7)' },
-      { id: 'oryong', name: '오룡이 (13)' }
+      { id: 'oryong', name: '오룡이 (20)' }
     ];
 
     const TILE_SECTIONS = [
@@ -6220,7 +6229,7 @@
       { id: 'sec_zhi', title: '地支 사주 12지지 (12간지 수호동물 12종)', suits: ['zhi'] },
       { id: 'sec_shin', title: '十神 사주 10십신 (운명의 페르소나 10종)', suits: ['shin'] },
       { id: 'sec_yinyang_wuxing', title: '陰陽·五行 사주 음양 & 오행 수호신 (7종)', suits: ['yinyang', 'wuxing'] },
-      { id: 'sec_oryong', title: '五龍 오룡이 슬롯머신 신수·보물패 (13종)', suits: ['oryong'] }
+      { id: 'sec_oryong', title: '五龍 오룡이 슬롯머신 신수·보물·용두패 (20종)', suits: ['oryong', 'dragon_head'] }
     ];
 
     function getTileDetailInfo(def, index, totalCount) {
@@ -6301,6 +6310,11 @@
           cat = '오룡이 슬롯머신 (五龍)';
           title = `${def.label} (오룡이)`;
           desc = `오룡 슬롯머신 테마의 신수 및 행운의 보물 캐릭터 (${def.label})`;
+          break;
+        case 'dragon_head':
+          cat = '오룡이 7용두 (龍頭)';
+          title = `${def.label} (용두)`;
+          desc = `오룡 슬롯머신 7색 신룡의 얼굴을 형상화한 신수 용두패 (${def.label})`;
           break;
       }
 
@@ -6476,8 +6490,8 @@
         const sajuSuits = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'];
         return TILE_DEFINITIONS.filter(d => {
           if (d.suit === 'dragon_gold') return false; // dragon_gold는 독립 타일로만 사용
-          if (theme === 'classic') return !sajuSuits.includes(d.suit) && d.suit !== 'oryong';
-          if (theme === 'saju')    return !['oryong'].includes(d.suit);
+          if (theme === 'classic') return !sajuSuits.includes(d.suit) && d.suit !== 'oryong' && d.suit !== 'dragon_head';
+          if (theme === 'saju')    return !['oryong', 'dragon_head'].includes(d.suit);
           if (theme === 'oryong')  return !sajuSuits.includes(d.suit);
           return true;
         });
@@ -6532,7 +6546,7 @@
           this.galleryBody.innerHTML = '';
           const visibleSections = TILE_SECTIONS.filter(sec => {
             if (!useSaju && sec.suits.some(s => sajuSuits.includes(s))) return false;
-            if (!useOryong && sec.suits.includes('oryong')) return false;
+            if (!useOryong && sec.suits.some(s => s === 'oryong' || s === 'dragon_head')) return false;
             return true;
           });
           visibleSections.forEach(sec => {
@@ -6606,6 +6620,7 @@
             if (catId === 'honor') return s === 'wind' || s === 'honor';
             if (catId === 'arts_myth') return s === 'arts' || s === 'myth';
             if (catId === 'yinyang_wuxing') return s === 'yinyang' || s === 'wuxing';
+            if (catId === 'oryong') return s === 'oryong' || s === 'dragon_head';
             return s === catId;
           });
           sec.style.display = hasMatch ? 'block' : 'none';
@@ -8934,17 +8949,17 @@
           let pool = TILE_DEFINITIONS.filter(diffCfg.filter);
           // 테마별 사주/오룡이 제외 및 추가
           if (theme === 'classic') {
-            pool = pool.filter(d => !sajuSuits.includes(d.suit) && d.suit !== 'oryong' && d.suit !== 'dragon_gold');
+            pool = pool.filter(d => !sajuSuits.includes(d.suit) && d.suit !== 'oryong' && d.suit !== 'dragon_head' && d.suit !== 'dragon_gold');
           } else if (theme === 'saju') {
-            pool = pool.filter(d => d.suit !== 'oryong' && d.suit !== 'dragon_gold');
+            pool = pool.filter(d => d.suit !== 'oryong' && d.suit !== 'dragon_head' && d.suit !== 'dragon_gold');
             // 사주패 강제 포함 (easy처럼 필터에 없어도 추가)
             const sajuAll = TILE_DEFINITIONS.filter(d => sajuSuits.includes(d.suit));
             const ids = new Set(pool.map(d => d.id));
             sajuAll.forEach(d => { if (!ids.has(d.id)) pool.push(d); });
           } else if (theme === 'oryong') {
             pool = pool.filter(d => !sajuSuits.includes(d.suit) && d.suit !== 'dragon_gold');
-            // 오룡이 패 강제 포함
-            const oryongAll = TILE_DEFINITIONS.filter(d => d.suit === 'oryong');
+            // 오룡이 패 강제 포함 (신수/보물 13종 + 7용두 7종 = 총 20종)
+            const oryongAll = TILE_DEFINITIONS.filter(d => d.suit === 'oryong' || d.suit === 'dragon_head');
             const ids = new Set(pool.map(d => d.id));
             oryongAll.forEach(d => { if (!ids.has(d.id)) pool.push(d); });
           }
@@ -9959,7 +9974,14 @@
           'f_chun': { title: '春陽 (봄)', desc: '계절패 · 따뜻한 봄 햇살' },
           'f_xia': { title: '夏荷 (여름)', desc: '계절패 · 푸른 연꽃의 여름' },
           'f_qiu': { title: '秋楓 (가을)', desc: '계절패 · 붉은 단풍의 가을' },
-          'f_dong': { title: '冬雪 (겨울)', desc: '계절패 · 하얀 눈의 겨울' }
+          'f_dong': { title: '冬雪 (겨울)', desc: '계절패 · 하얀 눈의 겨울' },
+          'dragon_head_white_tile': { title: '白龍 (백용두)', desc: '오룡이 슬롯머신 · 순백의 신룡 머리' },
+          'dragon_head_red_tile': { title: '赤龍 (적용두)', desc: '오룡이 슬롯머신 · 불꽃의 적룡 머리' },
+          'dragon_head_black_tile': { title: '黑龍 (흑용두)', desc: '오룡이 슬롯머신 · 심연의 흑룡 머리' },
+          'dragon_head_purple_tile': { title: '紫龍 (자용두)', desc: '오룡이 슬롯머신 · 번개의 자룡 머리' },
+          'dragon_head_blue_tile': { title: '靑龍 (청용두)', desc: '오룡이 슬롯머신 · 폭풍의 청룡 머리' },
+          'dragon_head_yellow_tile': { title: '黃龍 (황용두)', desc: '오룡이 슬롯머신 · 대지의 황룡 머리' },
+          'dragon_head_green_tile': { title: '綠龍 (녹용두)', desc: '오룡이 슬롯머신 · 생명의 녹룡 머리' }
         };
 
         if (DETAIL_MAP[def.id]) {
@@ -10557,7 +10579,7 @@
 
         // 1) 난이도 베이스 풀 (전통 마작 계열만)
         let availablePool = TILE_DEFINITIONS.filter(def =>
-          diffCfg.filter(def) && !sajuSuits.includes(def.suit) && def.suit !== 'oryong' && def.suit !== 'dragon_gold'
+          diffCfg.filter(def) && !sajuSuits.includes(def.suit) && def.suit !== 'oryong' && def.suit !== 'dragon_head' && def.suit !== 'dragon_gold'
         );
         // 2) 테마 패 강제 추가
         if (theme === 'saju') {
@@ -10565,7 +10587,7 @@
           const ids = new Set(availablePool.map(d => d.id));
           sajuPool.forEach(d => { if (!ids.has(d.id)) availablePool.push(d); });
         } else if (theme === 'oryong') {
-          const oryongPool = TILE_DEFINITIONS.filter(def => def.suit === 'oryong');
+          const oryongPool = TILE_DEFINITIONS.filter(def => def.suit === 'oryong' || def.suit === 'dragon_head');
           const ids = new Set(availablePool.map(d => d.id));
           oryongPool.forEach(d => { if (!ids.has(d.id)) availablePool.push(d); });
         }
