@@ -3596,6 +3596,17 @@
             <button class="btn settings-btn" id="btn-dynamic-zoom" title="남은 패에 맞춰 화면을 자동으로 꽉 채우는 동적 확대">
               <span class="btn-icon" id="dynamic-zoom-icon">🔒</span> <span id="dynamic-zoom-text">동적확대: 꺼짐</span>
             </button>
+            <div class="settings-item" id="dynamic-zoom-cols-wrapper" style="margin-top: 4px;">
+              <span class="settings-label">🔍 동적확대 최대 배율 (열 수 제한)</span>
+              <select class="diff-select" id="select-dynamic-zoom-cols" title="동적 확대 시 최대 확대 한도(기준 열 수)">
+                <option value="3">3열까지 (최대 확대: 매우 큼)</option>
+                <option value="4">4열까지 (최대 확대: 큼)</option>
+                <option value="5" selected>5열까지 (기본값: 적당함)</option>
+                <option value="6">6열까지 (완만한 확대)</option>
+                <option value="7">7열까지 (약간 확대)</option>
+                <option value="8">8열까지 (최소 확대)</option>
+              </select>
+            </div>
           </div>
 
           <!-- 3. 사운드 & 화면 모드 탭 -->
@@ -3878,7 +3889,7 @@
             <p style="margin-top: 4px; line-height: 1.6;">
               • <strong>짝선택 자동슬롯 (기본: 꺼짐)</strong>: 뒤집힌 블라인드 패를 뒤집은 상태에서 보드의 동일한 짝(자유 패)을 선택했을 때, 두 패가 한꺼번에 슬롯으로 자동 이동하여 즉시 매칭 소멸되는 옵션입니다. (꺼짐 시 선택한 자유 패만 단독 이동)<br>
               • <strong>마지막10개 자동매칭 (기본: 꺼짐)</strong>: 남은 타일 수가 10개 이하가 되었을 때, 자동으로 짝을 맞추어 빠르게 클리어하는 피날레 연속 매칭 연출이 진행됩니다.<br>
-              • <strong>동적확대 (기본: 꺼짐)</strong>: 남은 패의 수가 줄어들 때, 남은 패들이 화면에 꽉 차도록 보드를 실시간으로 자동 확대(Auto-Fit)해 주는 옵션입니다. (꺼짐 시 안정적인 기본 스케일 유지)<br>
+              • <strong>동적확대 (기본: 꺼짐, 디폴트 5열)</strong>: 남은 패의 수가 줄어들 때 남은 패들에 맞춰 보드를 실시간으로 자동 확대(Auto-Fit)합니다. 설정 메뉴에서 지정한 열 수(기본 5열) 크기까지만 확대되어 타일이 과도하게 커지지 않고 안정적인 시야를 유지합니다.<br>
               • <strong>효과음 테마 (기본: 시연 기본 테마 - 리얼 마작패 · 도자기 맑은 · 첼레스타 · 축하 팝)</strong>: 리얼 마작패(실물 타격·바차임), 크리스탈 벨(청아한 종소리), 클래식 신디(경쾌한 전자음) 중 취향에 맞게 소리를 고를 수 있으며, 볼륨 평탄화가 적용되어 균일하게 출력됩니다.
             </p>
           </div>
@@ -8343,6 +8354,8 @@
           this.autoBlindPairMatch = (localStorage.getItem('siyeon_mahjong_auto_blind_pair') || localStorage.getItem('autoBlindPairMatch')) === '1';
           this.autoEndMatch = (localStorage.getItem('siyeon_mahjong_auto_end_match') || localStorage.getItem('autoEndMatch')) === '1';
           this.dynamicZoom = (localStorage.getItem('siyeon_mahjong_dynamic_zoom') || localStorage.getItem('dynamicZoom')) === '1';
+          const savedZoomCols = parseInt(localStorage.getItem('siyeon_mahjong_dynamic_zoom_cols') || localStorage.getItem('dynamicZoomCols') || '5', 10);
+          this.dynamicZoomCols = (!isNaN(savedZoomCols) && savedZoomCols >= 3 && savedZoomCols <= 10) ? savedZoomCols : 5;
           // 테마 기본값: 무조건 '명리학'('saju')을 디폴트로 적용
           let savedTheme = localStorage.getItem('siyeon_mahjong_active_theme');
           const defaultThemeMigrated = localStorage.getItem('siyeon_mahjong_default_theme_v1478');
@@ -9284,6 +9297,20 @@
           });
         }
 
+        const selectDynamicZoomCols = document.getElementById('select-dynamic-zoom-cols');
+        if (selectDynamicZoomCols) {
+          selectDynamicZoomCols.value = String(this.dynamicZoomCols || 5);
+          selectDynamicZoomCols.addEventListener('change', (e) => {
+            const val = parseInt(e.target.value, 10);
+            this.dynamicZoomCols = (!isNaN(val) && val >= 3 && val <= 10) ? val : 5;
+            try {
+              localStorage.setItem('dynamicZoomCols', String(this.dynamicZoomCols));
+              localStorage.setItem('siyeon_mahjong_dynamic_zoom_cols', String(this.dynamicZoomCols));
+            } catch (err) { }
+            this.handleResize(true);
+          });
+        }
+
         document.getElementById('btn-undo').addEventListener('click', () => this.undo());
         document.getElementById('btn-hint').addEventListener('click', () => this.showHint());
         document.getElementById('btn-shuffle').addEventListener('click', () => this.shuffleRemain());
@@ -9329,6 +9356,7 @@
           autoBlindPairMatch: this.autoBlindPairMatch,
           autoEndMatch: this.autoEndMatch,
           dynamicZoom: this.dynamicZoom,
+          dynamicZoomCols: this.dynamicZoomCols,
           activeTheme: this.activeTheme,
           savedAt: new Date().toLocaleString('ko-KR')
         };
@@ -9394,6 +9422,14 @@
             localStorage.setItem('siyeon_mahjong_dynamic_zoom', this.dynamicZoom ? '1' : '0');
           } catch (e) { }
         }
+        if (saved.dynamicZoomCols !== undefined) {
+          const loadedCols = parseInt(saved.dynamicZoomCols, 10);
+          this.dynamicZoomCols = (!isNaN(loadedCols) && loadedCols >= 3 && loadedCols <= 10) ? loadedCols : 5;
+          try {
+            localStorage.setItem('dynamicZoomCols', String(this.dynamicZoomCols));
+            localStorage.setItem('siyeon_mahjong_dynamic_zoom_cols', String(this.dynamicZoomCols));
+          } catch (e) { }
+        }
         // 저장된 테마 복원 (레거시 useSajuTiles/useOryongTiles 호환)
         if (saved.activeTheme) {
           this._applyTheme(saved.activeTheme);
@@ -9423,6 +9459,10 @@
         if (zoomIcon && zoomText) {
           zoomIcon.textContent = this.dynamicZoom ? '🔍' : '🔒';
           zoomText.textContent = this.dynamicZoom ? '동적확대: 켜짐' : '동적확대: 꺼짐';
+        }
+        const selectDynamicZoomCols = document.getElementById('select-dynamic-zoom-cols');
+        if (selectDynamicZoomCols) {
+          selectDynamicZoomCols.value = String(this.dynamicZoomCols || 5);
         }
 
         const selectEl = document.getElementById('select-difficulty');
@@ -11575,9 +11615,15 @@
             if (py + 88 > maxPy) maxPy = py + 88; // 88px: 타일 높이
           });
 
-          // 남은 타일들의 실제 픽셀 너비/높이
-          const exactTilesW = Math.max(260, maxPx - minPx);
-          const exactTilesH = Math.max(260, maxPy - minPy);
+          // 동적확대 최대 확대 한도: 옵션에 설정된 열 수(기본: 5열) 기준
+          const maxCols = (this.dynamicZoomCols && this.dynamicZoomCols >= 3) ? this.dynamicZoomCols : 5;
+          // 타일 1열당 점유폭(70px) 및 종횡비 높이(86px) 기반 최소 바운딩 박스
+          const minBoundW = maxCols * 70;
+          const minBoundH = maxCols * 86;
+
+          // 남은 타일들의 실제 픽셀 너비/높이 (최소 설정 열 수 크기까지만 축소 허용 -> 타일 확대 상한선 보장)
+          const exactTilesW = Math.max(minBoundW, maxPx - minPx);
+          const exactTilesH = Math.max(minBoundH, maxPy - minPy);
 
           effectiveW = Math.min(this.currentLayoutWidth || 730, exactTilesW);
           effectiveH = Math.min(this.currentLayoutHeight || 545, exactTilesH);
@@ -11606,7 +11652,12 @@
           const scaleY = (vh - marginY) / effectiveH;
 
           // 세로가 상단 임시보관함이나 하단 독을 넘치지 않으면서 타일 크기 최대화
-          const optimalScale = Math.min(scaleX, scaleY) * 0.99;
+          let optimalScale = Math.min(scaleX, scaleY) * 0.99;
+          if (this.dynamicZoom) {
+            const maxCols = (this.dynamicZoomCols && this.dynamicZoomCols >= 3) ? this.dynamicZoomCols : 5;
+            const maxScaleByCols = (vw - marginX) / (maxCols * 70);
+            optimalScale = Math.min(optimalScale, maxScaleByCols);
+          }
           this.baseScale = Math.min(3.5, Math.max(0.48, optimalScale));
 
           // 남은 타일 뭉치가 정중앙에 오도록 X, Y 동시 오토 센터링 적용
@@ -11623,7 +11674,12 @@
           const scaleX = (vw - marginX) / effectiveW;
           const scaleY = (vh - marginY) / effectiveH;
 
-          const optimalScale = Math.min(scaleX, scaleY) * 0.99;
+          let optimalScale = Math.min(scaleX, scaleY) * 0.99;
+          if (this.dynamicZoom) {
+            const maxCols = (this.dynamicZoomCols && this.dynamicZoomCols >= 3) ? this.dynamicZoomCols : 5;
+            const maxScaleByCols = (vw - marginX) / (maxCols * 70);
+            optimalScale = Math.min(optimalScale, maxScaleByCols);
+          }
           this.baseScale = Math.min(3.5, Math.max(0.52, optimalScale));
 
           if (this.zoomLevel === 1.0) {
