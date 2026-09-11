@@ -4235,7 +4235,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.96
+            Si-Yeon Mahjong Solitaire v1.4.97
           </div>
         </div>
       </div>
@@ -4327,7 +4327,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.96</div>
+        <div class="splash-version-badge">v1.4.97</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -4591,7 +4591,6 @@
 
       <div style="display: flex; gap: 8px;">
         <button class="modal-btn" style="flex: 1; background: #e2e8f0; color: #4a5568;" id="btn-rank-clear">기록 초기화</button>
-        <button class="modal-btn" id="btn-rank-easter" style="flex: 1.2; background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; font-weight: 800; box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4);">✨ 보석 전당</button>
         <button class="modal-btn" style="flex: 1;" id="btn-rank-close">닫기</button>
       </div>
     </div>
@@ -10893,11 +10892,10 @@
 
 
         
-        // 🏆 명예의 전당 트로피 7회 연속 터치 이스터에그 리스너 & 보석 전당 버튼
+        // 🏆 명예의 전당 트로피 7회 연속 터치 이스터에그 리스너
         const trophyBtn = document.getElementById('rank-trophy-easter-btn');
         const easterModal = document.getElementById('celebration-easter-modal');
         const btnEasterClose = document.getElementById('btn-easter-modal-close');
-        const btnRankEaster = document.getElementById('btn-rank-easter');
         let trophyClickCount = 0;
         let trophyClickTimer = null;
         let lastTrophyTapTime = 0;
@@ -10912,15 +10910,6 @@
           if (easterModal) easterModal.classList.add('active');
           this.showFloatingNotice('✨ 비밀의 30판 보석 축하 전당이 열렸습니다!');
         };
-
-        if (btnRankEaster) {
-          const handleEasterBtn = (e) => {
-            if (e) e.stopPropagation();
-            if (this.sound && this.sound.playSelect) this.sound.playSelect();
-            openEasterHall();
-          };
-          btnRankEaster.addEventListener('click', handleEasterBtn);
-        }
 
         if (trophyBtn) {
           const handleTrophyTap = (e) => {
