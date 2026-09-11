@@ -3410,16 +3410,16 @@
     }
     .senior-inspect-card {
       background: linear-gradient(135deg, #ffffff 0%, #f4faf6 100%);
-      border: 3px solid #2ea779;
-      border-radius: 24px;
-      padding: 24px 28px;
-      box-shadow: 0 20px 60px rgba(0, 40, 20, 0.45), 0 0 0 4px rgba(255, 255, 255, 0.8);
+      border: 2.5px solid #2ea779;
+      border-radius: 20px;
+      padding: 12px 18px;
+      box-shadow: 0 16px 48px rgba(0, 40, 20, 0.4), 0 0 0 4px rgba(255, 255, 255, 0.85);
       display: flex;
-      flex-direction: column;
+      flex-direction: row; /* 텍스트를 타일 옆으로 가로 배치하여 세로 공간 대폭 확보 */
       align-items: center;
       gap: 16px;
-      max-width: 90vw;
-      width: 320px;
+      max-width: min(94vw, 440px);
+      width: auto;
       transform: scale(0.92);
       transition: transform 0.18s cubic-bezier(0.18, 0.9, 0.3, 1.2);
     }
@@ -3427,55 +3427,60 @@
       transform: scale(1);
     }
     .senior-inspect-tile-slot {
-      width: 132px;
-      height: 176px;
+      width: 82px;
+      height: 110px;
       position: relative;
       perspective: 800px;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
     .senior-inspect-tile-slot .tile {
       position: relative !important;
-      transform: scale(1.8) !important;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3) !important;
+      transform: scale(1.22) !important;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25) !important;
       pointer-events: none !important;
     }
     .senior-inspect-info {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 6px;
-      width: 100%;
+      align-items: flex-start; /* 설명 텍스트 좌측 정렬 */
+      text-align: left;
+      gap: 3px;
+      flex: 1;
+      min-width: 0;
     }
     .senior-inspect-title {
-      font-size: 22px;
+      font-size: 19px;
       font-weight: 800;
       color: #1a4d36;
       letter-spacing: -0.5px;
+      line-height: 1.2;
     }
     .senior-inspect-desc {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       color: #4a6b5d;
-      line-height: 1.4;
+      line-height: 1.35;
+      word-break: keep-all;
     }
     .senior-inspect-status {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       margin-top: 4px;
       flex-wrap: wrap;
-      justify-content: center;
+      justify-content: flex-start;
     }
     .senior-badge {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 12px;
+      padding: 3px 8px;
+      border-radius: 10px;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
+      white-space: nowrap;
     }
     .senior-badge.free {
       background: #e8f5e9;
@@ -3498,20 +3503,20 @@
       border: 1px solid #bae6fd;
     }
 
-    /* 2) 상단 HUD 고정 미리보기 바 */
+    /* 2) 상단 HUD 고정 미리보기 바 (컴팩트 세로 공간 최적화) */
     .senior-hud-bar {
       width: 100%;
       background: linear-gradient(180deg, rgba(244, 252, 248, 0.98) 0%, rgba(230, 246, 238, 0.95) 100%);
       border-bottom: 2px solid #2ea779;
-      box-shadow: 0 4px 16px rgba(0, 30, 15, 0.12);
-      padding: 8px 16px;
+      box-shadow: 0 4px 14px rgba(0, 30, 15, 0.1);
+      padding: 4px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       z-index: 100;
       transition: all 0.22s ease;
-      min-height: 68px;
+      min-height: 52px;
     }
     .senior-hud-bar.hidden {
       display: none !important;
@@ -3519,17 +3524,18 @@
     .senior-hud-left {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
       flex: 1;
+      min-width: 0;
     }
     .senior-hud-tile-wrap {
-      width: 52px;
-      height: 68px;
+      width: 42px;
+      height: 56px;
       display: flex;
       align-items: center;
       justify-content: center;
       background: rgba(255, 255, 255, 0.9);
-      border-radius: 10px;
+      border-radius: 8px;
       border: 1.5px solid #2ea779;
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
       flex-shrink: 0;
@@ -3538,32 +3544,39 @@
     }
     .senior-hud-tile-wrap .tile {
       position: relative !important;
-      transform: scale(0.72) !important;
+      transform: scale(0.60) !important;
       box-shadow: none !important;
       pointer-events: none !important;
     }
     .senior-hud-text {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
+      min-width: 0;
     }
     .senior-hud-main {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 800;
       color: #1a4d36;
       line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .senior-hud-sub {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       color: #5c8772;
-      line-height: 1.3;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .senior-hud-right {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 4px;
+      gap: 3px;
       flex-shrink: 0;
     }
 
@@ -3883,7 +3896,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.80
+            Si-Yeon Mahjong Solitaire v1.4.81
           </div>
         </div>
       </div>
@@ -3975,7 +3988,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.80</div>
+        <div class="splash-version-badge">v1.4.81</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
