@@ -2639,11 +2639,77 @@
       text-align: center;
     }
 
-    /* 마스터 등극 결과 모달 카드 */
+    /* 30판 난이도별 특화 모달 카드 스타일 */
+    .modal-card.easy-crown-card {
+      border: 2.5px solid #10b981 !important;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 38px rgba(16, 185, 129, 0.5) !important;
+      background: linear-gradient(165deg, rgba(255, 255, 255, 0.99) 0%, rgba(240, 253, 244, 0.97) 100%) !important;
+      animation: easyCrownPulse 2s infinite alternate ease-in-out;
+    }
+    @keyframes easyCrownPulse {
+      0% { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 25px rgba(16, 185, 129, 0.4); }
+      100% { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 45px rgba(52, 211, 153, 0.7); }
+    }
+
+    .modal-card.normal-crown-card {
+      border: 2.5px solid #0284c7 !important;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 38px rgba(2, 132, 199, 0.5) !important;
+      background: linear-gradient(165deg, rgba(255, 255, 255, 0.99) 0%, rgba(240, 249, 255, 0.97) 100%) !important;
+      animation: normalCrownPulse 2s infinite alternate ease-in-out;
+    }
+    @keyframes normalCrownPulse {
+      0% { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 25px rgba(2, 132, 199, 0.4); }
+      100% { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 45px rgba(56, 189, 248, 0.7); }
+    }
+
+    .modal-card.hard-crown-card {
+      border: 2.5px solid #ea580c !important;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 40px rgba(234, 88, 12, 0.55) !important;
+      background: linear-gradient(165deg, rgba(255, 255, 255, 0.99) 0%, rgba(255, 247, 237, 0.97) 100%) !important;
+      animation: hardCrownPulse 1.8s infinite alternate ease-in-out;
+    }
+    @keyframes hardCrownPulse {
+      0% { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 28px rgba(234, 88, 12, 0.45); }
+      100% { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 50px rgba(251, 146, 60, 0.75); }
+    }
+
     .modal-card.master-crown-card {
-      border: 2px solid #ffd700 !important;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 35px rgba(255, 215, 0, 0.4) !important;
+      border: 2.5px solid #ffd700 !important;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 45px rgba(255, 215, 0, 0.6) !important;
       background: linear-gradient(165deg, rgba(255, 255, 255, 0.99) 0%, rgba(255, 248, 225, 0.97) 100%) !important;
+      animation: masterCrownPulse 1.6s infinite alternate ease-in-out;
+    }
+    @keyframes masterCrownPulse {
+      0% { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.5); }
+      100% { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 55px rgba(255, 215, 0, 0.85); }
+    }
+
+    /* 30판 대형 WIN 배너 난이도별 테마 */
+    .big-win-banner.easy-crown-win {
+      color: #4ade80 !important;
+      text-shadow: 0 0 12px rgba(74, 222, 128, 0.85), 0 0 30px rgba(16, 185, 129, 0.8), 0 6px 20px rgba(0, 0, 0, 0.45) !important;
+    }
+    .big-win-banner.easy-crown-win .win-sub-touch {
+      background: rgba(6, 78, 59, 0.9) !important;
+      border-color: rgba(74, 222, 128, 0.6) !important;
+    }
+
+    .big-win-banner.normal-crown-win {
+      color: #38bdf8 !important;
+      text-shadow: 0 0 12px rgba(56, 189, 248, 0.85), 0 0 30px rgba(2, 132, 199, 0.8), 0 6px 20px rgba(0, 0, 0, 0.45) !important;
+    }
+    .big-win-banner.normal-crown-win .win-sub-touch {
+      background: rgba(12, 74, 110, 0.9) !important;
+      border-color: rgba(56, 189, 248, 0.6) !important;
+    }
+
+    .big-win-banner.hard-crown-win {
+      color: #fb923c !important;
+      text-shadow: 0 0 12px rgba(251, 146, 60, 0.85), 0 0 30px rgba(234, 88, 12, 0.8), 0 6px 20px rgba(0, 0, 0, 0.45) !important;
+    }
+    .big-win-banner.hard-crown-win .win-sub-touch {
+      background: rgba(124, 45, 18, 0.9) !important;
+      border-color: rgba(251, 146, 60, 0.6) !important;
     }
 
     @keyframes crownDrop {
@@ -3955,7 +4021,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.91
+            Si-Yeon Mahjong Solitaire v1.4.92
           </div>
         </div>
       </div>
@@ -4047,7 +4113,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.91</div>
+        <div class="splash-version-badge">v1.4.92</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -5139,12 +5205,17 @@
         this.canvas.height = window.innerHeight;
       }
 
-      start() {
+      start(customColors = null) {
         if (this.isRunning) return;
         this.isRunning = true;
         this.resize();
         this.canvas.style.display = 'block';
         this.particles = [];
+        if (Array.isArray(customColors) && customColors.length > 0) {
+          this.activeColors = customColors;
+        } else {
+          this.activeColors = this.colors;
+        }
 
         // 시작하자마자 화려하게 좌/중/우 3연발 동시 폭죽 발사!
         const w = this.canvas.width;
@@ -12720,18 +12791,77 @@
         this.isClear = true;
         clearInterval(this.timerId);
 
-        // 화려한 불꽃놀이 폭죽 연출 발동
+        // 30판(블라인드 정점 관문) 여부 및 난이도별 축하 메타데이터 판별
+        const isStage30 = (this.currentStage === 30 || (this.isAllBlindStage && this.difficulty === 'master'));
+        const diffKey = this.difficulty || 'normal';
+
+        const STAGE_30_DATA = {
+          easy: {
+            title: '🌿 에메랄드 비취의 관문 돌파! 🌿',
+            desc: '<strong>70% 블라인드의 안개를 뚫고 쉬움 모드 30개 전 관문을 정복하셨습니다!</strong><br>기초를 넘어 진정한 마작 솔리테어의 혜안을 얻으신 <strong>[청풍명월 비취의 수호자]</strong>로 인정합니다. (비취 관문 돌파 특수 보너스 +15,000점! / 하트 +1 회복)',
+            bannerTitle: '에메랄드 비취의 관문 완파!',
+            bannerSub: '70% 블라인드를 뚫고 쉬움 모드 30개 전 관문을 완벽히 정복했습니다!',
+            emoji: '🌿',
+            cardClass: 'easy-crown-card',
+            bannerClass: 'easy-crown-win',
+            bonus: 15000,
+            btnText: `보통 모드로 도약하기 (제 ${this.currentStage + 1}판 무한 순환) ➔`,
+            btnGrad: 'linear-gradient(135deg, #10b981 0%, #047857 100%)',
+            colors: ['#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#ffd700', '#ffffff']
+          },
+          normal: {
+            title: '🔷 사파이어의 지혜, 30강 대결전 완승! 🔷',
+            desc: '<strong>80% 블라인드의 짙은 장막 속에서도 흔들림 없는 수읽기로 30판 대결전을 제패했습니다!</strong><br>날카로운 직관과 전략적 지혜를 갖춘 <strong>[벽공천상 사파이어의 현자]</strong>로 공인합니다. (사파이어 결전 완승 특수 보너스 +20,000점! / 하트 +1 회복)',
+            bannerTitle: '사파이어의 지혜, 30강 완승!',
+            bannerSub: '80% 블라인드를 뚫고 보통 모드 30판 대결전을 압도적으로 제패했습니다!',
+            emoji: '🔷',
+            cardClass: 'normal-crown-card',
+            bannerClass: 'normal-crown-win',
+            bonus: 20000,
+            btnText: `어려움 모드로 도전하기 (제 ${this.currentStage + 1}판 무한 순환) ➔`,
+            btnGrad: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+            colors: ['#0284c7', '#38bdf8', '#7dd3fc', '#bae6fd', '#ffd700', '#ffffff']
+          },
+          hard: {
+            title: '🔥 90% 극한 블라인드 격파! 불패의 루비 정복자! 🔥',
+            desc: '<strong>단 10%의 단서만 남겨진 90% 블라인드의 지옥을 뚫고 어려움 30판을 굴복시켰습니다!</strong><br>어떤 가혹한 시련도 돌파해내는 압도적 승부사 <strong>[홍련불패 루비의 지휘관]</strong>으로 등극하셨습니다. (루비 지휘관 등극 특수 보너스 +25,000점! / 하트 +1 회복)',
+            bannerTitle: '90% 블라인드 격파! 루비 정복자!',
+            bannerSub: '단 10%의 단서로 90% 암흑의 어려움 30판을 완벽하게 굴복시켰습니다!',
+            emoji: '🔥',
+            cardClass: 'hard-crown-card',
+            bannerClass: 'hard-crown-win',
+            bonus: 25000,
+            btnText: `최종 달인(Master) 영역 진입 (제 ${this.currentStage + 1}판) ➔`,
+            btnGrad: 'linear-gradient(135deg, #ea580c 0%, #b91c1c 100%)',
+            colors: ['#ea580c', '#fb923c', '#fdba74', '#ef4444', '#f59e0b', '#ffd700']
+          },
+          master: {
+            title: '👑 전설의 마작 마스터 등극! 천상천하 유아독존! 👑',
+            desc: '<strong>모든 패가 완벽한 암흑에 싸인 \'100% 올 블라인드\' 극한의 신화를 완성했습니다!</strong><br>마작 솔리테어의 모든 경지를 초월한 최고 존엄 <strong>[천상천하 전설의 마작 황제]</strong>로 영구 공인합니다. (황실 마스터 등극 궁극 보너스 +30,000점! / 하트 +1 회복)',
+            bannerTitle: '전설의 마작 마스터 등극!',
+            bannerSub: '모든 패가 베일에 싸인 100% 올 블라인드 극한의 판을 완벽하게 격파했습니다!',
+            emoji: '👑',
+            cardClass: 'master-crown-card',
+            bannerClass: 'master-crown-win',
+            bonus: 30000,
+            btnText: `전설의 무한 마스터 순환 계속 (제 ${this.currentStage + 1}판) ➔`,
+            btnGrad: 'linear-gradient(135deg, #d4af37 0%, #aa771c 100%)',
+            colors: ['#ffd700', '#facc15', '#fef08a', '#c084fc', '#a855f7', '#ffffff']
+          }
+        };
+
+        const celebration = isStage30 ? (STAGE_30_DATA[diffKey] || STAGE_30_DATA.normal) : null;
+
+        // 화려한 불꽃놀이 폭죽 연출 발동 (30판은 고유 테마 컬러로 발사)
         if (this.fireworks) {
-          this.fireworks.start();
+          this.fireworks.start(celebration ? celebration.colors : null);
         }
 
         const oldBanner = document.getElementById('big-win-banner');
         if (oldBanner) oldBanner.remove();
 
-        const isMasterAllBlind = (this.difficulty === 'master' && this.isAllBlindStage);
-
-        if (isMasterAllBlind) {
-          // 마스터 올 블라인드 격파 특수 팡파레 연쇄 효과음
+        if (celebration) {
+          // 30판 격파 특수 팡파레 연쇄 효과음
           this.sound.playWin();
           setTimeout(() => this.sound.playFirework(), 250);
           setTimeout(() => this.sound.playWindChime(), 550);
@@ -12741,19 +12871,19 @@
         }
 
         const winBanner = document.createElement('div');
-        winBanner.className = isMasterAllBlind ? 'big-win-banner master-crown-win' : 'big-win-banner';
+        winBanner.className = celebration ? `big-win-banner ${celebration.bannerClass}` : 'big-win-banner';
         winBanner.id = 'big-win-banner';
 
-        if (isMasterAllBlind) {
+        if (celebration) {
           winBanner.innerHTML = `
             <div class="master-crown-anim-wrap">
               <div class="master-crown-glow"></div>
-              <div class="master-crown-icon">👑</div>
+              <div class="master-crown-icon">${celebration.emoji}</div>
               <div class="master-sparkles">✨🌟✨</div>
             </div>
-            <div class="master-win-title">전설의 마작 마스터 등극!</div>
-            <div class="master-win-sub">모든 패가 베일에 싸인 '100% 올 블라인드' 극한의 판을 완벽하게 격파했습니다!</div>
-            <span class="win-sub-touch">👆 화면을 터치하여 마스터 인증서 확인</span>
+            <div class="master-win-title">${celebration.bannerTitle}</div>
+            <div class="master-win-sub">${celebration.bannerSub}</div>
+            <span class="win-sub-touch">👆 화면을 터치하여 인증서 확인</span>
           `;
         } else {
           winBanner.innerHTML = `
@@ -12778,28 +12908,8 @@
           }, 280);
         };
 
-        // 배너 자체 클릭/터치 이벤트
-        winBanner.addEventListener('click', dismissBanner);
-        winBanner.addEventListener('touchend', dismissBanner);
-
-        // 뷰포트/화면 어디를 터치해도 닫히도록 1회성 글로벌 리스너 등록
-        setTimeout(() => {
-          const globalDismiss = (e) => {
-            window.removeEventListener('pointerdown', globalDismiss);
-            dismissBanner(e);
-          };
-          window.addEventListener('pointerdown', globalDismiss, { once: true });
-        }, 350);
-
-        this.viewportEl.appendChild(winBanner);
-      }
-
-      checkWinCondition() {
-        const remain = this.tiles.filter(t => !t.removed).length;
-        const remainTray = this.trayTiles ? this.trayTiles.length : 0;
-        if (remain === 0 && remainTray === 0 && !this.isClear) {
-          this.showWinBanner();
-        }
+        winBanner.addEventListener('pointerdown', dismissBanner);
+        this.boardEl.parentNode.appendChild(winBanner);
       }
 
       showVictoryModal() {
@@ -12810,12 +12920,56 @@
 
         const modalCard = document.querySelector('#modal .modal-card');
         const modalEmoji = document.getElementById('modal-emoji');
-        const isMasterAllBlind = (this.difficulty === 'master' && this.isAllBlindStage);
+
+        // 30판 특화 축하 데이터
+        const isStage30 = (this.currentStage === 30 || (this.isAllBlindStage && this.difficulty === 'master'));
+        const diffKey = this.difficulty || 'normal';
+
+        const STAGE_30_DATA = {
+          easy: {
+            title: '🌿 에메랄드 비취의 관문 돌파! 🌿',
+            desc: '<strong>70% 블라인드의 안개를 뚫고 쉬움 모드 30개 전 관문을 정복하셨습니다!</strong><br>기초를 넘어 진정한 마작 솔리테어의 혜안을 얻으신 <strong>[청풍명월 비취의 수호자]</strong>로 인정합니다. (비취 관문 돌파 특수 보너스 +15,000점! / 하트 +1 회복)',
+            emoji: '🌿',
+            cardClass: 'easy-crown-card',
+            bonus: 15000,
+            btnText: `보통 모드로 도약하기 (제 ${this.currentStage + 1}판 무한 순환) ➔`,
+            btnGrad: 'linear-gradient(135deg, #10b981 0%, #047857 100%)'
+          },
+          normal: {
+            title: '🔷 사파이어의 지혜, 30강 대결전 완승! 🔷',
+            desc: '<strong>80% 블라인드의 짙은 장막 속에서도 흔들림 없는 수읽기로 30판 대결전을 제패했습니다!</strong><br>날카로운 직관과 전략적 지혜를 갖춘 <strong>[벽공천상 사파이어의 현자]</strong>로 공인합니다. (사파이어 결전 완승 특수 보너스 +20,000점! / 하트 +1 회복)',
+            emoji: '🔷',
+            cardClass: 'normal-crown-card',
+            bonus: 20000,
+            btnText: `어려움 모드로 도전하기 (제 ${this.currentStage + 1}판 무한 순환) ➔`,
+            btnGrad: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)'
+          },
+          hard: {
+            title: '🔥 90% 극한 블라인드 격파! 불패의 루비 정복자! 🔥',
+            desc: '<strong>단 10%의 단서만 남겨진 90% 블라인드의 지옥을 뚫고 어려움 30판을 굴복시켰습니다!</strong><br>어떤 가혹한 시련도 돌파해내는 압도적 승부사 <strong>[홍련불패 루비의 지휘관]</strong>으로 등극하셨습니다. (루비 지휘관 등극 특수 보너스 +25,000점! / 하트 +1 회복)',
+            emoji: '🔥',
+            cardClass: 'hard-crown-card',
+            bonus: 25000,
+            btnText: `최종 달인(Master) 영역 진입 (제 ${this.currentStage + 1}판) ➔`,
+            btnGrad: 'linear-gradient(135deg, #ea580c 0%, #b91c1c 100%)'
+          },
+          master: {
+            title: '👑 전설의 마작 마스터 등극! 천상천하 유아독존! 👑',
+            desc: '<strong>모든 패가 완벽한 암흑에 싸인 \'100% 올 블라인드\' 극한의 신화를 완성했습니다!</strong><br>마작 솔리테어의 모든 경지를 초월한 최고 존엄 <strong>[천상천하 전설의 마작 황제]</strong>로 영구 공인합니다. (황실 마스터 등극 궁극 보너스 +30,000점! / 하트 +1 회복)',
+            emoji: '👑',
+            cardClass: 'master-crown-card',
+            bonus: 30000,
+            btnText: `전설의 무한 마스터 순환 계속 (제 ${this.currentStage + 1}판) ➔`,
+            btnGrad: 'linear-gradient(135deg, #d4af37 0%, #aa771c 100%)'
+          }
+        };
+
+        const celebration = isStage30 ? (STAGE_30_DATA[diffKey] || STAGE_30_DATA.normal) : null;
 
         // 판 클리어 보너스 점수 및 하트 1 회복
         let clearBonus = this.currentStage * 500;
-        if (isMasterAllBlind) {
-          clearBonus = this.currentStage * 1000 + 10000; // 마스터 등극 특수 보너스 +10,000점!
+        if (celebration) {
+          clearBonus = celebration.bonus; // 난이도별 30판 특수 보너스
         }
         this.score += clearBonus;
         if (this.lives < this.maxLives) {
@@ -12823,16 +12977,20 @@
           this.updateLivesUI();
         }
 
-        if (isMasterAllBlind) {
-          if (modalEmoji) modalEmoji.textContent = '👑';
-          if (modalCard) modalCard.classList.add('master-crown-card');
-          modalTitle.innerHTML = `<span style="color: #b78103; text-shadow: 0 0 14px rgba(255, 215, 0, 0.75);">👑 전설의 마작 마스터 등극! 👑</span>`;
-          modalDesc.innerHTML = `<strong>모든 패가 베일에 싸인 '100% 올 블라인드' 극한의 판을 정복했습니다!</strong><br>진정한 달인의 경지에 도달하셨음을 공인합니다. (마스터 특별 보너스 +${clearBonus.toLocaleString()}점!)`;
-          confirmBtn.textContent = `다음 마스터 도전 (제 ${this.currentStage + 1}판) ➔`;
-          confirmBtn.style.background = 'linear-gradient(135deg, #d4af37 0%, #aa771c 100%)';
+        // 이전 카드 특수 클래스 클린업
+        if (modalCard) {
+          modalCard.classList.remove('easy-crown-card', 'normal-crown-card', 'hard-crown-card', 'master-crown-card');
+        }
+
+        if (celebration) {
+          if (modalEmoji) modalEmoji.textContent = celebration.emoji;
+          if (modalCard) modalCard.classList.add(celebration.cardClass);
+          modalTitle.innerHTML = `<span style="text-shadow: 0 0 14px rgba(255, 215, 0, 0.75);">${celebration.title}</span>`;
+          modalDesc.innerHTML = celebration.desc;
+          confirmBtn.textContent = celebration.btnText;
+          confirmBtn.style.background = celebration.btnGrad;
         } else {
           if (modalEmoji) modalEmoji.textContent = '🎉';
-          if (modalCard) modalCard.classList.remove('master-crown-card');
           confirmBtn.style.background = '';
           modalTitle.textContent = `제 ${this.currentStage}판 클리어!`;
           modalDesc.textContent = `[${diffCfg.name}] 난이도 제 ${this.currentStage}판 격파 완료! (보너스 +${clearBonus}점, 하트 +1 회복)`;
