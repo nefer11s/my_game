@@ -4235,7 +4235,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.97
+            Si-Yeon Mahjong Solitaire v1.4.98
           </div>
         </div>
       </div>
@@ -4327,7 +4327,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.97</div>
+        <div class="splash-version-badge">v1.4.98</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -10926,16 +10926,14 @@
             clearTimeout(trophyClickTimer);
             trophyClickTimer = setTimeout(() => {
               trophyClickCount = 0;
-            }, 3800); // 3.8초 내에 7회 연속 터치
+            }, 2500); // 2.5초 내에 3회 연속 터치
 
-            // 터치 피드백 애니메이션
-            trophyBtn.style.transform = `scale(${1 + trophyClickCount * 0.08}) rotate(${(trophyClickCount % 2 === 0 ? 1 : -1) * 12}deg)`;
+            // 터치 피드백 애니메이션 (은밀하게 반응)
+            trophyBtn.style.transform = `scale(${1 + trophyClickCount * 0.1}) rotate(${(trophyClickCount % 2 === 0 ? 1 : -1) * 12}deg)`;
             setTimeout(() => { trophyBtn.style.transform = ''; }, 130);
 
-            const needCount = 7;
-            if (trophyClickCount < needCount) {
-              this.showFloatingNotice(`🏆 비밀의 트로피 (${trophyClickCount}/${needCount}) - ${needCount - trophyClickCount}번 더 터치하세요!`);
-            } else {
+            const needCount = 3;
+            if (trophyClickCount >= needCount) {
               trophyClickCount = 0;
               clearTimeout(trophyClickTimer);
               openEasterHall();
@@ -10962,7 +10960,7 @@
               if (rankModal) rankModal.classList.add('active');
             }
           });
-          // 카드 클릭 시 해당 난이도 축하 애니메이션 발동
+          // 카드 클릭 시 해당 난이도 축하 애니메이션 발동 (축하 전당 출처: true 전달)
           easterModal.querySelectorAll('.easter-gem-card').forEach(card => {
             let lastCardTap = 0;
             const handleCardSelect = (e) => {
@@ -10972,7 +10970,7 @@
               if (e && e.stopPropagation) e.stopPropagation();
               const diffKey = card.dataset.diff;
               if (diffKey) {
-                this.playCelebrationAnimation(diffKey);
+                this.playCelebrationAnimation(diffKey, true);
               }
             };
             card.addEventListener('click', handleCardSelect);
@@ -11174,10 +11172,17 @@
           document.getElementById('modal').classList.remove('active');
           if (this.isCelebrationPreview) {
             this.isCelebrationPreview = false;
-            // 명예의 전당 열려있던 경우 명예의 전당 복귀
-            const rankModal = document.getElementById('rank-modal');
-            if (rankModal && !rankModal.classList.contains('active')) {
-              rankModal.classList.add('active');
+            if (this.celebrationFromEaster) {
+              this.celebrationFromEaster = false;
+              // 축하 전당에서 진입한 경우 축하 전당 팝업으로 복귀
+              const easterModal = document.getElementById('celebration-easter-modal');
+              if (easterModal) easterModal.classList.add('active');
+            } else {
+              // 명예의 전당 열려있던 경우 명예의 전당 복귀
+              const rankModal = document.getElementById('rank-modal');
+              if (rankModal && !rankModal.classList.contains('active')) {
+                rankModal.classList.add('active');
+              }
             }
             return;
           }
@@ -11517,7 +11522,7 @@
         this.renderHallOfFame();
       }
 
-      playCelebrationAnimation(diffKey) {
+      playCelebrationAnimation(diffKey, fromEasterModal = false) {
         if (this.sound && this.sound.playClear) {
           this.sound.playClear();
         } else if (this.sound && this.sound.playWin) {
@@ -11577,7 +11582,7 @@
           overlay.style.opacity = '0';
           setTimeout(() => {
             if (overlay.parentNode) overlay.remove();
-            this.showVictoryModal(diffKey);
+            this.showVictoryModal(diffKey, fromEasterModal);
           }, 280);
         };
 
@@ -13464,9 +13469,10 @@
         document.body.appendChild(overlay);
       }
 
-      showVictoryModal(previewDiffKey = null) {
+      showVictoryModal(previewDiffKey = null, fromEasterModal = false) {
         const isPreview = Boolean(previewDiffKey);
         this.isCelebrationPreview = isPreview;
+        this.celebrationFromEaster = Boolean(fromEasterModal);
         const targetDiff = previewDiffKey || this.difficulty;
         const diffCfg = DIFFICULTY_CONFIG[targetDiff] || DIFFICULTY_CONFIG.normal;
         const modalTitle = document.getElementById('modal-title');
@@ -13505,7 +13511,7 @@
           modalTitle.innerHTML = `<span style="text-shadow: 0 0 14px rgba(255, 215, 0, 0.75);">${celebration.title}</span>`;
           modalDesc.innerHTML = celebration.desc;
           if (isPreview) {
-            confirmBtn.textContent = '🏆 명예의 전당으로 복귀';
+            confirmBtn.textContent = fromEasterModal ? '✨ 보석 축하 전당으로 복귀' : '🏆 명예의 전당으로 복귀';
           } else {
             confirmBtn.textContent = celebration.btnText;
           }
