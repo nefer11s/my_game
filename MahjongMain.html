@@ -3411,6 +3411,12 @@
         opacity: 0;
         transform: translate(-50%, -46%) scale(0.92);
       }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
     /* ========================================================
        시니어 돋보기 모드 (Senior Magnifier Mode) 스타일링
        ======================================================== */
@@ -3729,7 +3735,7 @@
   </div>
 
   <!-- 시니어 돋보기 상단 고정 HUD 바 -->
-  <div class="senior-hud-bar hidden" id="senior-hud-bar">
+  <div class="senior-hud-bar hidden" id="senior-hud-bar" style="display: none;">
     <div class="senior-hud-left">
       <div class="senior-hud-tile-wrap" id="senior-hud-tile-wrap">
         <span style="font-size: 20px; color: #8fa89b;">🀄</span>
@@ -3745,7 +3751,7 @@
   </div>
 
   <!-- 시니어 롱프레스 초대형 돋보기 팝업 -->
-  <div class="senior-inspect-popup" id="senior-inspect-popup">
+  <div class="senior-inspect-popup" id="senior-inspect-popup" style="display: none;">
     <div class="senior-inspect-card">
       <div class="senior-inspect-tile-slot" id="senior-popup-tile-slot"></div>
       <div class="senior-inspect-info">
@@ -9845,10 +9851,15 @@
           const isEffective = this.isSeniorModeEffective();
           if (isEffective) {
             hudBar.classList.remove('hidden');
+            hudBar.style.display = 'flex';
           } else {
             hudBar.classList.add('hidden');
+            hudBar.style.display = 'none';
             this.clearSeniorFocus();
           }
+        } else {
+          hudBar.classList.add('hidden');
+          hudBar.style.display = 'none';
         }
       }
 
@@ -9865,6 +9876,7 @@
           if (this.seniorMode === 'hud' && isEffective) {
             // HUD 모드: 6열 이상일 때만 상단 바 노출
             hudBar.classList.remove('hidden');
+            hudBar.style.display = 'flex';
             if (this._seniorSelectedTile && !this._seniorSelectedTile.removed) {
               this.showSeniorHud(this._seniorSelectedTile);
             } else {
@@ -9873,6 +9885,7 @@
           } else {
             // 6열 미만 또는 longpress/off 모드: 상단 바 완전 숨김 및 포커스 해제
             hudBar.classList.add('hidden');
+            hudBar.style.display = 'none';
             this.clearSeniorFocus();
           }
         } else {
@@ -10021,6 +10034,7 @@
           slot.appendChild(clone);
         }
 
+        popup.style.display = 'flex';
         popup.classList.add('active');
         if (navigator.vibrate) {
           try { navigator.vibrate(35); } catch (e) { }
@@ -10033,7 +10047,10 @@
       hideSeniorPopup() {
         const popup = document.getElementById('senior-inspect-popup');
         const slot = document.getElementById('senior-popup-tile-slot');
-        if (popup) popup.classList.remove('active');
+        if (popup) {
+          popup.classList.remove('active');
+          popup.style.display = 'none';
+        }
         if (slot) slot.innerHTML = '';
       }
 
