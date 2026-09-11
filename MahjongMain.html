@@ -3847,8 +3847,8 @@
               </select>
             </div>
             <div class="settings-item" id="senior-mode-wrapper" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
-              <span class="settings-label">👓 시니어 돋보기 모드</span>
-              <select class="diff-select" id="select-senior-mode" title="어르신 및 저시력자를 위한 패 확대 및 실수 방지 모드">
+              <span class="settings-label">👓 시니어 돋보기 모드 (6열 이상 시 가동)</span>
+              <select class="diff-select" id="select-senior-mode" title="어르신 및 저시력자를 위한 패 확대 및 실수 방지 모드 (남은 패가 6열 이상일 때만 동작)">
                 <option value="off" selected>사용 안 함 (기본)</option>
                 <option value="longpress">1. 꾹 누르기 (손가락 위 확대 팝업)</option>
                 <option value="hud">2. 상단 HUD (탭하여 크게 보기 & 2단 확인)</option>
@@ -3896,7 +3896,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.81
+            Si-Yeon Mahjong Solitaire v1.4.82
           </div>
         </div>
       </div>
@@ -3988,7 +3988,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.81</div>
+        <div class="splash-version-badge">v1.4.82</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -9773,16 +9773,38 @@
       }
 
       /**
-       * 시니어 돋보기 모드 UI 가시성 및 상태 동기화 (옵션 전환 시 잔여 UI 완벽 청소)
+       * 시니어 돋보기 모드 가동 조건 검사 (남은 패가 6열 이상일 때만 동작)
+       */
+      isSeniorModeApplicable() {
+        if (!this.seniorMode || this.seniorMode === 'off') return false;
+        if (!this.tiles || this.tiles.length === 0) return false;
+        const activeTiles = this.tiles.filter(t => !t.removed);
+        if (activeTiles.length === 0) return false;
+
+        let minX = Infinity, maxX = -Infinity;
+        activeTiles.forEach(t => {
+          if (t.x < minX) minX = t.x;
+          if (t.x > maxX) maxX = t.x;
+        });
+
+        // 타일 x좌표는 2간격당 1열 점유 -> 점유 열 수 계산
+        const cols = Math.round((maxX - minX) / 2) + 1;
+        return cols >= 6;
+      }
+
+      /**
+       * 시니어 돋보기 모드 UI 가시성 및 상태 동기화 (남은 패 6열 이상 조건 반영)
        */
       updateSeniorModeUI() {
         // 1. 기존에 떠 있던 롱프레스 팝업 무조건 닫기
         this.hideSeniorPopup();
 
         const hudBar = document.getElementById('senior-hud-bar');
+        const isApplicable = this.isSeniorModeApplicable();
+
         if (hudBar) {
-          if (this.seniorMode === 'hud') {
-            // HUD 모드: 상단 바 노출
+          if (this.seniorMode === 'hud' && isApplicable) {
+            // HUD 모드이면서 남은 패가 6열 이상일 때만 상단 바 노출
             hudBar.classList.remove('hidden');
             if (this._seniorSelectedTile && !this._seniorSelectedTile.removed) {
               this.showSeniorHud(this._seniorSelectedTile);
@@ -9790,7 +9812,7 @@
               this.resetSeniorHudDefault();
             }
           } else {
-            // longpress 또는 off 모드: 상단 바 완전 숨김 및 포커스 해제
+            // 패가 5열 이하로 줄었거나, longpress 또는 off 모드: 상단 바 완전 숨김 및 포커스 해제
             hudBar.classList.add('hidden');
             this.clearSeniorFocus();
           }
@@ -10779,8 +10801,8 @@
 
             const targetTile = getEffectiveTargetTile(e);
 
-            // [시니어 HUD 모드]: 2단계 확인 터치 (1차 탭: 상단 HUD 대형 프리뷰 & 포커스, 2차 탭: 슬롯 이동)
-            if (this.seniorMode === 'hud') {
+            // [시니어 HUD 모드]: 패가 6열 이상일 때만 2단계 확인 터치 (5열 이하이면 즉시 슬롯 이동)
+            if (this.seniorMode === 'hud' && this.isSeniorModeApplicable()) {
               if (this._seniorSelectedTile === targetTile) {
                 // 이미 확인된 타일을 다시 누름 -> 슬롯으로 전송
                 this.clearSeniorFocus();
@@ -10807,7 +10829,7 @@
                 }
               }
             } else {
-              // 일반 모드 및 롱프레스 모드: 바로 정상 처리
+              // 일반 모드 및 패가 5열 이하로 줄어든 경우: 바로 정상 슬롯 이동 처리
               this.handleTileClick(targetTile);
             }
 
@@ -10824,15 +10846,15 @@
 
             if (this.gestureCooldownUntil && Date.now() < this.gestureCooldownUntil) return;
 
-            // 1) 롱프레스 팝업 전용 모드: 260ms 꾹 누르면 대형 팝업 노출, 짧게 떼면 슬롯 이동
-            if (this.seniorMode === 'longpress') {
+            // 1) 롱프레스 팝업 전용 모드: 패가 6열 이상일 때만 260ms 꾹 누르면 대형 팝업 노출 (5열 이하이면 0ms 즉각 슬롯 이동)
+            if (this.seniorMode === 'longpress' && this.isSeniorModeApplicable()) {
               const targetTile = getEffectiveTargetTile(e);
               longPressTimer = setTimeout(() => {
                 longPressTriggered = true;
                 this.showSeniorPopup(targetTile);
               }, 260);
             } else {
-              // 2) 일반 모드 및 상단 HUD 모드: 0ms 즉각 반응 (HUD 모드는 1차 탭 시 상단 HUD에만 표시, 팝업 없음)
+              // 2) 일반 모드 및 상단 HUD 모드 (또는 5열 이하): 0ms 즉각 반응
               executeTileAction(e);
             }
           }, { passive: false });
@@ -10862,7 +10884,7 @@
               return;
             }
 
-            if (this.seniorMode === 'longpress') {
+            if (this.seniorMode === 'longpress' && this.isSeniorModeApplicable()) {
               // 롱프레스 모드에서 짧은 탭으로 손을 뗀 경우: 정상 슬롯 이동 실행
               const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
               const duration = performance.now() - pDownTime;
