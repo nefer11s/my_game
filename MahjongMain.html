@@ -4567,7 +4567,7 @@
   <div class="modal-overlay" id="rank-modal">
     <div class="modal-card rank-card">
       <div class="rank-header">
-        <span class="rank-trophy-btn" id="rank-trophy-easter-btn" title="비밀의 트로피 (7회 터치)">🏆</span>
+        <span class="rank-trophy-btn" id="rank-trophy-easter-btn" title="비밀의 트로피 (3회 터치)">🏆</span>
         <h2 class="modal-title" style="margin-bottom: 0; font-size: 23px;">명예의 전당</h2>
       </div>
       <p style="font-size: 13px; color: #698d7b; margin-bottom: 12px;">최고의 마작 솔리테어 달인 기록</p>
@@ -4599,7 +4599,7 @@
   
   <!-- 난이도별 축하 애니메이션 이스터에그 선택 팝업 -->
   <div class="modal-overlay" id="celebration-easter-modal" style="z-index: 10005;">
-    <div class="modal-card" style="max-width: 480px; width: 92%; padding: 24px 20px; text-align: center;">
+    <div class="modal-card" style="max-width: 480px; width: 92%; max-height: 90vh; overflow-y: auto; padding: 24px 20px; text-align: center;">
       <div style="font-size: 34px; margin-bottom: 4px;">✨🏆✨</div>
       <h2 class="modal-title" style="font-size: 22px; color: #1a4230; margin-bottom: 6px;">명예의 보석 축하 전당</h2>
       <p style="font-size: 13px; color: #64748b; margin-bottom: 14px;">
@@ -10892,34 +10892,45 @@
 
 
         
-        // 🏆 명예의 전당 트로피 7회 연속 터치 이스터에그 리스너
+        // 🏆 명예의 전당 트로피 3회 연속 터치 이스터에그 리스너
         const trophyBtn = document.getElementById('rank-trophy-easter-btn');
         const easterModal = document.getElementById('celebration-easter-modal');
         const btnEasterClose = document.getElementById('btn-easter-modal-close');
         let trophyClickCount = 0;
         let trophyClickTimer = null;
-        let lastTrophyTapTime = 0;
+        let lastEasterModalOpenTime = 0;
 
         const openEasterHall = () => {
+          lastEasterModalOpenTime = Date.now();
           if (this.sound && this.sound.playClear) {
             this.sound.playClear();
           } else if (this.sound && this.sound.playWin) {
             this.sound.playWin();
           }
           if (rankModal) rankModal.classList.remove('active');
-          if (easterModal) easterModal.classList.add('active');
+          if (easterModal) {
+            easterModal.classList.add('active');
+          }
           this.showFloatingNotice('✨ 비밀의 30판 보석 축하 전당이 열렸습니다!');
         };
 
         if (trophyBtn) {
-          const handleTrophyTap = (e) => {
-            const now = Date.now();
-            if (now - lastTrophyTapTime < 160) return; // 연속 중복 이벤트 방지
-            lastTrophyTapTime = now;
+          // 누를 때 즉각적인 햅틱/시각 바운스 피드백
+          trophyBtn.addEventListener('pointerdown', (e) => {
+            if (e && e.stopPropagation) e.stopPropagation();
+            trophyBtn.style.transform = 'scale(1.25) rotate(-10deg)';
+          });
+          const resetTrophyBtnScale = () => {
+            trophyBtn.style.transform = '';
+          };
+          trophyBtn.addEventListener('pointerup', resetTrophyBtnScale);
+          trophyBtn.addEventListener('pointercancel', resetTrophyBtnScale);
 
+          // 클릭/탭 완료 시점에 카운트 증가 및 3회 달성 시 오픈
+          trophyBtn.addEventListener('click', (e) => {
             if (e) {
               if (e.stopPropagation) e.stopPropagation();
-              if (e.cancelable && e.type !== 'click') e.preventDefault();
+              if (e.preventDefault) e.preventDefault();
             }
             if (this.sound && this.sound.playSelect) this.sound.playSelect();
             trophyClickCount++;
@@ -10928,7 +10939,7 @@
               trophyClickCount = 0;
             }, 2500); // 2.5초 내에 3회 연속 터치
 
-            // 터치 피드백 애니메이션 (은밀하게 반응)
+            // 터치 피드백 애니메이션
             trophyBtn.style.transform = `scale(${1 + trophyClickCount * 0.1}) rotate(${(trophyClickCount % 2 === 0 ? 1 : -1) * 12}deg)`;
             setTimeout(() => { trophyBtn.style.transform = ''; }, 130);
 
@@ -10938,14 +10949,13 @@
               clearTimeout(trophyClickTimer);
               openEasterHall();
             }
-          };
-
-          trophyBtn.addEventListener('click', handleTrophyTap);
-          trophyBtn.addEventListener('pointerdown', handleTrophyTap);
+          });
         }
 
         if (btnEasterClose) {
-          btnEasterClose.addEventListener('click', () => {
+          btnEasterClose.addEventListener('click', (e) => {
+            if (e && e.stopPropagation) e.stopPropagation();
+            if (Date.now() - lastEasterModalOpenTime < 400) return; // 모달 오픈 직후 오입력 방지
             if (this.sound && this.sound.playSelect) this.sound.playSelect();
             if (easterModal) easterModal.classList.remove('active');
             if (rankModal) rankModal.classList.add('active');
@@ -10954,6 +10964,10 @@
 
         if (easterModal) {
           easterModal.addEventListener('click', (e) => {
+            // 모달 오픈 직후 500ms 동안은 연타 터치나 잔여 클릭으로 인한 닫힘 완벽 방어
+            if (Date.now() - lastEasterModalOpenTime < 500) {
+              return;
+            }
             if (e.target === easterModal) {
               if (this.sound && this.sound.playSelect) this.sound.playSelect();
               easterModal.classList.remove('active');
@@ -10964,6 +10978,7 @@
           easterModal.querySelectorAll('.easter-gem-card').forEach(card => {
             let lastCardTap = 0;
             const handleCardSelect = (e) => {
+              if (Date.now() - lastEasterModalOpenTime < 400) return; // 연타 잔여 방어
               const now = Date.now();
               if (now - lastCardTap < 300) return;
               lastCardTap = now;
@@ -10974,7 +10989,6 @@
               }
             };
             card.addEventListener('click', handleCardSelect);
-            card.addEventListener('pointerdown', handleCardSelect);
           });
         }
 
