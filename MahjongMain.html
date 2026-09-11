@@ -19,7 +19,14 @@
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <link rel="manifest" href="manifest.json">
+  <script>
+    if (location.protocol.startsWith('http')) {
+      const manifestLink = document.createElement('link');
+      manifestLink.rel = 'manifest';
+      manifestLink.href = 'manifest.json';
+      document.head.appendChild(manifestLink);
+    }
+  </script>
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -3623,7 +3630,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.72
+            Si-Yeon Mahjong Solitaire v1.4.73
           </div>
         </div>
       </div>
@@ -3715,7 +3722,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.72</div>
+        <div class="splash-version-badge">v1.4.73</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -6834,6 +6841,19 @@
         this.initViewportGestures();
         this.updateResumeButtonUI();
         // 스플래시 화면 대기 중 불필요한 백그라운드 144개 타일 DOM 렌더링 방지 (게임 시작 터치 시 1회 지연 생성)
+      }
+
+      /**
+       * 테마 패셋 적용 (activeTheme 단일 소스 변경 및 레거시 호환)
+       */
+      _applyTheme(theme) {
+        this.activeTheme = theme;
+        this.useSajuTiles = theme === 'saju';
+        this.useOryongTiles = theme === 'oryong';
+        try { localStorage.setItem('siyeon_mahjong_active_theme', theme); } catch(e) {}
+        if (window.tileGalleryManager && typeof window.tileGalleryManager._applyTheme === 'function') {
+          window.tileGalleryManager._applyTheme(theme);
+        }
       }
 
       /**
@@ -10003,17 +10023,13 @@
       const game = new MahjongGame();
       window.tileGalleryManager = new TileGalleryManager(game.sound);
 
-      // 스플래시가 다 로드된 다음 전체화면으로 전환하여 [게임 시작] 대기
+      // 스플래시 화면에서 사용자 터치/제스처 발생 시 전체화면 전환 대응
       const initFullscreenAfterSplash = () => {
-        // 1. 스플래시 로드 완료 시점 자동 전체화면 호출
-        game.enterFullscreen();
-
-        // 2. 브라우저 보안 제스처 요구 환경 대응: 스플래시 화면 터치 시 즉시 전체화면 전환 후 시작 대기
         const splashEl = document.getElementById('splash-screen');
         if (splashEl) {
           splashEl.addEventListener('pointerdown', () => {
             game.enterFullscreen();
-          }, { passive: true });
+          }, { passive: true, once: true });
         }
       };
 
