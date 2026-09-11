@@ -609,6 +609,51 @@
       margin: 2px 0;
     }
 
+    /* 테마 배타적 라디오 버튼 그룹 */
+    .theme-radio-group {
+      display: flex;
+      gap: 4px;
+      width: 100%;
+    }
+    .theme-radio-btn {
+      flex: 1;
+      height: 36px;
+      border: 1.5px solid rgba(180, 190, 185, 0.6);
+      border-radius: 8px;
+      background: rgba(244, 245, 245, 0.95);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b7c7a;
+    }
+    .theme-radio-btn:hover {
+      background: #fff;
+      transform: translateY(-1px);
+    }
+    .theme-radio-btn.active[data-theme="saju"] {
+      background: rgba(235, 248, 240, 0.95);
+      border-color: rgba(46, 167, 121, 0.7);
+      color: #2e7d5a;
+      box-shadow: 0 1px 6px rgba(46,167,121,0.18);
+    }
+    .theme-radio-btn.active[data-theme="oryong"] {
+      background: rgba(255, 243, 224, 0.95);
+      border-color: rgba(230, 81, 0, 0.7);
+      color: #e65100;
+      box-shadow: 0 1px 6px rgba(230,81,0,0.18);
+    }
+    .theme-radio-btn.active[data-theme="classic"] {
+      background: rgba(227, 242, 253, 0.95);
+      border-color: rgba(30, 136, 229, 0.7);
+      color: #1565c0;
+      box-shadow: 0 1px 6px rgba(30,136,229,0.18);
+    }
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -3499,18 +3544,20 @@
             <div class="settings-item">
               <span class="settings-label">🎮 난이도 선택</span>
               <select class="diff-select" id="select-difficulty" title="난이도 선택">
-                <option value="easy">🌱 쉬움 (14종 · 슬롯 5개 · 공개)</option>
-                <option value="normal" selected>🌿 보통 (39종 · 슬롯 4개 · 블라인드 4개)</option>
-                <option value="hard">🔥 어려움 (63종 · 슬롯 4개 · 블라인드 12개)</option>
-                <option value="master">👑 달인 (89종 · 슬롯 3개 · 블라인드 18개 · 극한 병목)</option>
+                <option value="easy" id="diff-opt-easy">🌱 쉬움 (14종 · 슬롯 5개 · 공개)</option>
+                <option value="normal" id="diff-opt-normal" selected>🌿 보통 (39종 · 슬롯 4개 · 블라인드 4개)</option>
+                <option value="hard" id="diff-opt-hard">🔥 어려움 (63종 · 슬롯 4개 · 블라인드 12개)</option>
+                <option value="master" id="diff-opt-master">👑 달인 (89종 · 슬롯 3개 · 블라인드 18개 · 극한 병목)</option>
               </select>
             </div>
-            <button class="btn settings-btn" id="btn-toggle-saju-tiles" title="10간, 12지, 10십신, 음양오행 등 39종 사주 명리학 이미지셋 사용 여부 설정">
-              <span class="btn-icon" id="toggle-saju-tiles-icon">☯️</span> <span id="toggle-saju-tiles-text">사주 명리학 패: 켜짐</span>
-            </button>
-            <button class="btn settings-btn" id="btn-toggle-oryong-tiles" title="오룡이 슬롯머신 신수·보물 10종 이미지셋 사용 여부 설정">
-              <span class="btn-icon" id="toggle-oryong-tiles-icon">🐲</span> <span id="toggle-oryong-tiles-text">오룡이 테마 패: 켜짐</span>
-            </button>
+            <div class="settings-item">
+              <span class="settings-label">🎨 테마 패 선택</span>
+              <div class="theme-radio-group" id="theme-radio-group">
+                <button class="theme-radio-btn" data-theme="classic" id="theme-btn-classic">🀄 전통</button>
+                <button class="theme-radio-btn active" data-theme="saju" id="theme-btn-saju">☯️ 사주</button>
+                <button class="theme-radio-btn" data-theme="oryong" id="theme-btn-oryong">🐲 오룡이</button>
+              </div>
+            </div>
 
             <button class="btn settings-btn" id="btn-save-progress" title="현재 진행 상태 저장">
               <span class="btn-icon">💾</span> 현재 판 진행 저장
@@ -3576,7 +3623,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.69
+            Si-Yeon Mahjong Solitaire v1.4.70
           </div>
         </div>
       </div>
@@ -3668,7 +3715,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.69</div>
+        <div class="splash-version-badge">v1.4.70</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -6116,16 +6163,22 @@
         });
       }
 
-      getActiveDefinitions() {
-        const savedSaju = localStorage.getItem('siyeon_mahjong_use_saju_tiles');
-        const useSaju = savedSaju === null ? true : savedSaju === '1';
-        const savedOryong = localStorage.getItem('siyeon_mahjong_use_oryong_tiles');
-        const useOryong = savedOryong === null ? true : savedOryong === '1';
-        const sajuSuits = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'];
+      // 테마 적용 (activeTheme 단일 소스 변경)
+      _applyTheme(theme) {
+        this.activeTheme = theme;
+        this.useSajuTiles = theme === 'saju';
+        this.useOryongTiles = theme === 'oryong';
+        try { localStorage.setItem('siyeon_mahjong_active_theme', theme); } catch(e) {}
+      }
 
+      getActiveDefinitions() {
+        const theme = this.activeTheme || 'saju';
+        const sajuSuits = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'];
         return TILE_DEFINITIONS.filter(d => {
-          if (!useSaju && sajuSuits.includes(d.suit)) return false;
-          if (!useOryong && d.suit === 'oryong') return false;
+          if (d.suit === 'dragon_gold') return false; // dragon_gold는 독립 타일로만 사용
+          if (theme === 'classic') return !sajuSuits.includes(d.suit) && d.suit !== 'oryong';
+          if (theme === 'saju')    return !['oryong'].includes(d.suit);
+          if (theme === 'oryong')  return !sajuSuits.includes(d.suit);
           return true;
         });
       }
@@ -6136,10 +6189,9 @@
       }
 
       buildGallery() {
-        const savedSaju = localStorage.getItem('siyeon_mahjong_use_saju_tiles');
-        const useSaju = savedSaju === null ? true : savedSaju === '1';
-        const savedOryong = localStorage.getItem('siyeon_mahjong_use_oryong_tiles');
-        const useOryong = savedOryong === null ? true : savedOryong === '1';
+        const theme = this.activeTheme || 'saju';
+        const useSaju = theme === 'saju';
+        const useOryong = theme === 'oryong';
         const sajuSuits = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'];
         const activeDefs = this.getActiveDefinitions();
 
@@ -6748,19 +6800,26 @@
           this.autoBlindPairMatch = (localStorage.getItem('siyeon_mahjong_auto_blind_pair') || localStorage.getItem('autoBlindPairMatch')) === '1';
           this.autoEndMatch = (localStorage.getItem('siyeon_mahjong_auto_end_match') || localStorage.getItem('autoEndMatch')) === '1';
           this.dynamicZoom = (localStorage.getItem('siyeon_mahjong_dynamic_zoom') || localStorage.getItem('dynamicZoom')) === '1';
-          const savedSaju = localStorage.getItem('siyeon_mahjong_use_saju_tiles');
-          this.useSajuTiles = savedSaju === null ? true : savedSaju === '1';
-          const savedOryong = localStorage.getItem('siyeon_mahjong_use_oryong_tiles');
-          this.useOryongTiles = savedOryong === null ? true : savedOryong === '1';
+          // 테마: 'saju'(기본) | 'oryong' | 'classic'  -- 레거시 키 마이그레이션
+          const savedTheme = localStorage.getItem('siyeon_mahjong_active_theme');
+          if (savedTheme) {
+            this.activeTheme = savedTheme;
+          } else {
+            // 레거시 키로 마이그레이션
+            const savedSaju = localStorage.getItem('siyeon_mahjong_use_saju_tiles');
+            const savedOryong = localStorage.getItem('siyeon_mahjong_use_oryong_tiles');
+            const useSaju = savedSaju === null ? true : savedSaju === '1';
+            const useOryong = savedOryong === null ? false : savedOryong === '1';
+            this.activeTheme = useOryong ? 'oryong' : (useSaju ? 'saju' : 'classic');
+          }
           localStorage.removeItem('siyeon_mahjong_oryong_dragon_style');
           localStorage.removeItem('oryong_mahjong_dragon_style');
         } catch (e) {
-          this.autoBlindPairMatch = false;
-          this.autoEndMatch = false;
-          this.dynamicZoom = false;
-          this.useSajuTiles = true;
-          this.useOryongTiles = true;
+          this.activeTheme = 'saju';
         }
+        // activeTheme에서 useSajuTiles/useOryongTiles 파생 (기존 코드 호환)
+        this.useSajuTiles = this.activeTheme === 'saju';
+        this.useOryongTiles = this.activeTheme === 'oryong';
 
         // 뷰포트 확대/축소 및 자유 이동(Pan & Zoom) 시스템
         this.baseScale = 1.0;
@@ -6947,94 +7006,99 @@
           });
         });
 
-        // 🐲 오룡이 달인 모드 버튼: 사주패 OFF · 오룡이 ON · 달인 난이도 후 새 게임
+        // 🐲 슬롯 용머리 버튼: 오룡이 테마 + 보통 모드 전환
         const btnOryongMode = document.getElementById('btn-oryong-mode');
         if (btnOryongMode) {
           btnOryongMode.addEventListener('click', () => {
             this.sound.playSelect();
-            // 1) 사주패 OFF
-            this.useSajuTiles = false;
-            try { localStorage.setItem('siyeon_mahjong_use_saju_tiles', '0'); } catch(e) {}
-            // 2) 오룡이 ON
-            this.useOryongTiles = true;
-            try { localStorage.setItem('siyeon_mahjong_use_oryong_tiles', '1'); } catch(e) {}
-            // 3) 난이도 → 달인
-            this.difficulty = 'master';
-            try { localStorage.setItem('siyeon_mahjong_difficulty', 'master'); } catch(e) {}
+            this._applyTheme('oryong');
+            this.difficulty = 'normal';
+            try { localStorage.setItem('siyeon_mahjong_difficulty', 'normal'); } catch(e) {}
             const diffSel = document.getElementById('select-difficulty');
-            if (diffSel) diffSel.value = 'master';
-            // 4) UI 동기화
-            if (typeof updateToggleSajuUI === 'function') updateToggleSajuUI();
-            if (typeof updateToggleOryongUI === 'function') updateToggleOryongUI();
+            if (diffSel) diffSel.value = 'normal';
+            updateThemeRadioUI();
+            updateDifficultySelectLabels();
             this.currentStage = 1;
             this.startNewGame(false);
-            this.showFloatingNotice('🐲 오룡이 달인 모드 시작! (사주패 OFF · 오룡이 ON · 달인)');
+            this.showFloatingNotice('🐲 오룡이 테마 보통 모드 시작!');
           });
         }
 
-        // 사주 명리학 패 토글이미지셋 ON/OFF 토글 버튼 이벤트
-        const btnToggleSaju = document.getElementById('btn-toggle-saju-tiles');
-        const updateToggleSajuUI = () => {
-          const icon = document.getElementById('toggle-saju-tiles-icon');
-          const text = document.getElementById('toggle-saju-tiles-text');
-          if (icon && text) {
-            icon.textContent = this.useSajuTiles ? '☯️' : '🔒';
-            text.textContent = this.useSajuTiles ? '사주 명리학 패: 켜짐' : '사주 명리학 패: 꺼짐';
+        // 테마 종수 동적 계산 함수
+        const calcThemePoolCount = (theme, difficulty) => {
+          const diffCfg = DIFFICULTY_CONFIG[difficulty];
+          if (!diffCfg) return 0;
+          const sajuSuits = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'];
+          // 기본 베이스풀 (난이도 필터)
+          let pool = TILE_DEFINITIONS.filter(diffCfg.filter);
+          // 테마별 사주/오룡이 제외 및 추가
+          if (theme === 'classic') {
+            pool = pool.filter(d => !sajuSuits.includes(d.suit) && d.suit !== 'oryong' && d.suit !== 'dragon_gold');
+          } else if (theme === 'saju') {
+            pool = pool.filter(d => d.suit !== 'oryong' && d.suit !== 'dragon_gold');
+            // 사주패 강제 포함 (easy처럼 필터에 없어도 추가)
+            const sajuAll = TILE_DEFINITIONS.filter(d => sajuSuits.includes(d.suit));
+            const ids = new Set(pool.map(d => d.id));
+            sajuAll.forEach(d => { if (!ids.has(d.id)) pool.push(d); });
+          } else if (theme === 'oryong') {
+            pool = pool.filter(d => !sajuSuits.includes(d.suit) && d.suit !== 'dragon_gold');
+            // 오룡이 패 강제 포함
+            const oryongAll = TILE_DEFINITIONS.filter(d => d.suit === 'oryong');
+            const ids = new Set(pool.map(d => d.id));
+            oryongAll.forEach(d => { if (!ids.has(d.id)) pool.push(d); });
           }
-          if (btnToggleSaju) {
-            btnToggleSaju.style.borderColor = this.useSajuTiles ? 'rgba(46, 167, 121, 0.6)' : 'rgba(180, 190, 185, 0.6)';
-            btnToggleSaju.style.background = this.useSajuTiles ? 'rgba(235, 248, 240, 0.95)' : 'rgba(244, 245, 245, 0.95)';
-          }
+          return pool.length;
         };
-        updateToggleSajuUI();
-        if (btnToggleSaju) {
-          btnToggleSaju.addEventListener('click', () => {
-            this.sound.playSelect();
-            this.useSajuTiles = !this.useSajuTiles;
-            try {
-              localStorage.setItem('siyeon_mahjong_use_saju_tiles', this.useSajuTiles ? '1' : '0');
-            } catch (e) { }
-            updateToggleSajuUI();
-            if (window.tileGalleryManager) {
-              window.tileGalleryManager.rebuildGallery();
-            }
-            // 알림 및 새 판 갱신 안내
-            this.showFloatingNotice(this.useSajuTiles ? '☯️ 사주 명리학 39종 패셋이 활성화되었습니다.' : '🀄 전통 마작 패셋만 사용하도록 변경되었습니다.');
-            // 현재 판 재시작 시 새 타일 풀로 즉시 갱신
-            this.startNewGame(false);
-          });
-        }
 
-        // 오룡이 슬롯머신 이미지셋 ON/OFF 토글 버튼 이벤트
-        const btnToggleOryong = document.getElementById('btn-toggle-oryong-tiles');
-        const updateToggleOryongUI = () => {
-          const icon = document.getElementById('toggle-oryong-tiles-icon');
-          const text = document.getElementById('toggle-oryong-tiles-text');
-          if (icon && text) {
-            icon.textContent = this.useOryongTiles ? '🐲' : '🔒';
-            text.textContent = this.useOryongTiles ? '오룡이 테마 패: 켜짐' : '오룡이 테마 패: 꺼짐';
-          }
-          if (btnToggleOryong) {
-            btnToggleOryong.style.borderColor = this.useOryongTiles ? 'rgba(230, 81, 0, 0.6)' : 'rgba(180, 190, 185, 0.6)';
-            btnToggleOryong.style.background = this.useOryongTiles ? 'rgba(255, 243, 224, 0.95)' : 'rgba(244, 245, 245, 0.95)';
-          }
+        // 난이도 셀렉트 종수 동적 갱신
+        const updateDifficultySelectLabels = () => {
+          const theme = this.activeTheme;
+          const diffMeta = [
+            { val: 'easy',   prefix: '🌱 쉬움',   suffix: '슬롯 5개 · 공개' },
+            { val: 'normal', prefix: '🌿 보통',   suffix: '슬롯 4개 · 블라인드 4개' },
+            { val: 'hard',   prefix: '🔥 어려움', suffix: '슬롯 4개 · 블라인드 12개' },
+            { val: 'master', prefix: '👑 달인',   suffix: '슬롯 3개 · 블라인드 18개 · 극한 병목' }
+          ];
+          // 메인 셀렉트 & 워프 셀렉트 모두 갱신
+          ['select-difficulty', 'warp-select-difficulty'].forEach(selId => {
+            const sel = document.getElementById(selId);
+            if (!sel) return;
+            diffMeta.forEach(m => {
+              const opt = sel.querySelector(`option[value="${m.val}"]`);
+              if (opt) {
+                const count = calcThemePoolCount(theme, m.val);
+                opt.textContent = `${m.prefix} (${count}종 · ${m.suffix})`;
+              }
+            });
+          });
         };
-        updateToggleOryongUI();
-        if (btnToggleOryong) {
-          btnToggleOryong.addEventListener('click', () => {
+
+        // 테마 라디오 UI 동기화
+        const updateThemeRadioUI = () => {
+          document.querySelectorAll('.theme-radio-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.theme === this.activeTheme);
+          });
+        };
+
+        // 초기 UI 동기화
+        updateThemeRadioUI();
+        updateDifficultySelectLabels();
+
+        // 테마 라디오 버튼 클릭 이벤트
+        document.querySelectorAll('.theme-radio-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const theme = btn.dataset.theme;
+            if (theme === this.activeTheme) return;
             this.sound.playSelect();
-            this.useOryongTiles = !this.useOryongTiles;
-            try {
-              localStorage.setItem('siyeon_mahjong_use_oryong_tiles', this.useOryongTiles ? '1' : '0');
-            } catch (e) { }
-            updateToggleOryongUI();
-            if (window.tileGalleryManager) {
-              window.tileGalleryManager.rebuildGallery();
-            }
-            this.showFloatingNotice(this.useOryongTiles ? '🐲 오룡이 슬롯머신 10종 패셋이 활성화되었습니다.' : '🀄 오룡이 패셋이 비활성화되었습니다.');
+            this._applyTheme(theme);
+            updateThemeRadioUI();
+            updateDifficultySelectLabels();
+            if (window.tileGalleryManager) window.tileGalleryManager.rebuildGallery();
+            const names = { classic: '🀄 전통 마작', saju: '☯️ 사주명리학', oryong: '🐲 오룡이' };
+            this.showFloatingNotice(`${names[theme] || theme} 테마로 변경되었습니다.`);
             this.startNewGame(false);
           });
-        }
+        });
 
         // 톱니바퀴 설정 메뉴 토글 및 외부 클릭 처리
         const btnSettings = document.getElementById('btn-settings');
@@ -7637,8 +7701,7 @@
           autoBlindPairMatch: this.autoBlindPairMatch,
           autoEndMatch: this.autoEndMatch,
           dynamicZoom: this.dynamicZoom,
-          useSajuTiles: this.useSajuTiles,
-          useOryongTiles: this.useOryongTiles,
+          activeTheme: this.activeTheme,
           savedAt: new Date().toLocaleString('ko-KR')
         };
         try {
@@ -7703,40 +7766,18 @@
             localStorage.setItem('siyeon_mahjong_dynamic_zoom', this.dynamicZoom ? '1' : '0');
           } catch (e) { }
         }
-        if (saved.useSajuTiles !== undefined) {
-          this.useSajuTiles = !!saved.useSajuTiles;
-          try {
-            localStorage.setItem('siyeon_mahjong_use_saju_tiles', this.useSajuTiles ? '1' : '0');
-          } catch (e) { }
+        // 저장된 테마 복원 (레거시 useSajuTiles/useOryongTiles 호환)
+        if (saved.activeTheme) {
+          this._applyTheme(saved.activeTheme);
+        } else if (saved.useSajuTiles !== undefined || saved.useOryongTiles !== undefined) {
+          const useSaju = !!saved.useSajuTiles;
+          const useOryong = !!saved.useOryongTiles;
+          this._applyTheme(useOryong ? 'oryong' : (useSaju ? 'saju' : 'classic'));
         }
-        if (saved.useOryongTiles !== undefined) {
-          this.useOryongTiles = !!saved.useOryongTiles;
-          try {
-            localStorage.setItem('siyeon_mahjong_use_oryong_tiles', this.useOryongTiles ? '1' : '0');
-          } catch (e) { }
-        }
-        const sajuIcon = document.getElementById('toggle-saju-tiles-icon');
-        const sajuText = document.getElementById('toggle-saju-tiles-text');
-        const btnSajuEl = document.getElementById('btn-toggle-saju-tiles');
-        if (sajuIcon && sajuText) {
-          sajuIcon.textContent = this.useSajuTiles ? '☯️' : '🔒';
-          sajuText.textContent = this.useSajuTiles ? '사주 명리학 패: 켜짐' : '사주 명리학 패: 꺼짐';
-        }
-        if (btnSajuEl) {
-          btnSajuEl.style.borderColor = this.useSajuTiles ? 'rgba(46, 167, 121, 0.6)' : 'rgba(180, 190, 185, 0.6)';
-          btnSajuEl.style.background = this.useSajuTiles ? 'rgba(235, 248, 240, 0.95)' : 'rgba(244, 245, 245, 0.95)';
-        }
-        const oryongIcon = document.getElementById('toggle-oryong-tiles-icon');
-        const oryongText = document.getElementById('toggle-oryong-tiles-text');
-        const btnOryongEl = document.getElementById('btn-toggle-oryong-tiles');
-        if (oryongIcon && oryongText) {
-          oryongIcon.textContent = this.useOryongTiles ? '🐲' : '🔒';
-          oryongText.textContent = this.useOryongTiles ? '오룡이 테마 패: 켜짐' : '오룡이 테마 패: 꺼짐';
-        }
-        if (btnOryongEl) {
-          btnOryongEl.style.borderColor = this.useOryongTiles ? 'rgba(230, 81, 0, 0.6)' : 'rgba(180, 190, 185, 0.6)';
-          btnOryongEl.style.background = this.useOryongTiles ? 'rgba(255, 243, 224, 0.95)' : 'rgba(244, 245, 245, 0.95)';
-        }
+        // 테마 라디오 UI 동기화
+        document.querySelectorAll('.theme-radio-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.theme === this.activeTheme);
+        });
         const pairIcon = document.getElementById('auto-blind-pair-icon');
         const pairText = document.getElementById('auto-blind-pair-text');
         if (pairIcon && pairText) {
@@ -8212,19 +8253,24 @@
 
         const diffCfg = DIFFICULTY_CONFIG[this.difficulty] || DIFFICULTY_CONFIG.normal;
         const sajuSuits = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'];
-        let availablePool = TILE_DEFINITIONS.filter(diffCfg.filter);
-        if (this.useSajuTiles === false) {
-          availablePool = availablePool.filter(def => !sajuSuits.includes(def.suit));
+        const theme = this.activeTheme || 'saju';
+
+        // 1) 난이도 베이스 풀 (전통 마작 계열만)
+        let availablePool = TILE_DEFINITIONS.filter(def =>
+          diffCfg.filter(def) && !sajuSuits.includes(def.suit) && def.suit !== 'oryong' && def.suit !== 'dragon_gold'
+        );
+        // 2) 테마 패 강제 추가
+        if (theme === 'saju') {
+          const sajuPool = TILE_DEFINITIONS.filter(def => sajuSuits.includes(def.suit));
+          const ids = new Set(availablePool.map(d => d.id));
+          sajuPool.forEach(d => { if (!ids.has(d.id)) availablePool.push(d); });
+        } else if (theme === 'oryong') {
+          const oryongPool = TILE_DEFINITIONS.filter(def => def.suit === 'oryong');
+          const ids = new Set(availablePool.map(d => d.id));
+          oryongPool.forEach(d => { if (!ids.has(d.id)) availablePool.push(d); });
         }
-        if (this.useOryongTiles === false) {
-          availablePool = availablePool.filter(def => def.suit !== 'oryong');
-        }
-        // 활성화된 패만으로 구성된 기본 풀
-        const baseAllowedPool = TILE_DEFINITIONS.filter(def => {
-          if (this.useSajuTiles === false && sajuSuits.includes(def.suit)) return false;
-          if (this.useOryongTiles === false && def.suit === 'oryong') return false;
-          return true;
-        });
+        // 3) 풀 부족 시 전체 테마 허용 풀로 fallback
+        const baseAllowedPool = [...availablePool];
         if (availablePool.length < numPairs) {
           availablePool = baseAllowedPool;
         }
