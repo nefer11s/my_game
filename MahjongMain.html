@@ -7223,18 +7223,19 @@
           this.autoBlindPairMatch = (localStorage.getItem('siyeon_mahjong_auto_blind_pair') || localStorage.getItem('autoBlindPairMatch')) === '1';
           this.autoEndMatch = (localStorage.getItem('siyeon_mahjong_auto_end_match') || localStorage.getItem('autoEndMatch')) === '1';
           this.dynamicZoom = (localStorage.getItem('siyeon_mahjong_dynamic_zoom') || localStorage.getItem('dynamicZoom')) === '1';
-          // 테마: 'saju'(기본) | 'oryong' | 'classic'  -- 레거시 키 마이그레이션
-          const savedTheme = localStorage.getItem('siyeon_mahjong_active_theme');
-          if (savedTheme) {
-            this.activeTheme = savedTheme;
-          } else {
-            // 레거시 키로 마이그레이션
-            const savedSaju = localStorage.getItem('siyeon_mahjong_use_saju_tiles');
-            const savedOryong = localStorage.getItem('siyeon_mahjong_use_oryong_tiles');
-            const useSaju = savedSaju === null ? true : savedSaju === '1';
-            const useOryong = savedOryong === null ? false : savedOryong === '1';
-            this.activeTheme = useOryong ? 'oryong' : (useSaju ? 'saju' : 'classic');
+          // 테마 기본값: 무조건 '명리학'('saju')을 디폴트로 적용
+          let savedTheme = localStorage.getItem('siyeon_mahjong_active_theme');
+          const defaultThemeMigrated = localStorage.getItem('siyeon_mahjong_default_theme_v1478');
+          if (!defaultThemeMigrated) {
+            // 이번 업데이트를 통해 기존에 오룡이/전통으로 저장되어 있던 브라우저 캐시도 '명리학' 기본값으로 통일
+            savedTheme = 'saju';
+            localStorage.setItem('siyeon_mahjong_active_theme', 'saju');
+            localStorage.setItem('siyeon_mahjong_default_theme_v1478', '1');
+          } else if (!savedTheme || !['classic', 'saju', 'oryong'].includes(savedTheme)) {
+            savedTheme = 'saju';
+            localStorage.setItem('siyeon_mahjong_active_theme', 'saju');
           }
+          this.activeTheme = savedTheme;
           localStorage.removeItem('siyeon_mahjong_oryong_dragon_style');
           localStorage.removeItem('oryong_mahjong_dragon_style');
         } catch (e) {
@@ -10506,6 +10507,9 @@
     window.addEventListener('DOMContentLoaded', () => {
       const game = new MahjongGame();
       window.tileGalleryManager = new TileGalleryManager(game.sound);
+      if (typeof window.tileGalleryManager._applyTheme === 'function') {
+        window.tileGalleryManager._applyTheme(game.activeTheme);
+      }
 
       // 스플래시 화면에서 사용자 터치/제스처 발생 시 전체화면 전환 대응
       const initFullscreenAfterSplash = () => {
