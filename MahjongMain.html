@@ -3367,11 +3367,14 @@
       transform: translate(-50%, -50%) !important;
       bottom: auto !important;
       right: auto !important;
-      z-index: 9500 !important;
+      z-index: 10000 !important;
       max-height: 85vh;
       overflow-y: auto;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), 0 0 0 100vmax rgba(0, 0, 0, 0.45);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65), 0 0 0 100vmax rgba(0, 0, 0, 0.5);
       animation: settingsModalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .settings-dropdown.modal-mode #settings-modal-header {
+      display: flex !important;
     }
 
     @keyframes settingsModalPop {
@@ -3530,6 +3533,11 @@
           <span class="btn-icon">⚙️</span><span class="btn-label">설정</span>
         </button>
         <div class="settings-dropdown" id="settings-dropdown">
+          <!-- 모달 모드 전용 상단 헤더 & 닫기(X) 버튼 -->
+          <div class="settings-modal-header" id="settings-modal-header" style="display: none; justify-content: space-between; align-items: center; padding: 4px 6px 10px; border-bottom: 1px solid rgba(0,0,0,0.08); margin-bottom: 8px;">
+            <span style="font-size: 15px; font-weight: 800; color: #123e2b;">⚙️ 게임 환경 설정</span>
+            <button type="button" id="btn-settings-close-x" style="background: rgba(0,0,0,0.06); border: none; font-size: 16px; cursor: pointer; color: #444; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease;">✕</button>
+          </div>
           <!-- 기능별 카테고리 탭 헤더 -->
           <div class="settings-tabs" role="tablist">
             <button class="settings-tab-btn active" data-tab="game" role="tab" title="게임 진행 및 난이도 설정">
@@ -3630,7 +3638,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.73
+            Si-Yeon Mahjong Solitaire v1.4.74
           </div>
         </div>
       </div>
@@ -3722,7 +3730,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.73</div>
+        <div class="splash-version-badge">v1.4.74</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -7117,13 +7125,38 @@
         const btnSplashSettings = document.getElementById('btn-splash-settings');
         const btnExitApp = document.getElementById('btn-exit-app');
 
-        // 초기화면의 설정 버튼 클릭 시 모달 모드로 설정창 팝업
+        // 공통 설정창 닫기 함수
+        const closeSettingsMenu = () => {
+          settingsDropdown.classList.remove('active');
+          const wasModal = settingsDropdown.classList.contains('modal-mode');
+          settingsDropdown.classList.remove('modal-mode');
+          if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
+          if (wasModal) {
+            const wrapper = document.getElementById('settings-wrapper');
+            if (wrapper && !wrapper.contains(settingsDropdown)) {
+              wrapper.appendChild(settingsDropdown);
+            }
+          }
+        };
+
+        // 초기화면의 설정 버튼 클릭 시 모달 모드로 설정창 팝업 (body 직속으로 탈출하여 Stacking Context 해결)
         if (btnSplashSettings && settingsDropdown) {
           btnSplashSettings.addEventListener('click', (e) => {
             e.stopPropagation();
             this.sound.playSelect();
+            document.body.appendChild(settingsDropdown);
             settingsDropdown.classList.add('modal-mode');
-            settingsDropdown.classList.toggle('active');
+            settingsDropdown.classList.add('active');
+          });
+        }
+
+        // 모달 헤더 닫기(X) 버튼
+        const btnSettingsCloseX = document.getElementById('btn-settings-close-x');
+        if (btnSettingsCloseX) {
+          btnSettingsCloseX.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.sound.playSelect();
+            closeSettingsMenu();
           });
         }
 
@@ -7146,6 +7179,10 @@
           btnSettings.addEventListener('click', (e) => {
             e.stopPropagation();
             this.sound.playSelect();
+            const wrapper = document.getElementById('settings-wrapper');
+            if (wrapper && !wrapper.contains(settingsDropdown)) {
+              wrapper.appendChild(settingsDropdown);
+            }
             settingsDropdown.classList.remove('modal-mode');
             const isOpen = settingsDropdown.classList.toggle('active');
             btnSettings.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
@@ -7160,10 +7197,9 @@
           document.addEventListener('pointerdown', (e) => {
             if (settingsDropdown.classList.contains('active')) {
               const clickedSplashBtn = btnSplashSettings && btnSplashSettings.contains(e.target);
-              if (!settingsDropdown.contains(e.target) && !btnSettings.contains(e.target) && !clickedSplashBtn) {
-                settingsDropdown.classList.remove('active');
-                settingsDropdown.classList.remove('modal-mode');
-                btnSettings.setAttribute('aria-expanded', 'false');
+              const clickedSettingsBtn = btnSettings && btnSettings.contains(e.target);
+              if (!settingsDropdown.contains(e.target) && !clickedSettingsBtn && !clickedSplashBtn) {
+                closeSettingsMenu();
               }
             }
           });
