@@ -2867,46 +2867,26 @@
     /* 30판 난이도별 특화 모달 카드 스타일 */
     .modal-card.easy-crown-card {
       border: 2.5px solid #10b981 !important;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 38px rgba(16, 185, 129, 0.5) !important;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 36px rgba(16, 185, 129, 0.5) !important;
       background: linear-gradient(165deg, rgba(255, 255, 255, 0.99) 0%, rgba(240, 253, 244, 0.97) 100%) !important;
-      animation: easyCrownPulse 2s infinite alternate ease-in-out;
-    }
-    @keyframes easyCrownPulse {
-      0% { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 25px rgba(16, 185, 129, 0.4); }
-      100% { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 45px rgba(52, 211, 153, 0.7); }
     }
 
     .modal-card.normal-crown-card {
       border: 2.5px solid #0284c7 !important;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 38px rgba(2, 132, 199, 0.5) !important;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 36px rgba(2, 132, 199, 0.5) !important;
       background: linear-gradient(165deg, rgba(255, 255, 255, 0.99) 0%, rgba(240, 249, 255, 0.97) 100%) !important;
-      animation: normalCrownPulse 2s infinite alternate ease-in-out;
-    }
-    @keyframes normalCrownPulse {
-      0% { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 25px rgba(2, 132, 199, 0.4); }
-      100% { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 45px rgba(56, 189, 248, 0.7); }
     }
 
     .modal-card.hard-crown-card {
       border: 2.5px solid #ea580c !important;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 40px rgba(234, 88, 12, 0.55) !important;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 40px rgba(234, 88, 12, 0.55) !important;
       background: linear-gradient(165deg, rgba(255, 255, 255, 0.99) 0%, rgba(255, 247, 237, 0.97) 100%) !important;
-      animation: hardCrownPulse 1.8s infinite alternate ease-in-out;
-    }
-    @keyframes hardCrownPulse {
-      0% { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 28px rgba(234, 88, 12, 0.45); }
-      100% { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 50px rgba(251, 146, 60, 0.75); }
     }
 
     .modal-card.master-crown-card {
       border: 2.5px solid #ffd700 !important;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 45px rgba(255, 215, 0, 0.6) !important;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), 0 0 45px rgba(255, 215, 0, 0.6) !important;
       background: linear-gradient(165deg, rgba(255, 255, 255, 0.99) 0%, rgba(255, 248, 225, 0.97) 100%) !important;
-      animation: masterCrownPulse 1.6s infinite alternate ease-in-out;
-    }
-    @keyframes masterCrownPulse {
-      0% { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.5); }
-      100% { box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), 0 0 55px rgba(255, 215, 0, 0.85); }
     }
 
     /* 30판 대형 WIN 배너 난이도별 테마 */
@@ -4619,22 +4599,22 @@
 
       <div class="easter-gem-grid">
         <div class="easter-gem-card card-jade" data-diff="easy">
-          <img src="assets/emblems/jade.jpg" class="easter-card-img" alt="비취">
+          <img src="assets/emblems/jade.jpg" class="easter-card-img" alt="비취" loading="lazy" decoding="async">
           <span class="easter-card-name">💎 쉬움 (비취)</span>
           <span class="easter-card-sub">청아한 영롱 비취의 수호자</span>
         </div>
         <div class="easter-gem-card card-sapphire" data-diff="normal">
-          <img src="assets/emblems/sapphire.jpg" class="easter-card-img" alt="사파이어">
+          <img src="assets/emblems/sapphire.jpg" class="easter-card-img" alt="사파이어" loading="lazy" decoding="async">
           <span class="easter-card-name">🔷 보통 (사파이어)</span>
           <span class="easter-card-sub">벽공천상 사파이어의 현자</span>
         </div>
         <div class="easter-gem-card card-ruby" data-diff="hard">
-          <img src="assets/emblems/ruby.jpg" class="easter-card-img" alt="루비">
+          <img src="assets/emblems/ruby.jpg" class="easter-card-img" alt="루비" loading="lazy" decoding="async">
           <span class="easter-card-name">🔴 어려움 (루비)</span>
           <span class="easter-card-sub">고귀무쌍 루비의 지휘관</span>
         </div>
         <div class="easter-gem-card card-crown" data-diff="master">
-          <img src="assets/emblems/crown.jpg" class="easter-card-img" alt="황금 왕관">
+          <img src="assets/emblems/crown.jpg" class="easter-card-img" alt="황금 왕관" loading="lazy" decoding="async">
           <span class="easter-card-name">👑 달인 (황금 왕관)</span>
           <span class="easter-card-sub">천상천하 전설의 마작 황제</span>
         </div>
@@ -5472,12 +5452,15 @@
       }
 
       start(customColors = null) {
-        if (this.isRunning) return;
+        if (this.isRunning) this.stop();
         this.isRunning = true;
+        this.isStopping = false;
         this.resize();
         if (this.canvas) {
           this.canvas.style.zIndex = '99998';
           this.canvas.style.display = 'block';
+          this.canvas.style.opacity = '1';
+          this.canvas.style.transition = '';
         }
         this.particles = [];
         if (Array.isArray(customColors) && customColors.length > 0) {
@@ -5486,44 +5469,64 @@
           this.activeColors = this.colors;
         }
 
-        // 시작하자마자 화려하게 좌/중/우 3연발 동시 폭죽 발사!
+        // 시작하자마자 화려하게 좌/중/우 3연발 동시 폭죽 발사
         const w = this.canvas.width;
         const h = this.canvas.height;
-        this.burst(w * 0.5, h * 0.32, 80);
-        setTimeout(() => this.burst(w * 0.25, h * 0.38, 70), 220);
-        setTimeout(() => this.burst(w * 0.75, h * 0.38, 70), 420);
+        this.burst(w * 0.5, h * 0.32, 60);
+        setTimeout(() => { if (this.isRunning && !this.isStopping) this.burst(w * 0.25, h * 0.38, 50); }, 200);
+        setTimeout(() => { if (this.isRunning && !this.isStopping) this.burst(w * 0.75, h * 0.38, 50); }, 400);
 
-        // 0.45초 간격으로 무작위 위치에서 지속 폭죽 발사
+        // [요청 반영] 0.7초 간격으로 무작위 위치에서 지속 폭죽 발사
+        if (this.autoLaunchTimer) clearInterval(this.autoLaunchTimer);
         this.autoLaunchTimer = setInterval(() => {
-          if (!this.isRunning) return;
+          if (!this.isRunning || this.isStopping) return;
           const targetX = w * (0.15 + Math.random() * 0.7);
           const targetY = h * (0.15 + Math.random() * 0.4);
-          this.burst(targetX, targetY, 50 + Math.floor(Math.random() * 30));
-        }, 450);
+          this.burst(targetX, targetY, 40 + Math.floor(Math.random() * 25));
+        }, 700);
+
+        // [요청 반영] 7초 후 폭죽 발사 중단 및 잔여 파티클 자연 페이드아웃
+        if (this.autoStopTimer) clearTimeout(this.autoStopTimer);
+        this.autoStopTimer = setTimeout(() => {
+          if (!this.isRunning) return;
+          this.isStopping = true;
+          if (this.autoLaunchTimer) {
+            clearInterval(this.autoLaunchTimer);
+            this.autoLaunchTimer = null;
+          }
+          if (this.canvas) {
+            this.canvas.style.transition = 'opacity 1.5s ease-out';
+            this.canvas.style.opacity = '0';
+          }
+          setTimeout(() => {
+            if (this.isStopping) this.stop();
+          }, 1600);
+        }, 7000);
 
         this.loop();
       }
 
-      burst(x, y, count = 60) {
+      burst(x, y, count = 55) {
         if (this.sound && this.sound.playFirework) {
           this.sound.playFirework();
         }
-        const baseColor = this.colors[Math.floor(Math.random() * this.colors.length)];
+        const colors = this.activeColors || this.colors;
+        const baseColor = colors[Math.floor(Math.random() * colors.length)];
         for (let i = 0; i < count; i++) {
           const angle = Math.random() * Math.PI * 2;
-          const speed = 2.5 + Math.random() * 8.5;
+          const speed = 2.5 + Math.random() * 8.0;
           const color = Math.random() < 0.35
             ? '#ffffff'
-            : (Math.random() < 0.6 ? baseColor : this.colors[Math.floor(Math.random() * this.colors.length)]);
+            : (Math.random() < 0.6 ? baseColor : colors[Math.floor(Math.random() * colors.length)]);
 
           this.particles.push({
             x: x,
             y: y,
             vx: Math.cos(angle) * speed,
             vy: Math.sin(angle) * speed,
-            size: 2.2 + Math.random() * 3.2,
+            size: 2.0 + Math.random() * 2.8,
             alpha: 1.0,
-            decay: 0.012 + Math.random() * 0.016,
+            decay: 0.013 + Math.random() * 0.016,
             color: color,
             gravity: 0.14,
             friction: 0.965,
@@ -5536,8 +5539,9 @@
         if (!this.isRunning) return;
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.globalCompositeOperation = 'lighter';
 
-        // 파티클 렌더링 및 물리 연산
+        // 파티클 렌더링 및 물리 연산 (shadowBlur 및 save/restore 제거로 60fps 고속화)
         for (let i = this.particles.length - 1; i >= 0; i--) {
           const p = this.particles[i];
           p.vx *= p.friction;
@@ -5552,16 +5556,19 @@
             continue;
           }
 
-          this.ctx.save();
-          this.ctx.globalAlpha = p.twinkle ? (p.alpha * (0.6 + Math.random() * 0.4)) : p.alpha;
+          this.ctx.globalAlpha = p.twinkle ? Math.max(0, Math.min(1, p.alpha * (0.6 + Math.random() * 0.4))) : Math.max(0, Math.min(1, p.alpha));
           this.ctx.fillStyle = p.color;
-          this.ctx.shadowBlur = 8;
-          this.ctx.shadowColor = p.color;
-
           this.ctx.beginPath();
           this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
           this.ctx.fill();
-          this.ctx.restore();
+        }
+
+        this.ctx.globalCompositeOperation = 'source-over';
+        this.ctx.globalAlpha = 1;
+
+        if (this.isStopping && this.particles.length === 0) {
+          this.stop();
+          return;
         }
 
         this.animId = requestAnimationFrame(() => this.loop());
@@ -5569,11 +5576,18 @@
 
       stop() {
         this.isRunning = false;
+        this.isStopping = false;
         if (this.autoLaunchTimer) clearInterval(this.autoLaunchTimer);
+        this.autoLaunchTimer = null;
+        if (this.autoStopTimer) clearTimeout(this.autoStopTimer);
+        this.autoStopTimer = null;
         if (this.animId) cancelAnimationFrame(this.animId);
+        this.animId = null;
         if (this.ctx && this.canvas) {
           this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
           this.canvas.style.display = 'none';
+          this.canvas.style.opacity = '1';
+          this.canvas.style.transition = '';
         }
         this.particles = [];
       }
@@ -11643,7 +11657,7 @@
             if (gemInfo) {
               diffCellHTML = `
                 <span class="rank-gem-badge ${gemInfo.badgeClass}" data-gem-diff="${gemInfo.key}" title="[30판 정복: ${gemInfo.name}] 터치 시 축하 연출 감상">
-                  <img src="${gemInfo.icon}" class="rank-gem-icon" alt="${gemInfo.name}">
+                  <img src="${gemInfo.icon}" class="rank-gem-icon" alt="${gemInfo.name}" loading="lazy" decoding="async">
                 </span>
               `;
             }
