@@ -3623,7 +3623,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.70
+            Si-Yeon Mahjong Solitaire v1.4.71
           </div>
         </div>
       </div>
@@ -3715,7 +3715,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.70</div>
+        <div class="splash-version-badge">v1.4.71</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -5725,7 +5725,7 @@
           <svg class="tile-svg saju-hybrid-svg" viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg">
             <!-- 1. 초고화질 3D 실물 마작패 이미지 (중심 기준 1.10배 스케일로 외곽 베젤을 자연스럽게 클리핑하여 기존 패와 1:1 심볼 크기 일치) -->
             <g transform="translate(120, 150) scale(1.10) translate(-120, -150)">
-              <image href="${(() => { if (id.startsWith('oryong_body_')) return 'assets/tiles/oryong_' + id.replace('oryong_body_', '') + '.webp'; if (id.startsWith('dragon_gold_') || id.startsWith('dragon_head_')) return 'assets/dragons/' + id + '.png'; return 'assets/tiles/' + id + '.webp'; })()}" x="0" y="0" width="240" height="300" preserveAspectRatio="none" />
+              <image href="${(() => { if (id.startsWith('dragon_gold_')) return 'assets/dragons/' + id + '.png'; if (id.startsWith('dragon_head_')) return 'assets/dragons/' + id + '.webp'; return 'assets/tiles/' + id + '.webp'; })()}" x="0" y="0" width="240" height="300" preserveAspectRatio="none" />
             </g>
             <!-- 2. 좌상단 SVG 전통 단청 배지 -->
             ${badgeSvg}
@@ -5877,16 +5877,7 @@
       { id: 'dragon_gold_purple_tile', suit: 'dragon_gold', val: 'purple', label: '紫金龍', badge: '紫', render: () => SvgFactory.sajuHybrid('dragon_gold_purple_tile', '紫', '#8e24aa', '자금용두', '紫金龍') },
       { id: 'dragon_gold_blue_tile',   suit: 'dragon_gold', val: 'blue',   label: '靑金龍', badge: '靑', render: () => SvgFactory.sajuHybrid('dragon_gold_blue_tile',   '靑', '#1e88e5', '청금용두', '靑金龍') },
       { id: 'dragon_gold_yellow_tile', suit: 'dragon_gold', val: 'yellow', label: '黃金龍', badge: '黃', render: () => SvgFactory.sajuHybrid('dragon_gold_yellow_tile', '黃', '#fbc02d', '황금용두', '黃金龍') },
-      { id: 'dragon_gold_green_tile',  suit: 'dragon_gold', val: 'green',  label: '綠金龍', badge: '綠', render: () => SvgFactory.sajuHybrid('dragon_gold_green_tile',  '綠', '#43a047', '녹금용두', '綠金龍') },
-
-      // 오룡이 7용 먼통 풀바디 7종 (assets/tiles/oryong_*.webp 원본 이미지)
-      { id: 'oryong_body_white',  suit: 'oryong', val: 'body_white',  label: '白龍體', badge: '白', render: () => SvgFactory.sajuHybrid('oryong_body_white',  '白', '#546e7a', '백룡체', '白龍') },
-      { id: 'oryong_body_red',    suit: 'oryong', val: 'body_red',    label: '赤龍體', badge: '赤', render: () => SvgFactory.sajuHybrid('oryong_body_red',    '赤', '#e53935', '적룡체', '赤龍') },
-      { id: 'oryong_body_black',  suit: 'oryong', val: 'body_black',  label: '黑龍體', badge: '黑', render: () => SvgFactory.sajuHybrid('oryong_body_black',  '黑', '#263238', '흑룡체', '黑龍') },
-      { id: 'oryong_body_blue',   suit: 'oryong', val: 'body_blue',   label: '鴱龍體', badge: '鴱', render: () => SvgFactory.sajuHybrid('oryong_body_blue',   '鴱', '#1e88e5', '청룡체', '鴱龍') },
-      { id: 'oryong_body_yellow', suit: 'oryong', val: 'body_yellow', label: '黄龍體', badge: '黄', render: () => SvgFactory.sajuHybrid('oryong_body_yellow', '黄', '#fbc02d', '황룡체', '黄龍') },
-      { id: 'oryong_body_purple', suit: 'oryong', val: 'body_purple', label: '紫龍體', badge: '紫', render: () => SvgFactory.sajuHybrid('oryong_body_purple', '紫', '#8e24aa', '자룡체', '紫龍') },
-      { id: 'oryong_body_green',  suit: 'oryong', val: 'body_green',  label: '綠龍體', badge: '綠', render: () => SvgFactory.sajuHybrid('oryong_body_green',  '綠', '#2e7d32', '녹룡체', '綠龍') }
+      { id: 'dragon_gold_green_tile',  suit: 'dragon_gold', val: 'green',  label: '綠金龍', badge: '綠', render: () => SvgFactory.sajuHybrid('dragon_gold_green_tile',  '綠', '#43a047', '녹금용두', '綠金龍') }
     ];
 
     /**
@@ -5895,7 +5886,7 @@
      * ========================================================
      */
     const TILE_CATEGORY_GROUPS = [
-      { id: 'all', name: '전체 (103)' },
+      { id: 'all', name: '전체 (109)' },
       { id: 'wan', name: '만수 (9)' },
       { id: 'tong', name: '통수 (9)' },
       { id: 'tiao', name: '삭수 (9)' },
@@ -5906,7 +5897,7 @@
       { id: 'zhi', name: '12지지 (12)' },
       { id: 'shin', name: '10십신 (10)' },
       { id: 'yinyang_wuxing', name: '음양·오행 (7)' },
-      { id: 'oryong', name: '오룡이 (10)' }
+      { id: 'oryong', name: '오룡이 (13)' }
     ];
 
     const TILE_SECTIONS = [
@@ -5920,7 +5911,7 @@
       { id: 'sec_zhi', title: '地支 사주 12지지 (12간지 수호동물 12종)', suits: ['zhi'] },
       { id: 'sec_shin', title: '十神 사주 10십신 (운명의 페르소나 10종)', suits: ['shin'] },
       { id: 'sec_yinyang_wuxing', title: '陰陽·五行 사주 음양 & 오행 수호신 (7종)', suits: ['yinyang', 'wuxing'] },
-      { id: 'sec_oryong', title: '五龍 오룡이 슬롯머신 신수·보물패 (10종)', suits: ['oryong'] }
+      { id: 'sec_oryong', title: '五龍 오룡이 슬롯머신 신수·보물패 (13종)', suits: ['oryong'] }
     ];
 
     function getTileDetailInfo(def, index, totalCount) {
