@@ -3955,7 +3955,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.90
+            Si-Yeon Mahjong Solitaire v1.4.91
           </div>
         </div>
       </div>
@@ -4047,7 +4047,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.90</div>
+        <div class="splash-version-badge">v1.4.91</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -7146,13 +7146,13 @@
         ];
         l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
         const l1 = [
+          { x: 5, y: 3 }, { x: 7, y: 3 },
           { x: 5, y: 5 }, { x: 7, y: 5 },
-          { x: 5, y: 7 }, { x: 7, y: 7 },
-          { x: 6, y: 5 }, { x: 6, y: 7 }
+          { x: 5, y: 7 }, { x: 7, y: 7 }
         ];
         l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
         const l2 = [
-          { x: 6, y: 6 }, { x: 6, y: 8 }
+          { x: 6, y: 4 }, { x: 6, y: 6 }
         ];
         l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
         return { id: 'star_cross_small', name: '성좌 소십자', icon: '✝️', layers: 3, slots };
@@ -7457,26 +7457,24 @@
   },
 
       ribbon_mini: () => {
-    const slots = [];
-    let nextId = 1;
-    const l0 = [
-      { x: 2, y: 2 }, { x: 4, y: 4 }, { x: 2, y: 6 },
-      { x: 10, y: 2 }, { x: 8, y: 4 }, { x: 10, y: 6 },
-      { x: 6, y: 4 },
-      { x: 4, y: 8 }, { x: 2, y: 10 },
-      { x: 8, y: 8 }, { x: 10, y: 10 },
-      { x: 4, y: 2 }, { x: 8, y: 2 },
-      { x: 4, y: 6 }, { x: 8, y: 6 }
-    ];
-    l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
-    const l1 = [
-      { x: 5, y: 4 }, { x: 7, y: 4 },
-      { x: 6, y: 5 }
-    ];
-    // 총 18개 맞춤: l0 15 + l1 3 = 18개
-    l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
-    return { id: 'ribbon_mini', name: '은빛 리본', icon: '🎀', layers: 2, slots };
-  },
+        const slots = [];
+        let nextId = 1;
+        const l0 = [
+          { x: 2, y: 2 }, { x: 4, y: 4 }, { x: 2, y: 6 },
+          { x: 10, y: 2 }, { x: 8, y: 4 }, { x: 10, y: 6 },
+          { x: 6, y: 4 },
+          { x: 4, y: 8 }, { x: 2, y: 10 },
+          { x: 8, y: 8 }, { x: 10, y: 10 },
+          { x: 4, y: 2 }, { x: 8, y: 2 },
+          { x: 4, y: 6 }, { x: 8, y: 6 }
+        ];
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+        const l1 = [
+          { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+        return { id: 'ribbon_mini', name: '미니 리본', icon: '🎀', layers: 2, slots };
+      },
 
       cross_star_mini: () => {
     const slots = [];
@@ -7753,31 +7751,30 @@
   },
 
       ship: () => {
-    const slots = [];
-    let nextId = 1;
-    const l0 = [
-      { x: 6, y: 0 }, { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 },
-      { x: 4, y: 2 }, { x: 2, y: 4 }, { x: 4, y: 4 },
-      { x: 8, y: 2 }, { x: 10, y: 4 }, { x: 8, y: 4 },
-      { x: 0, y: 8 }, { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 }, { x: 10, y: 8 }, { x: 12, y: 8 },
-      { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 }, { x: 10, y: 10 },
-      { x: 4, y: 12 }, { x: 6, y: 12 }, { x: 8, y: 12 },
-      { x: 6, y: 14 }
-    ]; // 26
-    l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
-    const l1 = [
-      { x: 5, y: 3 }, { x: 7, y: 3 },
-      { x: 5, y: 5 }, { x: 7, y: 5 },
-      { x: 5, y: 9 }, { x: 7, y: 9 }
-    ]; // 6
-    l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
-    const l2 = [
-      { x: 6, y: 4 }, { x: 6, y: 8 },
-      { x: 5, y: 9 }, { x: 7, y: 9 }
-    ]; // 4 -> 36개
-    l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
-    return { id: 'ship', name: '바다의 범선', icon: '⛵', layers: 3, slots };
-  },
+        const slots = [];
+        let nextId = 1;
+        const l0 = [
+          { x: 6, y: 0 }, { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 },
+          { x: 4, y: 2 }, { x: 2, y: 4 }, { x: 4, y: 4 },
+          { x: 8, y: 2 }, { x: 10, y: 4 }, { x: 8, y: 4 },
+          { x: 0, y: 8 }, { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 }, { x: 10, y: 8 }, { x: 12, y: 8 },
+          { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 }, { x: 10, y: 10 },
+          { x: 4, y: 12 }, { x: 6, y: 12 }, { x: 8, y: 12 },
+          { x: 6, y: 14 }
+        ];
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+        const l1 = [
+          { x: 5, y: 3 }, { x: 7, y: 3 },
+          { x: 5, y: 5 }, { x: 7, y: 5 },
+          { x: 5, y: 9 }, { x: 7, y: 9 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+        const l2 = [
+          { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 6, y: 10 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+        return { id: 'ship', name: '바다의 범선', icon: '⛵', layers: 3, slots };
+      },
 
       crab: () => {
     const slots = [];
@@ -7870,29 +7867,28 @@
   },
 
       bridge: () => {
-    const slots = [];
-    let nextId = 1;
-    const l0 = [];
-    for (let x = 0; x <= 14; x += 2) {
-      l0.push({ x, y: 6 }, { x, y: 8 });
-    }
-    l0.push({ x: 2, y: 4 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 }, { x: 10, y: 2 }, { x: 12, y: 4 });
-    l0.push({ x: 0, y: 10 }, { x: 2, y: 10 }, { x: 12, y: 10 }, { x: 14, y: 10 });
-    l0.push({ x: 0, y: 12 }, { x: 14, y: 12 });
-    // 16 + 6 + 4 + 2 = 28개
-    l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
-    const l1 = [
-      { x: 3, y: 3 }, { x: 5, y: 3 }, { x: 7, y: 3 }, { x: 9, y: 3 }, { x: 11, y: 3 },
-      { x: 3, y: 7 }, { x: 5, y: 7 }, { x: 7, y: 7 }, { x: 9, y: 7 }, { x: 11, y: 7 }
-    ]; // 10
-    l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
-    const l2 = [
-      { x: 5, y: 5 }, { x: 7, y: 5 },
-      { x: 6, y: 4 }, { x: 8, y: 4 }
-    ]; // 4 -> 42개
-    l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
-    return { id: 'bridge', name: '무지개 다리', icon: '🌉', layers: 3, slots };
-  },
+        const slots = [];
+        let nextId = 1;
+        const l0 = [];
+        for (let x = 0; x <= 14; x += 2) {
+          l0.push({ x, y: 6 }, { x, y: 8 });
+        }
+        l0.push({ x: 2, y: 4 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 }, { x: 10, y: 2 }, { x: 12, y: 4 });
+        l0.push({ x: 0, y: 10 }, { x: 2, y: 10 }, { x: 12, y: 10 }, { x: 14, y: 10 });
+        l0.push({ x: 0, y: 12 }, { x: 14, y: 12 });
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+        const l1 = [
+          { x: 3, y: 3 }, { x: 5, y: 3 }, { x: 7, y: 3 }, { x: 9, y: 3 }, { x: 11, y: 3 },
+          { x: 3, y: 7 }, { x: 5, y: 7 }, { x: 7, y: 7 }, { x: 9, y: 7 }, { x: 11, y: 7 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+        const l2 = [
+          { x: 5, y: 3 }, { x: 7, y: 3 },
+          { x: 5, y: 5 }, { x: 7, y: 5 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+        return { id: 'bridge', name: '무지개 다리', icon: '🌉', layers: 3, slots };
+      },
 
       balance: () => {
     const slots = [];
@@ -7955,72 +7951,72 @@
   },
 
       sunflower: () => {
-    const slots = [];
-    let nextId = 1;
-    const l0 = [
-      { x: 6, y: 0 }, { x: 6, y: 12 },
-      { x: 0, y: 6 }, { x: 12, y: 6 },
-      { x: 2, y: 2 }, { x: 10, y: 2 }, { x: 2, y: 10 }, { x: 10, y: 10 },
-      { x: 4, y: 2 }, { x: 8, y: 2 }, { x: 4, y: 10 }, { x: 8, y: 10 },
-      { x: 2, y: 4 }, { x: 10, y: 4 }, { x: 2, y: 8 }, { x: 10, y: 8 },
-      { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 },
-      { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 },
-      { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 },
-      { x: 6, y: 2 }, { x: 6, y: 10 }, { x: 2, y: 6 }, { x: 10, y: 6 }
-    ]; // 29
-    l0.pop(); // 28개
-    l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
-    const l1 = [
-      { x: 5, y: 3 }, { x: 7, y: 3 },
-      { x: 3, y: 5 }, { x: 9, y: 5 },
-      { x: 3, y: 7 }, { x: 9, y: 7 },
-      { x: 5, y: 9 }, { x: 7, y: 9 },
-      { x: 5, y: 5 }, { x: 7, y: 5 },
-      { x: 5, y: 7 }, { x: 7, y: 7 }
-    ]; // 12
-    l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
-    const l2 = [
-      { x: 6, y: 5 }, { x: 6, y: 7 },
-      { x: 5, y: 6 }, { x: 7, y: 6 }
-    ]; // 4 -> 44개
-    l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
-    return { id: 'sunflower', name: '태양 해바라기', icon: '🌻', layers: 3, slots };
-  },
+        const slots = [];
+        let nextId = 1;
+        const l0 = [
+          { x: 6, y: 0 }, { x: 6, y: 12 },
+          { x: 0, y: 6 }, { x: 12, y: 6 },
+          { x: 2, y: 2 }, { x: 10, y: 2 }, { x: 2, y: 10 }, { x: 10, y: 10 },
+          { x: 4, y: 2 }, { x: 8, y: 2 }, { x: 4, y: 10 }, { x: 8, y: 10 },
+          { x: 2, y: 4 }, { x: 10, y: 4 }, { x: 2, y: 8 }, { x: 10, y: 8 },
+          { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 },
+          { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 },
+          { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 },
+          { x: 6, y: 2 }, { x: 6, y: 10 }, { x: 2, y: 6 }
+        ];
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+        const l1 = [
+          { x: 5, y: 3 }, { x: 7, y: 3 },
+          { x: 3, y: 5 }, { x: 9, y: 5 },
+          { x: 3, y: 7 }, { x: 9, y: 7 },
+          { x: 5, y: 9 }, { x: 7, y: 9 },
+          { x: 5, y: 5 }, { x: 7, y: 5 },
+          { x: 5, y: 7 }, { x: 7, y: 7 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+        const l2 = [
+          { x: 5, y: 5 }, { x: 7, y: 5 },
+          { x: 5, y: 7 }, { x: 7, y: 7 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+        return { id: 'sunflower', name: '태양 해바라기', icon: '🌻', layers: 3, slots };
+      },
 
       harp: () => {
-    const slots = [];
-    let nextId = 1;
-    const l0 = [];
-    for (let y = 0; y <= 12; y += 2) {
-      l0.push({ x: 2, y });
-    }
-    for (let x = 4; x <= 12; x += 2) {
-      l0.push({ x, y: 0 });
-    }
-    l0.push({ x: 12, y: 2 }, { x: 10, y: 4 }, { x: 8, y: 6 }, { x: 6, y: 8 }, { x: 4, y: 10 });
-    for (let x = 4; x <= 10; x += 2) {
-      l0.push({ x, y: 12 });
-    }
-    for (let y = 2; y <= 10; y += 2) {
-      l0.push({ x: 4, y });
-    }
-    l0.push({ x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 });
-    // 7 + 5 + 5 + 4 + 5 + 3 = 29
-    l0.pop(); // 28개
-    l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
-    const l1 = [
-      { x: 3, y: 1 }, { x: 3, y: 3 }, { x: 3, y: 5 }, { x: 3, y: 7 }, { x: 3, y: 9 }, { x: 3, y: 11 },
-      { x: 5, y: 1 }, { x: 7, y: 1 }, { x: 9, y: 1 }, { x: 11, y: 1 },
-      { x: 5, y: 5 }, { x: 7, y: 7 }, { x: 5, y: 11 }, { x: 7, y: 11 }
-    ]; // 14개
-    l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
-    const l2 = [
-      { x: 3, y: 5 }, { x: 3, y: 7 },
-      { x: 5, y: 3 }, { x: 7, y: 3 }
-    ]; // 4 -> 46개
-    l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
-    return { id: 'harp', name: '천상의 하프', icon: '🎵', layers: 3, slots };
-  },
+        const slots = [];
+        let nextId = 1;
+        const l0 = [];
+        for (let y = 0; y <= 12; y += 2) {
+          l0.push({ x: 2, y });
+        }
+        for (let x = 4; x <= 12; x += 2) {
+          l0.push({ x, y: 0 });
+        }
+        l0.push({ x: 12, y: 2 }, { x: 10, y: 4 }, { x: 8, y: 6 }, { x: 6, y: 8 });
+        for (let x = 4; x <= 10; x += 2) {
+          l0.push({ x, y: 12 });
+        }
+        for (let y = 2; y <= 10; y += 2) {
+          l0.push({ x: 4, y });
+        }
+        l0.push({ x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 });
+        // 7 + 5 + 4 + 4 + 5 + 3 = 28개
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+        const l1 = [
+          { x: 3, y: 1 }, { x: 3, y: 3 }, { x: 3, y: 5 }, { x: 3, y: 7 }, { x: 3, y: 9 }, { x: 3, y: 11 },
+          { x: 5, y: 1 }, { x: 5, y: 3 }, { x: 5, y: 5 }, { x: 5, y: 7 }, { x: 7, y: 1 }, { x: 9, y: 1 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+        const l2 = [
+          { x: 4, y: 2 }, { x: 4, y: 4 }, { x: 4, y: 6 }, { x: 4, y: 8 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+        const l3 = [
+          { x: 4, y: 3 }, { x: 4, y: 5 }
+        ];
+        l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
+        return { id: 'harp', name: '천상의 하프', icon: '🪕', layers: 4, slots };
+      },
 
       chariot: () => {
     const slots = [];
@@ -8126,39 +8122,38 @@
   },
 
       sphinx: () => {
-    const slots = [];
-    let nextId = 1;
-    const l0 = [];
-    for (let x = 2; x <= 12; x += 2) {
-      l0.push({ x, y: 6 }, { x, y: 8 }, { x, y: 10 });
-    }
-    l0.push({ x: 2, y: 2 }, { x: 4, y: 2 }, { x: 2, y: 4 }, { x: 4, y: 4 });
-    l0.push({ x: 0, y: 12 }, { x: 2, y: 12 }, { x: 10, y: 12 }, { x: 12, y: 12 });
-    l0.push({ x: 0, y: 14 }, { x: 12, y: 14 });
-    l0.push({ x: 6, y: 4 }, { x: 8, y: 4 }, { x: 10, y: 4 });
-    l0.push({ x: 12, y: 6 });
-    // 18 + 4 + 4 + 2 + 3 + 1 = 32
-    l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
-    const l1 = [
-      { x: 3, y: 3 }, { x: 3, y: 5 },
-      { x: 5, y: 5 }, { x: 7, y: 5 }, { x: 9, y: 5 }, { x: 11, y: 5 },
-      { x: 5, y: 7 }, { x: 7, y: 7 }, { x: 9, y: 7 }, { x: 11, y: 7 },
-      { x: 5, y: 9 }, { x: 7, y: 9 }, { x: 9, y: 9 }, { x: 11, y: 9 }
-    ]; // 14
-    l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
-    const l2 = [
-      { x: 3, y: 4 },
-      { x: 6, y: 6 }, { x: 8, y: 6 },
-      { x: 6, y: 8 }, { x: 8, y: 8 },
-      { x: 7, y: 10 }
-    ]; // 6
-    l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
-    const l3 = [
-      { x: 7, y: 6 }, { x: 7, y: 8 }
-    ]; // 2 -> 54개
-    l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
-    return { id: 'sphinx', name: '사막의 스핑크스', icon: '🦁', layers: 4, slots };
-  },
+        const slots = [];
+        let nextId = 1;
+        const l0 = [];
+        for (let x = 2; x <= 12; x += 2) {
+          l0.push({ x, y: 6 }, { x, y: 8 }, { x, y: 10 });
+        }
+        l0.push({ x: 2, y: 2 }, { x: 4, y: 2 }, { x: 2, y: 4 }, { x: 4, y: 4 });
+        l0.push({ x: 0, y: 12 }, { x: 2, y: 12 }, { x: 10, y: 12 }, { x: 12, y: 12 });
+        l0.push({ x: 0, y: 14 }, { x: 12, y: 14 });
+        l0.push({ x: 6, y: 4 }, { x: 8, y: 4 }, { x: 10, y: 4 });
+        l0.push({ x: 6, y: 2 }); // 고유 좌표
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+        const l1 = [
+          { x: 3, y: 3 }, { x: 3, y: 5 },
+          { x: 5, y: 5 }, { x: 7, y: 5 }, { x: 9, y: 5 }, { x: 11, y: 5 },
+          { x: 5, y: 7 }, { x: 7, y: 7 }, { x: 9, y: 7 }, { x: 11, y: 7 },
+          { x: 5, y: 9 }, { x: 7, y: 9 }, { x: 9, y: 9 }, { x: 11, y: 9 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+        const l2 = [
+          { x: 3, y: 4 },
+          { x: 6, y: 6 }, { x: 8, y: 6 },
+          { x: 6, y: 8 }, { x: 8, y: 8 },
+          { x: 6, y: 10 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+        const l3 = [
+          { x: 7, y: 7 }, { x: 7, y: 9 }
+        ];
+        l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
+        return { id: 'sphinx', name: '사막의 스핑크스', icon: '🦁', layers: 4, slots };
+      },
 
       dragon_fly: () => {
     const slots = [];
@@ -8267,124 +8262,118 @@
   },
 
       taiji_palace: () => {
-    const slots = [];
-    let nextId = 1;
-    const l0 = [];
-    for (let x = 2; x <= 12; x += 2) {
-      for (let y = 2; y <= 10; y += 2) {
-        l0.push({ x, y });
-      }
-    } // 30
-    l0.push({ x: 0, y: 6 }, { x: 14, y: 6 }, { x: 6, y: 0 }, { x: 8, y: 0 }, { x: 6, y: 12 }, { x: 8, y: 12 }); // 6 -> 36
-    l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
-    const l1 = [
-      { x: 3, y: 3 }, { x: 5, y: 3 }, { x: 7, y: 3 }, { x: 9, y: 3 }, { x: 11, y: 3 },
-      { x: 3, y: 9 }, { x: 5, y: 9 }, { x: 7, y: 9 }, { x: 9, y: 9 }, { x: 11, y: 9 },
-      { x: 3, y: 5 }, { x: 11, y: 5 }, { x: 3, y: 7 }, { x: 11, y: 7 }
-    ]; // 14
-    l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
-    const l2 = [
-      { x: 5, y: 5 }, { x: 7, y: 5 }, { x: 9, y: 5 },
-      { x: 5, y: 7 }, { x: 7, y: 7 }, { x: 9, y: 7 }
-    ]; // 6
-    l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
-    const l3 = [
-      { x: 6, y: 6 }, { x: 8, y: 6 },
-      { x: 7, y: 5 }, { x: 7, y: 7 }
-    ]; // 4
-    l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
-    const l4 = [
-      { x: 6, y: 5 }, { x: 8, y: 7 },
-      { x: 6, y: 7 }, { x: 8, y: 5 },
-      { x: 7, y: 6 }, { x: 7, y: 6 } // 6개 보정
-    ];
-    l4.pop(); l4.pop(); // 4개
-    l4.push({ x: 7, y: 5 }, { x: 7, y: 7 }); // 6개 -> 66개
-    l4.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 4 }));
-    return { id: 'taiji_palace', name: '태극 천궁', icon: '☯️', layers: 5, slots };
-  },
+        const slots = [];
+        let nextId = 1;
+        const l0 = [];
+        for (let x = 2; x <= 12; x += 2) {
+          for (let y = 2; y <= 10; y += 2) {
+            l0.push({ x, y });
+          }
+        }
+        l0.push({ x: 0, y: 6 }, { x: 14, y: 6 }, { x: 6, y: 0 }, { x: 8, y: 0 }, { x: 6, y: 12 }, { x: 8, y: 12 });
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+        const l1 = [
+          { x: 3, y: 3 }, { x: 5, y: 3 }, { x: 7, y: 3 }, { x: 9, y: 3 }, { x: 11, y: 3 },
+          { x: 3, y: 9 }, { x: 5, y: 9 }, { x: 7, y: 9 }, { x: 9, y: 9 }, { x: 11, y: 9 },
+          { x: 3, y: 5 }, { x: 11, y: 5 }, { x: 3, y: 7 }, { x: 11, y: 7 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+        const l2 = [
+          { x: 5, y: 5 }, { x: 7, y: 5 }, { x: 9, y: 5 },
+          { x: 5, y: 7 }, { x: 7, y: 7 }, { x: 9, y: 7 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+        const l3 = [
+          { x: 6, y: 4 }, { x: 8, y: 4 },
+          { x: 6, y: 6 }, { x: 8, y: 6 }
+        ];
+        l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
+        const l4 = [
+          { x: 5, y: 5 }, { x: 7, y: 5 }, { x: 9, y: 5 },
+          { x: 5, y: 7 }, { x: 7, y: 7 }, { x: 9, y: 7 }
+        ];
+        l4.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 4 }));
+        return { id: 'taiji_palace', name: '태극 천궁', icon: '☯️', layers: 5, slots };
+      },
 
       celestial_globe: () => {
-    const slots = [];
-    let nextId = 1;
-    const l0 = [];
-    for (let x = 2; x <= 12; x += 2) {
-      for (let y = 2; y <= 10; y += 2) {
-        l0.push({ x, y });
-      }
-    } // 30
-    l0.push({ x: 0, y: 4 }, { x: 0, y: 8 }, { x: 14, y: 4 }, { x: 14, y: 8 }); // 4
-    l0.push({ x: 4, y: 0 }, { x: 10, y: 0 }, { x: 4, y: 12 }, { x: 10, y: 12 }); // 4 -> 38
-    l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
-    const l1 = [
-      { x: 3, y: 3 }, { x: 7, y: 1 }, { x: 11, y: 3 },
-      { x: 1, y: 6 }, { x: 13, y: 6 },
-      { x: 3, y: 9 }, { x: 7, y: 11 }, { x: 11, y: 9 },
-      { x: 5, y: 5 }, { x: 9, y: 5 }, { x: 5, y: 7 }, { x: 9, y: 7 },
-      { x: 7, y: 3 }, { x: 7, y: 9 }
-    ]; // 14
-    l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
-    const l2 = [
-      { x: 5, y: 4 }, { x: 9, y: 4 },
-      { x: 5, y: 8 }, { x: 9, y: 8 },
-      { x: 7, y: 5 }, { x: 7, y: 7 },
-      { x: 4, y: 6 }, { x: 10, y: 6 }
-    ]; // 8
-    l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
-    const l3 = [
-      { x: 6, y: 5 }, { x: 8, y: 5 },
-      { x: 6, y: 7 }, { x: 8, y: 7 },
-      { x: 7, y: 6 }, { x: 7, y: 6 }
-    ];
-    l3.pop(); l3.pop(); // 4개
-    l3.push({ x: 7, y: 4 }, { x: 7, y: 8 }); // 6개
-    l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
-    const l4 = [
-      { x: 6, y: 6 }, { x: 8, y: 6 }
-    ]; // 2 -> 총 68개
-    l4.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 4 }));
-    return { id: 'celestial_globe', name: '혼천의 천구', icon: '🌐', layers: 5, slots };
-  },
+        const slots = [];
+        let nextId = 1;
+        const l0 = [];
+        for (let x = 2; x <= 12; x += 2) {
+          for (let y = 2; y <= 10; y += 2) {
+            l0.push({ x, y });
+          }
+        }
+        l0.push({ x: 0, y: 4 }, { x: 0, y: 8 }, { x: 14, y: 4 }, { x: 14, y: 8 });
+        l0.push({ x: 4, y: 0 }, { x: 10, y: 0 }, { x: 4, y: 12 }, { x: 10, y: 12 });
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+        const l1 = [
+          { x: 3, y: 3 }, { x: 7, y: 1 }, { x: 11, y: 3 },
+          { x: 1, y: 6 }, { x: 13, y: 6 },
+          { x: 3, y: 9 }, { x: 7, y: 11 }, { x: 11, y: 9 },
+          { x: 5, y: 5 }, { x: 9, y: 5 }, { x: 5, y: 7 }, { x: 9, y: 7 },
+          { x: 7, y: 3 }, { x: 7, y: 9 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+        const l2 = [
+          { x: 5, y: 4 }, { x: 9, y: 4 },
+          { x: 5, y: 8 }, { x: 9, y: 8 },
+          { x: 7, y: 4 }, { x: 7, y: 8 },
+          { x: 4, y: 6 }, { x: 10, y: 6 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+        const l3 = [
+          { x: 6, y: 4 }, { x: 8, y: 4 },
+          { x: 6, y: 6 }, { x: 8, y: 6 },
+          { x: 6, y: 8 }, { x: 8, y: 8 }
+        ];
+        l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
+        const l4 = [
+          { x: 6, y: 6 }, { x: 8, y: 6 }
+        ];
+        l4.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 4 }));
+        return { id: 'celestial_globe', name: '혼천의 천구', icon: '🌐', layers: 5, slots };
+      },
 
       phoenix_gate: () => {
-    const slots = [];
-    let nextId = 1;
-    const l0 = [];
-    for (let y = 0; y <= 12; y += 2) {
-      l0.push({ x: 0, y }, { x: 2, y }, { x: 12, y }, { x: 14, y });
-    } // 28
-    l0.push({ x: 4, y: 0 }, { x: 6, y: 0 }, { x: 8, y: 0 }, { x: 10, y: 0 }); // 4
-    l0.push({ x: 4, y: 2 }, { x: 10, y: 2 }, { x: 4, y: 12 }, { x: 10, y: 12 }); // 4
-    l0.push({ x: 6, y: 2 }, { x: 8, y: 2 }); // 2 -> 38
-    l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
-    const l1 = [
-      { x: 1, y: 1 }, { x: 1, y: 5 }, { x: 1, y: 9 }, { x: 1, y: 11 },
-      { x: 13, y: 1 }, { x: 13, y: 5 }, { x: 13, y: 9 }, { x: 13, y: 11 },
-      { x: 5, y: 1 }, { x: 7, y: 1 }, { x: 9, y: 1 },
-      { x: 5, y: 3 }, { x: 9, y: 3 },
-      { x: 7, y: 3 }
-    ]; // 14
-    l1.push({ x: 7, y: 11 }, { x: 7, y: 9 }); // 16
-    l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
-    const l2 = [
-      { x: 1, y: 3 }, { x: 13, y: 3 },
-      { x: 1, y: 7 }, { x: 13, y: 7 },
-      { x: 6, y: 2 }, { x: 8, y: 2 },
-      { x: 7, y: 4 }, { x: 7, y: 6 }
-    ]; // 8
-    l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
-    const l3 = [
-      { x: 6, y: 3 }, { x: 8, y: 3 },
-      { x: 7, y: 5 }, { x: 7, y: 7 }
-    ]; // 4
-    l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
-    const l4 = [
-      { x: 6, y: 4 }, { x: 8, y: 4 },
-      { x: 7, y: 3 }, { x: 7, y: 5 }
-    ]; // 4 -> 70개
-    l4.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 4 }));
-    return { id: 'phoenix_gate', name: '봉황 대천문', icon: '⛩️', layers: 5, slots };
-  },
+        const slots = [];
+        let nextId = 1;
+        const l0 = [];
+        for (let y = 0; y <= 12; y += 2) {
+          l0.push({ x: 0, y }, { x: 2, y }, { x: 12, y }, { x: 14, y });
+        }
+        l0.push({ x: 4, y: 0 }, { x: 6, y: 0 }, { x: 8, y: 0 }, { x: 10, y: 0 });
+        l0.push({ x: 4, y: 2 }, { x: 10, y: 2 }, { x: 4, y: 12 }, { x: 10, y: 12 });
+        l0.push({ x: 6, y: 2 }, { x: 8, y: 2 });
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+        const l1 = [
+          { x: 1, y: 1 }, { x: 1, y: 5 }, { x: 1, y: 9 }, { x: 1, y: 11 },
+          { x: 13, y: 1 }, { x: 13, y: 5 }, { x: 13, y: 9 }, { x: 13, y: 11 },
+          { x: 5, y: 1 }, { x: 7, y: 1 }, { x: 9, y: 1 },
+          { x: 5, y: 3 }, { x: 9, y: 3 },
+          { x: 7, y: 3 }, { x: 7, y: 11 }, { x: 7, y: 9 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+        const l2 = [
+          { x: 1, y: 3 }, { x: 13, y: 3 },
+          { x: 1, y: 7 }, { x: 13, y: 7 },
+          { x: 6, y: 2 }, { x: 8, y: 2 },
+          { x: 6, y: 4 }, { x: 8, y: 4 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+        const l3 = [
+          { x: 5, y: 3 }, { x: 7, y: 3 },
+          { x: 5, y: 5 }, { x: 7, y: 5 }
+        ];
+        l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
+        const l4 = [
+          { x: 6, y: 2 }, { x: 8, y: 2 },
+          { x: 6, y: 4 }, { x: 8, y: 4 }
+        ];
+        l4.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 4 }));
+        return { id: 'phoenix_gate', name: '봉황 대천문', icon: '⛩️', layers: 5, slots };
+      },
 
       forbidden_city: () => {
     const slots = [];
@@ -8600,10 +8589,14 @@
     s_arrow_mini: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (14개)
-      const l0 = [{ x: 4, y: 0 }, { x: 2, y: 2 }, { x: 6, y: 2 }, { x: 0, y: 4 }, { x: 8, y: 4 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 4, y: 6 }, { x: 4, y: 8 }, { x: 4, y: 10 }, { x: 4, y: 12 }, { x: 3, y: 8 }, { x: 5, y: 8 }];
+      const l0 = [
+        { x: 4, y: 0 }, { x: 2, y: 2 }, { x: 6, y: 2 },
+        { x: 0, y: 4 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 },
+        { x: 4, y: 6 },
+        { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 },
+        { x: 4, y: 10 }, { x: 4, y: 12 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (4개)
       const l1 = [{ x: 3, y: 1 }, { x: 5, y: 1 }, { x: 3, y: 3 }, { x: 5, y: 3 }];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
       return { id: 's_arrow_mini', name: '미니 화살표', icon: '🀄', layers: 2, slots };
@@ -8612,10 +8605,17 @@
     s_torch: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (16개)
-      const l0 = [{ x: 4, y: 0 }, { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 1, y: 1 }, { x: 7, y: 1 }, { x: 3, y: 4 }, { x: 5, y: 4 }, { x: 3, y: 6 }, { x: 5, y: 6 }, { x: 3, y: 8 }, { x: 5, y: 8 }, { x: 3, y: 10 }, { x: 5, y: 10 }, { x: 3, y: 12 }, { x: 5, y: 12 }];
+      const l0 = [
+        { x: 4, y: 0 },
+        { x: 0, y: 2 }, { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 },
+        { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 },
+        { x: 4, y: 6 },
+        { x: 4, y: 8 },
+        { x: 4, y: 10 },
+        { x: 2, y: 12 }, { x: 4, y: 12 }, { x: 6, y: 12 },
+        { x: 2, y: 6 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (4개)
       const l1 = [{ x: 3, y: 1 }, { x: 5, y: 1 }, { x: 3, y: 3 }, { x: 5, y: 3 }];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
       return { id: 's_torch', name: '미니 횃불', icon: '🀄', layers: 2, slots };
@@ -8636,11 +8636,16 @@
     s_snowman: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (16개)
-      const l0 = [{ x: 4, y: 0 }, { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 3, y: 1 }, { x: 5, y: 1 }, { x: 2, y: 4 }, { x: 6, y: 4 }, { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 }, { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }];
+      const l0 = [
+        { x: 4, y: 0 },
+        { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 },
+        { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 },
+        { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 },
+        { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 },
+        { x: 4, y: 10 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (4개)
-      const l1 = [{ x: 4, y: 2 }, { x: 3, y: 7 }, { x: 5, y: 7 }, { x: 4, y: 9 }];
+      const l1 = [{ x: 3, y: 5 }, { x: 5, y: 5 }, { x: 3, y: 7 }, { x: 5, y: 7 }];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
       return { id: 's_snowman', name: '꼬마 눈사람', icon: '🀄', layers: 2, slots };
     },
@@ -8660,10 +8665,17 @@
     s_key_mini: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (18개)
-      const l0 = [{ x: 2, y: 0 }, { x: 4, y: 0 }, { x: 6, y: 0 }, { x: 2, y: 2 }, { x: 6, y: 2 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 4, y: 6 }, { x: 4, y: 8 }, { x: 4, y: 10 }, { x: 4, y: 12 }, { x: 3, y: 7 }, { x: 5, y: 7 }, { x: 3, y: 11 }, { x: 5, y: 11 }, { x: 6, y: 10 }, { x: 6, y: 12 }];
+      const l0 = [
+        { x: 2, y: 0 }, { x: 4, y: 0 }, { x: 6, y: 0 },
+        { x: 2, y: 2 }, { x: 6, y: 2 },
+        { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 },
+        { x: 4, y: 6 },
+        { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 },
+        { x: 4, y: 10 },
+        { x: 4, y: 12 }, { x: 6, y: 12 }, { x: 8, y: 12 },
+        { x: 2, y: 8 }, { x: 2, y: 12 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (4개)
       const l1 = [{ x: 3, y: 1 }, { x: 5, y: 1 }, { x: 3, y: 3 }, { x: 5, y: 3 }];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
       return { id: 's_key_mini', name: '미니 황금열쇠', icon: '🀄', layers: 2, slots };
@@ -8735,14 +8747,23 @@
     s_cross_tower: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (20개)
-      const l0 = [{ x: 4, y: 0 }, { x: 4, y: 2 }, { x: 0, y: 4 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 4, y: 8 }, { x: 4, y: 10 }, { x: 0, y: 12 }, { x: 2, y: 12 }, { x: 4, y: 12 }, { x: 6, y: 12 }, { x: 8, y: 12 }, { x: 1, y: 11 }, { x: 7, y: 11 }, { x: 4, y: 11 }];
+      const l0 = [
+        { x: 4, y: 0 }, { x: 4, y: 2 },
+        { x: 0, y: 4 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 },
+        { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 },
+        { x: 4, y: 8 },
+        { x: 0, y: 10 }, { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 8, y: 10 },
+        { x: 0, y: 12 }, { x: 2, y: 12 }, { x: 4, y: 12 }, { x: 6, y: 12 }, { x: 8, y: 12 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (8개)
-      const l1 = [{ x: 3, y: 3 }, { x: 5, y: 3 }, { x: 3, y: 5 }, { x: 5, y: 5 }, { x: 4, y: 7 }, { x: 4, y: 9 }, { x: 3, y: 11 }, { x: 5, y: 11 }];
+      const l1 = [
+        { x: 3, y: 3 }, { x: 5, y: 3 },
+        { x: 3, y: 5 }, { x: 5, y: 5 },
+        { x: 3, y: 7 }, { x: 5, y: 7 },
+        { x: 3, y: 9 }, { x: 5, y: 9 }
+      ];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
-      // 2층 (2개)
-      const l2 = [{ x: 3, y: 4 }, { x: 5, y: 4 }];
+      const l2 = [{ x: 3, y: 5 }, { x: 5, y: 5 }];
       l2.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 2 }));
       return { id: 's_cross_tower', name: '십자가탑', icon: '🀄', layers: 3, slots };
     },
@@ -8750,14 +8771,23 @@
     s_candlestick: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (22개)
-      const l0 = [{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 8, y: 0 }, { x: 0, y: 2 }, { x: 4, y: 2 }, { x: 8, y: 2 }, { x: 0, y: 4 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 }, { x: 4, y: 6 }, { x: 4, y: 8 }, { x: 4, y: 10 }, { x: 0, y: 12 }, { x: 2, y: 12 }, { x: 4, y: 12 }, { x: 6, y: 12 }, { x: 8, y: 12 }, { x: 2, y: 11 }, { x: 6, y: 11 }, { x: 4, y: 11 }];
+      const l0 = [
+        { x: 0, y: 0 }, { x: 4, y: 0 }, { x: 8, y: 0 },
+        { x: 0, y: 2 }, { x: 4, y: 2 }, { x: 8, y: 2 },
+        { x: 0, y: 4 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 },
+        { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 8, y: 6 },
+        { x: 4, y: 8 },
+        { x: 4, y: 10 },
+        { x: 0, y: 12 }, { x: 2, y: 12 }, { x: 4, y: 12 }, { x: 6, y: 12 }, { x: 8, y: 12 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (6개)
-      const l1 = [{ x: 0, y: 1 }, { x: 4, y: 1 }, { x: 8, y: 1 }, { x: 3, y: 5 }, { x: 5, y: 5 }, { x: 4, y: 7 }];
+      const l1 = [
+        { x: 1, y: 1 }, { x: 7, y: 1 },
+        { x: 3, y: 5 }, { x: 5, y: 5 },
+        { x: 3, y: 7 }, { x: 5, y: 7 }
+      ];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
-      // 2층 (2개)
-      const l2 = [{ x: 3, y: 3 }, { x: 5, y: 3 }];
+      const l2 = [{ x: 3, y: 5 }, { x: 5, y: 5 }];
       l2.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 2 }));
       return { id: 's_candlestick', name: '3단 촛대', icon: '🀄', layers: 3, slots };
     },
@@ -8765,14 +8795,24 @@
     s_spire_mini: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (22개)
-      const l0 = [{ x: 4, y: 0 }, { x: 3, y: 1 }, { x: 5, y: 1 }, { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 }, { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 0, y: 10 }, { x: 4, y: 10 }, { x: 8, y: 10 }, { x: 2, y: 12 }, { x: 6, y: 12 }];
+      const l0 = [
+        { x: 4, y: 0 },
+        { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 },
+        { x: 0, y: 4 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 },
+        { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 },
+        { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 },
+        { x: 0, y: 10 }, { x: 4, y: 10 }, { x: 8, y: 10 },
+        { x: 2, y: 12 }, { x: 6, y: 12 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (8개)
-      const l1 = [{ x: 3, y: 3 }, { x: 5, y: 3 }, { x: 3, y: 5 }, { x: 5, y: 5 }, { x: 3, y: 7 }, { x: 5, y: 7 }, { x: 3, y: 9 }, { x: 5, y: 9 }];
+      const l1 = [
+        { x: 3, y: 3 }, { x: 5, y: 3 },
+        { x: 3, y: 5 }, { x: 5, y: 5 },
+        { x: 3, y: 7 }, { x: 5, y: 7 },
+        { x: 3, y: 9 }, { x: 5, y: 9 }
+      ];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
-      // 2층 (2개)
-      const l2 = [{ x: 3, y: 4 }, { x: 5, y: 4 }];
+      const l2 = [{ x: 3, y: 5 }, { x: 5, y: 5 }];
       l2.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 2 }));
       return { id: 's_spire_mini', name: '작은 첨탑', icon: '🀄', layers: 3, slots };
     },
@@ -8810,11 +8850,22 @@
     s_sailboat_mini: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (26개)
-      const l0 = [{ x: 4, y: 0 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 4, y: 8 }, { x: 2, y: 8 }, { x: 6, y: 8 }, { x: 0, y: 10 }, { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 }, { x: 2, y: 12 }, { x: 4, y: 12 }, { x: 6, y: 12 }, { x: 1, y: 9 }, { x: 7, y: 9 }, { x: 3, y: 11 }, { x: 5, y: 11 }, { x: 4, y: 7 }];
+      const l0 = [
+        { x: 2, y: 0 }, { x: 4, y: 0 }, { x: 6, y: 0 },
+        { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 },
+        { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 },
+        { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 },
+        { x: 0, y: 8 }, { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 },
+        { x: 0, y: 10 }, { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 },
+        { x: 2, y: 12 }, { x: 4, y: 12 }, { x: 6, y: 12 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (8개)
-      const l1 = [{ x: 3, y: 3 }, { x: 5, y: 3 }, { x: 3, y: 5 }, { x: 5, y: 5 }, { x: 3, y: 7 }, { x: 5, y: 7 }, { x: 3, y: 9 }, { x: 5, y: 9 }];
+      const l1 = [
+        { x: 3, y: 3 }, { x: 5, y: 3 },
+        { x: 3, y: 5 }, { x: 5, y: 5 },
+        { x: 3, y: 7 }, { x: 5, y: 7 },
+        { x: 3, y: 9 }, { x: 5, y: 9 }
+      ];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
       return { id: 's_sailboat_mini', name: '작은 돛단배', icon: '🀄', layers: 2, slots };
     },
@@ -8822,14 +8873,26 @@
     s_rocket_mini: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (24개)
-      const l0 = [{ x: 4, y: 0 }, { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 0, y: 8 }, { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 }, { x: 0, y: 10 }, { x: 2, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 }, { x: 2, y: 12 }, { x: 4, y: 12 }, { x: 6, y: 12 }, { x: 4, y: 10 }, { x: 4, y: 8 }];
+      const l0 = [
+        { x: 4, y: 0 },
+        { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 },
+        { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 },
+        { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 },
+        { x: 0, y: 8 }, { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 },
+        { x: 0, y: 10 }, { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 },
+        { x: 2, y: 12 }, { x: 4, y: 12 }, { x: 6, y: 12 },
+        { x: 0, y: 12 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (10개)
-      const l1 = [{ x: 3, y: 1 }, { x: 5, y: 1 }, { x: 3, y: 3 }, { x: 5, y: 3 }, { x: 3, y: 5 }, { x: 5, y: 5 }, { x: 3, y: 7 }, { x: 5, y: 7 }, { x: 3, y: 9 }, { x: 5, y: 9 }];
+      const l1 = [
+        { x: 3, y: 1 }, { x: 5, y: 1 },
+        { x: 3, y: 3 }, { x: 5, y: 3 },
+        { x: 3, y: 5 }, { x: 5, y: 5 },
+        { x: 3, y: 7 }, { x: 5, y: 7 },
+        { x: 3, y: 9 }, { x: 5, y: 9 }
+      ];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
-      // 2층 (2개)
-      const l2 = [{ x: 3, y: 4 }, { x: 5, y: 4 }];
+      const l2 = [{ x: 3, y: 5 }, { x: 5, y: 5 }];
       l2.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 2 }));
       return { id: 's_rocket_mini', name: '꼬마 로켓', icon: '🀄', layers: 3, slots };
     },
@@ -8837,14 +8900,23 @@
     s_aegis_mini: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (24개)
-      const l0 = [{ x: 0, y: 0 }, { x: 2, y: 0 }, { x: 4, y: 0 }, { x: 6, y: 0 }, { x: 8, y: 0 }, { x: 0, y: 2 }, { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 }, { x: 0, y: 4 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 }, { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 }, { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 4, y: 10 }];
+      const l0 = [
+        { x: 0, y: 0 }, { x: 2, y: 0 }, { x: 4, y: 0 }, { x: 6, y: 0 }, { x: 8, y: 0 },
+        { x: 0, y: 2 }, { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 },
+        { x: 0, y: 4 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 },
+        { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 },
+        { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 },
+        { x: 4, y: 10 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (10개)
-      const l1 = [{ x: 3, y: 1 }, { x: 5, y: 1 }, { x: 3, y: 3 }, { x: 5, y: 3 }, { x: 3, y: 5 }, { x: 5, y: 5 }, { x: 3, y: 7 }, { x: 5, y: 7 }, { x: 2, y: 4 }, { x: 6, y: 4 }];
+      const l1 = [
+        { x: 3, y: 1 }, { x: 5, y: 1 },
+        { x: 3, y: 3 }, { x: 5, y: 3 },
+        { x: 1, y: 5 }, { x: 3, y: 5 }, { x: 5, y: 5 }, { x: 7, y: 5 },
+        { x: 3, y: 7 }, { x: 5, y: 7 }
+      ];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
-      // 2층 (2개)
-      const l2 = [{ x: 3, y: 4 }, { x: 5, y: 4 }];
+      const l2 = [{ x: 3, y: 5 }, { x: 5, y: 5 }];
       l2.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 2 }));
       return { id: 's_aegis_mini', name: '수호 방패', icon: '🀄', layers: 3, slots };
     },
@@ -8867,14 +8939,25 @@
     s_turtle_ship_mini: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (28개)
-      const l0 = [{ x: 4, y: 0 }, { x: 3, y: 1 }, { x: 5, y: 1 }, { x: 0, y: 2 }, { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 }, { x: 0, y: 4 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 }, { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 }, { x: 0, y: 8 }, { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 }, { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 2, y: 12 }, { x: 6, y: 12 }];
+      const l0 = [
+        { x: 2, y: 0 }, { x: 4, y: 0 }, { x: 6, y: 0 },
+        { x: 0, y: 2 }, { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 },
+        { x: 0, y: 4 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 },
+        { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 },
+        { x: 0, y: 8 }, { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 },
+        { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 },
+        { x: 2, y: 12 }, { x: 6, y: 12 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (10개)
-      const l1 = [{ x: 3, y: 3 }, { x: 5, y: 3 }, { x: 3, y: 5 }, { x: 5, y: 5 }, { x: 3, y: 7 }, { x: 5, y: 7 }, { x: 1, y: 4 }, { x: 7, y: 4 }, { x: 1, y: 6 }, { x: 7, y: 6 }];
+      const l1 = [
+        { x: 3, y: 3 }, { x: 5, y: 3 },
+        { x: 3, y: 5 }, { x: 5, y: 5 },
+        { x: 3, y: 7 }, { x: 5, y: 7 },
+        { x: 1, y: 5 }, { x: 7, y: 5 },
+        { x: 1, y: 7 }, { x: 7, y: 7 }
+      ];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
-      // 2층 (2개)
-      const l2 = [{ x: 3, y: 4 }, { x: 5, y: 4 }];
+      const l2 = [{ x: 3, y: 5 }, { x: 5, y: 5 }];
       l2.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 2 }));
       return { id: 's_turtle_ship_mini', name: '아기 거북선', icon: '🀄', layers: 3, slots };
     },
@@ -8900,17 +8983,28 @@
     s_pyramid_4tier: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (24개)
-      const l0 = [{ x: 0, y: 2 }, { x: 0, y: 4 }, { x: 0, y: 6 }, { x: 0, y: 8 }, { x: 0, y: 10 }, { x: 2, y: 2 }, { x: 2, y: 4 }, { x: 2, y: 6 }, { x: 2, y: 8 }, { x: 2, y: 10 }, { x: 4, y: 2 }, { x: 4, y: 4 }, { x: 4, y: 8 }, { x: 4, y: 10 }, { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 6, y: 10 }, { x: 8, y: 2 }, { x: 8, y: 4 }, { x: 8, y: 6 }, { x: 8, y: 8 }, { x: 8, y: 10 }];
+      const l0 = [
+        { x: 0, y: 2 }, { x: 0, y: 4 }, { x: 0, y: 6 }, { x: 0, y: 8 }, { x: 0, y: 10 },
+        { x: 2, y: 2 }, { x: 2, y: 4 }, { x: 2, y: 6 }, { x: 2, y: 8 }, { x: 2, y: 10 },
+        { x: 4, y: 2 }, { x: 4, y: 4 }, { x: 4, y: 8 }, { x: 4, y: 10 },
+        { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 6, y: 10 },
+        { x: 8, y: 2 }, { x: 8, y: 4 }, { x: 8, y: 6 }, { x: 8, y: 8 }, { x: 8, y: 10 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (12개)
-      const l1 = [{ x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 2, y: 6 }, { x: 6, y: 6 }, { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 3, y: 5 }, { x: 5, y: 5 }, { x: 3, y: 7 }, { x: 5, y: 7 }];
+      const l1 = [
+        { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 },
+        { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 },
+        { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 },
+        { x: 4, y: 2 }, { x: 4, y: 10 }, { x: 4, y: 0 }
+      ];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
-      // 2층 (6개)
-      const l2 = [{ x: 3, y: 5 }, { x: 5, y: 5 }, { x: 3, y: 7 }, { x: 5, y: 7 }, { x: 4, y: 5 }, { x: 4, y: 7 }];
+      const l2 = [
+        { x: 3, y: 5 }, { x: 5, y: 5 },
+        { x: 3, y: 7 }, { x: 5, y: 7 },
+        { x: 3, y: 9 }, { x: 5, y: 9 }
+      ];
       l2.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 2 }));
-      // 3층 (2개)
-      const l3 = [{ x: 3, y: 6 }, { x: 5, y: 6 }];
+      const l3 = [{ x: 3, y: 7 }, { x: 5, y: 7 }];
       l3.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 3 }));
       return { id: 's_pyramid_4tier', name: '4단 피라미드', icon: '🀄', layers: 4, slots };
     },
@@ -8933,17 +9027,31 @@
     s_obelisk_mini: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (26개)
-      const l0 = [{ x: 2, y: 0 }, { x: 4, y: 0 }, { x: 6, y: 0 }, { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 2, y: 12 }, { x: 4, y: 12 }, { x: 6, y: 12 }, { x: 0, y: 10 }, { x: 8, y: 10 }, { x: 0, y: 12 }, { x: 8, y: 12 }, { x: 4, y: 1 }];
+      const l0 = [
+        { x: 2, y: 0 }, { x: 4, y: 0 }, { x: 6, y: 0 },
+        { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 },
+        { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 },
+        { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 },
+        { x: 0, y: 8 }, { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 },
+        { x: 0, y: 10 }, { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 },
+        { x: 0, y: 12 }, { x: 2, y: 12 }, { x: 4, y: 12 }, { x: 6, y: 12 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (12개)
-      const l1 = [{ x: 3, y: 1 }, { x: 5, y: 1 }, { x: 3, y: 3 }, { x: 5, y: 3 }, { x: 3, y: 5 }, { x: 5, y: 5 }, { x: 3, y: 7 }, { x: 5, y: 7 }, { x: 3, y: 9 }, { x: 5, y: 9 }, { x: 3, y: 11 }, { x: 5, y: 11 }];
+      const l1 = [
+        { x: 3, y: 1 }, { x: 5, y: 1 },
+        { x: 3, y: 3 }, { x: 5, y: 3 },
+        { x: 3, y: 5 }, { x: 5, y: 5 },
+        { x: 3, y: 7 }, { x: 5, y: 7 },
+        { x: 3, y: 9 }, { x: 5, y: 9 },
+        { x: 3, y: 11 }, { x: 5, y: 11 }
+      ];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
-      // 2층 (4개)
-      const l2 = [{ x: 3, y: 2 }, { x: 5, y: 2 }, { x: 3, y: 4 }, { x: 5, y: 4 }];
+      const l2 = [
+        { x: 3, y: 3 }, { x: 5, y: 3 },
+        { x: 3, y: 5 }, { x: 5, y: 5 }
+      ];
       l2.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 2 }));
-      // 3층 (2개)
-      const l3 = [{ x: 3, y: 1 }, { x: 5, y: 1 }];
+      const l3 = [{ x: 3, y: 3 }, { x: 5, y: 3 }];
       l3.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 3 }));
       return { id: 's_obelisk_mini', name: '소형 오벨리스크', icon: '🀄', layers: 4, slots };
     },
@@ -9002,14 +9110,27 @@
     s_windmill_mini: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (32개)
-      const l0 = [{ x: 2, y: 4 }, { x: 2, y: 6 }, { x: 2, y: 8 }, { x: 2, y: 10 }, { x: 2, y: 12 }, { x: 4, y: 4 }, { x: 4, y: 6 }, { x: 4, y: 8 }, { x: 4, y: 10 }, { x: 4, y: 12 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 6, y: 10 }, { x: 6, y: 12 }, { x: 0, y: 2 }, { x: 2, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 }, { x: 4, y: 0 }, { x: 4, y: 2 }, { x: 0, y: 4 }, { x: 8, y: 4 }, { x: 0, y: 8 }, { x: 8, y: 8 }, { x: 0, y: 12 }, { x: 8, y: 12 }, { x: 1, y: 1 }, { x: 7, y: 1 }, { x: 1, y: 3 }, { x: 7, y: 3 }, { x: 4, y: 1 }];
+      const l0 = [
+        { x: 0, y: 0 }, { x: 4, y: 0 }, { x: 8, y: 0 },
+        { x: 0, y: 2 }, { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 },
+        { x: 0, y: 4 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 },
+        { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 },
+        { x: 0, y: 8 }, { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 },
+        { x: 0, y: 10 }, { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 },
+        { x: 2, y: 12 }, { x: 4, y: 12 }, { x: 6, y: 12 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (14개)
-      const l1 = [{ x: 2, y: 4 }, { x: 2, y: 6 }, { x: 2, y: 8 }, { x: 4, y: 4 }, { x: 4, y: 6 }, { x: 4, y: 8 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 1, y: 5 }, { x: 7, y: 5 }, { x: 4, y: 3 }, { x: 4, y: 9 }, { x: 4, y: 7 }];
+      const l1 = [
+        { x: 0, y: 4 }, { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 },
+        { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 },
+        { x: 0, y: 8 }, { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 },
+        { x: 4, y: 10 }, { x: 4, y: 2 }
+      ];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
-      // 2층 (4개)
-      const l2 = [{ x: 3, y: 5 }, { x: 5, y: 5 }, { x: 3, y: 7 }, { x: 5, y: 7 }];
+      const l2 = [
+        { x: 3, y: 5 }, { x: 5, y: 5 },
+        { x: 3, y: 7 }, { x: 5, y: 7 }
+      ];
       l2.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 2 }));
       return { id: 's_windmill_mini', name: '작은 풍차', icon: '🀄', layers: 3, slots };
     },
@@ -9035,16 +9156,27 @@
     s_observatory_mini: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (32개)
-      const l0 = [{ x: 0, y: 2 }, { x: 0, y: 4 }, { x: 0, y: 6 }, { x: 0, y: 8 }, { x: 0, y: 10 }, { x: 0, y: 12 }, { x: 2, y: 2 }, { x: 2, y: 4 }, { x: 2, y: 6 }, { x: 2, y: 8 }, { x: 2, y: 10 }, { x: 2, y: 12 }, { x: 4, y: 2 }, { x: 4, y: 4 }, { x: 4, y: 6 }, { x: 4, y: 8 }, { x: 4, y: 10 }, { x: 4, y: 12 }, { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 6, y: 10 }, { x: 6, y: 12 }, { x: 8, y: 2 }, { x: 8, y: 4 }, { x: 8, y: 6 }, { x: 8, y: 8 }, { x: 8, y: 10 }, { x: 8, y: 12 }, { x: 2, y: 0 }, { x: 6, y: 0 }];
+      const l0 = [
+        { x: 0, y: 2 }, { x: 0, y: 4 }, { x: 0, y: 6 }, { x: 0, y: 8 }, { x: 0, y: 10 }, { x: 0, y: 12 },
+        { x: 2, y: 2 }, { x: 2, y: 4 }, { x: 2, y: 6 }, { x: 2, y: 8 }, { x: 2, y: 10 }, { x: 2, y: 12 },
+        { x: 4, y: 2 }, { x: 4, y: 4 }, { x: 4, y: 6 }, { x: 4, y: 8 }, { x: 4, y: 10 }, { x: 4, y: 12 },
+        { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 6, y: 10 }, { x: 6, y: 12 },
+        { x: 8, y: 2 }, { x: 8, y: 4 }, { x: 8, y: 6 }, { x: 8, y: 8 }, { x: 8, y: 10 }, { x: 8, y: 12 },
+        { x: 2, y: 0 }, { x: 6, y: 0 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (14개)
-      const l1 = [{ x: 2, y: 2 }, { x: 2, y: 4 }, { x: 2, y: 6 }, { x: 2, y: 8 }, { x: 4, y: 2 }, { x: 4, y: 4 }, { x: 4, y: 6 }, { x: 4, y: 8 }, { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 4, y: 1 }, { x: 4, y: 9 }];
+      const l1 = [
+        { x: 2, y: 2 }, { x: 2, y: 4 }, { x: 2, y: 6 }, { x: 2, y: 8 },
+        { x: 4, y: 2 }, { x: 4, y: 4 }, { x: 4, y: 6 }, { x: 4, y: 8 },
+        { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 },
+        { x: 4, y: 0 }, { x: 4, y: 10 }
+      ];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
-      // 2층 (4개)
-      const l2 = [{ x: 3, y: 3 }, { x: 5, y: 3 }, { x: 3, y: 5 }, { x: 5, y: 5 }];
+      const l2 = [
+        { x: 3, y: 3 }, { x: 5, y: 3 },
+        { x: 3, y: 5 }, { x: 5, y: 5 }
+      ];
       l2.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 2 }));
-      // 3층 (2개)
       const l3 = [{ x: 3, y: 4 }, { x: 5, y: 4 }];
       l3.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 3 }));
       return { id: 's_observatory_mini', name: '미니 천문대', icon: '🀄', layers: 4, slots };
@@ -9071,19 +9203,32 @@
     s_tower_5tier: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (30개)
-      const l0 = [{ x: 0, y: 2 }, { x: 0, y: 4 }, { x: 0, y: 6 }, { x: 0, y: 8 }, { x: 0, y: 10 }, { x: 0, y: 12 }, { x: 2, y: 2 }, { x: 2, y: 4 }, { x: 2, y: 6 }, { x: 2, y: 8 }, { x: 2, y: 10 }, { x: 2, y: 12 }, { x: 4, y: 2 }, { x: 4, y: 4 }, { x: 4, y: 6 }, { x: 4, y: 8 }, { x: 4, y: 10 }, { x: 4, y: 12 }, { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 6, y: 10 }, { x: 6, y: 12 }, { x: 8, y: 2 }, { x: 8, y: 4 }, { x: 8, y: 6 }, { x: 8, y: 8 }, { x: 8, y: 10 }, { x: 8, y: 12 }];
+      const l0 = [
+        { x: 0, y: 2 }, { x: 0, y: 4 }, { x: 0, y: 6 }, { x: 0, y: 8 }, { x: 0, y: 10 }, { x: 0, y: 12 },
+        { x: 2, y: 2 }, { x: 2, y: 4 }, { x: 2, y: 6 }, { x: 2, y: 8 }, { x: 2, y: 10 }, { x: 2, y: 12 },
+        { x: 4, y: 2 }, { x: 4, y: 4 }, { x: 4, y: 6 }, { x: 4, y: 8 }, { x: 4, y: 10 }, { x: 4, y: 12 },
+        { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 6, y: 10 }, { x: 6, y: 12 },
+        { x: 8, y: 2 }, { x: 8, y: 4 }, { x: 8, y: 6 }, { x: 8, y: 8 }, { x: 8, y: 10 }, { x: 8, y: 12 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (14개)
-      const l1 = [{ x: 2, y: 4 }, { x: 2, y: 6 }, { x: 2, y: 8 }, { x: 2, y: 10 }, { x: 4, y: 4 }, { x: 4, y: 6 }, { x: 4, y: 8 }, { x: 4, y: 10 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 6, y: 10 }, { x: 4, y: 2 }, { x: 4, y: 2 }];
+      const l1 = [
+        { x: 2, y: 4 }, { x: 2, y: 6 }, { x: 2, y: 8 }, { x: 2, y: 10 },
+        { x: 4, y: 4 }, { x: 4, y: 6 }, { x: 4, y: 8 }, { x: 4, y: 10 },
+        { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 6, y: 10 },
+        { x: 4, y: 2 }, { x: 4, y: 12 }
+      ];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
-      // 2층 (6개)
-      const l2 = [{ x: 3, y: 5 }, { x: 5, y: 5 }, { x: 3, y: 7 }, { x: 5, y: 7 }, { x: 3, y: 9 }, { x: 5, y: 9 }];
+      const l2 = [
+        { x: 3, y: 5 }, { x: 5, y: 5 },
+        { x: 3, y: 7 }, { x: 5, y: 7 },
+        { x: 3, y: 9 }, { x: 5, y: 9 }
+      ];
       l2.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 2 }));
-      // 3층 (4개)
-      const l3 = [{ x: 3, y: 6 }, { x: 5, y: 6 }, { x: 3, y: 8 }, { x: 5, y: 8 }];
+      const l3 = [
+        { x: 3, y: 6 }, { x: 5, y: 6 },
+        { x: 3, y: 8 }, { x: 5, y: 8 }
+      ];
       l3.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 3 }));
-      // 4층 (2개)
       const l4 = [{ x: 3, y: 7 }, { x: 5, y: 7 }];
       l4.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 4 }));
       return { id: 's_tower_5tier', name: '5층 대탑', icon: '🀄', layers: 5, slots };
@@ -9092,19 +9237,34 @@
     s_eiffel_mini: () => {
       const slots = [];
       let nextId = 1;
-      // 0층 (30개)
-      const l0 = [{ x: 0, y: 6 }, { x: 2, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 }, { x: 0, y: 8 }, { x: 2, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 }, { x: 0, y: 10 }, { x: 2, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 }, { x: 0, y: 12 }, { x: 2, y: 12 }, { x: 6, y: 12 }, { x: 8, y: 12 }, { x: 4, y: 0 }, { x: 4, y: 2 }, { x: 4, y: 4 }, { x: 2, y: 4 }, { x: 6, y: 4 }, { x: 4, y: 6 }, { x: 2, y: 6 }, { x: 6, y: 6 }, { x: 1, y: 7 }, { x: 7, y: 7 }, { x: 3, y: 5 }, { x: 5, y: 5 }, { x: 1, y: 9 }, { x: 7, y: 9 }];
+      const l0 = [
+        { x: 0, y: 0 }, { x: 8, y: 0 },
+        { x: 0, y: 2 }, { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 },
+        { x: 2, y: 4 }, { x: 4, y: 4 }, { x: 6, y: 4 },
+        { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 },
+        { x: 0, y: 8 }, { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 },
+        { x: 0, y: 10 }, { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 },
+        { x: 0, y: 12 }, { x: 2, y: 12 }, { x: 4, y: 12 }, { x: 6, y: 12 }, { x: 8, y: 12 }
+      ];
       l0.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 0 }));
-      // 1층 (14개)
-      const l1 = [{ x: 2, y: 2 }, { x: 2, y: 4 }, { x: 2, y: 6 }, { x: 2, y: 8 }, { x: 4, y: 2 }, { x: 4, y: 4 }, { x: 4, y: 6 }, { x: 4, y: 8 }, { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 4, y: 10 }, { x: 4, y: 10 }];
+      const l1 = [
+        { x: 2, y: 2 }, { x: 2, y: 4 }, { x: 2, y: 6 }, { x: 2, y: 8 },
+        { x: 4, y: 2 }, { x: 4, y: 4 }, { x: 4, y: 6 }, { x: 4, y: 8 },
+        { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 },
+        { x: 4, y: 10 }, { x: 4, y: 0 }
+      ];
       l1.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 1 }));
-      // 2층 (6개)
-      const l2 = [{ x: 3, y: 3 }, { x: 5, y: 3 }, { x: 3, y: 5 }, { x: 5, y: 5 }, { x: 3, y: 7 }, { x: 5, y: 7 }];
+      const l2 = [
+        { x: 3, y: 3 }, { x: 5, y: 3 },
+        { x: 3, y: 5 }, { x: 5, y: 5 },
+        { x: 3, y: 7 }, { x: 5, y: 7 }
+      ];
       l2.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 2 }));
-      // 3층 (4개)
-      const l3 = [{ x: 3, y: 2 }, { x: 5, y: 2 }, { x: 3, y: 4 }, { x: 5, y: 4 }];
+      const l3 = [
+        { x: 3, y: 2 }, { x: 5, y: 2 },
+        { x: 3, y: 4 }, { x: 5, y: 4 }
+      ];
       l3.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 3 }));
-      // 4층 (2개)
       const l4 = [{ x: 3, y: 1 }, { x: 5, y: 1 }];
       l4.forEach(c => slots.push({ slotId: nextId, id: nextId++, x: c.x, y: c.y, z: 4 }));
       return { id: 's_eiffel_mini', name: '에펠탑 미니', icon: '🀄', layers: 5, slots };
@@ -11426,10 +11586,10 @@
         if (tile.removed) return false;
         const activeTiles = this.tiles.filter(t => !t.removed && t.id !== tile.id);
 
-        // 상위 층에 의해 덮여있는지 검사 (부동소수점 오차 방지: 0.05 여유)
+        // 상위 층에 의해 덮여있는지 검사 (물리 접촉 임계값 1.99)
         const covered = activeTiles.some(other => {
           if (other.z <= tile.z) return false;
-          return Math.abs(other.x - tile.x) < 1.95 && Math.abs(other.y - tile.y) < 1.95;
+          return Math.abs(other.x - tile.x) < 1.99 && Math.abs(other.y - tile.y) < 1.99;
         });
         if (covered) return false;
 
