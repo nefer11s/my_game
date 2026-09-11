@@ -3638,7 +3638,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.75
+            Si-Yeon Mahjong Solitaire v1.4.76
           </div>
         </div>
       </div>
@@ -3730,7 +3730,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.75</div>
+        <div class="splash-version-badge">v1.4.76</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -6749,14 +6749,431 @@
         ];
         l4.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 4 }));
         return { id: 'grand_palace', name: '황실 궁전탑', icon: '🏯', layers: 5, slots };
+      },
+
+      // 9. 미니 클로버 (쉬움 1~5판: 20슬롯, 2층)
+      clover_mini: () => {
+        const slots = [];
+        let nextId = 1;
+        const l0 = [
+          { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 2, y: 4 }, { x: 4, y: 4 },
+          { x: 8, y: 2 }, { x: 10, y: 2 }, { x: 8, y: 4 }, { x: 10, y: 4 },
+          { x: 2, y: 8 }, { x: 4, y: 8 }, { x: 2, y: 10 }, { x: 4, y: 10 },
+          { x: 8, y: 8 }, { x: 10, y: 8 }, { x: 8, y: 10 }, { x: 10, y: 10 }
+        ];
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+        const l1 = [
+          { x: 3, y: 3 }, { x: 9, y: 3 },
+          { x: 3, y: 9 }, { x: 9, y: 9 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+        return { id: 'clover_mini', name: '미니 클로버', icon: '🍀', layers: 2, slots };
+      },
+
+      // 10. 은빛 초승달 (쉬움 1~5판: 24슬롯, 2층)
+      crescent_mini: () => {
+        const slots = [];
+        let nextId = 1;
+        const l0 = [
+          { x: 6, y: 0 }, { x: 8, y: 0 },
+          { x: 4, y: 2 }, { x: 6, y: 2 },
+          { x: 2, y: 4 }, { x: 4, y: 4 },
+          { x: 2, y: 6 }, { x: 4, y: 6 },
+          { x: 2, y: 8 }, { x: 4, y: 8 },
+          { x: 4, y: 10 }, { x: 6, y: 10 },
+          { x: 6, y: 12 }, { x: 8, y: 12 },
+          { x: 8, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 8, y: 10 },
+          { x: 10, y: 6 }
+        ];
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+        const l1 = [
+          { x: 3, y: 5 }, { x: 3, y: 7 },
+          { x: 5, y: 3 }, { x: 5, y: 9 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+        return { id: 'crescent_mini', name: '은빛 초승달', icon: '🌙', layers: 2, slots };
+      },
+
+      // 11. 천상 능형 (쉬움/보통: 28슬롯, 3층)
+      diamond_mini: () => {
+        const slots = [];
+        let nextId = 1;
+        const l0 = [
+          { x: 6, y: 2 },
+          { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 },
+          { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 6, y: 6 }, { x: 8, y: 6 }, { x: 10, y: 6 },
+          { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 },
+          { x: 6, y: 10 },
+          { x: 0, y: 6 }, { x: 12, y: 6 },
+          { x: 2, y: 4 }, { x: 10, y: 4 },
+          { x: 2, y: 8 }, { x: 10, y: 8 },
+          { x: 6, y: 0 }
+        ];
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+        const l1 = [
+          { x: 5, y: 5 }, { x: 7, y: 5 },
+          { x: 5, y: 7 }, { x: 7, y: 7 },
+          { x: 3, y: 6 }, { x: 9, y: 6 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+        const l2 = [
+          { x: 6, y: 5 }, { x: 6, y: 7 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+        return { id: 'diamond_mini', name: '천상 능형', icon: '💎', layers: 3, slots };
+      },
+
+      // 12. 성좌 소십자 (쉬움/보통: 32슬롯, 3층)
+      star_cross_small: () => {
+        const slots = [];
+        let nextId = 1;
+        const l0 = [
+          { x: 6, y: 0 }, { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 6, y: 10 }, { x: 6, y: 12 },
+          { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 4, y: 6 }, { x: 8, y: 6 }, { x: 10, y: 6 }, { x: 12, y: 6 },
+          { x: 4, y: 4 }, { x: 8, y: 4 }, { x: 4, y: 8 }, { x: 8, y: 8 },
+          { x: 4, y: 2 }, { x: 8, y: 2 }, { x: 4, y: 10 }, { x: 8, y: 10 },
+          { x: 2, y: 4 }, { x: 10, y: 4 }, { x: 6, y: 14 }
+        ];
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+        const l1 = [
+          { x: 5, y: 5 }, { x: 7, y: 5 },
+          { x: 5, y: 7 }, { x: 7, y: 7 },
+          { x: 6, y: 5 }, { x: 6, y: 7 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+        const l2 = [
+          { x: 6, y: 6 }, { x: 6, y: 8 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+        return { id: 'star_cross_small', name: '성좌 소십자', icon: '✝️', layers: 3, slots };
+      },
+
+      // 13. 비상 봉황 (보통/어려움: 46슬롯, 3층)
+      phoenix: () => {
+        const slots = [];
+        let nextId = 1;
+        const l0 = [
+          { x: 6, y: 2 }, { x: 6, y: 4 }, { x: 6, y: 6 }, { x: 6, y: 8 }, { x: 6, y: 10 },
+          { x: 4, y: 2 }, { x: 2, y: 2 }, { x: 0, y: 0 },
+          { x: 4, y: 4 }, { x: 2, y: 4 }, { x: 0, y: 4 },
+          { x: 4, y: 6 }, { x: 2, y: 6 },
+          { x: 8, y: 2 }, { x: 10, y: 2 }, { x: 12, y: 0 },
+          { x: 8, y: 4 }, { x: 10, y: 4 }, { x: 12, y: 4 },
+          { x: 8, y: 6 }, { x: 10, y: 6 },
+          { x: 4, y: 10 }, { x: 8, y: 10 },
+          { x: 2, y: 12 }, { x: 6, y: 12 }, { x: 10, y: 12 },
+          { x: 4, y: 12 }, { x: 8, y: 12 },
+          { x: 0, y: 14 }, { x: 12, y: 14 },
+          { x: 6, y: 0 }, { x: 6, y: 14 }
+        ];
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+        const l1 = [
+          { x: 3, y: 3 }, { x: 5, y: 3 }, { x: 7, y: 3 }, { x: 9, y: 3 },
+          { x: 3, y: 5 }, { x: 5, y: 5 }, { x: 7, y: 5 }, { x: 9, y: 5 },
+          { x: 6, y: 7 }, { x: 6, y: 9 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+        const l2 = [
+          { x: 4, y: 4 }, { x: 8, y: 4 },
+          { x: 6, y: 4 }, { x: 6, y: 6 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+        return { id: 'phoenix', name: '비상 봉황', icon: '🪶', layers: 3, slots };
+      },
+
+      // 14. 시간의 모래시계 (보통/어려움: 48슬롯, 3층)
+      hourglass: () => {
+        const slots = [];
+        let nextId = 1;
+        const l0 = [
+          { x: 0, y: 0 }, { x: 2, y: 0 }, { x: 4, y: 0 }, { x: 6, y: 0 }, { x: 8, y: 0 }, { x: 10, y: 0 }, { x: 12, y: 0 },
+          { x: 2, y: 2 }, { x: 4, y: 2 }, { x: 6, y: 2 }, { x: 8, y: 2 }, { x: 10, y: 2 },
+          { x: 4, y: 4 }, { x: 6, y: 4 }, { x: 8, y: 4 },
+          { x: 5, y: 6 }, { x: 7, y: 6 },
+          { x: 4, y: 8 }, { x: 6, y: 8 }, { x: 8, y: 8 },
+          { x: 2, y: 10 }, { x: 4, y: 10 }, { x: 6, y: 10 }, { x: 8, y: 10 }, { x: 10, y: 10 },
+          { x: 0, y: 12 }, { x: 2, y: 12 }, { x: 4, y: 12 }, { x: 6, y: 12 }, { x: 8, y: 12 }, { x: 10, y: 12 }, { x: 12, y: 12 },
+          { x: 0, y: 2 }, { x: 12, y: 2 }, { x: 0, y: 10 }, { x: 12, y: 10 }
+        ];
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+        const l1 = [
+          { x: 3, y: 1 }, { x: 5, y: 1 }, { x: 7, y: 1 }, { x: 9, y: 1 },
+          { x: 3, y: 11 }, { x: 5, y: 11 }, { x: 7, y: 11 }, { x: 9, y: 11 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+        const l2 = [
+          { x: 6, y: 2 }, { x: 6, y: 4 },
+          { x: 6, y: 8 }, { x: 6, y: 10 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+        return { id: 'hourglass', name: '시간의 모래시계', icon: '⏳', layers: 3, slots };
+      },
+
+      // 15. 등용문 (보통/어려움: 52슬롯, 4층)
+      dragon_gate: () => {
+        const slots = [];
+        let nextId = 1;
+        const l0 = [
+          { x: 0, y: 2 }, { x: 2, y: 2 }, { x: 4, y: 2 },
+          { x: 0, y: 4 }, { x: 2, y: 4 }, { x: 4, y: 4 },
+          { x: 0, y: 6 }, { x: 2, y: 6 }, { x: 4, y: 6 },
+          { x: 0, y: 8 }, { x: 2, y: 8 }, { x: 4, y: 8 },
+          { x: 0, y: 10 }, { x: 2, y: 10 }, { x: 4, y: 10 },
+          { x: 8, y: 2 }, { x: 10, y: 2 }, { x: 12, y: 2 },
+          { x: 8, y: 4 }, { x: 10, y: 4 }, { x: 12, y: 4 },
+          { x: 8, y: 6 }, { x: 10, y: 6 }, { x: 12, y: 6 },
+          { x: 8, y: 8 }, { x: 10, y: 8 }, { x: 12, y: 8 },
+          { x: 8, y: 10 }, { x: 10, y: 10 }, { x: 12, y: 10 },
+          { x: 6, y: 0 }, { x: 6, y: 2 },
+          { x: 6, y: 10 }, { x: 6, y: 12 },
+          { x: 2, y: 0 }, { x: 10, y: 0 }
+        ];
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+        const l1 = [
+          { x: 1, y: 3 }, { x: 3, y: 3 }, { x: 9, y: 3 }, { x: 11, y: 3 },
+          { x: 1, y: 9 }, { x: 3, y: 9 }, { x: 9, y: 9 }, { x: 11, y: 9 },
+          { x: 5, y: 1 }, { x: 7, y: 1 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+        const l2 = [
+          { x: 2, y: 3 }, { x: 10, y: 3 },
+          { x: 6, y: 1 }, { x: 6, y: 3 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+        const l3 = [
+          { x: 5, y: 2 }, { x: 7, y: 2 }
+        ];
+        l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
+        return { id: 'dragon_gate', name: '등용문', icon: '⛩️', layers: 4, slots };
+      },
+
+      // 16. 천공의 회랑 (어려움/달인: 56슬롯, 4층)
+      colonnade: () => {
+        const slots = [];
+        let nextId = 1;
+        const l0 = [];
+        for (let y = 0; y <= 10; y += 2) {
+          l0.push({ x: 1, y }, { x: 3, y }, { x: 9, y }, { x: 11, y });
+        }
+        l0.push({ x: 5, y: 0 }, { x: 7, y: 0 });
+        l0.push({ x: 5, y: 4 }, { x: 7, y: 4 });
+        l0.push({ x: 5, y: 6 }, { x: 7, y: 6 });
+        l0.push({ x: 5, y: 10 }, { x: 7, y: 10 });
+        l0.push({ x: 5, y: 2 }, { x: 7, y: 2 }, { x: 5, y: 8 }, { x: 7, y: 8 });
+        l0.push({ x: 3, y: 12 }, { x: 9, y: 12 });
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+
+        const l1 = [
+          { x: 2, y: 1 }, { x: 2, y: 5 }, { x: 2, y: 9 },
+          { x: 10, y: 1 }, { x: 10, y: 5 }, { x: 10, y: 9 },
+          { x: 6, y: 1 }, { x: 6, y: 3 }, { x: 6, y: 5 }, { x: 6, y: 7 }, { x: 6, y: 9 }, { x: 6, y: 11 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+
+        const l2 = [
+          { x: 2, y: 5 }, { x: 10, y: 5 },
+          { x: 6, y: 4 }, { x: 6, y: 6 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+
+        const l3 = [
+          { x: 6, y: 5 }, { x: 6, y: 7 }
+        ];
+        l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
+        return { id: 'colonnade', name: '천공의 회랑', icon: '🏛️', layers: 4, slots };
+      },
+
+      // 17. 만리장성 대관문 (어려움/달인: 62슬롯, 5층)
+      great_wall: () => {
+        const slots = [];
+        let nextId = 1;
+        const l0 = [];
+        for (let x = 0; x <= 14; x += 2) {
+          l0.push({ x, y: 2 }, { x, y: 4 }, { x, y: 8 }, { x, y: 10 });
+        }
+        l0.push({ x: 0, y: 0 }, { x: 14, y: 0 }, { x: 0, y: 12 }, { x: 14, y: 12 });
+        l0.push({ x: 2, y: 0 }, { x: 12, y: 0 }, { x: 2, y: 12 }, { x: 12, y: 12 });
+        l0.push({ x: 6, y: 6 }, { x: 8, y: 6 });
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+
+        const l1 = [];
+        for (let x = 1; x <= 11; x += 2) {
+          l1.push({ x, y: 3 }, { x, y: 9 });
+        }
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+
+        const l2 = [
+          { x: 5, y: 5 }, { x: 9, y: 5 },
+          { x: 5, y: 7 }, { x: 9, y: 7 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+
+        const l3 = [
+          { x: 7, y: 5 }, { x: 7, y: 7 }
+        ];
+        l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
+
+        const l4 = [
+          { x: 6, y: 6 }, { x: 8, y: 6 }
+        ];
+        l4.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 4 }));
+        return { id: 'great_wall', name: '만리장성 대관문', icon: '🧱', layers: 5, slots };
+      },
+
+      // 18. 사찰 대웅전 (보통/어려움/달인: 64슬롯, 5층)
+      temple: () => {
+        const slots = [];
+        let nextId = 1;
+        const l0 = [];
+        for (let x = 0; x <= 14; x += 2) {
+          for (let y = 2; y <= 10; y += 2) {
+            l0.push({ x, y });
+          }
+        }
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+
+        const l1 = [
+          { x: 1, y: 3 }, { x: 3, y: 3 }, { x: 5, y: 3 }, { x: 7, y: 3 }, { x: 9, y: 3 }, { x: 11, y: 3 }, { x: 13, y: 3 },
+          { x: 1, y: 9 }, { x: 3, y: 9 }, { x: 5, y: 9 }, { x: 7, y: 9 }, { x: 9, y: 9 }, { x: 11, y: 9 }, { x: 13, y: 9 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+
+        const l2 = [
+          { x: 3, y: 6 }, { x: 5, y: 6 }, { x: 7, y: 6 }, { x: 9, y: 6 }, { x: 11, y: 6 },
+          { x: 7, y: 4 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+
+        const l3 = [
+          { x: 6, y: 6 }, { x: 8, y: 6 }
+        ];
+        l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
+
+        const l4 = [
+          { x: 7, y: 5 }, { x: 7, y: 7 }
+        ];
+        l4.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 4 }));
+        return { id: 'temple', name: '사찰 대웅전', icon: '🏛️', layers: 5, slots };
+      },
+
+      // 19. 건곤 8괘 대천궁 (어려움/달인: 72슬롯, 5층)
+      bagua_grand: () => {
+        const slots = [];
+        let nextId = 1;
+        const l0 = [];
+        for (let x = 2; x <= 12; x += 2) {
+          l0.push({ x, y: 0 }, { x, y: 12 });
+        }
+        for (let y = 2; y <= 10; y += 2) {
+          l0.push({ x: 0, y }, { x: 14, y });
+        }
+        for (let x = 4; x <= 10; x += 2) {
+          for (let y = 4; y <= 8; y += 2) {
+            l0.push({ x, y });
+          }
+        }
+        l0.push({ x: 2, y: 2 }, { x: 12, y: 2 }, { x: 2, y: 10 }, { x: 12, y: 10 });
+        l0.push({ x: 6, y: 2 }, { x: 8, y: 2 }, { x: 6, y: 10 }, { x: 8, y: 10 });
+        l0.push({ x: 2, y: 6 }, { x: 12, y: 6 });
+        l0.push({ x: 4, y: 2 }, { x: 10, y: 2 }, { x: 4, y: 10 }, { x: 10, y: 10 });
+        l0.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 0 }));
+
+        const l1 = [
+          { x: 3, y: 3 }, { x: 5, y: 1 }, { x: 9, y: 1 }, { x: 11, y: 3 },
+          { x: 1, y: 5 }, { x: 13, y: 5 }, { x: 1, y: 7 }, { x: 13, y: 7 },
+          { x: 3, y: 9 }, { x: 5, y: 11 }, { x: 9, y: 11 }, { x: 11, y: 9 },
+          { x: 5, y: 5 }, { x: 9, y: 5 }, { x: 5, y: 7 }, { x: 9, y: 7 }
+        ];
+        l1.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 1 }));
+
+        const l2 = [
+          { x: 6, y: 4 }, { x: 8, y: 4 },
+          { x: 6, y: 8 }, { x: 8, y: 8 }
+        ];
+        l2.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 2 }));
+
+        const l3 = [
+          { x: 6, y: 6 }, { x: 8, y: 6 }
+        ];
+        l3.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 3 }));
+
+        const l4 = [
+          { x: 7, y: 5 }, { x: 7, y: 7 }
+        ];
+        l4.forEach(c => slots.push({ slotId: nextId++, x: c.x, y: c.y, z: 4 }));
+        return { id: 'bagua_grand', name: '건곤 8괘 대천궁', icon: '☯️', layers: 5, slots };
+      },
+
+      // 20. 천하통일 구룡 천궁탑 (달인 30판 보스전: 100슬롯, 6층)
+      nine_dragons: () => {
+        const slots = [];
+        let nextId = 1;
+        for (let x = 0; x <= 14; x += 2) {
+          for (let y = 0; y <= 12; y += 2) {
+            slots.push({ slotId: nextId++, x, y, z: 0 });
+          }
+        }
+        for (let x = 2; x <= 12; x += 2) {
+          for (let y = 2; y <= 10; y += 2) {
+            if (!(x === 6 && y === 6) && !(x === 8 && y === 6)) {
+              slots.push({ slotId: nextId++, x, y, z: 1 });
+            }
+          }
+        }
+        for (let x = 4; x <= 10; x += 2) {
+          slots.push({ slotId: nextId++, x, y: 4, z: 2 });
+          slots.push({ slotId: nextId++, x, y: 8, z: 2 });
+        }
+        slots.push({ slotId: nextId++, x: 5, y: 5, z: 3 });
+        slots.push({ slotId: nextId++, x: 9, y: 5, z: 3 });
+        slots.push({ slotId: nextId++, x: 5, y: 7, z: 3 });
+        slots.push({ slotId: nextId++, x: 9, y: 7, z: 3 });
+        slots.push({ slotId: nextId++, x: 6, y: 6, z: 4 });
+        slots.push({ slotId: nextId++, x: 8, y: 6, z: 4 });
+        slots.push({ slotId: nextId++, x: 7, y: 5, z: 5 });
+        slots.push({ slotId: nextId++, x: 7, y: 7, z: 5 });
+
+        return { id: 'nine_dragons', name: '천하통일 구룡 천궁탑', icon: '🐉', layers: 6, slots };
       }
     };
 
+    /**
+     * 난이도 x 판수(Tier 1~4) 2차원 프로그레시브 레이아웃 매트릭스 (총 20종)
+     */
+    const DIFFICULTY_PROGRESSIVE_POOLS = {
+      easy: {
+        1: ['clover_mini', 'crescent_mini'],
+        2: ['diamond_mini', 'star_cross_small'],
+        3: ['mini_turtle', 'star_cross', 'twin_peaks'],
+        4: ['phoenix', 'butterfly', 'hourglass']
+      },
+      normal: {
+        1: ['diamond_mini', 'star_cross_small', 'mini_turtle'],
+        2: ['star_cross', 'twin_peaks', 'phoenix', 'butterfly', 'hourglass'],
+        3: ['fortress', 'dragon_gate', 'colonnade', 'grand_palace'],
+        4: ['classic_turtle', 'pagoda', 'great_wall', 'temple']
+      },
+      hard: {
+        1: ['mini_turtle', 'star_cross', 'twin_peaks', 'phoenix'],
+        2: ['butterfly', 'hourglass', 'fortress', 'dragon_gate', 'colonnade'],
+        3: ['classic_turtle', 'pagoda', 'grand_palace', 'great_wall', 'temple'],
+        4: ['temple', 'great_wall', 'bagua_grand']
+      },
+      master: {
+        1: ['phoenix', 'butterfly', 'hourglass', 'fortress', 'dragon_gate'],
+        2: ['classic_turtle', 'pagoda', 'colonnade', 'grand_palace', 'great_wall'],
+        3: ['temple', 'great_wall', 'bagua_grand'],
+        4: ['grand_palace', 'great_wall', 'bagua_grand'],
+        boss: 'nine_dragons'
+      }
+    };
+
+    // 레거시 호환용 전체 평탄화 풀
     const DIFFICULTY_LAYOUT_POOLS = {
-      easy: ['mini_turtle', 'star_cross', 'twin_peaks'],
-      normal: ['classic_turtle', 'butterfly', 'fortress', 'twin_peaks'],
-      hard: ['pagoda', 'fortress', 'classic_turtle', 'butterfly'],
-      master: ['grand_palace', 'pagoda', 'fortress', 'classic_turtle']
+      easy: ['clover_mini', 'crescent_mini', 'diamond_mini', 'star_cross_small', 'mini_turtle', 'star_cross', 'twin_peaks', 'phoenix', 'butterfly', 'hourglass'],
+      normal: ['diamond_mini', 'star_cross_small', 'mini_turtle', 'star_cross', 'twin_peaks', 'phoenix', 'butterfly', 'hourglass', 'fortress', 'dragon_gate', 'colonnade', 'grand_palace', 'classic_turtle', 'pagoda', 'great_wall', 'temple'],
+      hard: ['mini_turtle', 'star_cross', 'twin_peaks', 'phoenix', 'butterfly', 'hourglass', 'fortress', 'dragon_gate', 'colonnade', 'classic_turtle', 'pagoda', 'grand_palace', 'great_wall', 'temple', 'bagua_grand'],
+      master: ['phoenix', 'butterfly', 'hourglass', 'fortress', 'dragon_gate', 'classic_turtle', 'pagoda', 'colonnade', 'grand_palace', 'great_wall', 'temple', 'bagua_grand', 'nine_dragons']
     };
 
     /**
@@ -6865,25 +7282,56 @@
       }
 
       /**
-       * 현재 난이도 풀에서 직전 판과 중복되지 않도록 레이아웃 랜덤 추첨
+       * 난이도 x 판수 기반 2차원 프로그레시브 & 무중복 Bag Random 레이아웃 추첨기
        */
       pickRandomLayout() {
         const isMobile = window.innerWidth < 680;
         const isPortrait = window.innerWidth < window.innerHeight;
+        const stage = this.currentStage || 1;
+        const diff = this.difficulty || 'normal';
 
-        const pool = DIFFICULTY_LAYOUT_POOLS[this.difficulty] || DIFFICULTY_LAYOUT_POOLS.normal;
-        let candidates = pool.filter(id => id !== this.lastLayoutId);
-        if (candidates.length === 0) candidates = pool;
-
-        // 모바일 세로 화면(Portrait): 가로 10열 초과 레이아웃(classic_turtle)을 배제하고 max 7~8열 세로 최적 레이아웃 우선 배정
-        if (isMobile && isPortrait) {
-          const portraitPool = candidates.filter(id => id !== 'classic_turtle');
-          if (portraitPool.length > 0) candidates = portraitPool;
+        // 1. 달인 모드 제 30판 최종 보스전: 천하통일 구룡 천궁탑(100슬롯 6층 탑) 고정
+        if (diff === 'master' && stage >= 30) {
+          this.lastLayoutId = 'nine_dragons';
+          return LAYOUT_REGISTRY['nine_dragons']();
         }
 
-        const chosenId = candidates[Math.floor(Math.random() * candidates.length)];
+        // 2. 현재 판수 기준 티어 계산 (1~5판: Tier 1 / 6~15판: Tier 2 / 16~25판: Tier 3 / 26~30판: Tier 4)
+        const tier = stage <= 5 ? 1 : (stage <= 15 ? 2 : (stage <= 25 ? 3 : 4));
+        const diffPools = DIFFICULTY_PROGRESSIVE_POOLS[diff] || DIFFICULTY_PROGRESSIVE_POOLS.normal;
+        let tierPool = (diffPools[tier] && diffPools[tier].length > 0) ? diffPools[tier] : diffPools[1];
+
+        // 3. 모바일 세로 화면(Portrait): 가로 18칸 대형 레이아웃(classic_turtle) 대체 필터링
+        if (isMobile && isPortrait) {
+          const portraitTier = tierPool.filter(id => id !== 'classic_turtle');
+          if (portraitTier.length > 0) tierPool = portraitTier;
+        }
+
+        // 4. Bag Random(무중복 순환 가방) 시스템: 같은 티어 내에서 한 사이클 동안 모든 레이아웃이 무중복 소진
+        this.layoutBags = this.layoutBags || {};
+        const bagKey = `${diff}_${tier}`;
+        if (!this.layoutBags[bagKey] || this.layoutBags[bagKey].length === 0) {
+          // 티어 풀 셔플하여 새 가방 장전
+          const shuffled = [...tierPool];
+          for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+          }
+          // 직전 판의 레이아웃과 바로 연속 중복되지 않도록 방어
+          if (shuffled.length > 1 && shuffled[shuffled.length - 1] === this.lastLayoutId) {
+            const swapIdx = Math.floor(Math.random() * (shuffled.length - 1));
+            [shuffled[shuffled.length - 1], shuffled[swapIdx]] = [shuffled[swapIdx], shuffled[shuffled.length - 1]];
+          }
+          this.layoutBags[bagKey] = shuffled;
+        }
+
+        let chosenId = this.layoutBags[bagKey].pop();
+        if (!chosenId || !LAYOUT_REGISTRY[chosenId]) {
+          chosenId = tierPool[0] || 'mini_turtle';
+        }
+
         this.lastLayoutId = chosenId;
-        const builder = LAYOUT_REGISTRY[chosenId] || LAYOUT_REGISTRY.pagoda;
+        const builder = LAYOUT_REGISTRY[chosenId] || LAYOUT_REGISTRY.mini_turtle;
         return builder();
       }
 
