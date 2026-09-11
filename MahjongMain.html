@@ -7206,7 +7206,11 @@
 
         // 레이아웃 동적 관리 및 화면 크기
         this.currentLayout = null;
-        this.lastLayoutId = null;
+        try {
+          this.lastLayoutId = localStorage.getItem('siyeon_mahjong_last_layout') || null;
+        } catch (e) {
+          this.lastLayoutId = null;
+        }
         this.currentLayoutWidth = 730;
         this.currentLayoutHeight = 545;
         this.currentLayoutBounds = null;
@@ -7283,7 +7287,7 @@
       }
 
       /**
-       * 난이도 x 판수 기반 2차원 프로그레시브 & 무중복 Bag Random 레이아웃 추첨기
+       * 난이도 x 판수 기반 2차원 프로그레시브 & 직전 레이아웃 연속 중복 0% 보장 Bag Random 추첨기
        */
       pickRandomLayout() {
         const isMobile = window.innerWidth < 680;
@@ -7294,6 +7298,7 @@
         // 1. 달인 모드 제 30판 최종 보스전: 천하통일 구룡 천궁탑(100슬롯 6층 탑) 고정
         if (diff === 'master' && stage >= 30) {
           this.lastLayoutId = 'nine_dragons';
+          try { localStorage.setItem('siyeon_mahjong_last_layout', 'nine_dragons'); } catch (e) { }
           return LAYOUT_REGISTRY['nine_dragons']();
         }
 
@@ -7318,20 +7323,35 @@
             const j = Math.floor(Math.random() * (i + 1));
             [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
           }
-          // 직전 판의 레이아웃과 바로 연속 중복되지 않도록 방어
-          if (shuffled.length > 1 && shuffled[shuffled.length - 1] === this.lastLayoutId) {
-            const swapIdx = Math.floor(Math.random() * (shuffled.length - 1));
-            [shuffled[shuffled.length - 1], shuffled[swapIdx]] = [shuffled[swapIdx], shuffled[shuffled.length - 1]];
-          }
           this.layoutBags[bagKey] = shuffled;
         }
 
         let chosenId = this.layoutBags[bagKey].pop();
+
+        // 5. 직전 레이아웃 연속 중복 절대 방지 철벽 가드 (후보군이 2개 이상일 때 100% 무중복 보장)
+        if (chosenId === this.lastLayoutId && tierPool.length > 1) {
+          if (this.layoutBags[bagKey] && this.layoutBags[bagKey].length > 0) {
+            // 가방에 다른 후보가 남아있다면 즉시 스왑
+            const altIdx = Math.floor(Math.random() * this.layoutBags[bagKey].length);
+            const alt = this.layoutBags[bagKey][altIdx];
+            this.layoutBags[bagKey][altIdx] = chosenId;
+            chosenId = alt;
+          } else {
+            // 가방에 남은 것이 없다면 직전 레이아웃을 제외한 풀에서 선별
+            const others = tierPool.filter(id => id !== this.lastLayoutId);
+            if (others.length > 0) {
+              chosenId = others[Math.floor(Math.random() * others.length)];
+            }
+          }
+        }
+
         if (!chosenId || !LAYOUT_REGISTRY[chosenId]) {
-          chosenId = tierPool[0] || 'mini_turtle';
+          const fallbackList = tierPool.filter(id => id !== this.lastLayoutId);
+          chosenId = fallbackList[0] || tierPool[0] || 'mini_turtle';
         }
 
         this.lastLayoutId = chosenId;
+        try { localStorage.setItem('siyeon_mahjong_last_layout', chosenId); } catch (e) { }
         const builder = LAYOUT_REGISTRY[chosenId] || LAYOUT_REGISTRY.mini_turtle;
         return builder();
       }
