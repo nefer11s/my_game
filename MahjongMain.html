@@ -4226,7 +4226,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.5.1
+            Si-Yeon Mahjong Solitaire v1.5.2
           </div>
         </div>
       </div>
@@ -4318,7 +4318,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.5.1</div>
+        <div class="splash-version-badge">v1.5.2</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -10380,6 +10380,8 @@
         if (btnOryongMode) {
           btnOryongMode.addEventListener('click', () => {
             this.sound.playSelect();
+            this.enterFullscreen();
+            this.hideSplashScreen();
             this._applyTheme('oryong');
             this.difficulty = 'normal';
             try { localStorage.setItem('siyeon_mahjong_difficulty', 'normal'); } catch(e) {}
@@ -10388,6 +10390,7 @@
             updateThemeRadioUI();
             updateDifficultySelectLabels();
             this.currentStage = 1;
+            this.hasStarted = true;
             this.startNewGame(false);
             this.showFloatingNotice('🐲 오룡이 테마 보통 모드 시작!');
           });
@@ -10459,12 +10462,15 @@
             const theme = btn.dataset.theme;
             if (theme === this.activeTheme) return;
             this.sound.playSelect();
+            this.enterFullscreen();
+            this.hideSplashScreen();
             this._applyTheme(theme);
             updateThemeRadioUI();
             updateDifficultySelectLabels();
             if (window.tileGalleryManager) window.tileGalleryManager.rebuildGallery();
             const names = { classic: '🀄 전통 마작', saju: '☯️ 명리학', oryong: '🐲 오룡이' };
             this.showFloatingNotice(`${names[theme] || theme} 테마로 변경되었습니다.`);
+            this.hasStarted = true;
             this.startNewGame(false);
           });
         });
@@ -10699,11 +10705,11 @@
           const targetStage = Math.max(1, parseInt(warpStageInput ? warpStageInput.value : 1, 10) || 1);
 
           this.sound.playMatch();
+          this.enterFullscreen();
           if (stageWarpModal) stageWarpModal.classList.remove('active');
 
           // 스플래시 화면이 아직 켜져 있는 상태라면 스플래시 즉시 제거
-          const splashScreen = document.getElementById('splash-screen');
-          if (splashScreen) splashScreen.classList.remove('active');
+          this.hideSplashScreen();
 
           // 목표 난이도 및 스테이지 적용
           this.difficulty = targetDiff;
@@ -10757,6 +10763,8 @@
               if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
             }
             if (confirm(`현재 제 ${this.currentStage}판 진행 기록을 초기화하고 제 1판부터 다시 시작하시겠습니까?`)) {
+              this.enterFullscreen();
+              this.hideSplashScreen();
               this.clearSavedProgress();
               this.currentStage = 1;
               this.score = 0;
@@ -11234,6 +11242,8 @@
 
       setDifficulty(diffKey) {
         if (!DIFFICULTY_CONFIG[diffKey]) return;
+        this.enterFullscreen();
+        this.hideSplashScreen();
         this.difficulty = diffKey;
         try {
           localStorage.setItem('siyeon_mahjong_difficulty', diffKey);
@@ -11242,6 +11252,7 @@
         this.clearSavedProgress();
         const selectEl = document.getElementById('select-difficulty');
         if (selectEl) selectEl.value = diffKey;
+        this.hasStarted = true;
         this.startNewGame();
       }
 
@@ -11702,6 +11713,10 @@
 
       startNewGame(keepScore = false) {
         this.sound.init();
+        if (this.hasStarted) {
+          this.enterFullscreen();
+          this.hideSplashScreen();
+        }
         clearInterval(this.timerId);
         this.timerSeconds = 0;
         document.getElementById('stat-time').textContent = '00:00';
@@ -11800,6 +11815,10 @@
        */
       restartCurrentGame() {
         this.sound.init();
+        if (this.hasStarted) {
+          this.enterFullscreen();
+          this.hideSplashScreen();
+        }
         clearInterval(this.timerId);
         this.timerSeconds = 0;
         document.getElementById('stat-time').textContent = '00:00';
