@@ -3392,7 +3392,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
       background: rgba(10, 25, 18, 0.65);
@@ -3404,7 +3404,9 @@
       transition: opacity 0.16s ease;
     }
     .senior-inspect-popup.active {
+      display: flex !important;
       opacity: 1;
+      pointer-events: auto;
     }
     .senior-inspect-card {
       background: linear-gradient(135deg, #ffffff 0%, #f4faf6 100%);
@@ -9758,12 +9760,16 @@
       }
 
       /**
-       * 시니어 돋보기 모드 UI 가시성 및 상태 동기화
+       * 시니어 돋보기 모드 UI 가시성 및 상태 동기화 (옵션 전환 시 잔여 UI 완벽 청소)
        */
       updateSeniorModeUI() {
+        // 1. 기존에 떠 있던 롱프레스 팝업 무조건 닫기
+        this.hideSeniorPopup();
+
         const hudBar = document.getElementById('senior-hud-bar');
         if (hudBar) {
           if (this.seniorMode === 'hud') {
+            // HUD 모드: 상단 바 노출
             hudBar.classList.remove('hidden');
             if (this._seniorSelectedTile && !this._seniorSelectedTile.removed) {
               this.showSeniorHud(this._seniorSelectedTile);
@@ -9771,9 +9777,12 @@
               this.resetSeniorHudDefault();
             }
           } else {
+            // longpress 또는 off 모드: 상단 바 완전 숨김 및 포커스 해제
             hudBar.classList.add('hidden');
             this.clearSeniorFocus();
           }
+        } else {
+          this.clearSeniorFocus();
         }
         this.handleResize(false);
       }
@@ -9927,7 +9936,9 @@
        */
       hideSeniorPopup() {
         const popup = document.getElementById('senior-inspect-popup');
+        const slot = document.getElementById('senior-popup-tile-slot');
         if (popup) popup.classList.remove('active');
+        if (slot) slot.innerHTML = '';
       }
 
       /**
@@ -10800,15 +10811,15 @@
 
             if (this.gestureCooldownUntil && Date.now() < this.gestureCooldownUntil) return;
 
-            // 시니어 모드(longpress 또는 hud)가 켜져 있으면 롱프레스 타이머 가동 (260ms)
-            if (this.seniorMode === 'longpress' || this.seniorMode === 'hud') {
+            // 1) 롱프레스 팝업 전용 모드: 260ms 꾹 누르면 대형 팝업 노출, 짧게 떼면 슬롯 이동
+            if (this.seniorMode === 'longpress') {
               const targetTile = getEffectiveTargetTile(e);
               longPressTimer = setTimeout(() => {
                 longPressTriggered = true;
                 this.showSeniorPopup(targetTile);
               }, 260);
             } else {
-              // 일반 모드: 0ms 즉각 반응
+              // 2) 일반 모드 및 상단 HUD 모드: 0ms 즉각 반응 (HUD 모드는 1차 탭 시 상단 HUD에만 표시, 팝업 없음)
               executeTileAction(e);
             }
           }, { passive: false });
@@ -10838,7 +10849,8 @@
               return;
             }
 
-            if (this.seniorMode === 'longpress' || this.seniorMode === 'hud') {
+            if (this.seniorMode === 'longpress') {
+              // 롱프레스 모드에서 짧은 탭으로 손을 뗀 경우: 정상 슬롯 이동 실행
               const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
               const duration = performance.now() - pDownTime;
               if (dist < 20 && duration < 750) {
