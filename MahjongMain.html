@@ -329,6 +329,35 @@
       transform: translateX(-50%) translateY(0);
     }
 
+    /* 슬롯 빈자리 1개 보호 알림 배너 */
+    .slot-warning-toast {
+      position: fixed;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: linear-gradient(135deg, rgba(211, 47, 47, 0.96) 0%, rgba(183, 28, 28, 0.98) 100%);
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 26px;
+      font-size: 13.5px;
+      font-weight: 700;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 0 2px rgba(255, 235, 59, 0.85);
+      z-index: 10002;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+      line-height: 1.35;
+      max-width: min(92vw, 480px);
+    }
+    .slot-warning-toast.active {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
     /* 레벨 & 판 직행 이동 모달 */
     .stage-warp-card {
       width: 92%;
@@ -3896,7 +3925,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.82
+            Si-Yeon Mahjong Solitaire v1.4.83
           </div>
         </div>
       </div>
@@ -3988,7 +4017,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.82</div>
+        <div class="splash-version-badge">v1.4.83</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -11443,18 +11472,21 @@
           });
           document.getElementById('btn-undo').disabled = false;
 
-          // 슬롯 포화 검사 (모든 슬롯이 꽉 찼을 때)
-          if (this.trayTiles.length >= this.maxSlots) {
-            this.handleTrayOverflow(newItem);
+          const activeCount = this.trayTiles.filter(t => !t.isMatching).length;
+
+          // [슬롯 빈자리 1개 보호 시스템]
+          // 슬롯이 꽉 차서 빈자리가 1개 남았을 때(activeCount === this.maxSlots - 1) 또는 완전 가득 찼을 때 자동 되돌림 및 설명 알림멘트 출력
+          if (activeCount >= this.maxSlots - 1) {
+            this.handleTrayNearFull(newItem, activeCount >= this.maxSlots);
           }
         }
       }
 
       /**
-       * 슬롯 포화 시 처리: 목숨 1개 소진 및 구제 슬롯 1칸 추가 확장 (사용자 선택안)
+       * 슬롯 빈자리 1개 남음 또는 포화 시 자동 되돌림 및 설명 알림멘트 표시
        */
-      handleTrayOverflow(lastItem) {
-        this.sound.playMiss();
+      handleTrayNearFull(lastItem, isFullyFull = false) {
+        if (this.sound && this.sound.playMiss) this.sound.playMiss();
 
         const trayEl = document.getElementById('tray-container');
         if (trayEl) {
@@ -11463,13 +11495,48 @@
           trayEl.classList.add('danger');
         }
 
-        // 규칙 변경: 보관함 포화 시 하트는 깎이지 않으며 경고음 및 흔들림만 발생
-        // 슬롯 동적 확장 없이 마지막으로 들어온 패를 보드로 강제 반환
+        const msg = isFullyFull
+          ? `⚠️ [슬롯 가득 참] 보관함이 꽉 차서 방금 선택한 패를 보드로 되돌렸습니다.`
+          : `⚠️ [슬롯 위기 보호] 빈자리가 1개뿐입니다! 슬롯이 막히는 것을 방지하여 방금 패를 보드로 되돌렸습니다. 짝이 맞는 패를 먼저 선택하세요!`;
+
+        this.showSlotWarningNotice(msg);
+
+        // 슬롯에서 마지막으로 들어온 패를 보드로 안전하게 반환
         setTimeout(() => {
-          if (this.trayTiles.length >= this.maxSlots) {
-            this.returnTileFromTray(this.trayTiles.length - 1);
+          const idx = this.trayTiles.findIndex(t => t.id === lastItem.id && !t.isMatching);
+          if (idx !== -1) {
+            this.returnTileFromTray(idx);
+            // 시스템에 의해 자동 되돌림되었으므로 되돌리기 스택의 마지막 toTray 기록 정리
+            if (this.undoStack.length > 0 && this.undoStack[this.undoStack.length - 1].type === 'toTray') {
+              this.undoStack.pop();
+              if (this.undoStack.length === 0) {
+                const undoBtn = document.getElementById('btn-undo');
+                if (undoBtn) undoBtn.disabled = true;
+              }
+            }
           }
-        }, 280);
+        }, 300);
+      }
+
+      /**
+       * 슬롯 경고 알림 멘트 토스트 표시
+       */
+      showSlotWarningNotice(msg) {
+        const oldToast = document.querySelector('.slot-warning-toast');
+        if (oldToast) oldToast.remove();
+
+        const toast = document.createElement('div');
+        toast.className = 'slot-warning-toast';
+        toast.innerHTML = `<span>📢</span> <span>${msg}</span>`;
+        document.body.appendChild(toast);
+
+        requestAnimationFrame(() => {
+          toast.classList.add('active');
+          setTimeout(() => {
+            toast.classList.remove('active');
+            setTimeout(() => toast.remove(), 350);
+          }, 2600);
+        });
       }
 
       /**
