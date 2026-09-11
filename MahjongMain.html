@@ -2524,6 +2524,62 @@
       line-height: 1.5;
     }
 
+    /* 쉬움 30판 (70% 블라인드 관문) 에메랄드 테마 */
+    .all-blind-notice.notice-easy {
+      background: radial-gradient(circle at center, rgba(12, 38, 26, 0.97) 0%, rgba(4, 16, 10, 0.98) 100%);
+      border: 2.5px solid #2ea779;
+      box-shadow: 0 0 38px rgba(46, 167, 121, 0.6), inset 0 0 16px rgba(46, 167, 121, 0.3);
+    }
+    .all-blind-notice.notice-easy .all-blind-title {
+      color: #4ade80;
+      text-shadow: 0 0 10px rgba(74, 222, 128, 0.7);
+    }
+    .all-blind-notice.notice-easy .all-blind-desc {
+      color: #dcfce7;
+    }
+
+    /* 보통 30판 (80% 블라인드 결전) 사파이어 테마 */
+    .all-blind-notice.notice-normal {
+      background: radial-gradient(circle at center, rgba(10, 28, 48, 0.97) 0%, rgba(3, 10, 22, 0.98) 100%);
+      border: 2.5px solid #38bdf8;
+      box-shadow: 0 0 38px rgba(56, 189, 248, 0.6), inset 0 0 16px rgba(56, 189, 248, 0.3);
+    }
+    .all-blind-notice.notice-normal .all-blind-title {
+      color: #38bdf8;
+      text-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+    }
+    .all-blind-notice.notice-normal .all-blind-desc {
+      color: #e0f2fe;
+    }
+
+    /* 어려움 30판 (90% 극한 블라인드) 화염 테마 */
+    .all-blind-notice.notice-hard {
+      background: radial-gradient(circle at center, rgba(42, 18, 6, 0.97) 0%, rgba(18, 6, 2, 0.98) 100%);
+      border: 2.5px solid #fb923c;
+      box-shadow: 0 0 40px rgba(251, 146, 60, 0.65), inset 0 0 18px rgba(251, 146, 60, 0.35);
+    }
+    .all-blind-notice.notice-hard .all-blind-title {
+      color: #fb923c;
+      text-shadow: 0 0 10px rgba(251, 146, 60, 0.75);
+    }
+    .all-blind-notice.notice-hard .all-blind-desc {
+      color: #ffedd5;
+    }
+
+    /* 달인 30판 (100% 올 블라인드) 황금 & 퍼플 테마 */
+    .all-blind-notice.notice-master {
+      background: radial-gradient(circle at center, rgba(35, 12, 42, 0.97) 0%, rgba(14, 3, 20, 0.98) 100%);
+      border: 2.5px solid #ffd700;
+      box-shadow: 0 0 45px rgba(255, 215, 0, 0.7), inset 0 0 20px rgba(255, 215, 0, 0.35);
+    }
+    .all-blind-notice.notice-master .all-blind-title {
+      color: #ffd700;
+      text-shadow: 0 0 12px rgba(255, 215, 0, 0.85);
+    }
+    .all-blind-notice.notice-master .all-blind-desc {
+      color: #fef08a;
+    }
+
     /* 마스터 등극 황금 왕관 피날레 WIN 배너 */
     .master-crown-win {
       background: radial-gradient(ellipse at center, rgba(40, 28, 2, 0.96) 0%, rgba(15, 10, 0, 0.98) 100%) !important;
@@ -3802,10 +3858,10 @@
             <div class="settings-item">
               <span class="settings-label">🎮 난이도 선택</span>
               <select class="diff-select" id="select-difficulty" title="난이도 선택">
-                <option value="easy" id="diff-opt-easy">🌱 쉬움 (14종 · 슬롯 5개 · 공개)</option>
-                <option value="normal" id="diff-opt-normal" selected>🌿 보통 (39종 · 슬롯 4개 · 블라인드 4개)</option>
-                <option value="hard" id="diff-opt-hard">🔥 어려움 (63종 · 슬롯 4개 · 블라인드 12개)</option>
-                <option value="master" id="diff-opt-master">👑 달인 (89종 · 슬롯 3개 · 블라인드 18개 · 극한 병목)</option>
+                <option value="easy" id="diff-opt-easy">🌱 쉬움 (14종 · 슬롯 5개 · 블라인드 0%➔70%)</option>
+                <option value="normal" id="diff-opt-normal" selected>🌿 보통 (39종 · 슬롯 4개 · 블라인드 10%➔80%)</option>
+                <option value="hard" id="diff-opt-hard">🔥 어려움 (63종 · 슬롯 4개 · 블라인드 20%➔90%)</option>
+                <option value="master" id="diff-opt-master">👑 달인 (89종 · 슬롯 3개 · 블라인드 30%➔100% 올 블라인드)</option>
               </select>
             </div>
             <div class="settings-item">
@@ -3899,7 +3955,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.4.89
+            Si-Yeon Mahjong Solitaire v1.4.90
           </div>
         </div>
       </div>
@@ -3991,7 +4047,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.4.89</div>
+        <div class="splash-version-badge">v1.4.90</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -11219,19 +11275,32 @@
           }
         }
 
-        // 블라인드(Face-down) 패 계산 및 지정
+        // 블라인드(Face-down) 패 계산 및 지정 (난이도별 1~30판 점진적 선형 증가 시스템)
         const totalTiles = resultTiles.length;
         let blindCount = 0;
 
-        if (this.difficulty === 'master') {
-          // 달인 모드: 판(stage)이 진행될수록 블라인드 개수가 1개씩 점진 증가 (기본 18개 + (판수 - 1))
-          // 50% 캡을 해제하여 최종적으로 모든 패가 다 블라인드인 판(100% All-Blind)에 도달
-          const baseBlind = diffCfg.blindCount || 18;
-          blindCount = Math.min(totalTiles, baseBlind + (this.currentStage - 1));
-          this.isAllBlindStage = (blindCount >= totalTiles);
+        // 난이도별 시작 비율 및 최종(30판) 목표 비율 정의
+        const BLIND_PROGRESSION = {
+          easy:   { start: 0.0,  end: 0.70 },
+          normal: { start: 0.10, end: 0.80 },
+          hard:   { start: 0.20, end: 0.90 },
+          master: { start: 0.30, end: 1.00 }
+        };
+
+        const prog = BLIND_PROGRESSION[this.difficulty] || BLIND_PROGRESSION.normal;
+        const currentStageNum = this.currentStage || 1;
+        const stageIdx = Math.max(0, Math.min(29, currentStageNum - 1)); // 0 ~ 29
+        const currentRatio = prog.start + (prog.end - prog.start) * (stageIdx / 29);
+
+        if (this.difficulty === 'master' && currentStageNum >= 30) {
+          blindCount = totalTiles;
+          this.isAllBlindStage = true;
         } else {
-          blindCount = Math.min(diffCfg.blindCount || 0, Math.floor(totalTiles / 2));
-          this.isAllBlindStage = false;
+          // 짝수 단위 보정 (반드시 2의 배수, 최대 totalTiles 초과 방지)
+          let targetCount = Math.round((totalTiles * currentRatio) / 2) * 2;
+          targetCount = Math.min(totalTiles, targetCount);
+          blindCount = targetCount;
+          this.isAllBlindStage = (blindCount >= totalTiles);
         }
 
         this.currentStageBlindCount = blindCount;
@@ -11244,33 +11313,11 @@
 
         if (blindCount > 0) {
           if (this.isAllBlindStage) {
-            // 모든 패가 다 블라인드인 최종 결전 판!
+            // 모든 패가 다 블라인드인 판
             resultTiles.forEach(t => {
               t.isCovered = true;
               t.isRevealed = false;
             });
-            // 올 블라인드 스테이지 시작 안내 배너 출력
-            setTimeout(() => {
-              if (this.isAllBlindStage && !this.isClear && !this.isGameOver) {
-                const oldNotice = document.getElementById('all-blind-notice');
-                if (oldNotice) oldNotice.remove();
-                const notice = document.createElement('div');
-                notice.className = 'all-blind-notice';
-                notice.id = 'all-blind-notice';
-                notice.innerHTML = `
-                  <div class="all-blind-icon">👑</div>
-                  <div class="all-blind-title">달인 최종 관문: 100% 올 블라인드!</div>
-                  <div class="all-blind-desc">보드의 모든 패가 베일에 싸였습니다.<br>이 판을 격파하면 전설의 마스터에 등극합니다!</div>
-                `;
-                if (this.viewportEl) {
-                  this.viewportEl.appendChild(notice);
-                  setTimeout(() => {
-                    notice.classList.add('fade-out');
-                    setTimeout(() => notice.remove(), 500);
-                  }, 3200);
-                }
-              }
-            }, 500);
           } else {
             // 일반 블라인드 분산 무작위 지정 (상위 층 우선 + 0층 확장)
             let upperCandidates = resultTiles.filter(t => t.z >= 1);
@@ -11288,6 +11335,66 @@
               shuffled[i].isRevealed = false;
             }
           }
+        }
+
+        // 30판(각 난이도별 최대 블라인드 정점) 도달 시 고유 인정 배너 연출
+        if (currentStageNum === 30) {
+          setTimeout(() => {
+            if (!this.isClear && !this.isGameOver) {
+              const oldNotice = document.getElementById('all-blind-notice');
+              if (oldNotice) {
+                if (typeof oldNotice.remove === 'function') oldNotice.remove();
+                else if (oldNotice.parentNode) oldNotice.parentNode.removeChild(oldNotice);
+              }
+
+              const NOTICES = {
+                easy: {
+                  cls: 'notice-easy',
+                  icon: '🌱',
+                  title: '초심자 졸업: 70% 블라인드 관문!',
+                  desc: '기초를 훌륭하게 연마하셨습니다!<br>70%의 베일을 걷어내고 쉬움 코스를 완전 정복하세요!'
+                },
+                normal: {
+                  cls: 'notice-normal',
+                  icon: '💎',
+                  title: '진정한 명경지수: 80% 블라인드 결전!',
+                  desc: '흔들림 없는 집중력을 증명할 때입니다.<br>80%의 베일을 뚫고 당당히 상급자로 도약하세요!'
+                },
+                hard: {
+                  cls: 'notice-hard',
+                  icon: '🔥',
+                  title: '절대자의 시험: 90% 극한 블라인드!',
+                  desc: '단 10%의 단서로 모든 패를 꿰뚫어라!<br>이 가혹한 시련을 넘어서면 달인의 영역이 열립니다!'
+                },
+                master: {
+                  cls: 'notice-master',
+                  icon: '👑',
+                  title: '전설의 마스터: 100% 올 블라인드!',
+                  desc: '보드의 모든 패가 베일에 싸였습니다.<br>완전한 직관과 기억력으로 마지막 전설의 왕좌에 오르십시오!'
+                }
+              };
+
+              const nData = NOTICES[this.difficulty] || NOTICES.normal;
+              const notice = document.createElement('div');
+              notice.className = `all-blind-notice ${nData.cls}`;
+              notice.id = 'all-blind-notice';
+              notice.innerHTML = `
+                <div class="all-blind-icon">${nData.icon}</div>
+                <div class="all-blind-title">${nData.title}</div>
+                <div class="all-blind-desc">${nData.desc}</div>
+              `;
+              if (this.viewportEl) {
+                this.viewportEl.appendChild(notice);
+                setTimeout(() => {
+                  notice.classList.add('fade-out');
+                  setTimeout(() => {
+                    if (typeof notice.remove === 'function') notice.remove();
+                    else if (notice.parentNode) notice.parentNode.removeChild(notice);
+                  }, 500);
+                }, 3200);
+              }
+            }
+          }, 500);
         }
 
         this.tiles = resultTiles;
