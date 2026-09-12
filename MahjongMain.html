@@ -56,6 +56,15 @@
             const dot = statusEl.querySelector('.status-dot');
             if (dot) dot.style.background = '#38a169';
           }
+
+          // 세션당 최초 1회 오프라인 실행 가능 알림창 자동 팝업
+          if (!sessionStorage.getItem('offline_ready_notified')) {
+            sessionStorage.setItem('offline_ready_notified', '1');
+            setTimeout(() => {
+              const modal = document.getElementById('offline-ready-modal');
+              if (modal) modal.classList.add('active');
+            }, 600);
+          }
         });
       });
     }
@@ -5111,7 +5120,7 @@
         <h1 class="splash-title">시연이네 그림맞추기</h1>
         <div class="splash-subtitle">Si-Yeon Mahjong</div>
         <div class="splash-provider">SY Soft 제공</div>
-        <div class="splash-offline-status" id="splash-offline-status" style="font-size: 11.5px; color: #2b6cb0; background: #ebf8ff; border: 1px solid #bee3f8; border-radius: 20px; padding: 3px 10px; display: inline-flex; align-items: center; gap: 5px; margin: 4px auto 8px auto;">
+        <div class="splash-offline-status" id="splash-offline-status" style="font-size: 11.5px; color: #2b6cb0; background: #ebf8ff; border: 1px solid #bee3f8; border-radius: 20px; padding: 3px 10px; display: inline-flex; align-items: center; gap: 5px; margin: 4px auto 8px auto; cursor: pointer; transition: transform 0.15s ease;" title="오프라인 실행 상태 확인 (터치 시 안내)">
           <span class="status-dot" style="width: 7px; height: 7px; background: #3182ce; border-radius: 50%; display: inline-block;"></span>
           <span id="splash-offline-text">오프라인 리소스 준비 중...</span>
         </div>
@@ -5158,6 +5167,19 @@
       <div style="margin-top: 18px; display: flex; gap: 8px;">
         <button class="modal-btn" id="btn-shortcut-modal-close" style="width: 100%; margin: 0;">확인 완료</button>
       </div>
+    </div>
+  </div>
+
+  <!-- 오프라인 실행 가능 안내 모달 -->
+  <div class="modal-overlay" id="offline-ready-modal" style="z-index: 10009;">
+    <div class="modal-card" style="max-width: 380px; text-align: center; padding: 26px 20px;">
+      <div style="font-size: 44px; margin-bottom: 8px;">📶</div>
+      <h2 class="modal-title" style="margin: 0 0 10px 0; font-size: 20px; color: #15803d;">오프라인 실행 준비 완료!</h2>
+      <p style="font-size: 13.5px; color: #4a5568; line-height: 1.6; margin-bottom: 18px; word-break: keep-all;">
+        게임의 모든 필수 데이터와 타일 이미지가 기기에 안전하게 저장되었습니다.<br><br>
+        이제 <strong>비행기 모드</strong>나 <strong>인터넷 연결이 없는 환경</strong>에서도 언제든 자유롭게 플레이하실 수 있습니다.
+      </p>
+      <button class="modal-btn" id="btn-offline-ready-close" style="width: 100%; margin: 0; background: linear-gradient(135deg, #15803d, #166534); color: #fff;">확인 완료</button>
     </div>
   </div>
 
@@ -10748,6 +10770,31 @@
         if (shortcutModal) {
           ModalHelper.setupBackdropClose(shortcutModal, closeShortcutModal);
         }
+
+        // 오프라인 실행 가능 안내 모달 관리
+        const offlineModal = document.getElementById('offline-ready-modal');
+        const btnOfflineClose = document.getElementById('btn-offline-ready-close');
+        const statusOfflineBadge = document.getElementById('splash-offline-status');
+        const closeOfflineModal = () => {
+          this.sound.playSelect();
+          if (offlineModal) ModalHelper.close(offlineModal);
+        };
+        if (btnOfflineClose) btnOfflineClose.addEventListener('click', closeOfflineModal);
+        if (offlineModal) ModalHelper.setupBackdropClose(offlineModal, closeOfflineModal);
+        if (statusOfflineBadge) {
+          statusOfflineBadge.addEventListener('click', () => {
+            this.sound.playSelect();
+            if (offlineModal) ModalHelper.open(offlineModal);
+          });
+        }
+
+        // 네트워크 온/오프라인 상태 전환 감지 토스트
+        window.addEventListener('offline', () => {
+          this.showToast('📶 오프라인 모드: 기기 캐시로 원활히 계속 플레이합니다.');
+        });
+        window.addEventListener('online', () => {
+          this.showToast('🌐 온라인 네트워크 연결됨');
+        });
 
         if (btnSplashShortcut) {
           const handleShortcutClick = (e) => {
