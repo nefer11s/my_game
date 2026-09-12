@@ -4875,8 +4875,8 @@
             <button class="btn settings-btn" id="btn-rules-header" title="게임 방법 안내">
               <span class="btn-icon">📜</span> 게임 방법
             </button>
-            <button class="btn settings-btn" id="btn-rank-header" title="명예의 전당">
-              <span class="btn-icon">🏆</span> 명예의 전당 (랭킹)
+            <button class="btn settings-btn" id="btn-rank-header" title="나의 최고기록">
+              <span class="btn-icon">🏆</span> 나의 최고기록
             </button>
             <button class="btn settings-btn" id="btn-tile-gallery" title="전체 타일 도감">
               <span class="btn-icon">🀄</span> 전체 타일 도감
@@ -5130,8 +5130,8 @@
             <button class="splash-btn-rules" id="btn-splash-rules" title="게임방법 간단설명">
               <span class="btn-icon">📜</span> 게임방법
             </button>
-            <button class="splash-btn-rank" id="btn-splash-rank" title="명예의 전당">
-              <span class="btn-icon">🏆</span> 명예의 전당
+            <button class="splash-btn-rank" id="btn-splash-rank" title="나의 최고기록">
+              <span class="btn-icon">🏆</span> 나의 최고기록
             </button>
             <button class="splash-btn-shortcut" id="btn-splash-shortcut" title="스마트폰 홈 화면이나 데스크톱에 바로가기 앱 추가">
               <span class="btn-icon">📲</span> 바로가기
@@ -5373,7 +5373,7 @@
     <div class="modal-card rank-card">
       <div class="rank-header">
         <span class="rank-trophy-btn" id="rank-trophy-easter-btn" title="비밀의 트로피 (3회 터치)">🏆</span>
-        <h2 class="modal-title" style="margin-bottom: 0; font-size: 23px;">명예의 전당</h2>
+        <h2 class="modal-title" style="margin-bottom: 0; font-size: 23px;">나의 최고기록</h2>
       </div>
       <p style="font-size: 13px; color: #698d7b; margin-bottom: 12px;">최고의 마작 솔리테어 달인 기록</p>
 
@@ -5443,7 +5443,7 @@
     <div class="modal-card">
       <div style="font-size: 48px; margin-bottom: 8px;">💔</div>
       <h2 class="modal-title" style="color: #c53030;">게임 오버</h2>
-      <p class="modal-desc" style="color: #718096; margin-bottom: 14px;">모든 하트를 소진했습니다!<br>명예의 전당에 당신의 기록을 남겨보세요.</p>
+      <p class="modal-desc" style="color: #718096; margin-bottom: 14px;">모든 하트를 소진했습니다!<br>나의 최고기록에 당신의 기록을 남겨보세요.</p>
 
       <div class="modal-stats" style="background: #fff5f5; border: 1px solid #fed7d7;">
         <div class="modal-stat-item">
@@ -12211,7 +12211,7 @@
       }
 
       clearHallOfFame() {
-        if (confirm("명예의 전당 모든 기록을 초기화하시겠습니까?")) {
+        if (confirm("나의 최고기록 모든 기록을 초기화하시겠습니까?")) {
           safeStorage.remove('siyeon_mahjong_hall_of_fame');
           this.renderHallOfFame();
         }
@@ -14291,7 +14291,7 @@
           if (shareBtn) shareBtn.style.display = 'inline-flex';
 
           if (isPreview) {
-            confirmBtn.textContent = fromEasterModal ? '✨ 보석 축하 전당으로 복귀' : '🏆 명예의 전당으로 복귀';
+            confirmBtn.textContent = fromEasterModal ? '✨ 보석 축하 전당으로 복귀' : '🏆 나의 최고기록으로 복귀';
           } else {
             confirmBtn.textContent = celebration.btnText;
           }
