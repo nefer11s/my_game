@@ -2759,6 +2759,69 @@
       color: #fef08a;
     }
 
+    /* 전체화면 전환 중 안내 오버레이 (가끔 발생하는 검은 화면 딜레이 방지) */
+    .fullscreen-loading-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(8, 20, 14, 0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1000000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .fullscreen-loading-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .fullscreen-loading-box {
+      background: radial-gradient(ellipse at center, rgba(16, 44, 30, 0.98) 0%, rgba(8, 22, 15, 0.99) 100%);
+      border: 2px solid rgba(46, 167, 121, 0.7);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 28px rgba(46, 167, 121, 0.4);
+      border-radius: 22px;
+      padding: 24px 34px;
+      text-align: center;
+      color: #ffffff;
+      max-width: 360px;
+      width: 88vw;
+      animation: fsBoxPop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes fsBoxPop {
+      0% { transform: scale(0.88); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .fullscreen-spinner {
+      width: 38px;
+      height: 38px;
+      margin: 0 auto 12px;
+      border: 3.5px solid rgba(255, 215, 0, 0.25);
+      border-top-color: #ffd700;
+      border-radius: 50%;
+      animation: fsSpin 0.75s linear infinite;
+    }
+    @keyframes fsSpin {
+      to { transform: rotate(360deg); }
+    }
+    .fullscreen-loading-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: #ffd700;
+      text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
+    }
+    .fullscreen-loading-desc {
+      font-size: 13px;
+      color: #c8e6d8;
+      line-height: 1.4;
+    }
+
     /* 마스터 등극 황금 왕관 피날레 WIN 배너 */
     .master-crown-win {
       background: radial-gradient(ellipse at center, rgba(40, 28, 2, 0.96) 0%, rgba(15, 10, 0, 0.98) 100%) !important;
@@ -13675,6 +13738,37 @@
         return `${m}:${s}`;
       }
 
+      showFullscreenTransitionNotice() {
+        let overlay = document.getElementById('fullscreen-loading-overlay');
+        if (!overlay) {
+          overlay = document.createElement('div');
+          overlay.id = 'fullscreen-loading-overlay';
+          overlay.className = 'fullscreen-loading-overlay';
+          overlay.innerHTML = `
+            <div class="fullscreen-loading-box">
+              <div class="fullscreen-spinner"></div>
+              <div class="fullscreen-loading-title">🖥️ 전체화면 전환 중...</div>
+              <div class="fullscreen-loading-desc">최적의 화면 크기에 맞춰 보드를 정렬하고 있습니다.</div>
+            </div>
+          `;
+          document.body.appendChild(overlay);
+        }
+        overlay.classList.add('active');
+        clearTimeout(this._fsNoticeTimer);
+        // 전환 지연이나 브라우저 반응에 따라 최대 1.8초 후 자동 페이드아웃
+        this._fsNoticeTimer = setTimeout(() => {
+          this.hideFullscreenTransitionNotice();
+        }, 1800);
+      }
+
+      hideFullscreenTransitionNotice() {
+        clearTimeout(this._fsNoticeTimer);
+        const overlay = document.getElementById('fullscreen-loading-overlay');
+        if (overlay) {
+          overlay.classList.remove('active');
+        }
+      }
+
       enterFullscreen() {
         // 카카오톡 등 인앱 브라우저에서는 Fullscreen API가 뷰포트 충돌 및 깜빡임을 유발하므로 차단
         const ua = (navigator.userAgent || '').toLowerCase();
@@ -13687,12 +13781,18 @@
         if (!isFull) {
           const req = docEl.requestFullscreen || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen;
           if (req) {
+            // 전체화면 전환 시 브라우저 렌더링 검은 화면 딜레이 동안 친절한 로딩 안내 표시
+            this.showFullscreenTransitionNotice();
             try {
               const res = req.call(docEl);
               if (res && res.catch) {
-                res.catch(() => { });
+                res.catch(() => {
+                  this.hideFullscreenTransitionNotice();
+                });
               }
-            } catch (e) { }
+            } catch (e) {
+              this.hideFullscreenTransitionNotice();
+            }
           }
         }
       }
@@ -13715,6 +13815,10 @@
 
       updateFullscreenUI() {
         const isFull = !!(document.fullscreenElement || document.webkitFullscreenElement);
+        if (isFull) {
+          // 전체화면 진입 완료 즉시 안내창 부드럽게 해제
+          this.hideFullscreenTransitionNotice();
+        }
         const btnFsText = document.getElementById('btn-fs-text');
         const btnFs = document.getElementById('btn-fullscreen');
         if (btnFsText) {
