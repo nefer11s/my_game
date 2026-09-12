@@ -10998,26 +10998,6 @@
             if (e && e.stopPropagation) e.stopPropagation();
             this.sound.playSelect();
 
-            // 1. 이미 앱(Standalone PWA) 모드로 실행 중인 경우
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-            if (isStandalone) {
-              alert('이미 홈 화면 바로가기(앱) 모드로 실행 중입니다! 🎉');
-              return;
-            }
-
-            // 2. 브라우저 설치 프롬프트가 준비되어 있는 경우 (안드로이드 크롬/Edge/삼성인터넷 등)
-            if (window.deferredInstallPrompt) {
-              window.deferredInstallPrompt.prompt();
-              window.deferredInstallPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult && choiceResult.outcome === 'accepted') {
-                  alert('홈 화면에 바로가기가 성공적으로 추가되었습니다! 🎉');
-                }
-                window.deferredInstallPrompt = null;
-              }).catch(() => {});
-              return;
-            }
-
-            // 3. 기기별 환경 정밀 분석 (인앱 브라우저 / iOS Safari / Android Chrome / PC)
             const ua = (navigator.userAgent || '').toLowerCase();
             const isKakao = ua.includes('kakaotalk');
             const isNaver = ua.includes('naver');
@@ -11026,9 +11006,44 @@
 
             const isIOS = /iphone|ipad|ipod/.test(ua);
             const isAndroid = /android/.test(ua);
+            const isBrave = !!(navigator.brave || window.brave || ua.includes('brave'));
 
+            // 1. 이미 앱(Standalone PWA) 모드로 실행 중인 경우
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            if (isStandalone) {
+              alert('이미 홈 화면 바로가기(앱) 모드로 실행 중입니다! 🎉');
+              return;
+            }
+
+            // 2. 브레이브가 아니고, 네이티브 설치 프롬프트가 대기 중인 경우에만 프롬프트 팝업 시도
+            if (!isBrave && window.deferredInstallPrompt) {
+              try {
+                window.deferredInstallPrompt.prompt();
+                window.deferredInstallPrompt.userChoice.then((choiceResult) => {
+                  if (choiceResult && choiceResult.outcome === 'accepted') {
+                    alert('홈 화면에 바로가기가 성공적으로 추가되었습니다! 🎉');
+                  }
+                  window.deferredInstallPrompt = null;
+                }).catch(() => {});
+                return;
+              } catch (err) { }
+            }
+
+            // 3. 브레이브 브라우저 또는 프롬프트 미지원 환경: 100% 무조건 친절한 안내 모달 즉시 표시
             if (shortcutContent) {
-              if (isInApp) {
+              if (isBrave) {
+                shortcutContent.innerHTML = `
+                  <div style="background: #fff7ed; border-radius: 12px; padding: 14px; border: 1.5px solid #fdba74; margin-bottom: 12px;">
+                    <div style="font-weight: 800; color: #ea580c; font-size: 15px; margin-bottom: 8px;">🦁 브레이브(Brave) 브라우저 안내</div>
+                    <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.8; color: #431407;">
+                      <li>브라우저 <strong>우측 하단(또는 우측 상단)의 더보기 메뉴(⋮)</strong>를 터치하세요.</li>
+                      <li>메뉴 목록에서 <strong>[홈 화면에 추가] ➕</strong> 또는 <strong>[앱 설치]</strong>를 선택하세요.</li>
+                      <li>'추가'를 누르면 스마트폰 바탕화면에 바로가기 앱이 즉시 생성됩니다!</li>
+                    </ol>
+                  </div>
+                  <p style="font-size: 12px; color: #64748b; margin: 0;">※ 브레이브 브라우저의 강력한 쉴드(보안) 정책으로 인해 메뉴에서 직접 추가하시면 주소창 없는 전체화면 앱으로 등록됩니다.</p>
+                `;
+              } else if (isInApp) {
                 const appName = isKakao ? '카카오톡' : (isNaver ? '네이버' : '인앱');
                 shortcutContent.innerHTML = `
                   <div style="background: #fff7ed; border-radius: 12px; padding: 14px; border: 1.5px solid #fdba74; margin-bottom: 12px;">
@@ -11038,7 +11053,7 @@
                     </p>
                     <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #7c2d12;">
                       <li>화면 우측 상단(또는 하단)의 <strong>더보기 메뉴(⋮ 또는 ...)</strong>를 터치하세요.</li>
-                      <li><strong>[다른 브라우저로 열기]</strong>(Chrome 또는 삼성인터넷/Safari)를 선택하세요.</li>
+                      <li><strong>[다른 브라우저로 열기]</strong>(Brave, Chrome 또는 삼성인터넷/Safari)를 선택하세요.</li>
                       <li>열린 브라우저에서 '홈 화면에 바로가기 추가'를 누르면 즉시 설치됩니다!</li>
                     </ol>
                   </div>
@@ -11058,9 +11073,9 @@
               } else if (isAndroid) {
                 shortcutContent.innerHTML = `
                   <div style="background: #f0fdf4; border-radius: 12px; padding: 14px; border: 1.5px solid #bbf7d0; margin-bottom: 12px;">
-                    <div style="font-weight: 800; color: #166534; font-size: 15px; margin-bottom: 8px;">🤖 안드로이드 스마트폰 (크롬 / 삼성인터넷)</div>
+                    <div style="font-weight: 800; color: #166534; font-size: 15px; margin-bottom: 8px;">🤖 안드로이드 스마트폰 (크롬 / 삼성인터넷 / 브레이브)</div>
                     <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
-                      <li>브라우저 우측 상단의 <strong>더보기 메뉴(⋮)</strong>를 터치하세요.</li>
+                      <li>브라우저 우측 상단(또는 하단)의 <strong>더보기 메뉴(⋮)</strong>를 터치하세요.</li>
                       <li>메뉴에서 <strong>[홈 화면에 추가]</strong> 또는 <strong>[앱 설치]</strong>를 선택하세요.</li>
                       <li>'추가' 또는 '설치'를 누르면 스마트폰 바탕화면에 즉시 생성됩니다!</li>
                     </ol>
