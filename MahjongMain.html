@@ -2273,6 +2273,30 @@
       transform: translateY(-1px);
     }
 
+    /* 스플래시 홈 화면 바로가기 추가 버튼 */
+    .splash-btn-shortcut {
+      width: 100%;
+      height: 44px;
+      border-radius: 12px;
+      background: #f0fdf4;
+      color: #15803d;
+      font-size: 15px;
+      font-weight: 800;
+      border: 1.5px solid #86efac;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .splash-btn-shortcut:hover {
+      background: #dcfce7;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+    }
+
     /* 명예의 전당 모달 */
     
     /* 명예의 전당 보석 뱃지 및 인터랙션 */
@@ -4670,7 +4694,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.5.8
+            Si-Yeon Mahjong Solitaire v1.5.9
           </div>
         </div>
       </div>
@@ -4843,7 +4867,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.5.8</div>
+        <div class="splash-version-badge">v1.5.9</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -4866,7 +4890,29 @@
           <button class="splash-btn-rank" id="btn-splash-rank">
             <span class="btn-icon">🏆</span> 명예의 전당
           </button>
+          <button class="splash-btn-shortcut" id="btn-splash-shortcut" title="스마트폰 홈 화면이나 데스크톱에 바로가기 앱 추가">
+            <span class="btn-icon">📲</span> 홈 화면에 바로가기 추가
+          </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 홈 화면 바로가기 추가 안내 모달 -->
+  <div class="modal-overlay" id="shortcut-guide-modal" style="z-index: 10008;">
+    <div class="modal-card" style="max-width: 440px; text-align: left; padding: 24px 22px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 10px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 24px;">📲</span>
+          <h2 class="modal-title" style="margin: 0; font-size: 20px; color: #14532d;">홈 화면에 바로가기 추가</h2>
+        </div>
+        <button id="btn-shortcut-modal-close-x" style="background: none; border: none; font-size: 18px; color: #718096; cursor: pointer; padding: 4px;" aria-label="닫기">✕</button>
+      </div>
+      <div id="shortcut-guide-content" style="font-size: 14px; color: #2d3748; line-height: 1.6;">
+        <!-- 동적 안내 내용 (기기별 자동 분기) -->
+      </div>
+      <div style="margin-top: 18px; display: flex; gap: 8px;">
+        <button class="modal-btn" id="btn-shortcut-modal-close" style="width: 100%; margin: 0;">확인 완료</button>
       </div>
     </div>
   </div>
@@ -10916,6 +10962,108 @@
               this.sound.playSelect();
               rankModal.classList.remove('active');
             }
+          });
+        }
+
+        // PWA 홈 화면 바로가기 설치 관리
+        let deferredInstallPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+          e.preventDefault();
+          deferredInstallPrompt = e;
+        });
+
+        const btnSplashShortcut = document.getElementById('btn-splash-shortcut');
+        const shortcutModal = document.getElementById('shortcut-guide-modal');
+        const shortcutContent = document.getElementById('shortcut-guide-content');
+        const btnShortcutClose = document.getElementById('btn-shortcut-modal-close');
+        const btnShortcutCloseX = document.getElementById('btn-shortcut-modal-close-x');
+
+        const closeShortcutModal = () => {
+          this.sound.playSelect();
+          if (shortcutModal) shortcutModal.classList.remove('active');
+        };
+        if (btnShortcutClose) btnShortcutClose.addEventListener('click', closeShortcutModal);
+        if (btnShortcutCloseX) btnShortcutCloseX.addEventListener('click', closeShortcutModal);
+        if (shortcutModal) {
+          shortcutModal.addEventListener('click', (e) => {
+            if (e.target === shortcutModal) closeShortcutModal();
+          });
+        }
+
+        if (btnSplashShortcut) {
+          const handleShortcutClick = (e) => {
+            if (e && e.stopPropagation) e.stopPropagation();
+            this.sound.playSelect();
+
+            // 1. 이미 앱(Standalone PWA) 모드로 실행 중인 경우
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            if (isStandalone) {
+              alert('이미 홈 화면 바로가기(앱) 모드로 실행 중입니다! 🎉');
+              return;
+            }
+
+            // 2. 브라우저 설치 프롬프트가 대기 중인 경우 (안드로이드 크롬/Edge 등)
+            if (deferredInstallPrompt) {
+              deferredInstallPrompt.prompt();
+              deferredInstallPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult && choiceResult.outcome === 'accepted') {
+                  alert('홈 화면에 바로가기가 성공적으로 추가되었습니다! 🎉');
+                }
+                deferredInstallPrompt = null;
+              }).catch(() => {});
+              return;
+            }
+
+            // 3. 기기별 안내 분기 (iOS Safari / Android / PC)
+            const ua = (navigator.userAgent || '').toLowerCase();
+            const isIOS = /iphone|ipad|ipod/.test(ua);
+            const isAndroid = /android/.test(ua);
+
+            if (shortcutContent) {
+              if (isIOS) {
+                shortcutContent.innerHTML = `
+                  <div style="background: #f0fdf4; border-radius: 12px; padding: 14px; border: 1px solid #bbf7d0; margin-bottom: 12px;">
+                    <div style="font-weight: 800; color: #166534; font-size: 15px; margin-bottom: 8px;">🍎 아이폰 / 아이패드 사파리</div>
+                    <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
+                      <li>사파리 하단(또는 상단)의 <strong>공유 버튼 <span style="font-size: 16px;">⎋</span></strong>을 터치하세요.</li>
+                      <li>메뉴 목록을 내려 <strong>[홈 화면에 추가] ➕</strong>를 누르세요.</li>
+                      <li>우측 상단 <strong>[추가]</strong>를 누르면 바탕화면에 바로가기 앱 아이콘이 생성됩니다!</li>
+                    </ol>
+                  </div>
+                  <p style="font-size: 12px; color: #64748b; margin: 0;">※ 홈 화면 아이콘으로 접속하시면 주소창 없이 전체화면 앱으로 더욱 쾌적하게 즐기실 수 있습니다.</p>
+                `;
+              } else if (isAndroid) {
+                shortcutContent.innerHTML = `
+                  <div style="background: #f0fdf4; border-radius: 12px; padding: 14px; border: 1px solid #bbf7d0; margin-bottom: 12px;">
+                    <div style="font-weight: 800; color: #166534; font-size: 15px; margin-bottom: 8px;">🤖 안드로이드 스마트폰</div>
+                    <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
+                      <li>크롬/삼성인터넷 브라우저 우측 상단 <strong>더보기 메뉴(⋮)</strong>를 터치하세요.</li>
+                      <li><strong>[홈 화면에 추가]</strong> 또는 <strong>[앱 설치]</strong>를 선택하세요.</li>
+                      <li>확인을 누르면 스마트폰 바탕화면에 앱 아이콘이 즉시 설치됩니다!</li>
+                    </ol>
+                  </div>
+                  <p style="font-size: 12px; color: #64748b; margin: 0;">※ 설치된 바로가기로 시작하면 로딩 없이 즉시 전체화면으로 실행됩니다.</p>
+                `;
+              } else {
+                shortcutContent.innerHTML = `
+                  <div style="background: #f8fafc; border-radius: 12px; padding: 14px; border: 1px solid #e2e8f0; margin-bottom: 12px;">
+                    <div style="font-weight: 800; color: #1e293b; font-size: 15px; margin-bottom: 8px;">💻 PC / 노트북 브라우저</div>
+                    <ul style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
+                      <li>브라우저 상단 주소창 우측의 <strong>설치 아이콘(⊕ / 모니터 모양)</strong>을 클릭하세요.</li>
+                      <li>또는 <strong>Ctrl + D</strong>를 눌러 북마크 바로가기에 등록하세요.</li>
+                    </ul>
+                  </div>
+                  <p style="font-size: 12px; color: #64748b; margin: 0;">※ 스마트폰 모바일로 접속하시면 바탕화면 앱으로 바로 설치하실 수 있습니다.</p>
+                `;
+              }
+            }
+
+            if (shortcutModal) shortcutModal.classList.add('active');
+          };
+
+          btnSplashShortcut.addEventListener('click', handleShortcutClick);
+          btnSplashShortcut.addEventListener('pointerdown', (e) => {
+            if (e && e.stopPropagation) e.stopPropagation();
           });
         }
 
