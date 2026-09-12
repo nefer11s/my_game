@@ -11987,9 +11987,7 @@
           setTimeout(() => flashEl.classList.remove('active'), 280);
         }
 
-        if (this.lives <= 0) {
-          setTimeout(() => this.triggerGameOver(), 360);
-        }
+        // 하트 0개 도달 시 즉시 종료하지 않고 빈사 상태로 마지막 기회 부여 (슬롯 재포화 시 게임오버)
       }
 
       triggerGameOver() {
@@ -13036,7 +13034,7 @@
         const availablePairs = this.getAvailablePairs();
         document.getElementById('stat-moves').textContent = availablePairs.length;
         document.getElementById('stat-tiles').textContent = activeTiles.length;
-        document.getElementById('btn-undo').disabled = this.undoStack.length === 0;
+        this.updateToolButtonsUI();
 
         // 슬롯이 비어있거나 여유가 있을 때는 절대로 팝업이 뜨지 않으며,
         // 슬롯이 꽉 차서 더 이상 둘 수 있는 수가 없는 진정한 교착 상태일 때만 셔플 확인
@@ -13377,7 +13375,7 @@
             type: 'match',
             tiles: [t1, t2]
           });
-          document.getElementById('btn-undo').disabled = false;
+          this.updateToolButtonsUI();
 
           setTimeout(() => {
             // 트레이에서 두 패 제거
@@ -13401,7 +13399,7 @@
             type: 'toTray',
             tileItem: newItem
           });
-          document.getElementById('btn-undo').disabled = false;
+          this.updateToolButtonsUI();
 
           const activeCount = this.trayTiles.filter(t => !t.isMatching).length;
 
@@ -13430,9 +13428,10 @@
           trayEl.classList.add('danger');
         }
 
-        // [상용 룰] 하트가 없으면 즉시 최종 게임오버
+        // [상용 룰] 하트 0개 빈사 상태에서 슬롯 재포화 시 최종 게임오버
         if (this.lives <= 0) {
-          this.gameOver();
+          this.showToast('💥 슬롯이 가득 찼으나 남은 하트가 없습니다!');
+          setTimeout(() => this.triggerGameOver(), 450);
           return;
         }
 
@@ -13760,7 +13759,7 @@
           this.updateTileStates();
         }
 
-        document.getElementById('btn-undo').disabled = this.undoStack.length === 0;
+        this.updateToolButtonsUI();
         this.handleResize(true);
       }
 
@@ -14731,7 +14730,7 @@
 
       updateHeaderUI() {
         document.getElementById('stat-score').textContent = this.score;
-        document.getElementById('btn-undo').disabled = this.undoStack.length === 0;
+        this.updateToolButtonsUI();
 
         const diffCfg = DIFFICULTY_CONFIG[this.difficulty] || DIFFICULTY_CONFIG.normal;
         const stageEl = document.getElementById('stat-stage');
