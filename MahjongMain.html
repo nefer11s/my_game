@@ -3124,12 +3124,32 @@
       margin-bottom: 2px;
     }
     .cert-main-title {
-      font-size: 21px;
+      font-size: 20px;
       font-weight: 900;
-      letter-spacing: 3.5px;
+      letter-spacing: 2px;
       color: #1a160d;
       text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
       margin: 2px 0 4px 0;
+      line-height: 1.25;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+    }
+    .cert-main-title .cert-title-l1 {
+      font-size: 21px;
+      letter-spacing: 4px;
+      font-weight: 900;
+    }
+    .modal-card.cert-easy .cert-main-title .cert-title-l1 { color: #047857; }
+    .modal-card.cert-normal .cert-main-title .cert-title-l1 { color: #0369a1; }
+    .modal-card.cert-hard .cert-main-title .cert-title-l1 { color: #b91c1c; }
+    .modal-card.cert-master .cert-main-title .cert-title-l1 { color: #b45309; }
+    .cert-main-title .cert-title-l2 {
+      font-size: 19px;
+      letter-spacing: 3.5px;
+      color: #1a160d;
+      font-weight: 900;
     }
     .cert-divider {
       display: flex;
@@ -3223,39 +3243,46 @@
       font-weight: 600;
     }
 
-    /* 공식 수행 기록 표 */
+    /* 공식 수행 기록 표 (줄바꿈 원천 방지) */
     .cert-record-table {
       display: flex;
       justify-content: space-around;
-      background: rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.88);
       border: 1px solid rgba(212, 175, 55, 0.45);
       border-radius: 8px;
-      padding: 6px 4px;
+      padding: 7px 4px;
       margin-bottom: 10px;
+      flex-wrap: nowrap;
     }
     .cert-record-cell {
       display: flex;
       flex-direction: column;
       align-items: center;
       flex: 1;
+      min-width: 0;
+      padding: 0 2px;
     }
     .cert-record-cell:not(:last-child) {
-      border-right: 1px dashed rgba(180, 140, 60, 0.3);
+      border-right: 1px dashed rgba(180, 140, 60, 0.35);
     }
     .cert-record-lbl {
       font-size: 9.5px;
       color: #7d6b4f;
       font-weight: 700;
       margin-bottom: 2px;
+      white-space: nowrap;
     }
     .cert-record-val {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 800;
       color: #1f1b13;
+      white-space: nowrap;
+      letter-spacing: -0.2px;
     }
     .cert-record-val.highlight {
       color: #d97706;
       font-weight: 900;
+      white-space: nowrap;
     }
 
     /* 하단 발급 정보 & 전통 공인 직인 */
@@ -4731,7 +4758,10 @@
           <div class="cert-header">
             <div class="cert-serial-no" id="cert-serial-no">NO. SY-2026-CERT-S30C</div>
             <div class="cert-eng-title" id="cert-eng-title">CERTIFICATE OF MASTERY</div>
-            <div class="cert-main-title" id="cert-main-title">공 인 정 복 인 증 서</div>
+            <div class="cert-main-title" id="cert-main-title">
+              <span class="cert-title-l1">사 파 이 어</span>
+              <span class="cert-title-l2">정 복 인 증 서</span>
+            </div>
             <div class="cert-divider">
               <span class="cert-divider-line"></span>
               <span class="cert-divider-diamond">✦</span>
@@ -4759,7 +4789,7 @@
             <div class="cert-record-table">
               <div class="cert-record-cell">
                 <span class="cert-record-lbl">정복 난이도</span>
-                <span class="cert-record-val" id="cert-diff-name">달인 (30관문 완파)</span>
+                <span class="cert-record-val" id="cert-diff-name">달인 (30판)</span>
               </div>
               <div class="cert-record-cell">
                 <span class="cert-record-lbl">최종 기록</span>
@@ -13926,7 +13956,9 @@
             bonus: 15000,
             diffCode: 'JADE-E30',
             certEngTitle: 'CERTIFICATE OF JADE MASTERY',
-            certMainTitle: '비 취 정 복 인 증 서',
+            certTitleL1: '비 취',
+            certTitleL2: '정 복 인 증 서',
+            certMainTitle: '비 취\n정 복 인 증 서',
             recipientTitle: '[청아한 영롱 비취의 수호자]',
             certDesc: '위 사람은 『시연이네 그림맞추기』 70% 블라인드의 안개를 뚫고 쉬움 모드 30개 전 관문을 정복하여 그 맑은 지혜와 집중력을 증명하였기에 본 인증서를 수여함.',
             sealText: 'JADE SEAL',
@@ -13947,7 +13979,9 @@
             bonus: 20000,
             diffCode: 'SAPPHIRE-N30',
             certEngTitle: 'CERTIFICATE OF SAPPHIRE MASTERY',
-            certMainTitle: '사 파 이 어 정 복 인 증 서',
+            certTitleL1: '사 파 이 어',
+            certTitleL2: '정 복 인 증 서',
+            certMainTitle: '사 파 이 어\n정 복 인 증 서',
             recipientTitle: '[벽공천상 사파이어의 현자]',
             certDesc: '위 사람은 『시연이네 그림맞추기』 80% 블라인드의 짙은 장막 속에서도 탁월한 전략과 직관으로 30강 대결전을 완승하였기에 본 인증서를 수여함.',
             sealText: 'SAPPHIRE SEAL',
@@ -13968,7 +14002,9 @@
             bonus: 25000,
             diffCode: 'RUBY-H30',
             certEngTitle: 'CERTIFICATE OF RUBY MASTERY',
-            certMainTitle: '루 비 정 복 인 증 서',
+            certTitleL1: '루 비',
+            certTitleL2: '정 복 인 증 서',
+            certMainTitle: '루 비\n정 복 인 증 서',
             recipientTitle: '[고귀무쌍 루비의 지휘관]',
             certDesc: '위 사람은 『시연이네 그림맞추기』 90% 암흑의 극한 시련 속에서도 단 10%의 단서로 30개 전 관문을 굴복시켰기에 본 인증서를 수여함.',
             sealText: 'RUBY SEAL',
@@ -13989,7 +14025,9 @@
             bonus: 30000,
             diffCode: 'ROYAL-MASTER30',
             certEngTitle: 'CERTIFICATE OF SUPREME MASTERY',
-            certMainTitle: '황 실 마 스 터 인 증 서',
+            certTitleL1: '황 실  마 스 터',
+            certTitleL2: '정 복 인 증 서',
+            certMainTitle: '황 실  마 스 터\n정 복 인 증 서',
             recipientTitle: '[천상천하 전설의 마작 황제]',
             certDesc: '위 사람은 『시연이네 그림맞추기』 100% 올 블라인드의 전설적 시련을 제패하고 최고 존엄의 마작 마스터에 등극하였기에 본 인증서를 수여함.',
             sealText: 'ROYAL SEAL',
@@ -14150,7 +14188,9 @@
 
           if (serialEl) serialEl.textContent = `NO. SY-2026-CERT-${celebration.diffCode || 'S30C'}`;
           if (engTitleEl) engTitleEl.textContent = celebration.certEngTitle || 'CERTIFICATE OF MASTERY';
-          if (mainTitleEl) mainTitleEl.textContent = celebration.certMainTitle || '공 인 정 복 인 증 서';
+          if (mainTitleEl) {
+            mainTitleEl.innerHTML = `<span class="cert-title-l1">${celebration.certTitleL1 || ''}</span><span class="cert-title-l2">${celebration.certTitleL2 || '정복 인증서'}</span>`;
+          }
           if (emblemImg) {
             emblemImg.src = celebration.imageSrc;
             emblemImg.className = `cert-emblem-img ${celebration.imageClass}`;
@@ -14159,11 +14199,11 @@
           if (recipTitleEl) recipTitleEl.textContent = celebration.recipientTitle;
           if (descEl) descEl.innerHTML = celebration.certDesc;
           if (diffNameEl) {
-            diffNameEl.textContent = `${diffCfg.name} (전 30관문 완파)`;
+            diffNameEl.textContent = `${diffCfg.name} (30판)`;
             diffNameEl.className = `cert-record-val ${targetDiff}`;
           }
           if (timeEl) timeEl.textContent = formattedTime;
-          if (scoreEl) scoreEl.textContent = `${formattedScore}점 (+${celebration.bonus.toLocaleString()} 보너스)`;
+          if (scoreEl) scoreEl.textContent = `${formattedScore}점`;
 
           if (dateEl) {
             const now = new Date();
@@ -14274,31 +14314,38 @@
         // 5. 헤더: 시리얼 넘버
         ctx.font = 'bold 15px "Courier New", Courier, monospace';
         ctx.fillStyle = '#8c734b';
-        ctx.fillText(`NO. SY-2026-CERT-${celebration.diffCode || 'S30C'}`, width / 2, 85);
+        ctx.fillText(`NO. SY-2026-CERT-${celebration.diffCode || 'S30C'}`, width / 2, 80);
 
         // 영문 제호
-        ctx.font = 'bold 19px "Times New Roman", Georgia, serif';
+        ctx.font = 'bold 18px "Times New Roman", Georgia, serif';
         ctx.fillStyle = '#aa771c';
-        ctx.fillText(celebration.certEngTitle || 'CERTIFICATE OF MASTERY', width / 2, 120);
+        ctx.fillText(celebration.certEngTitle || 'CERTIFICATE OF MASTERY', width / 2, 110);
 
-        // 한글 메인 제호
-        ctx.font = '900 42px sans-serif';
+        // 한글 메인 제호 (두 줄 렌더링)
+        const titleL1 = celebration.certTitleL1 || '정 복';
+        const titleL2 = celebration.certTitleL2 || '인 증 서';
+
+        ctx.font = '900 32px sans-serif';
+        ctx.fillStyle = theme.title;
+        ctx.fillText(titleL1, width / 2, 154);
+
+        ctx.font = '900 34px sans-serif';
         ctx.fillStyle = '#1a160d';
-        ctx.fillText(celebration.certMainTitle || '공 인 정 복 인 증 서', width / 2, 180);
+        ctx.fillText(titleL2, width / 2, 194);
 
         // 구분선 & ✦
         ctx.strokeStyle = 'rgba(180, 140, 60, 0.6)';
         ctx.lineWidth = 1.5;
         ctx.beginPath();
-        ctx.moveTo(180, 215);
-        ctx.lineTo(370, 215);
-        ctx.moveTo(430, 215);
-        ctx.lineTo(620, 215);
+        ctx.moveTo(180, 218);
+        ctx.lineTo(370, 218);
+        ctx.moveTo(430, 218);
+        ctx.lineTo(620, 218);
         ctx.stroke();
 
         ctx.font = 'bold 18px serif';
         ctx.fillStyle = '#b8860b';
-        ctx.fillText('✦', width / 2, 215);
+        ctx.fillText('✦', width / 2, 218);
 
         // 6. 보석 엠블럼 이미지
         const emblemImgEl = document.getElementById('cert-emblem-img');
@@ -14420,9 +14467,9 @@
         ctx.font = 'bold 15px sans-serif';
         ctx.fillStyle = '#7d6b4f';
         ctx.fillText('정복 난이도', boxX + colW * 0.5, boxY + 40);
-        ctx.font = '900 20px sans-serif';
+        ctx.font = '900 21px sans-serif';
         ctx.fillStyle = theme.title;
-        ctx.fillText(`${diffCfg.name} (30관문)`, boxX + colW * 0.5, boxY + 78);
+        ctx.fillText(`${diffCfg.name} (30판)`, boxX + colW * 0.5, boxY + 78);
 
         ctx.font = 'bold 15px sans-serif';
         ctx.fillStyle = '#7d6b4f';
