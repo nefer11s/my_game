@@ -5504,7 +5504,7 @@
           this.burst(targetX, targetY, 40 + Math.floor(Math.random() * 25));
         }, 700);
 
-        // [요청 반영] 7초 후 폭죽 발사 중단 및 잔여 파티클 자연 페이드아웃
+        // [요청 반영] 10초 후 폭죽 발사 중단 및 잔여 파티클 자연 페이드아웃
         if (this.autoStopTimer) clearTimeout(this.autoStopTimer);
         this.autoStopTimer = setTimeout(() => {
           if (!this.isRunning) return;
@@ -5520,7 +5520,7 @@
           setTimeout(() => {
             if (this.isStopping) this.stop();
           }, 1600);
-        }, 7000);
+        }, 10000);
 
         this.loop();
       }
