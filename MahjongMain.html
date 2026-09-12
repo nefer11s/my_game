@@ -1608,20 +1608,18 @@
       color: #534537;
     }
 
-    /* 모달 팝업 */
+    /* 모달 팝업 (GPU 부하 방지를 위해 backdrop-filter 대신 부드러운 다크 딤 배경 적용) */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(18, 43, 33, 0.45);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(10, 30, 22, 0.75);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 10000;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.25s ease;
     }
 
     .modal-overlay.active {
@@ -10878,14 +10876,16 @@
         }
 
         if (btnSplashRules) {
-          btnSplashRules.addEventListener('click', () => {
+          btnSplashRules.addEventListener('click', (e) => {
+            if (e && e.stopPropagation) e.stopPropagation();
             this.sound.playSelect();
             if (quickRulesModal) quickRulesModal.classList.add('active');
           });
         }
 
         if (btnSplashRank) {
-          btnSplashRank.addEventListener('click', () => {
+          btnSplashRank.addEventListener('click', (e) => {
+            if (e && e.stopPropagation) e.stopPropagation();
             this.sound.playSelect();
             this.renderHallOfFame();
             if (rankModal) rankModal.classList.add('active');
@@ -15040,24 +15040,6 @@
         window.tileGalleryManager._applyTheme(game.activeTheme);
       }
 
-      // 스플래시 화면에서 사용자 터치/제스처 발생 시 전체화면 전환 대응
-      const initFullscreenAfterSplash = () => {
-        const splashEl = document.getElementById('splash-screen');
-        if (splashEl) {
-          splashEl.addEventListener('pointerdown', () => {
-            game.enterFullscreen();
-          }, { passive: true, once: true });
-        }
-      };
-
-      // 스플래시 화면 및 모든 에셋이 완전히 로드된 후 전체화면 전환 발동
-      if (document.readyState === 'complete') {
-        setTimeout(initFullscreenAfterSplash, 150);
-      } else {
-        window.addEventListener('load', () => {
-          setTimeout(initFullscreenAfterSplash, 150);
-        });
-      }
     });
   </script>
 </body>
