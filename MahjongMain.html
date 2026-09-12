@@ -36,6 +36,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&family=Pretendard:wght@700;900&display=swap" rel="stylesheet">
   <title>시연 마작 솔리테어 (Si-Yeon Mahjong Solitaire)</title>
+  <script src="assets/js/html2canvas.min.js"></script>
+  <script>
+    if (typeof html2canvas === 'undefined') {
+      var s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      document.head.appendChild(s);
+    }
+  </script>
   <style>
     :root {
       --bg-gradient-start: #eef7f2;
@@ -3320,16 +3328,46 @@
       font-family: 'Batang', serif;
     }
 
-    /* 인증서 버튼 */
-    .modal-card.certificate-modal-card .modal-btn {
-      font-size: 14.5px !important;
-      font-weight: 900 !important;
-      padding: 11px 20px !important;
-      border-radius: 28px !important;
-      letter-spacing: 0.5px !important;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3) !important;
+    /* 인증서 버튼 그룹 및 SNS 공유 버튼 */
+    .modal-card.certificate-modal-card .modal-btn-group {
+      display: flex !important;
+      gap: 10px !important;
       margin-top: 12px !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    .modal-card.certificate-modal-card .modal-btn {
+      font-size: 14px !important;
+      font-weight: 900 !important;
+      padding: 11px 16px !important;
+      border-radius: 28px !important;
+      letter-spacing: 0.3px !important;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3) !important;
       border: 1px solid rgba(255, 255, 255, 0.4) !important;
+      margin-top: 0 !important;
+    }
+    .modal-card.certificate-modal-card #modal-confirm-btn {
+      flex: 1.2 !important;
+      min-width: 150px !important;
+    }
+    .modal-card.certificate-modal-card .modal-share-btn {
+      flex: 1 !important;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+      color: #ffd700 !important;
+      border: 1.5px solid #eab308 !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 5px !important;
+      cursor: pointer !important;
+      transition: transform 0.15s ease, filter 0.15s ease !important;
+    }
+    .modal-card.certificate-modal-card .modal-share-btn:active {
+      transform: scale(0.96) !important;
+    }
+    .modal-card.certificate-modal-card .modal-share-btn:hover {
+      filter: brightness(1.2) !important;
     }
 
     @keyframes sparkleRotate {
@@ -4760,7 +4798,10 @@
         </div>
       </div>
 
-      <div class="modal-btn-group">
+      <div class="modal-btn-group" id="modal-btn-group">
+        <button class="modal-btn modal-share-btn" id="modal-share-btn" style="display: none;" title="인증서 이미지로 캡처하여 SNS 공유">
+          <span class="btn-icon">📤</span> SNS 공유
+        </button>
         <button class="modal-btn" id="modal-confirm-btn">다음 판 시작 ➔</button>
       </div>
     </div>
@@ -11681,6 +11722,12 @@
           this.restartCurrentGame();
         });
 
+        // 인증서 이미지 캡처 & SNS 공유 버튼 클릭 이벤트
+        const modalShareBtn = document.getElementById('modal-share-btn');
+        if (modalShareBtn) {
+          modalShareBtn.addEventListener('click', () => this.shareCertificateImage());
+        }
+
         // 모달에서 '다음 판 시작' 클릭 시 다음 판으로 계속 진행 (프리뷰 모드에서는 그냥 닫기)
         document.getElementById('modal-confirm-btn').addEventListener('click', () => {
           if (this.fireworks) this.fireworks.stop();
@@ -14132,6 +14179,9 @@
             dateEl.textContent = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일`;
           }
 
+          const shareBtn = document.getElementById('modal-share-btn');
+          if (shareBtn) shareBtn.style.display = 'inline-flex';
+
           if (isPreview) {
             confirmBtn.textContent = fromEasterModal ? '✨ 보석 축하 전당으로 복귀' : '🏆 명예의 전당으로 복귀';
           } else {
@@ -14142,6 +14192,9 @@
           // [일반 판(1~29판) 클리어 뷰 활성화]
           if (normalView) normalView.style.display = 'block';
           if (certView) certView.style.display = 'none';
+
+          const shareBtn = document.getElementById('modal-share-btn');
+          if (shareBtn) shareBtn.style.display = 'none';
 
           const modalTitle = document.getElementById('modal-title');
           const modalDesc = document.getElementById('modal-desc');
@@ -14158,6 +14211,129 @@
         }
 
         document.getElementById('modal').classList.add('active');
+      }
+
+      /**
+       * [공식 인증서 영역 고해상도 캡처 및 SNS 공유]
+       */
+      async shareCertificateImage() {
+        const certTarget = document.querySelector('#modal-cert-view .cert-inner-border') || document.getElementById('modal-cert-view');
+        if (!certTarget) return;
+
+        const shareBtn = document.getElementById('modal-share-btn');
+        const originalBtnHtml = shareBtn ? shareBtn.innerHTML : '';
+        if (shareBtn) {
+          shareBtn.disabled = true;
+          shareBtn.innerHTML = '<span class="btn-icon">⏳</span> 캡처 중...';
+        }
+
+        try {
+          if (typeof html2canvas === 'undefined') {
+            throw new Error('html2canvas 라이브러리를 불러오지 못했습니다.');
+          }
+
+          // 인증서 본체 영역 고해상도 캡처 (스케일 2.5)
+          const canvas = await html2canvas(certTarget, {
+            scale: 2.5,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#fbf5e8',
+            logging: false
+          });
+
+          // Canvas를 PNG Blob으로 변환
+          const blob = await new Promise((resolve, reject) => {
+            canvas.toBlob((b) => {
+              if (b) resolve(b);
+              else reject(new Error('인증서 이미지 변환에 실패했습니다.'));
+            }, 'image/png', 0.95);
+          });
+
+          const diffKey = this.difficulty || 'normal';
+          const diffCfg = (typeof DIFFICULTY_CONFIG !== 'undefined' && DIFFICULTY_CONFIG[diffKey]) ? DIFFICULTY_CONFIG[diffKey] : { name: '정복' };
+          const now = new Date();
+          const dateTag = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
+          const fileName = `시연이네그림맞추기_공인인증서_${dateTag}.png`;
+          const file = new File([blob], fileName, { type: 'image/png' });
+
+          const shareTitle = `『시연이네 그림맞추기』 ${diffCfg.name} 모드 공식 정복 인증서`;
+          const shareText = `『시연이네 그림맞추기』 전 30개 관문 돌파! 공식 정복 인증서를 획득했습니다! 🏆✨\n#시연이네그림맞추기 #마작솔리테어 #정복인증서`;
+
+          // 1. Web Share API 시도 (모바일 카카오톡, 인스타, X, 페이스북, 메시지 등으로 바로 이미지 전달)
+          let sharedSuccess = false;
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                title: shareTitle,
+                text: shareText,
+                files: [file]
+              });
+              sharedSuccess = true;
+            } catch (err) {
+              if (err.name === 'AbortError') {
+                // 사용자가 공유 창을 닫은 경우 정상 종료
+                sharedSuccess = true;
+              } else {
+                console.warn('Web Share 실패, 다운로드로 전환:', err);
+              }
+            }
+          }
+
+          // 2. Web Share가 지원되지 않거나 파일 공유 미지원 브라우저인 경우: 다운로드 및 클립보드 복사 폴백
+          if (!sharedSuccess) {
+            const downloadUrl = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+              if (a.parentNode) a.parentNode.removeChild(a);
+              URL.revokeObjectURL(downloadUrl);
+            }, 1200);
+
+            // 클립보드에 이미지 복사 시도
+            if (navigator.clipboard && navigator.clipboard.write) {
+              try {
+                await navigator.clipboard.write([
+                  new ClipboardItem({ 'image/png': blob })
+                ]);
+              } catch (_) { }
+            }
+
+            this.showToast('📜 인증서 이미지가 다운로드되었습니다! SNS에 자유롭게 공유해보세요.');
+          }
+        } catch (err) {
+          console.error('인증서 공유/저장 오류:', err);
+          alert('인증서 이미지 생성 중 오류가 발생했습니다: ' + err.message);
+        } finally {
+          if (shareBtn) {
+            shareBtn.disabled = false;
+            shareBtn.innerHTML = originalBtnHtml;
+          }
+        }
+      }
+
+      /**
+       * 일반 토스트 알림 헬퍼
+       */
+      showToast(msg, icon = '📜') {
+        const oldToast = document.querySelector('.warp-toast');
+        if (oldToast) oldToast.remove();
+
+        const toast = document.createElement('div');
+        toast.className = 'warp-toast';
+        toast.style.zIndex = '999999';
+        toast.innerHTML = `<span>${icon}</span> <span>${msg}</span>`;
+        document.body.appendChild(toast);
+
+        requestAnimationFrame(() => {
+          toast.classList.add('active');
+          setTimeout(() => {
+            toast.classList.remove('active');
+            setTimeout(() => { if (toast.parentNode) toast.remove(); }, 400);
+          }, 3200);
+        });
       }
 
       updateHeaderUI() {
