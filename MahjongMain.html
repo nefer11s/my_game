@@ -404,6 +404,93 @@
       transform: translateX(-50%) translateY(0);
     }
 
+    /* [상용 룰] 슬롯 탈출 모달 */
+    .slot-escape-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .slot-escape-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .slot-escape-card {
+      background: linear-gradient(145deg, #2a201c, #1a1614);
+      border: 2px solid #ff5c5c;
+      box-shadow: 0 16px 40px rgba(255, 60, 60, 0.35), 0 0 20px rgba(0,0,0,0.8);
+      border-radius: 20px;
+      padding: 26px 22px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      color: #fff;
+      transform: scale(0.92) translateY(12px);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .slot-escape-modal.active .slot-escape-card {
+      transform: scale(1) translateY(0);
+    }
+    .slot-escape-icon {
+      font-size: 42px;
+      margin-bottom: 10px;
+      animation: pulseHeart 1.2s infinite ease-in-out;
+    }
+    @keyframes pulseHeart {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); filter: drop-shadow(0 0 8px #ff4757); }
+    }
+    .slot-escape-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #ff6b6b;
+      margin-bottom: 8px;
+    }
+    .slot-escape-desc {
+      font-size: 14px;
+      color: #e0d0cc;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+    .slot-escape-desc strong {
+      color: #ffd166;
+    }
+    .slot-escape-notice {
+      font-size: 12px;
+      color: #aaa;
+      background: rgba(255, 255, 255, 0.07);
+      padding: 8px 12px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+    }
+    .slot-escape-btn {
+      width: 100%;
+      padding: 13px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ff4757, #c0392b);
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+      cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+    .slot-escape-btn:active {
+      transform: scale(0.97);
+      filter: brightness(0.9);
+    }
+
     /* 레벨 & 판 직행 이동 모달 */
     .stage-warp-card {
       width: 92%;
@@ -4722,7 +4809,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.5.13
+            Si-Yeon Mahjong Solitaire v1.5.14
           </div>
         </div>
       </div>
@@ -4754,14 +4841,14 @@
     </div>
 
     <div class="dock-actions">
-      <button class="btn btn-dock" id="btn-undo" title="한 수 되돌리기">
-        <span class="btn-icon">↩</span><span class="btn-label">되돌리기</span>
+      <button class="btn btn-dock" id="btn-undo" title="한 수 되돌리기 (판당 2회)">
+        <span class="btn-icon">↩</span><span class="btn-label" id="undo-label">되돌리기 (2)</span>
       </button>
-      <button class="btn btn-dock" id="btn-hint" title="매치 짝 힌트 (판당 최대 3회)">
-        <span class="btn-icon">💡</span><span class="btn-label" id="hint-label">힌트 (3)</span>
+      <button class="btn btn-dock" id="btn-hint" title="매치 짝 힌트 (판당 2회)">
+        <span class="btn-icon">💡</span><span class="btn-label" id="hint-label">힌트 (2)</span>
       </button>
-      <button class="btn btn-dock" id="btn-shuffle" title="패 섞기 (하트 1개 소모)">
-        <span class="btn-icon">🔀</span><span class="btn-label">셔플</span>
+      <button class="btn btn-dock" id="btn-shuffle" title="패 섞기 (판당 1회)">
+        <span class="btn-icon">🔀</span><span class="btn-label" id="shuffle-label">셔플 (1)</span>
       </button>
       <button class="btn btn-dock" id="btn-restart" title="현재 판 다시 시작">
         <span class="btn-icon">🔄</span><span class="btn-label">재도전</span>
@@ -4936,7 +5023,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.5.13</div>
+        <div class="splash-version-badge">v1.5.14</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -5034,7 +5121,7 @@
           <!-- 힌트 안내 바 -->
           <div style="font-size: 12.5px; color: #744210; background: #fefcbf; border: 1px solid #f6e05e; border-radius: 8px; padding: 8px 10px; display: flex; align-items: center; gap: 8px;">
             <span style="font-size: 16px;">💡</span>
-            <div><strong>힌트 기능:</strong> 한 판에 <strong>최대 3회</strong> 사용 가능! (하트 소진 없음)</div>
+            <div><strong>보조 도구:</strong> [되돌리기 2회], [힌트 2회], [셔플 1회] 제공! 슬롯이 꽉 차면 <strong>하트 1개를 써서 슬롯을 비울 수 있습니다.</strong></div>
           </div>
         </div>
       </div>
@@ -5091,8 +5178,10 @@
         <div class="rule-item">
           <div class="rule-num">5</div>
           <div class="rule-text">
-            <strong>도움 기능 (힌트 판당 3회 제한 & 셔플 하트 소진)</strong>
-            <p>[💡 힌트]는 하트 소진 없이 <strong>한 판당 최대 3회까지</strong> 사용할 수 있습니다. [🔀 셔플]은 사용 시 <strong>하트 1개가 소진</strong>됩니다. (단, <strong>하트가 1개 남았을 때는 판당 1회 '마지막 기회 무료 셔플'</strong>이 발동됩니다.) 각 판을 클리어하면 하트 1개가 회복됩니다.</p>
+            <strong>도움 기능 및 상용 슬롯 탈출 룰</strong>
+            <p>• <strong>보조 도구 제한:</strong> 한 판당 <strong>[↩ 되돌리기 2회]</strong>, <strong>[💡 힌트 2회]</strong>, <strong>[🔀 셔플 1회]</strong>가 제공됩니다.<br>
+            • <strong>슬롯 패 터치 반환:</strong> 슬롯의 패를 직접 눌러 뺄 때도 <strong>되돌리기 횟수</strong>가 1회 차감됩니다.<br>
+            • <strong>슬롯 탈출:</strong> 슬롯이 가득 찼을 때 <strong>하트 1개를 소진하여 슬롯 2칸을 비우고</strong> 계속 진행할 수 있습니다. (하트 0개 시 최종 게임오버)</p>
           </div>
         </div>
         <div class="rule-item">
@@ -10190,6 +10279,9 @@
         this.initialLives = 3;
         this.selectedTile = null;
         this.undoStack = [];
+        this.undoRemaining = 2;
+        this.hintsRemaining = 2;
+        this.shuffleRemaining = 1;
         this.score = 0;
         this.timerSeconds = 0;
         this.timerId = null;
@@ -12097,9 +12189,11 @@
 
         document.getElementById('btn-undo').disabled = true;
         document.getElementById('btn-shuffle').disabled = false;
-        this.hintsRemaining = 3;
-        this.updateHintUI();
+        this.undoRemaining = 2;
+        this.hintsRemaining = 2;
+        this.shuffleRemaining = 1;
         this.hasUsedLastChanceShuffle = false;
+        this.updateToolButtonsUI();
 
         this.buildSolvableBoard();
         this.initialTiles = this.cloneTileData(this.tiles);
@@ -12153,6 +12247,10 @@
         this.blindMismatchCount = 0;
         this.lastFlippedBlindTile = null;
         this.hasUsedLastChanceShuffle = false;
+        this.undoRemaining = 2;
+        this.hintsRemaining = 2;
+        this.shuffleRemaining = 1;
+        this.updateToolButtonsUI();
         const btnShuffle = document.getElementById('btn-shuffle');
         if (btnShuffle) btnShuffle.disabled = false;
 
@@ -12199,8 +12297,10 @@
 
         document.getElementById('btn-undo').disabled = true;
         document.getElementById('btn-shuffle').disabled = false;
-        this.hintsRemaining = 3;
-        this.updateHintUI();
+        this.undoRemaining = 2;
+        this.hintsRemaining = 2;
+        this.shuffleRemaining = 1;
+        this.updateToolButtonsUI();
 
         // 해당 판의 초기 타일 배치 복원 (cloneTileData 사용으로 render 함수 보존)
         if (this.initialTiles && this.initialTiles.length > 0) {
@@ -13224,6 +13324,9 @@
       /**
        * 슬롯이 1칸 남았을 때 짝 없는 패로 마지막 칸을 채우려 시도 시 자동 되돌림 및 알림멘트 표시
        */
+      /**
+       * 슬롯이 꽉 찼을 때 (포화): 하트 1개 소모 슬롯 탈출 모달 발동 또는 게임오버
+       */
       handleTrayNearFull(lastItem) {
         if (this.sound && this.sound.playMiss) this.sound.playMiss();
 
@@ -13234,25 +13337,79 @@
           trayEl.classList.add('danger');
         }
 
-        const msg = `⚠️ 보관함에 맞는 짝이 없습니다.`;
+        // [상용 룰] 하트가 없으면 즉시 최종 게임오버
+        if (this.lives <= 0) {
+          this.gameOver();
+          return;
+        }
 
-        this.showSlotWarningNotice(msg);
+        // 하트가 1개 이상 남아있는 경우: 슬롯 탈출 모달 표시 (터치 시 하트 1개 소모하여 2칸 비움)
+        this.showSlotEscapeModal();
+      }
 
-        // 슬롯에서 마지막으로 들어온 패를 보드로 안전하게 반환
-        setTimeout(() => {
-          const idx = this.trayTiles.findIndex(t => t.id === lastItem.id && !t.isMatching);
-          if (idx !== -1) {
-            this.returnTileFromTray(idx);
-            // 시스템에 의해 자동 되돌림되었으므로 되돌리기 스택의 마지막 toTray 기록 정리
-            if (this.undoStack.length > 0 && this.undoStack[this.undoStack.length - 1].type === 'toTray') {
-              this.undoStack.pop();
-              if (this.undoStack.length === 0) {
-                const undoBtn = document.getElementById('btn-undo');
-                if (undoBtn) undoBtn.disabled = true;
-              }
+      /**
+       * 슬롯 탈출 모달 표시 및 터치 시 즉시 탈출 처리
+       */
+      showSlotEscapeModal() {
+        let modal = document.getElementById('slot-escape-modal');
+        if (!modal) {
+          modal = document.createElement('div');
+          modal.id = 'slot-escape-modal';
+          modal.className = 'slot-escape-modal';
+          document.body.appendChild(modal);
+        }
+
+        modal.innerHTML = `
+          <div class="slot-escape-card" id="slot-escape-card">
+            <div class="slot-escape-icon">💔</div>
+            <div class="slot-escape-title">슬롯 가득 참!</div>
+            <div class="slot-escape-desc">
+              보관함(슬롯)에 빈자리가 없습니다.<br>
+              <strong>하트 1개를 소진</strong>하여 슬롯 패 2개를 보드로 되돌려 슬롯을 비웁니다!
+            </div>
+            <div class="slot-escape-notice">화면 또는 버튼을 터치하면 즉시 하트 1개가 차감되고 슬롯이 비워집니다.</div>
+            <button id="btn-slot-escape-confirm" class="slot-escape-btn">💔 하트 소진하고 슬롯 비우기 (남은 하트: ${this.lives}개)</button>
+          </div>
+        `;
+
+        modal.classList.add('active');
+
+        const doEscape = (e) => {
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          modal.classList.remove('active');
+          modal.removeEventListener('click', doEscape);
+
+          // 1. 하트 1개 차감
+          this.loseLife();
+          if (this.isGameOver) return;
+
+          // 2. 슬롯의 패 중 최대 2개를 안전하게 보드로 복귀 (시스템 무료)
+          let freedCount = 0;
+          for (let i = this.trayTiles.length - 1; i >= 0 && freedCount < 2; i--) {
+            if (!this.trayTiles[i].isMatching) {
+              this.returnTileFromTray(i, true);
+              freedCount++;
             }
           }
-        }, 300);
+
+          // 되돌리기 스택 정리
+          while (freedCount > 0 && this.undoStack.length > 0 && this.undoStack[this.undoStack.length - 1].type === 'toTray') {
+            this.undoStack.pop();
+            freedCount--;
+          }
+
+          this.renderTray();
+          this.updateTileStates();
+          this.updateHeaderUI();
+          this.updateToolButtonsUI();
+          this.showToast(`💔 하트 1개를 사용하여 슬롯을 비웠습니다! (남은 하트: ${this.lives}개)`);
+        };
+
+        // 모달 카드 또는 오버레이 어디를 터치해도 즉시 발동
+        modal.addEventListener('click', doEscape, { once: true });
       }
 
       /**
@@ -13279,10 +13436,27 @@
       /**
        * 슬롯의 패를 클릭했을 때 보드의 원래 위치로 반환
        */
-      returnTileFromTray(trayIndex) {
+      returnTileFromTray(trayIndex, isSystemFree = false) {
         if (this.isGameOver || this.isAutoClearing || this.isDealing) return;
         const item = this.trayTiles[trayIndex];
         if (!item || item.isMatching) return;
+
+        // 플레이어 직접 터치 반환 시 되돌리기 횟수(2회) 소진 연동
+        if (!isSystemFree) {
+          if (this.undoRemaining <= 0) {
+            this.showToast('⚠️ 되돌리기 기회(0회)를 모두 소진하여 슬롯 패를 뺄 수 없습니다!');
+            if (this.sound && this.sound.playMiss) this.sound.playMiss();
+            return;
+          }
+          this.undoRemaining--;
+          this.updateToolButtonsUI();
+
+          // 되돌리기 스택에서 해당 패의 toTray 기록도 함께 정리
+          const sIdx = this.undoStack.findIndex(a => a.type === 'toTray' && a.tileItem && a.tileItem.id === item.id);
+          if (sIdx !== -1) {
+            this.undoStack.splice(sIdx, 1);
+          }
+        }
 
         this.trayTiles.splice(trayIndex, 1);
         const tile = item.tile;
@@ -13304,6 +13478,7 @@
         this.sound.playSelect();
         this.renderTray();
         this.updateTileStates();
+        this.updateToolButtonsUI();
       }
 
       /**
@@ -13335,23 +13510,47 @@
         return pairs;
       }
 
-      updateHintUI() {
+      /**
+       * 보조 도구(되돌리기 2회, 힌트 2회, 셔플 1회) 버튼 UI 통합 갱신
+       */
+      updateToolButtonsUI() {
+        const btnUndo = document.getElementById('btn-undo');
+        const undoLabel = document.getElementById('undo-label') || (btnUndo ? btnUndo.querySelector('.btn-label') : null);
+        if (btnUndo) {
+          if (undoLabel) undoLabel.textContent = `되돌리기 (${this.undoRemaining})`;
+          btnUndo.disabled = (this.undoRemaining <= 0 || this.undoStack.length === 0);
+          btnUndo.title = `한 수 되돌리기 (남은 횟수: ${this.undoRemaining}/2)`;
+          btnUndo.style.opacity = (this.undoRemaining <= 0 || this.undoStack.length === 0) ? '0.45' : '1';
+        }
+
         const btnHint = document.getElementById('btn-hint');
-        const hintLabel = document.getElementById('hint-label');
-        if (hintLabel) {
-          hintLabel.textContent = `힌트 (${this.hintsRemaining})`;
-        }
+        const hintLabel = document.getElementById('hint-label') || (btnHint ? btnHint.querySelector('.btn-label') : null);
         if (btnHint) {
-          btnHint.title = `매치 짝 힌트 (남은 횟수: ${this.hintsRemaining}/3)`;
+          if (hintLabel) hintLabel.textContent = `힌트 (${this.hintsRemaining})`;
           btnHint.disabled = (this.hintsRemaining <= 0);
+          btnHint.title = `매치 짝 힌트 (남은 횟수: ${this.hintsRemaining}/2)`;
+          btnHint.style.opacity = (this.hintsRemaining <= 0) ? '0.45' : '1';
         }
+
+        const btnShuffle = document.getElementById('btn-shuffle');
+        const shuffleLabel = document.getElementById('shuffle-label') || (btnShuffle ? btnShuffle.querySelector('.btn-label') : null);
+        if (btnShuffle) {
+          if (shuffleLabel) shuffleLabel.textContent = `셔플 (${this.shuffleRemaining})`;
+          btnShuffle.disabled = (this.shuffleRemaining <= 0);
+          btnShuffle.title = `패 섞기 (남은 횟수: ${this.shuffleRemaining}/1)`;
+          btnShuffle.style.opacity = (this.shuffleRemaining <= 0) ? '0.45' : '1';
+        }
+      }
+
+      updateHintUI() {
+        this.updateToolButtonsUI();
       }
 
       showHint() {
         if (this.isAutoClearing || this.isGameOver || this.isClear) return;
         if (this.hintsRemaining <= 0) {
           this.sound.playMiss();
-          alert("이번 판에서 사용 가능한 힌트(3회)를 모두 소진했습니다!");
+          this.showToast("⚠️ 이번 판의 힌트 기회(2회)를 모두 소진했습니다!");
           return;
         }
 
@@ -13381,7 +13580,7 @@
 
           if (this.trayTiles.length < this.maxSlots && freeTiles.length > 0) {
             this.hintsRemaining--;
-            this.updateHintUI();
+            this.updateToolButtonsUI();
             this.sound.playSelect();
             // 아래층 패를 가리고 있는 자유 패 우선 추천
             const candidate = freeTiles.find(t => {
@@ -13409,6 +13608,13 @@
 
       undo() {
         if (this.isAutoClearing || this.undoStack.length === 0) return;
+        if (this.undoRemaining <= 0) {
+          this.showToast('⚠️ 이번 판의 되돌리기 기회(2회)를 모두 사용했습니다.');
+          if (this.sound && this.sound.playMiss) this.sound.playMiss();
+          return;
+        }
+        this.undoRemaining--;
+        this.updateToolButtonsUI();
         this.sound.playSelect();
         this.clearHints();
 
@@ -13419,7 +13625,7 @@
           // 슬롯으로 들어갔던 패를 보드로 복귀
           const idx = this.trayTiles.findIndex(t => t.id === lastAction.tileItem.id);
           if (idx !== -1) {
-            this.returnTileFromTray(idx);
+            this.returnTileFromTray(idx, true);
           }
         } else if (lastAction.type === 'match') {
           // 매치되어 사라진 두 패를 다시 슬롯으로 복귀
@@ -13446,32 +13652,15 @@
         const activeTiles = this.tiles.filter(t => !t.removed && t.el);
         if (activeTiles.length === 0) return;
 
-        // [방안 A] 하트 1개일 때 '마지막 기회 무료 셔플(판당 1회)' 보장
-        if (this.lives === 1) {
-          if (this.hasUsedLastChanceShuffle) {
-            alert("마지막 기회 무료 셔플을 이미 사용하셨습니다!\n하트가 1개뿐이어서 더 이상 셔플할 수 없습니다.");
-            return;
-          }
-          this.hasUsedLastChanceShuffle = true;
-          const btnShuffle = document.getElementById('btn-shuffle');
-          if (btnShuffle) btnShuffle.disabled = true;
-
-          // 상단 알림 배지로 유저에게 기사회생 피드백 연출
-          let notice = document.getElementById('finale-notice');
-          if (!notice) {
-            notice = document.createElement('div');
-            notice.id = 'finale-notice';
-            notice.className = 'finale-notice';
-            this.viewportEl.appendChild(notice);
-          }
-          notice.textContent = '✨ 마지막 기회 무료 셔플 발동! (하트 보존)';
-          notice.classList.add('active');
-          setTimeout(() => notice.classList.remove('active'), 2200);
-        } else {
-          // 하트 2개 이상: 기존처럼 하트 1개 소진
-          this.loseLife();
-          if (this.isGameOver) return;
+        // [상용 룰] 셔플 판당 1회 한정 (하트 소진 없음)
+        if (this.shuffleRemaining <= 0) {
+          this.showToast('⚠️ 이번 판의 셔플 기회(1회)를 모두 소진했습니다.');
+          if (this.sound && this.sound.playMiss) this.sound.playMiss();
+          return;
         }
+
+        this.shuffleRemaining--;
+        this.updateToolButtonsUI();
 
         this.sound.playShuffle();
         this.clearHints();
