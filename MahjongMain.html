@@ -2648,20 +2648,23 @@
       animation: bigWinFadeOut 0.32s ease forwards;
     }
 
-    /* 올 블라인드 스테이지 시작 공지 알림 배너 */
+    /* 올 블라인드 스테이지 시작 공지 알림 배너 (슬롯 영역에 가려지지 않도록 화면 정중앙 최상위 레이어 고정) */
     .all-blind-notice {
-      position: absolute;
-      top: 24%;
+      position: fixed;
+      top: 50%;
       left: 50%;
       transform: translate(-50%, -50%) scale(0.95);
+      width: 90%;
+      max-width: 400px;
+      box-sizing: border-box;
       background: radial-gradient(circle at center, rgba(30, 20, 0, 0.96) 0%, rgba(10, 6, 0, 0.98) 100%);
       border: 2px solid #ffd700;
       border-radius: 20px;
-      padding: 18px 28px;
+      padding: 20px 24px;
       text-align: center;
       color: #ffffff;
-      box-shadow: 0 0 35px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.2);
-      z-index: 8000;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 35px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.2);
+      z-index: 9500;
       pointer-events: auto;
       cursor: pointer;
       user-select: none;
@@ -12796,12 +12799,10 @@
               };
               notice.addEventListener('click', dismissNotice);
               notice.addEventListener('pointerdown', dismissNotice);
-              if (this.viewportEl) {
-                this.viewportEl.appendChild(notice);
-                dismissTimer = setTimeout(() => {
-                  dismissNotice();
-                }, 7500);
-              }
+              document.body.appendChild(notice);
+              dismissTimer = setTimeout(() => {
+                dismissNotice();
+              }, 7500);
             }
           }, 500);
         }
