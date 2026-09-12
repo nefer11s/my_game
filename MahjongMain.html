@@ -36,14 +36,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&family=Pretendard:wght@700;900&display=swap" rel="stylesheet">
   <title>시연 마작 솔리테어 (Si-Yeon Mahjong Solitaire)</title>
-  <script src="assets/js/html2canvas.min.js"></script>
-  <script>
-    if (typeof html2canvas === 'undefined') {
-      var s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-      document.head.appendChild(s);
-    }
-  </script>
   <style>
     :root {
       --bg-gradient-start: #eef7f2;
@@ -3086,14 +3078,13 @@
       box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55), 0 0 50px rgba(255, 215, 0, 0.65) !important;
     }
 
-    /* 인증서 내부 양피지 이중 테두리 및 배경 프레임 */
+    /* 인증서 내부 양피지 이중 테두리 및 배경 프레임 (GPU 부하 유발 backdrop-filter 완전 제거) */
     .cert-inner-border {
       border: 1.5px solid rgba(180, 140, 60, 0.55);
       border-radius: 12px;
       padding: 14px 12px 12px 12px;
       position: relative;
-      background: rgba(255, 255, 255, 0.65);
-      backdrop-filter: blur(4px);
+      background: rgba(255, 255, 255, 0.88);
     }
 
     /* 네 모서리 오너먼트 */
@@ -3177,8 +3168,8 @@
       animation: certEmblemPulse 2.5s ease-in-out infinite alternate;
     }
     @keyframes certEmblemPulse {
-      0% { transform: scale(1); filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.6)); }
-      100% { transform: scale(1.05); filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.95)); }
+      0% { transform: scale(1); }
+      100% { transform: scale(1.04); }
     }
     .cert-seal-badge {
       position: absolute;
@@ -4645,7 +4636,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.5.4
+            Si-Yeon Mahjong Solitaire v1.5.5
           </div>
         </div>
       </div>
@@ -4815,7 +4806,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.5.4</div>
+        <div class="splash-version-badge">v1.5.5</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -14214,12 +14205,301 @@
       }
 
       /**
+       * [초고속 Zero-Dependency 순수 Canvas 2D 인증서 이미지 렌더러]
+       * 외부 라이브러리 및 iframe을 일체 사용하지 않아 file:// 보안 에러 및 지연이 전혀 없음.
+       */
+      generateCertificateCanvas() {
+        const width = 800;
+        const height = 1040;
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+
+        const diffKey = this.difficulty || 'normal';
+        const diffMap = { '쉬움': 'easy', '보통': 'normal', '어려움': 'hard', '달인': 'master' };
+        const normDiff = diffMap[diffKey] || diffKey;
+        const celebration = this.getStage30CelebrationData(normDiff) || {
+          diffCode: 'S30C',
+          certEngTitle: 'CERTIFICATE OF MASTERY',
+          certMainTitle: '공 인 정 복 인 증 서',
+          recipientTitle: '[천상천하 전설의 마작 황제]',
+          certDesc: '위 사람은 『시연이네 그림맞추기』 전 관문을 완파하여 본 칭호에 등극하였음을 공식 인증함.',
+          sealText: 'OFFICIAL SEAL',
+          imageSrc: 'assets/emblems/crown.jpg'
+        };
+
+        const THEME_COLORS = {
+          easy: { border: '#059669', title: '#047857', badge: '#10b981' },
+          normal: { border: '#0284c7', title: '#0369a1', badge: '#0284c7' },
+          hard: { border: '#dc2626', title: '#b91c1c', badge: '#ea580c' },
+          master: { border: '#d4af37', title: '#b45309', badge: '#d4af37' }
+        };
+        const theme = THEME_COLORS[normDiff] || THEME_COLORS.master;
+
+        // 1. 배경: 고급 양피지 그라데이션
+        const bgGrad = ctx.createLinearGradient(0, 0, width, height);
+        bgGrad.addColorStop(0, '#fffef9');
+        bgGrad.addColorStop(0.4, '#fdf8eb');
+        bgGrad.addColorStop(1, '#f8ebd2');
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, width, height);
+
+        // 2. 외곽 보더 (난이도 테마색)
+        ctx.strokeStyle = theme.border;
+        ctx.lineWidth = 10;
+        ctx.strokeRect(5, 5, width - 10, height - 10);
+
+        // 3. 안쪽 이중 금박 보더
+        const m = 24;
+        ctx.strokeStyle = 'rgba(180, 140, 60, 0.7)';
+        ctx.lineWidth = 2.5;
+        ctx.strokeRect(m, m, width - m * 2, height - m * 2);
+
+        const m2 = 30;
+        ctx.strokeStyle = 'rgba(212, 175, 55, 0.35)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(m2, m2, width - m2 * 2, height - m2 * 2);
+
+        // 4. 네 모서리 오너먼트 (❖)
+        ctx.fillStyle = '#b8860b';
+        ctx.font = 'bold 24px serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('❖', m + 14, m + 14);
+        ctx.fillText('❖', width - m - 14, m + 14);
+        ctx.fillText('❖', m + 14, height - m - 14);
+        ctx.fillText('❖', width - m - 14, height - m - 14);
+
+        // 5. 헤더: 시리얼 넘버
+        ctx.font = 'bold 15px "Courier New", Courier, monospace';
+        ctx.fillStyle = '#8c734b';
+        ctx.fillText(`NO. SY-2026-CERT-${celebration.diffCode || 'S30C'}`, width / 2, 85);
+
+        // 영문 제호
+        ctx.font = 'bold 19px "Times New Roman", Georgia, serif';
+        ctx.fillStyle = '#aa771c';
+        ctx.fillText(celebration.certEngTitle || 'CERTIFICATE OF MASTERY', width / 2, 120);
+
+        // 한글 메인 제호
+        ctx.font = '900 42px sans-serif';
+        ctx.fillStyle = '#1a160d';
+        ctx.fillText(celebration.certMainTitle || '공 인 정 복 인 증 서', width / 2, 180);
+
+        // 구분선 & ✦
+        ctx.strokeStyle = 'rgba(180, 140, 60, 0.6)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(180, 215);
+        ctx.lineTo(370, 215);
+        ctx.moveTo(430, 215);
+        ctx.lineTo(620, 215);
+        ctx.stroke();
+
+        ctx.font = 'bold 18px serif';
+        ctx.fillStyle = '#b8860b';
+        ctx.fillText('✦', width / 2, 215);
+
+        // 6. 보석 엠블럼 이미지
+        const emblemImgEl = document.getElementById('cert-emblem-img');
+        const emblemRadius = 72;
+        const emblemCenterX = width / 2;
+        const emblemCenterY = 320;
+
+        // 엠블럼 후광
+        const haloGrad = ctx.createRadialGradient(emblemCenterX, emblemCenterY, 30, emblemCenterX, emblemCenterY, emblemRadius + 20);
+        haloGrad.addColorStop(0, 'rgba(255, 215, 0, 0.4)');
+        haloGrad.addColorStop(1, 'rgba(255, 215, 0, 0)');
+        ctx.fillStyle = haloGrad;
+        ctx.beginPath();
+        ctx.arc(emblemCenterX, emblemCenterY, emblemRadius + 20, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 엠블럼 그리기
+        if (emblemImgEl && emblemImgEl.complete && emblemImgEl.naturalWidth > 0) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(emblemCenterX, emblemCenterY, emblemRadius, 0, Math.PI * 2);
+          ctx.closePath();
+          ctx.clip();
+          ctx.drawImage(emblemImgEl, emblemCenterX - emblemRadius, emblemCenterY - emblemRadius, emblemRadius * 2, emblemRadius * 2);
+          ctx.restore();
+        } else {
+          ctx.fillStyle = theme.border;
+          ctx.beginPath();
+          ctx.arc(emblemCenterX, emblemCenterY, emblemRadius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // 엠블럼 골드 테두리
+        ctx.strokeStyle = '#ffd700';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.arc(emblemCenterX, emblemCenterY, emblemRadius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // 엠블럼 하단 씰 배지
+        const badgeW = 160;
+        const badgeH = 28;
+        const badgeX = emblemCenterX - badgeW / 2;
+        const badgeY = emblemCenterY + emblemRadius - 14;
+        ctx.fillStyle = '#b8860b';
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 14);
+        } else {
+          ctx.rect(badgeX, badgeY, badgeW, badgeH);
+        }
+        ctx.fill();
+        ctx.strokeStyle = '#ffe57f';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '900 13px sans-serif';
+        ctx.fillText(celebration.sealText || 'OFFICIAL SEAL', emblemCenterX, badgeY + badgeH / 2 + 1);
+
+        // 7. 수여 대상 및 칭호
+        ctx.font = 'bold 18px sans-serif';
+        ctx.fillStyle = '#8c734b';
+        ctx.fillText('수 여 칭 호', width / 2, 455);
+
+        ctx.font = '900 32px sans-serif';
+        ctx.fillStyle = theme.title;
+        ctx.fillText(celebration.recipientTitle || '[공인 정복자]', width / 2, 500);
+
+        // 8. 본문 공인 문구
+        ctx.font = '600 20px sans-serif';
+        ctx.fillStyle = '#453c2a';
+        const descText = celebration.certDesc || '위 사람은 『시연이네 그림맞추기』 전 관문을 완파하여 본 칭호에 등극하였음을 공식 인증함.';
+        const maxLineWidth = 640;
+        let words = descText.split(' ');
+        let line = '';
+        let lineY = 560;
+        for (let n = 0; n < words.length; n++) {
+          let testLine = line + words[n] + ' ';
+          let metrics = ctx.measureText(testLine);
+          if (metrics.width > maxLineWidth && n > 0) {
+            ctx.fillText(line.trim(), width / 2, lineY);
+            line = words[n] + ' ';
+            lineY += 34;
+          } else {
+            line = testLine;
+          }
+        }
+        ctx.fillText(line.trim(), width / 2, lineY);
+
+        // 9. 수행 기록 박스
+        const boxX = 90;
+        const boxY = 670;
+        const boxW = width - 180;
+        const boxH = 110;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(boxX, boxY, boxW, boxH, 12);
+        } else {
+          ctx.rect(boxX, boxY, boxW, boxH);
+        }
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        const colW = boxW / 3;
+        ctx.strokeStyle = 'rgba(180, 140, 60, 0.35)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(boxX + colW, boxY + 15);
+        ctx.lineTo(boxX + colW, boxY + boxH - 15);
+        ctx.moveTo(boxX + colW * 2, boxY + 15);
+        ctx.lineTo(boxX + colW * 2, boxY + boxH - 15);
+        ctx.stroke();
+
+        const diffCfg = (typeof DIFFICULTY_CONFIG !== 'undefined' && DIFFICULTY_CONFIG[diffKey]) ? DIFFICULTY_CONFIG[diffKey] : { name: '달인' };
+        ctx.font = 'bold 15px sans-serif';
+        ctx.fillStyle = '#7d6b4f';
+        ctx.fillText('정복 난이도', boxX + colW * 0.5, boxY + 40);
+        ctx.font = '900 20px sans-serif';
+        ctx.fillStyle = theme.title;
+        ctx.fillText(`${diffCfg.name} (30관문)`, boxX + colW * 0.5, boxY + 78);
+
+        ctx.font = 'bold 15px sans-serif';
+        ctx.fillStyle = '#7d6b4f';
+        ctx.fillText('최종 기록', boxX + colW * 1.5, boxY + 40);
+        ctx.font = '900 22px sans-serif';
+        ctx.fillStyle = '#1f1b13';
+        ctx.fillText(this.formatTime(this.timerSeconds), boxX + colW * 1.5, boxY + 78);
+
+        ctx.font = 'bold 15px sans-serif';
+        ctx.fillStyle = '#7d6b4f';
+        ctx.fillText('공인 점수', boxX + colW * 2.5, boxY + 40);
+        ctx.font = '900 22px sans-serif';
+        ctx.fillStyle = '#d97706';
+        ctx.fillText(`${this.score.toLocaleString()}점`, boxX + colW * 2.5, boxY + 78);
+
+        // 10. 하단 발급 정보 & 전통 직인
+        const footerY = 850;
+        ctx.strokeStyle = 'rgba(180, 140, 60, 0.45)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(90, footerY);
+        ctx.lineTo(width - 90, footerY);
+        ctx.stroke();
+
+        const now = new Date();
+        const dateStr = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일`;
+        ctx.textAlign = 'left';
+        ctx.font = 'bold 19px sans-serif';
+        ctx.fillStyle = '#6e5e44';
+        ctx.fillText(dateStr, 100, footerY + 42);
+
+        ctx.font = '900 23px sans-serif';
+        ctx.fillStyle = '#2b2315';
+        ctx.fillText('시연 마작 솔리테어 명예의 전당', 100, footerY + 80);
+
+        ctx.font = 'bold 13px sans-serif';
+        ctx.fillStyle = '#9c8a6f';
+        ctx.fillText('SI-YEON MAHJONG SOLITAIRE HALL OF FAME', 100, footerY + 104);
+
+        // 11. 우측 붉은 전통 직인 도장 (時演 / 公認)
+        const stampSize = 88;
+        const stampX = width - 100 - stampSize;
+        const stampY = footerY + 28;
+
+        ctx.save();
+        ctx.translate(stampX + stampSize / 2, stampY + stampSize / 2);
+        ctx.rotate(-0.08);
+
+        ctx.strokeStyle = '#dc2626';
+        ctx.lineWidth = 4.5;
+        ctx.fillStyle = 'rgba(220, 38, 38, 0.05)';
+        ctx.beginPath();
+        if (ctx.roundRect) {
+          ctx.roundRect(-stampSize / 2, -stampSize / 2, stampSize, stampSize, 10);
+        } else {
+          ctx.rect(-stampSize / 2, -stampSize / 2, stampSize, stampSize);
+        }
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#dc2626';
+        ctx.font = '900 28px serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('時', -20, -20);
+        ctx.fillText('演', 20, -20);
+        ctx.fillText('公', -20, 20);
+        ctx.fillText('認', 20, 20);
+        ctx.restore();
+
+        return canvas;
+      }
+
+      /**
        * [공식 인증서 영역 고해상도 캡처 및 SNS 공유]
        */
       async shareCertificateImage() {
-        const certTarget = document.querySelector('#modal-cert-view .cert-inner-border') || document.getElementById('modal-cert-view');
-        if (!certTarget) return;
-
         const shareBtn = document.getElementById('modal-share-btn');
         const originalBtnHtml = shareBtn ? shareBtn.innerHTML : '';
         if (shareBtn) {
@@ -14228,18 +14508,8 @@
         }
 
         try {
-          if (typeof html2canvas === 'undefined') {
-            throw new Error('html2canvas 라이브러리를 불러오지 못했습니다.');
-          }
-
-          // 인증서 본체 영역 고해상도 캡처 (스케일 2.5)
-          const canvas = await html2canvas(certTarget, {
-            scale: 2.5,
-            useCORS: true,
-            allowTaint: true,
-            backgroundColor: '#fbf5e8',
-            logging: false
-          });
+          // 순수 Canvas 2D로 0ms 초고속 렌더링
+          const canvas = this.generateCertificateCanvas();
 
           // Canvas를 PNG Blob으로 변환
           const blob = await new Promise((resolve, reject) => {
@@ -14271,7 +14541,6 @@
               sharedSuccess = true;
             } catch (err) {
               if (err.name === 'AbortError') {
-                // 사용자가 공유 창을 닫은 경우 정상 종료
                 sharedSuccess = true;
               } else {
                 console.warn('Web Share 실패, 다운로드로 전환:', err);
@@ -14279,7 +14548,7 @@
             }
           }
 
-          // 2. Web Share가 지원되지 않거나 파일 공유 미지원 브라우저인 경우: 다운로드 및 클립보드 복사 폴백
+          // 2. Web Share가 지원되지 않거나 PC 환경일 경우: 다운로드 및 클립보드 복사 폴백
           if (!sharedSuccess) {
             const downloadUrl = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -14292,7 +14561,7 @@
               URL.revokeObjectURL(downloadUrl);
             }, 1200);
 
-            // 클립보드에 이미지 복사 시도
+            // 클립보드 복사 시도
             if (navigator.clipboard && navigator.clipboard.write) {
               try {
                 await navigator.clipboard.write([
@@ -14301,7 +14570,7 @@
               } catch (_) { }
             }
 
-            this.showToast('📜 인증서 이미지가 다운로드되었습니다! SNS에 자유롭게 공유해보세요.');
+            this.showToast('📜 인증서 이미지가 저장되었습니다! SNS에 자유롭게 공유해보세요.');
           }
         } catch (err) {
           console.error('인증서 공유/저장 오류:', err);
