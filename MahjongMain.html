@@ -300,9 +300,9 @@
     .settings-dropdown {
       position: absolute;
       top: calc(100% + 8px);
-      left: 0;
+      left: auto;
+      right: 0;
       bottom: auto;
-      right: auto;
       background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
@@ -315,8 +315,11 @@
       gap: 8px;
       min-width: 270px;
       max-width: calc(100vw - 24px);
+      max-height: min(80vh, 520px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       z-index: 1200;
-      transform-origin: top left;
+      transform-origin: top right;
       animation: settingsPopDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -4228,11 +4231,13 @@
       .settings-dropdown {
         min-width: 260px;
         top: calc(100% + 6px);
-        left: 0;
+        left: auto;
+        right: 0;
         bottom: auto;
-        right: auto;
         padding: 10px;
         gap: 6px;
+        max-height: min(85vh, 520px);
+        overflow-y: auto;
       }
 
       .settings-dropdown .settings-btn {
@@ -4301,12 +4306,14 @@
 
       .settings-dropdown {
         top: calc(100% + 4px);
-        left: 0;
+        left: auto;
+        right: 0;
         bottom: auto;
-        right: auto;
         padding: 6px;
         gap: 4px;
         min-width: 240px;
+        max-height: 85vh;
+        overflow-y: auto;
       }
 
       .settings-dropdown .diff-select {
@@ -4380,7 +4387,7 @@
       box-shadow: 0 4px 12px rgba(46, 167, 121, 0.2);
     }
 
-    /* 설정 드롭다운이 모달 팝업으로 뜰 때 (스플래시 화면 등) */
+    /* 설정 드롭다운이 모달 팝업으로 뜰 때 (모바일 화면 및 스플래시 화면 등) */
     .settings-dropdown.modal-mode {
       position: fixed !important;
       top: 50% !important;
@@ -4388,10 +4395,13 @@
       transform: translate(-50%, -50%) !important;
       bottom: auto !important;
       right: auto !important;
+      width: 90vw !important;
+      max-width: 360px !important;
+      max-height: min(86vh, 540px) !important;
+      overflow-y: auto !important;
+      -webkit-overflow-scrolling: touch !important;
       z-index: 10000 !important;
-      max-height: 85vh;
-      overflow-y: auto;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65), 0 0 0 100vmax rgba(0, 0, 0, 0.5);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65), 0 0 0 100vmax rgba(0, 0, 0, 0.5) !important;
       animation: settingsModalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .settings-dropdown.modal-mode #settings-modal-header {
@@ -11004,13 +11014,23 @@
           btnSettings.addEventListener('click', (e) => {
             e.stopPropagation();
             this.sound.playSelect();
-            const wrapper = document.getElementById('settings-wrapper');
-            if (wrapper && !wrapper.contains(settingsDropdown)) {
-              wrapper.appendChild(settingsDropdown);
+            if (settingsDropdown.classList.contains('active')) {
+              closeSettingsMenu();
+              return;
             }
-            settingsDropdown.classList.remove('modal-mode');
-            const isOpen = settingsDropdown.classList.toggle('active');
-            btnSettings.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            const isMobile = window.innerWidth <= 768 || window.innerHeight <= 600;
+            if (isMobile) {
+              document.body.appendChild(settingsDropdown);
+              settingsDropdown.classList.add('modal-mode');
+            } else {
+              const wrapper = document.getElementById('settings-wrapper');
+              if (wrapper && !wrapper.contains(settingsDropdown)) {
+                wrapper.appendChild(settingsDropdown);
+              }
+              settingsDropdown.classList.remove('modal-mode');
+            }
+            settingsDropdown.classList.add('active');
+            btnSettings.setAttribute('aria-expanded', 'true');
           });
 
           // 설정 드롭다운 내부 클릭 시 외부 닫기 이벤트 전파 방지
