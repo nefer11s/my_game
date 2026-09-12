@@ -2658,12 +2658,19 @@
       color: #ffffff;
       box-shadow: 0 0 35px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.2);
       z-index: 8000;
-      pointer-events: none;
+      pointer-events: auto;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
       animation: allBlindBannerIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
       transition: opacity 0.5s ease, transform 0.5s ease;
     }
+    .all-blind-notice:hover {
+      box-shadow: 0 0 45px rgba(255, 215, 0, 0.75), inset 0 0 20px rgba(255, 215, 0, 0.35);
+    }
     .all-blind-notice.fade-out {
       opacity: 0;
+      pointer-events: none;
       transform: translate(-50%, -55%) scale(0.9);
     }
     .all-blind-icon {
@@ -2682,6 +2689,18 @@
       font-size: 13.5px;
       color: #f7e6a7;
       line-height: 1.5;
+    }
+    .all-blind-touch {
+      margin-top: 10px;
+      display: inline-block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.75);
+      background: rgba(0, 0, 0, 0.35);
+      padding: 4px 14px;
+      border-radius: 14px;
+      letter-spacing: 0.3px;
+      animation: pulseSubTouch 1.5s ease-in-out infinite alternate;
     }
 
     /* 쉬움 30판 (70% 블라인드 관문) 에메랄드 테마 */
@@ -10224,7 +10243,19 @@
         if (!toast) {
           toast = document.createElement('div');
           toast.id = 'floating-notice-toast';
-          toast.style.cssText = 'position:fixed;top:28px;left:50%;transform:translateX(-50%) translateY(-24px);background:rgba(15,35,25,0.96);color:#ffd700;padding:11px 24px;border-radius:30px;font-size:14.5px;font-weight:800;box-shadow:0 10px 28px rgba(0,0,0,0.45);border:1.5px solid rgba(255,215,0,0.6);z-index:999999;opacity:0;pointer-events:none;transition:opacity 0.22s ease,transform 0.22s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;';
+          toast.style.cssText = 'position:fixed;top:28px;left:50%;transform:translateX(-50%) translateY(-24px);background:rgba(15,35,25,0.96);color:#ffd700;padding:11px 24px;border-radius:30px;font-size:14.5px;font-weight:800;box-shadow:0 10px 28px rgba(0,0,0,0.45);border:1.5px solid rgba(255,215,0,0.6);z-index:999999;opacity:0;pointer-events:auto;cursor:pointer;user-select:none;-webkit-user-select:none;transition:opacity 0.22s ease,transform 0.22s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;';
+          toast.title = '터치하여 즉시 닫기';
+          const dismissToast = (e) => {
+            if (e) {
+              if (e.stopPropagation) e.stopPropagation();
+              if (e.preventDefault) e.preventDefault();
+            }
+            clearTimeout(this._floatingNoticeTimer);
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(-24px)';
+          };
+          toast.addEventListener('click', dismissToast);
+          toast.addEventListener('pointerdown', dismissToast);
           document.body.appendChild(toast);
         }
         toast.textContent = message;
@@ -10234,7 +10265,7 @@
         this._floatingNoticeTimer = setTimeout(() => {
           toast.style.opacity = '0';
           toast.style.transform = 'translateX(-50%) translateY(-24px)';
-        }, 2200);
+        }, 5500);
       }
 
       bindEvents() {
@@ -12209,16 +12240,28 @@
                 <div class="all-blind-icon">${nData.icon}</div>
                 <div class="all-blind-title">${nData.title}</div>
                 <div class="all-blind-desc">${nData.desc}</div>
+                <div class="all-blind-touch">👆 화면 어디나 터치하면 바로 닫힙니다</div>
               `;
+              let dismissTimer = null;
+              const dismissNotice = (e) => {
+                if (e) {
+                  if (e.stopPropagation) e.stopPropagation();
+                  if (e.preventDefault) e.preventDefault();
+                }
+                if (dismissTimer) clearTimeout(dismissTimer);
+                notice.classList.add('fade-out');
+                setTimeout(() => {
+                  if (typeof notice.remove === 'function') notice.remove();
+                  else if (notice.parentNode) notice.parentNode.removeChild(notice);
+                }, 400);
+              };
+              notice.addEventListener('click', dismissNotice);
+              notice.addEventListener('pointerdown', dismissNotice);
               if (this.viewportEl) {
                 this.viewportEl.appendChild(notice);
-                setTimeout(() => {
-                  notice.classList.add('fade-out');
-                  setTimeout(() => {
-                    if (typeof notice.remove === 'function') notice.remove();
-                    else if (notice.parentNode) notice.parentNode.removeChild(notice);
-                  }, 500);
-                }, 3200);
+                dismissTimer = setTimeout(() => {
+                  dismissNotice();
+                }, 7500);
               }
             }
           }, 500);
