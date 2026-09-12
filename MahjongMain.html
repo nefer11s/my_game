@@ -299,9 +299,10 @@
 
     .settings-dropdown {
       position: absolute;
-      bottom: calc(100% + 10px);
-      right: 0;
-      top: auto;
+      top: calc(100% + 8px);
+      left: 0;
+      bottom: auto;
+      right: auto;
       background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
@@ -315,8 +316,20 @@
       min-width: 270px;
       max-width: calc(100vw - 24px);
       z-index: 1200;
-      transform-origin: bottom right;
-      animation: settingsPopUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-origin: top left;
+      animation: settingsPopDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes settingsPopDown {
+      from {
+        opacity: 0;
+        transform: scale(0.92) translateY(-6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
     }
 
     .settings-dropdown.active {
@@ -1481,27 +1494,29 @@
       white-space: nowrap;
     }
 
-    .tray-oryong-btn {
+    .tray-settings-btn {
       width: 28px;
       height: 22px;
       border-radius: 6px;
-      background: rgba(230, 81, 0, 0.22);
-      border: 1px solid rgba(230, 81, 0, 0.6);
+      background: rgba(46, 167, 121, 0.22);
+      border: 1.2px solid rgba(46, 167, 121, 0.65);
       font-size: 13px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-      transition: all 0.15s ease;
+      transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
       padding: 0;
       line-height: 1;
+      color: #e2f5ec;
     }
 
-    .tray-oryong-btn:hover {
-      background: rgba(230, 81, 0, 0.45);
-      border-color: #ff9800;
-      transform: scale(1.08);
+    .tray-settings-btn:hover {
+      background: rgba(46, 167, 121, 0.45);
+      border-color: #38d39f;
+      transform: scale(1.1) rotate(30deg);
+      box-shadow: 0 3px 10px rgba(46, 167, 121, 0.35);
     }
 
     .tray-count-badge.warning {
@@ -4084,8 +4099,10 @@
 
       .settings-dropdown {
         min-width: 260px;
-        bottom: calc(100% + 8px);
-        top: auto;
+        top: calc(100% + 6px);
+        left: 0;
+        bottom: auto;
+        right: auto;
         padding: 10px;
         gap: 6px;
       }
@@ -4155,8 +4172,10 @@
       }
 
       .settings-dropdown {
-        bottom: calc(100% + 4px);
-        top: auto;
+        top: calc(100% + 4px);
+        left: 0;
+        bottom: auto;
+        right: auto;
         padding: 6px;
         gap: 4px;
         min-width: 240px;
@@ -4570,55 +4589,11 @@
   <div class="tray-container top-tray" id="tray-container">
     <div class="tray-side-ctrls">
       <div class="tray-count-badge" id="tray-count-badge">0 / 4</div>
-      <button class="tray-oryong-btn" id="btn-oryong-mode" title="오룡이 보통 모드: 오룡이 테마 ON · 보통 난이도 직행">
-        <span class="btn-icon">🐲</span>
-      </button>
-    </div>
-    <div class="tray-slots" id="tray-slots">
-      <!-- 동적 슬롯 박스 -->
-    </div>
-  </div>
-
-  <!-- 피해 화면 플래시 -->
-  <div class="damage-flash" id="damage-flash"></div>
-
-  <!-- 메인 게임 필드 (화면 중앙 최대 면적) -->
-  <main class="game-viewport" id="viewport">
-    <div class="game-board" id="board"></div>
-  </main>
-
-  <!-- 하단 상용 컨트롤 독 바 (남은패/매치 현황 + 쾌적한 하단 액션 버튼) -->
-  <footer class="bottom-dock">
-    <div class="dock-stats">
-      <div class="dock-pill" title="남은 마작 패">
-        <span class="hud-pill-label">남은패</span>
-        <span class="hud-pill-val" id="stat-tiles">0</span>
-      </div>
-      <div class="dock-pill match-pill" title="즉시 매치 가능한 패 수">
-        <span class="hud-pill-label">매치</span>
-        <span class="hud-pill-val" id="stat-moves">0</span>
-      </div>
-    </div>
-
-    <div class="dock-actions">
-      <button class="btn btn-dock" id="btn-undo" title="한 수 되돌리기">
-        <span class="btn-icon">↩</span><span class="btn-label">되돌리기</span>
-      </button>
-      <button class="btn btn-dock" id="btn-hint" title="매치 짝 힌트 (판당 최대 3회)">
-        <span class="btn-icon">💡</span><span class="btn-label" id="hint-label">힌트 (3)</span>
-      </button>
-      <button class="btn btn-dock" id="btn-shuffle" title="패 섞기 (하트 1개 소모)">
-        <span class="btn-icon">🔀</span><span class="btn-label">셔플</span>
-      </button>
-      <button class="btn btn-dock" id="btn-restart" title="현재 판 다시 시작">
-        <span class="btn-icon">🔄</span><span class="btn-label">재도전</span>
-      </button>
-
       <!-- 톱니바퀴 설정 메뉴 (하단 바로 이동) -->
       <div class="settings-wrapper" id="settings-wrapper">
-        <button class="btn btn-dock" id="btn-settings" title="환경 설정 (난이도, 규칙, 랭킹, 화면)" aria-haspopup="true"
+        <button class="tray-settings-btn" id="btn-settings" title="환경 설정 (난이도, 규칙, 랭킹, 화면)" aria-haspopup="true"
           aria-expanded="false">
-          <span class="btn-icon">⚙️</span><span class="btn-label">설정</span>
+          <span class="btn-icon">⚙️</span>
         </button>
         <div class="settings-dropdown" id="settings-dropdown">
           <!-- 모달 모드 전용 상단 헤더 & 닫기(X) 버튼 -->
@@ -4751,6 +4726,47 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="tray-slots" id="tray-slots">
+      <!-- 동적 슬롯 박스 -->
+    </div>
+  </div>
+
+  <!-- 피해 화면 플래시 -->
+  <div class="damage-flash" id="damage-flash"></div>
+
+  <!-- 메인 게임 필드 (화면 중앙 최대 면적) -->
+  <main class="game-viewport" id="viewport">
+    <div class="game-board" id="board"></div>
+  </main>
+
+  <!-- 하단 상용 컨트롤 독 바 (남은패/매치 현황 + 쾌적한 하단 액션 버튼) -->
+  <footer class="bottom-dock">
+    <div class="dock-stats">
+      <div class="dock-pill" title="남은 마작 패">
+        <span class="hud-pill-label">남은패</span>
+        <span class="hud-pill-val" id="stat-tiles">0</span>
+      </div>
+      <div class="dock-pill match-pill" title="즉시 매치 가능한 패 수">
+        <span class="hud-pill-label">매치</span>
+        <span class="hud-pill-val" id="stat-moves">0</span>
+      </div>
+    </div>
+
+    <div class="dock-actions">
+      <button class="btn btn-dock" id="btn-undo" title="한 수 되돌리기">
+        <span class="btn-icon">↩</span><span class="btn-label">되돌리기</span>
+      </button>
+      <button class="btn btn-dock" id="btn-hint" title="매치 짝 힌트 (판당 최대 3회)">
+        <span class="btn-icon">💡</span><span class="btn-label" id="hint-label">힌트 (3)</span>
+      </button>
+      <button class="btn btn-dock" id="btn-shuffle" title="패 섞기 (하트 1개 소모)">
+        <span class="btn-icon">🔀</span><span class="btn-label">셔플</span>
+      </button>
+      <button class="btn btn-dock" id="btn-restart" title="현재 판 다시 시작">
+        <span class="btn-icon">🔄</span><span class="btn-label">재도전</span>
+      </button>
+
     </div>
   </footer>
 
@@ -10684,26 +10700,7 @@
           });
         });
 
-        // 🐲 슬롯 용머리 버튼: 오룡이 테마 + 보통 모드 전환
-        const btnOryongMode = document.getElementById('btn-oryong-mode');
-        if (btnOryongMode) {
-          btnOryongMode.addEventListener('click', () => {
-            this.sound.playSelect();
-            this.enterFullscreen();
-            this.hideSplashScreen();
-            this._applyTheme('oryong');
-            this.difficulty = 'normal';
-            try { localStorage.setItem('siyeon_mahjong_difficulty', 'normal'); } catch(e) {}
-            const diffSel = document.getElementById('select-difficulty');
-            if (diffSel) diffSel.value = 'normal';
-            updateThemeRadioUI();
-            updateDifficultySelectLabels();
-            this.currentStage = 1;
-            this.hasStarted = true;
-            this.startNewGame(false);
-            this.showFloatingNotice('🐲 오룡이 테마 보통 모드 시작!');
-          });
-        }
+        // (슬롯 용머리 버튼은 설정 톱니바퀴 버튼으로 교체됨)
 
         // 테마 종수 동적 계산 함수
         const calcThemePoolCount = (theme, difficulty) => {
