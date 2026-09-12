@@ -1,13 +1,21 @@
 {
+  "id": "./MahjongMain.html",
   "name": "시연이네 그림맞추기 (Si-Yeon Mahjong Solitaire)",
   "short_name": "시연이네 그림맞추기",
   "description": "다양한 테마와 사주 패가 어우러진 프리미엄 마작 솔리테어 퍼즐 게임",
   "start_url": "./MahjongMain.html",
+  "scope": "./",
   "display": "fullscreen",
   "orientation": "any",
   "background_color": "#123e2b",
   "theme_color": "#123e2b",
   "icons": [
+    {
+      "src": "assets/mahjong_splash.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
     {
       "src": "assets/mahjong_splash.jpg",
       "sizes": "512x512",

@@ -19,12 +19,21 @@
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/mahjong_splash.jpg">
   <script>
-    if (location.protocol.startsWith('http')) {
-      const manifestLink = document.createElement('link');
-      manifestLink.rel = 'manifest';
-      manifestLink.href = 'manifest.json';
-      document.head.appendChild(manifestLink);
+    // PWA 홈 화면 추가 프롬프트 조기 캡처
+    window.deferredInstallPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      window.deferredInstallPrompt = e;
+    });
+
+    // PWA 필수 서비스 워커 등록
+    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
     }
   </script>
   <meta name="mobile-web-app-capable" content="yes">
@@ -10966,12 +10975,6 @@
         }
 
         // PWA 홈 화면 바로가기 설치 관리
-        let deferredInstallPrompt = null;
-        window.addEventListener('beforeinstallprompt', (e) => {
-          e.preventDefault();
-          deferredInstallPrompt = e;
-        });
-
         const btnSplashShortcut = document.getElementById('btn-splash-shortcut');
         const shortcutModal = document.getElementById('shortcut-guide-modal');
         const shortcutContent = document.getElementById('shortcut-guide-content');
@@ -11002,58 +11005,78 @@
               return;
             }
 
-            // 2. 브라우저 설치 프롬프트가 대기 중인 경우 (안드로이드 크롬/Edge 등)
-            if (deferredInstallPrompt) {
-              deferredInstallPrompt.prompt();
-              deferredInstallPrompt.userChoice.then((choiceResult) => {
+            // 2. 브라우저 설치 프롬프트가 준비되어 있는 경우 (안드로이드 크롬/Edge/삼성인터넷 등)
+            if (window.deferredInstallPrompt) {
+              window.deferredInstallPrompt.prompt();
+              window.deferredInstallPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult && choiceResult.outcome === 'accepted') {
                   alert('홈 화면에 바로가기가 성공적으로 추가되었습니다! 🎉');
                 }
-                deferredInstallPrompt = null;
+                window.deferredInstallPrompt = null;
               }).catch(() => {});
               return;
             }
 
-            // 3. 기기별 안내 분기 (iOS Safari / Android / PC)
+            // 3. 기기별 환경 정밀 분석 (인앱 브라우저 / iOS Safari / Android Chrome / PC)
             const ua = (navigator.userAgent || '').toLowerCase();
+            const isKakao = ua.includes('kakaotalk');
+            const isNaver = ua.includes('naver');
+            const isOtherInApp = ua.includes('fbav') || ua.includes('instagram') || ua.includes('line');
+            const isInApp = isKakao || isNaver || isOtherInApp;
+
             const isIOS = /iphone|ipad|ipod/.test(ua);
             const isAndroid = /android/.test(ua);
 
             if (shortcutContent) {
-              if (isIOS) {
+              if (isInApp) {
+                const appName = isKakao ? '카카오톡' : (isNaver ? '네이버' : '인앱');
                 shortcutContent.innerHTML = `
-                  <div style="background: #f0fdf4; border-radius: 12px; padding: 14px; border: 1px solid #bbf7d0; margin-bottom: 12px;">
+                  <div style="background: #fff7ed; border-radius: 12px; padding: 14px; border: 1.5px solid #fdba74; margin-bottom: 12px;">
+                    <div style="font-weight: 800; color: #c2410c; font-size: 15px; margin-bottom: 8px;">⚠️ ${appName} 인앱 브라우저 안내</div>
+                    <p style="font-size: 13.5px; color: #431407; line-height: 1.7; margin: 0 0 8px 0;">
+                      ${appName} 내부 화면에서는 보안상 '홈 화면 추가'가 직접 지원되지 않습니다.
+                    </p>
+                    <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #7c2d12;">
+                      <li>화면 우측 상단(또는 하단)의 <strong>더보기 메뉴(⋮ 또는 ...)</strong>를 터치하세요.</li>
+                      <li><strong>[다른 브라우저로 열기]</strong>(Chrome 또는 삼성인터넷/Safari)를 선택하세요.</li>
+                      <li>열린 브라우저에서 '홈 화면에 바로가기 추가'를 누르면 즉시 설치됩니다!</li>
+                    </ol>
+                  </div>
+                `;
+              } else if (isIOS) {
+                shortcutContent.innerHTML = `
+                  <div style="background: #f0fdf4; border-radius: 12px; padding: 14px; border: 1.5px solid #bbf7d0; margin-bottom: 12px;">
                     <div style="font-weight: 800; color: #166534; font-size: 15px; margin-bottom: 8px;">🍎 아이폰 / 아이패드 사파리</div>
                     <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
-                      <li>사파리 하단(또는 상단)의 <strong>공유 버튼 <span style="font-size: 16px;">⎋</span></strong>을 터치하세요.</li>
-                      <li>메뉴 목록을 내려 <strong>[홈 화면에 추가] ➕</strong>를 누르세요.</li>
-                      <li>우측 상단 <strong>[추가]</strong>를 누르면 바탕화면에 바로가기 앱 아이콘이 생성됩니다!</li>
+                      <li>사파리 브라우저 하단의 <strong>공유 버튼 <span style="font-size: 16px;">⎋</span></strong>을 터치하세요.</li>
+                      <li>메뉴 목록을 아래로 내려 <strong>[홈 화면에 추가] ➕</strong>를 누르세요.</li>
+                      <li>우측 상단 <strong>[추가]</strong>를 누르면 바탕화면에 앱 아이콘이 생성됩니다!</li>
                     </ol>
                   </div>
                   <p style="font-size: 12px; color: #64748b; margin: 0;">※ 홈 화면 아이콘으로 접속하시면 주소창 없이 전체화면 앱으로 더욱 쾌적하게 즐기실 수 있습니다.</p>
                 `;
               } else if (isAndroid) {
                 shortcutContent.innerHTML = `
-                  <div style="background: #f0fdf4; border-radius: 12px; padding: 14px; border: 1px solid #bbf7d0; margin-bottom: 12px;">
-                    <div style="font-weight: 800; color: #166534; font-size: 15px; margin-bottom: 8px;">🤖 안드로이드 스마트폰</div>
+                  <div style="background: #f0fdf4; border-radius: 12px; padding: 14px; border: 1.5px solid #bbf7d0; margin-bottom: 12px;">
+                    <div style="font-weight: 800; color: #166534; font-size: 15px; margin-bottom: 8px;">🤖 안드로이드 스마트폰 (크롬 / 삼성인터넷)</div>
                     <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
-                      <li>크롬/삼성인터넷 브라우저 우측 상단 <strong>더보기 메뉴(⋮)</strong>를 터치하세요.</li>
-                      <li><strong>[홈 화면에 추가]</strong> 또는 <strong>[앱 설치]</strong>를 선택하세요.</li>
-                      <li>확인을 누르면 스마트폰 바탕화면에 앱 아이콘이 즉시 설치됩니다!</li>
+                      <li>브라우저 우측 상단의 <strong>더보기 메뉴(⋮)</strong>를 터치하세요.</li>
+                      <li>메뉴에서 <strong>[홈 화면에 추가]</strong> 또는 <strong>[앱 설치]</strong>를 선택하세요.</li>
+                      <li>'추가' 또는 '설치'를 누르면 스마트폰 바탕화면에 즉시 생성됩니다!</li>
                     </ol>
                   </div>
-                  <p style="font-size: 12px; color: #64748b; margin: 0;">※ 설치된 바로가기로 시작하면 로딩 없이 즉시 전체화면으로 실행됩니다.</p>
+                  <p style="font-size: 12px; color: #64748b; margin: 0;">※ 설치된 바탕화면 아이콘으로 실행하시면 주소창 없는 전체화면으로 즉시 실행됩니다.</p>
                 `;
               } else {
                 shortcutContent.innerHTML = `
-                  <div style="background: #f8fafc; border-radius: 12px; padding: 14px; border: 1px solid #e2e8f0; margin-bottom: 12px;">
-                    <div style="font-weight: 800; color: #1e293b; font-size: 15px; margin-bottom: 8px;">💻 PC / 노트북 브라우저</div>
+                  <div style="background: #f8fafc; border-radius: 12px; padding: 14px; border: 1.5px solid #e2e8f0; margin-bottom: 12px;">
+                    <div style="font-weight: 800; color: #1e293b; font-size: 15px; margin-bottom: 8px;">💻 PC / 데스크톱 브라우저</div>
                     <ul style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
-                      <li>브라우저 상단 주소창 우측의 <strong>설치 아이콘(⊕ / 모니터 모양)</strong>을 클릭하세요.</li>
-                      <li>또는 <strong>Ctrl + D</strong>를 눌러 북마크 바로가기에 등록하세요.</li>
+                      <li>브라우저 상단 주소창 우측의 <strong>설치 아이콘(⊕ / 컴퓨터 모양)</strong>을 클릭하세요.</li>
+                      <li>또는 <strong>Ctrl + D</strong>를 눌러 북마크에 추가하세요.</li>
                     </ul>
                   </div>
-                  <p style="font-size: 12px; color: #64748b; margin: 0;">※ 스마트폰 모바일로 접속하시면 바탕화면 앱으로 바로 설치하실 수 있습니다.</p>
+                  <p style="font-size: 12px; color: #64748b; margin: 0;">※ 스마트폰으로 접속하시면 바탕화면 앱으로 바로 설치하실 수 있습니다.</p>
                 `;
               }
             }
