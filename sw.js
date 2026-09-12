@@ -1,5 +1,5 @@
 // 시연이네 그림맞추기 PWA 서비스 워커
-const CACHE_NAME = 'siyeon-mahjong-v1.5.9';
+const CACHE_NAME = 'siyeon-mahjong-v1.5.10';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
