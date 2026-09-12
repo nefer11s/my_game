@@ -1620,6 +1620,9 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.25s ease;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 20px 0;
     }
 
     .modal-overlay.active {
@@ -1768,6 +1771,9 @@
       pointer-events: auto;
       visibility: visible;
       transition: opacity 0.35s cubic-bezier(0.2, 0.8, 0.3, 1), visibility 0.35s;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 16px 0;
     }
 
     .splash-overlay:not(.active),
@@ -10884,11 +10890,29 @@
         }
 
         if (btnSplashRank) {
-          btnSplashRank.addEventListener('click', (e) => {
+          const handleSplashRankOpen = (e) => {
             if (e && e.stopPropagation) e.stopPropagation();
             this.sound.playSelect();
-            this.renderHallOfFame();
             if (rankModal) rankModal.classList.add('active');
+            try {
+              this.renderHallOfFame();
+            } catch (err) {
+              console.error("명예의 전당 렌더링 실패:", err);
+            }
+          };
+          btnSplashRank.addEventListener('click', handleSplashRankOpen);
+          btnSplashRank.addEventListener('pointerdown', (e) => {
+            if (e && e.stopPropagation) e.stopPropagation();
+          });
+        }
+
+        // 명예의 전당 모달 바깥(배경) 터치 시 닫기
+        if (rankModal) {
+          rankModal.addEventListener('click', (e) => {
+            if (e.target === rankModal) {
+              this.sound.playSelect();
+              rankModal.classList.remove('active');
+            }
           });
         }
 
@@ -12186,56 +12210,66 @@
       }
 
       renderHallOfFame() {
-        const list = this.getHallOfFame();
-        const tbody = document.getElementById('rank-table-body');
-        if (!tbody) return;
-        tbody.innerHTML = '';
-        list.forEach((item, idx) => {
-          const tr = document.createElement('tr');
-          let medal = `${idx + 1}`;
-          if (idx === 0) medal = '🥇 1';
-          else if (idx === 1) medal = '🥈 2';
-          else if (idx === 2) medal = '🥉 3';
+        try {
+          const list = this.getHallOfFame() || [];
+          const tbody = document.getElementById('rank-table-body');
+          if (!tbody) return;
+          tbody.innerHTML = '';
+          list.forEach((item, idx) => {
+            if (!item) return;
+            const tr = document.createElement('tr');
+            let medal = `${idx + 1}`;
+            if (idx === 0) medal = '🥇 1';
+            else if (idx === 1) medal = '🥈 2';
+            else if (idx === 2) medal = '🥉 3';
 
-          // 30판 이상인 경우 해당 난이도 고유 보석 뱃지 생성
-          let diffCellHTML = `<span class="diff-badge" style="font-size: 11px; padding: 2px 6px;">${item.diff}</span>`;
-          if (item.stage >= 30) {
-            const gemInfo = this.getGemInfoByDiff(item.diffKey || item.diff);
-            if (gemInfo) {
-              diffCellHTML = `
-                <span class="rank-gem-badge ${gemInfo.badgeClass}" data-gem-diff="${gemInfo.key}" title="[30판 정복: ${gemInfo.name}] 터치 시 축하 연출 감상">
-                  <img src="${gemInfo.icon}" class="rank-gem-icon" alt="${gemInfo.name}" loading="lazy" decoding="async">
-                </span>
-              `;
+            const diffName = item.diff || '보통';
+            const stageNum = parseInt(item.stage, 10) || 1;
+            const scoreNum = (typeof item.score === 'number' && !isNaN(item.score)) ? item.score : (parseInt(item.score, 10) || 0);
+            const playerName = item.name || '익명 달인';
+
+            // 30판 이상인 경우 해당 난이도 고유 보석 뱃지 생성
+            let diffCellHTML = `<span class="diff-badge" style="font-size: 11px; padding: 2px 6px;">${diffName}</span>`;
+            if (stageNum >= 30) {
+              const gemInfo = this.getGemInfoByDiff(item.diffKey || diffName);
+              if (gemInfo) {
+                diffCellHTML = `
+                  <span class="rank-gem-badge ${gemInfo.badgeClass}" data-gem-diff="${gemInfo.key}" title="[30판 정복: ${gemInfo.name}] 터치 시 축하 연출 감상">
+                    <img src="${gemInfo.icon}" class="rank-gem-icon" alt="${gemInfo.name}" loading="lazy" decoding="async">
+                  </span>
+                `;
+              }
             }
-          }
 
-          tr.innerHTML = `
-            <td class="rank-medal">${medal}</td>
-            <td style="font-weight: 800; color: #1a4230;">${item.name}</td>
-            <td>${diffCellHTML}</td>
-            <td>${item.stage}판</td>
-            <td class="rank-score">${item.score.toLocaleString()}</td>
-          `;
-          tbody.appendChild(tr);
-        });
+            tr.innerHTML = `
+              <td class="rank-medal">${medal}</td>
+              <td style="font-weight: 800; color: #1a4230;">${playerName}</td>
+              <td>${diffCellHTML}</td>
+              <td>${stageNum}판</td>
+              <td class="rank-score">${scoreNum.toLocaleString()}</td>
+            `;
+            tbody.appendChild(tr);
+          });
 
-        // 30판 이상 보석 뱃지 클릭 이벤트 바인딩 (모바일 터치 및 데스크톱 클릭 지원)
-        tbody.querySelectorAll('.rank-gem-badge').forEach(badge => {
-          let lastBadgeTap = 0;
-          const handleBadgeTap = (e) => {
-            const now = Date.now();
-            if (now - lastBadgeTap < 300) return;
-            lastBadgeTap = now;
-            if (e && e.stopPropagation) e.stopPropagation();
-            const diffKey = badge.dataset.gemDiff;
-            if (diffKey) {
-              this.playCelebrationAnimation(diffKey);
-            }
-          };
-          badge.addEventListener('click', handleBadgeTap);
-          badge.addEventListener('pointerdown', handleBadgeTap);
-        });
+          // 30판 이상 보석 뱃지 클릭 이벤트 바인딩 (모바일 터치 및 데스크톱 클릭 지원)
+          tbody.querySelectorAll('.rank-gem-badge').forEach(badge => {
+            let lastBadgeTap = 0;
+            const handleBadgeTap = (e) => {
+              const now = Date.now();
+              if (now - lastBadgeTap < 300) return;
+              lastBadgeTap = now;
+              if (e && e.stopPropagation) e.stopPropagation();
+              const diffKey = badge.dataset.gemDiff;
+              if (diffKey) {
+                this.playCelebrationAnimation(diffKey);
+              }
+            };
+            badge.addEventListener('click', handleBadgeTap);
+            badge.addEventListener('pointerdown', handleBadgeTap);
+          });
+        } catch (err) {
+          console.error("renderHallOfFame 에러:", err);
+        }
       }
 
       clearHallOfFame() {
