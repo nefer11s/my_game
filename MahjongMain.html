@@ -3033,6 +3033,305 @@
       50% { transform: scale(1.2); opacity: 0.95; }
     }
 
+    /* =========================================================
+       [공인 정복 인증서 (Certificate of Mastery) 전용 디자인]
+       ========================================================= */
+    .modal-card.certificate-modal-card {
+      max-width: 430px !important;
+      width: 92% !important;
+      padding: 14px 14px 18px 14px !important;
+      border-radius: 20px !important;
+      background: linear-gradient(145deg, #fffef9 0%, #fdf8eb 40%, #f8eed6 100%) !important;
+      position: relative !important;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55), 0 0 45px rgba(212, 175, 55, 0.45) !important;
+      text-align: center !important;
+      overflow: hidden !important;
+      animation: certCardAppear 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    }
+
+    @keyframes certCardAppear {
+      0% {
+        transform: scale(0.8) translateY(30px);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* 난이도별 인증서 외곽 테두리 & 글로우 */
+    .modal-card.certificate-modal-card.cert-easy {
+      border: 4px solid #059669 !important;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55), 0 0 45px rgba(52, 211, 153, 0.55) !important;
+    }
+    .modal-card.certificate-modal-card.cert-normal {
+      border: 4px solid #0284c7 !important;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55), 0 0 45px rgba(56, 189, 248, 0.55) !important;
+    }
+    .modal-card.certificate-modal-card.cert-hard {
+      border: 4px solid #dc2626 !important;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55), 0 0 45px rgba(239, 68, 68, 0.55) !important;
+    }
+    .modal-card.certificate-modal-card.cert-master {
+      border: 4px solid #d4af37 !important;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55), 0 0 50px rgba(255, 215, 0, 0.65) !important;
+    }
+
+    /* 인증서 내부 양피지 이중 테두리 및 배경 프레임 */
+    .cert-inner-border {
+      border: 1.5px solid rgba(180, 140, 60, 0.55);
+      border-radius: 12px;
+      padding: 14px 12px 12px 12px;
+      position: relative;
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(4px);
+    }
+
+    /* 네 모서리 오너먼트 */
+    .cert-corner-ornament {
+      position: absolute;
+      font-size: 13px;
+      color: #b8860b;
+      opacity: 0.85;
+      line-height: 1;
+      user-select: none;
+    }
+    .cert-corner-tl { top: 4px; left: 5px; }
+    .cert-corner-tr { top: 4px; right: 5px; }
+    .cert-corner-bl { bottom: 4px; left: 5px; }
+    .cert-corner-br { bottom: 4px; right: 5px; }
+
+    /* 인증서 상단 헤더 */
+    .cert-header {
+      margin-bottom: 6px;
+    }
+    .cert-serial-no {
+      font-size: 9.5px;
+      font-family: 'Courier New', Courier, monospace;
+      letter-spacing: 1.5px;
+      color: #8c734b;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .cert-eng-title {
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: #aa771c;
+      text-transform: uppercase;
+      font-family: 'Times New Roman', Georgia, serif;
+      margin-bottom: 2px;
+    }
+    .cert-main-title {
+      font-size: 21px;
+      font-weight: 900;
+      letter-spacing: 3.5px;
+      color: #1a160d;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
+      margin: 2px 0 4px 0;
+    }
+    .cert-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 2px auto 6px auto;
+      width: 78%;
+    }
+    .cert-divider-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(180, 140, 60, 0.65), transparent);
+    }
+    .cert-divider-diamond {
+      font-size: 9px;
+      color: #b8860b;
+    }
+
+    /* 보석 엠블럼 씰 & 리본 */
+    .cert-seal-wrap {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      margin: 2px auto 8px auto;
+    }
+    .cert-emblem-img {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #ffd700;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      display: block;
+      margin: 0 auto;
+      animation: certEmblemPulse 2.5s ease-in-out infinite alternate;
+    }
+    @keyframes certEmblemPulse {
+      0% { transform: scale(1); filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.6)); }
+      100% { transform: scale(1.05); filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.95)); }
+    }
+    .cert-seal-badge {
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #d4af37, #aa771c);
+      color: #ffffff;
+      font-size: 8.5px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      border: 1px solid #ffe57f;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+
+    /* 수여 대상 및 칭호 */
+    .cert-recipient-box {
+      margin: 6px 0 6px 0;
+    }
+    .cert-recipient-sub {
+      font-size: 10.5px;
+      color: #8c734b;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .cert-recipient-title {
+      font-size: 16.5px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      color: #b45309;
+      margin-top: 1px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    .modal-card.cert-easy .cert-recipient-title { color: #047857; }
+    .modal-card.cert-normal .cert-recipient-title { color: #0369a1; }
+    .modal-card.cert-hard .cert-recipient-title { color: #b91c1c; }
+    .modal-card.cert-master .cert-recipient-title { color: #b45309; text-shadow: 0 0 8px rgba(255, 215, 0, 0.4); }
+
+    /* 본문 설명 */
+    .cert-desc-text {
+      font-size: 12px;
+      color: #453c2a;
+      line-height: 1.55;
+      margin: 6px auto 10px auto;
+      padding: 0 4px;
+      word-break: keep-all;
+      font-weight: 600;
+    }
+
+    /* 공식 수행 기록 표 */
+    .cert-record-table {
+      display: flex;
+      justify-content: space-around;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      border-radius: 8px;
+      padding: 6px 4px;
+      margin-bottom: 10px;
+    }
+    .cert-record-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+    .cert-record-cell:not(:last-child) {
+      border-right: 1px dashed rgba(180, 140, 60, 0.3);
+    }
+    .cert-record-lbl {
+      font-size: 9.5px;
+      color: #7d6b4f;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .cert-record-val {
+      font-size: 12px;
+      font-weight: 800;
+      color: #1f1b13;
+    }
+    .cert-record-val.highlight {
+      color: #d97706;
+      font-weight: 900;
+    }
+
+    /* 하단 발급 정보 & 전통 공인 직인 */
+    .cert-footer-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 4px 2px 6px;
+      border-top: 1px dashed rgba(180, 140, 60, 0.4);
+    }
+    .cert-issue-info {
+      text-align: left;
+    }
+    .cert-issue-date {
+      font-size: 11px;
+      color: #6e5e44;
+      font-weight: 700;
+    }
+    .cert-issuer-name {
+      font-size: 11.5px;
+      color: #2b2315;
+      font-weight: 900;
+      margin-top: 1px;
+      letter-spacing: -0.2px;
+    }
+    .cert-issuer-sub {
+      font-size: 8px;
+      color: #9c8a6f;
+      letter-spacing: 1.2px;
+      font-family: sans-serif;
+      font-weight: 600;
+    }
+
+    /* 붉은 공인 직인 도장 */
+    .cert-stamp-box {
+      width: 42px;
+      height: 42px;
+      border: 2px solid #dc2626;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(220, 38, 38, 0.05);
+      transform: rotate(-6deg);
+      box-shadow: 0 1px 4px rgba(220, 38, 38, 0.25);
+      flex-shrink: 0;
+    }
+    .cert-stamp-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.05;
+    }
+    .stamp-row {
+      display: flex;
+      gap: 2px;
+      font-size: 12px;
+      font-weight: 900;
+      color: #dc2626;
+      font-family: 'Batang', serif;
+    }
+
+    /* 인증서 버튼 */
+    .modal-card.certificate-modal-card .modal-btn {
+      font-size: 14.5px !important;
+      font-weight: 900 !important;
+      padding: 11px 20px !important;
+      border-radius: 28px !important;
+      letter-spacing: 0.5px !important;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3) !important;
+      margin-top: 12px !important;
+      border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    }
+
     @keyframes sparkleRotate {
       0% { transform: scale(0.9) rotate(0deg); }
       50% { transform: scale(1.15) rotate(180deg); }
@@ -4308,7 +4607,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.5.3
+            Si-Yeon Mahjong Solitaire v1.5.4
           </div>
         </div>
       </div>
@@ -4373,19 +4672,94 @@
   <!-- 승리 및 알림 모달 -->
   <div class="modal-overlay" id="modal">
     <div class="modal-card">
-      <div style="font-size: 48px; margin-bottom: 8px;" id="modal-emoji">🎉</div>
-      <h2 class="modal-title" id="modal-title">클리어 완료!</h2>
-      <p class="modal-desc" id="modal-desc">모든 마작 패를 성공적으로 매칭했습니다.</p>
-      <div class="modal-stats" id="modal-stats-box">
-        <div class="modal-stat-item">
-          <span class="modal-stat-label">최종 시간</span>
-          <span class="modal-stat-val" id="modal-time">00:00</span>
-        </div>
-        <div class="modal-stat-item">
-          <span class="modal-stat-label">최종 점수</span>
-          <span class="modal-stat-val" id="modal-score">0</span>
+      <!-- 1) 일반 판(1~29판) 클리어 뷰 -->
+      <div id="modal-normal-view">
+        <div style="font-size: 48px; margin-bottom: 8px;" id="modal-emoji">🎉</div>
+        <h2 class="modal-title" id="modal-title">클리어 완료!</h2>
+        <p class="modal-desc" id="modal-desc">모든 마작 패를 성공적으로 매칭했습니다.</p>
+        <div class="modal-stats" id="modal-stats-box">
+          <div class="modal-stat-item">
+            <span class="modal-stat-label">최종 시간</span>
+            <span class="modal-stat-val" id="modal-time">00:00</span>
+          </div>
+          <div class="modal-stat-item">
+            <span class="modal-stat-label">최종 점수</span>
+            <span class="modal-stat-val" id="modal-score">0</span>
+          </div>
         </div>
       </div>
+
+      <!-- 2) 30판 특화 공식 정복 인증서 뷰 -->
+      <div id="modal-cert-view" class="cert-view-wrap" style="display: none;">
+        <div class="cert-inner-border">
+          <!-- 코너 장식 오너먼트 -->
+          <div class="cert-corner-ornament cert-corner-tl">❖</div>
+          <div class="cert-corner-ornament cert-corner-tr">❖</div>
+          <div class="cert-corner-ornament cert-corner-bl">❖</div>
+          <div class="cert-corner-ornament cert-corner-br">❖</div>
+
+          <!-- 인증서 상단 헤더 -->
+          <div class="cert-header">
+            <div class="cert-serial-no" id="cert-serial-no">NO. SY-2026-CERT-S30C</div>
+            <div class="cert-eng-title" id="cert-eng-title">CERTIFICATE OF MASTERY</div>
+            <div class="cert-main-title" id="cert-main-title">공 인 정 복 인 증 서</div>
+            <div class="cert-divider">
+              <span class="cert-divider-line"></span>
+              <span class="cert-divider-diamond">✦</span>
+              <span class="cert-divider-line"></span>
+            </div>
+          </div>
+
+          <!-- 인증서 본문: 엠블럼 + 칭호 + 수여문 -->
+          <div class="cert-body">
+            <div class="cert-seal-wrap">
+              <img id="cert-emblem-img" src="assets/emblems/crown.jpg" alt="정복 엠블럼" class="cert-emblem-img">
+              <div class="cert-seal-badge" id="cert-seal-badge">OFFICIAL SEAL</div>
+            </div>
+
+            <div class="cert-recipient-box">
+              <div class="cert-recipient-sub">수여 칭호</div>
+              <div class="cert-recipient-title" id="cert-recipient-title">[천상천하 전설의 마작 황제]</div>
+            </div>
+
+            <div class="cert-desc-text" id="cert-desc-text">
+              위 플레이어는 『시연이네 그림맞추기』 전 30개 관문과 극한의 블라인드 시련을 뛰어난 지혜와 불굴의 집중력으로 완파하여 본 칭호에 등극하였음을 공식 인증합니다.
+            </div>
+
+            <!-- 공식 수행 기록 -->
+            <div class="cert-record-table">
+              <div class="cert-record-cell">
+                <span class="cert-record-lbl">정복 난이도</span>
+                <span class="cert-record-val" id="cert-diff-name">달인 (30관문 완파)</span>
+              </div>
+              <div class="cert-record-cell">
+                <span class="cert-record-lbl">최종 기록</span>
+                <span class="cert-record-val" id="cert-time">00:00</span>
+              </div>
+              <div class="cert-record-cell">
+                <span class="cert-record-lbl">공인 점수</span>
+                <span class="cert-record-val highlight" id="cert-score">0점</span>
+              </div>
+            </div>
+
+            <!-- 하단 발급 정보 및 전통 직인 -->
+            <div class="cert-footer-section">
+              <div class="cert-issue-info">
+                <div class="cert-issue-date" id="cert-issue-date">2026년 9월 12일</div>
+                <div class="cert-issuer-name">시연 마작 솔리테어 명예의 전당</div>
+                <div class="cert-issuer-sub">SI-YEON MAHJONG SOLITAIRE</div>
+              </div>
+              <div class="cert-stamp-box" title="시연공인 직인">
+                <div class="cert-stamp-inner">
+                  <div class="stamp-row"><span>時</span><span>演</span></div>
+                  <div class="stamp-row"><span>公</span><span>認</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="modal-btn-group">
         <button class="modal-btn" id="modal-confirm-btn">다음 판 시작 ➔</button>
       </div>
@@ -4400,7 +4774,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.5.3</div>
+        <div class="splash-version-badge">v1.5.4</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -11703,7 +12077,7 @@
           </div>
           <div class="master-win-title">${celebration.bannerTitle}</div>
           <div class="master-win-sub">${celebration.bannerSub}</div>
-          <span class="win-sub-touch">👆 화면을 터치하여 축하 카드 보기</span>
+          <span class="win-sub-touch">👆 화면을 터치하여 인증서 보기</span>
         `;
 
         overlay.appendChild(winBanner);
@@ -13509,8 +13883,15 @@
             imageSrc: 'assets/emblems/jade.jpg',
             imageClass: 'emblem-jade',
             cardClass: 'easy-crown-card',
+            certClass: 'cert-easy',
             bannerClass: 'easy-crown-win',
             bonus: 15000,
+            diffCode: 'JADE-E30',
+            certEngTitle: 'CERTIFICATE OF JADE MASTERY',
+            certMainTitle: '비 취 정 복 인 증 서',
+            recipientTitle: '[청아한 영롱 비취의 수호자]',
+            certDesc: '위 사람은 『시연이네 그림맞추기』 70% 블라인드의 안개를 뚫고 쉬움 모드 30개 전 관문을 정복하여 그 맑은 지혜와 집중력을 증명하였기에 본 인증서를 수여함.',
+            sealText: 'JADE SEAL',
             btnText: `보통 모드로 도약하기 (제 ${nextStage}판 무한 순환) ➔`,
             btnGrad: 'linear-gradient(135deg, #10b981 0%, #047857 100%)',
             colors: ['#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#ffd700', '#ffffff']
@@ -13523,8 +13904,15 @@
             imageSrc: 'assets/emblems/sapphire.jpg',
             imageClass: 'emblem-sapphire',
             cardClass: 'normal-crown-card',
+            certClass: 'cert-normal',
             bannerClass: 'normal-crown-win',
             bonus: 20000,
+            diffCode: 'SAPPHIRE-N30',
+            certEngTitle: 'CERTIFICATE OF SAPPHIRE MASTERY',
+            certMainTitle: '사 파 이 어 정 복 인 증 서',
+            recipientTitle: '[벽공천상 사파이어의 현자]',
+            certDesc: '위 사람은 『시연이네 그림맞추기』 80% 블라인드의 짙은 장막 속에서도 탁월한 전략과 직관으로 30강 대결전을 완승하였기에 본 인증서를 수여함.',
+            sealText: 'SAPPHIRE SEAL',
             btnText: `어려움 모드로 도전하기 (제 ${nextStage}판 무한 순환) ➔`,
             btnGrad: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
             colors: ['#0284c7', '#38bdf8', '#7dd3fc', '#bae6fd', '#ffd700', '#ffffff']
@@ -13537,8 +13925,15 @@
             imageSrc: 'assets/emblems/ruby.jpg',
             imageClass: 'emblem-ruby',
             cardClass: 'hard-crown-card',
+            certClass: 'cert-hard',
             bannerClass: 'hard-crown-win',
             bonus: 25000,
+            diffCode: 'RUBY-H30',
+            certEngTitle: 'CERTIFICATE OF RUBY MASTERY',
+            certMainTitle: '루 비 정 복 인 증 서',
+            recipientTitle: '[고귀무쌍 루비의 지휘관]',
+            certDesc: '위 사람은 『시연이네 그림맞추기』 90% 암흑의 극한 시련 속에서도 단 10%의 단서로 30개 전 관문을 굴복시켰기에 본 인증서를 수여함.',
+            sealText: 'RUBY SEAL',
             btnText: `최종 달인(Master) 영역 진입 (제 ${nextStage}판) ➔`,
             btnGrad: 'linear-gradient(135deg, #ea580c 0%, #b91c1c 100%)',
             colors: ['#ea580c', '#fb923c', '#fdba74', '#ef4444', '#f59e0b', '#ffd700']
@@ -13551,8 +13946,15 @@
             imageSrc: 'assets/emblems/crown.jpg',
             imageClass: 'emblem-crown',
             cardClass: 'master-crown-card',
+            certClass: 'cert-master',
             bannerClass: 'master-crown-win',
             bonus: 30000,
+            diffCode: 'ROYAL-MASTER30',
+            certEngTitle: 'CERTIFICATE OF SUPREME MASTERY',
+            certMainTitle: '황 실 마 스 터 인 증 서',
+            recipientTitle: '[천상천하 전설의 마작 황제]',
+            certDesc: '위 사람은 『시연이네 그림맞추기』 100% 올 블라인드의 전설적 시련을 제패하고 최고 존엄의 마작 마스터에 등극하였기에 본 인증서를 수여함.',
+            sealText: 'ROYAL SEAL',
             btnText: `전설의 무한 마스터 순환 계속 (제 ${nextStage}판) ➔`,
             btnGrad: 'linear-gradient(135deg, #d4af37 0%, #aa771c 100%)',
             colors: ['#ffd700', '#facc15', '#fef08a', '#c084fc', '#a855f7', '#ffffff']
@@ -13601,7 +14003,7 @@
             </div>
             <div class="master-win-title">${celebration.bannerTitle}</div>
             <div class="master-win-sub">${celebration.bannerSub}</div>
-            <span class="win-sub-touch">👆 화면을 터치하여 인증서 확인</span>
+            <span class="win-sub-touch">👆 화면을 터치하여 인증서 보기</span>
           `;
         } else {
           winBanner.innerHTML = `
@@ -13654,12 +14056,11 @@
         this.celebrationFromEaster = Boolean(fromEasterModal);
         const targetDiff = previewDiffKey || this.difficulty;
         const diffCfg = DIFFICULTY_CONFIG[targetDiff] || DIFFICULTY_CONFIG.normal;
-        const modalTitle = document.getElementById('modal-title');
-        const modalDesc = document.getElementById('modal-desc');
         const confirmBtn = document.getElementById('modal-confirm-btn');
-
         const modalCard = document.querySelector('#modal .modal-card');
-        const modalEmoji = document.getElementById('modal-emoji');
+
+        const normalView = document.getElementById('modal-normal-view');
+        const certView = document.getElementById('modal-cert-view');
 
         // 30판 특화 축하 데이터 (프리뷰 모드일 경우 해당 난이도로 강제 조회)
         const celebration = this.getStage30CelebrationData(previewDiffKey);
@@ -13679,16 +14080,58 @@
 
         // 이전 카드 특수 클래스 클린업
         if (modalCard) {
-          modalCard.classList.remove('easy-crown-card', 'normal-crown-card', 'hard-crown-card', 'master-crown-card');
+          modalCard.classList.remove(
+            'easy-crown-card', 'normal-crown-card', 'hard-crown-card', 'master-crown-card',
+            'certificate-modal-card', 'cert-easy', 'cert-normal', 'cert-hard', 'cert-master'
+          );
         }
 
+        const formattedTime = this.formatTime(this.timerSeconds);
+        const formattedScore = this.score.toLocaleString();
+
         if (celebration) {
-          if (modalEmoji) {
-            modalEmoji.innerHTML = `<img src="${celebration.imageSrc}" class="modal-emblem-img ${celebration.imageClass}" alt="${celebration.title}">`;
+          // [30판 공식 정복 인증서 뷰 활성화]
+          if (normalView) normalView.style.display = 'none';
+          if (certView) certView.style.display = 'block';
+
+          if (modalCard) {
+            modalCard.classList.add('certificate-modal-card', celebration.certClass || celebration.cardClass);
           }
-          if (modalCard) modalCard.classList.add(celebration.cardClass);
-          modalTitle.innerHTML = `<span style="text-shadow: 0 0 14px rgba(255, 215, 0, 0.75);">${celebration.title}</span>`;
-          modalDesc.innerHTML = celebration.desc;
+
+          const serialEl = document.getElementById('cert-serial-no');
+          const engTitleEl = document.getElementById('cert-eng-title');
+          const mainTitleEl = document.getElementById('cert-main-title');
+          const emblemImg = document.getElementById('cert-emblem-img');
+          const sealBadge = document.getElementById('cert-seal-badge');
+          const recipTitleEl = document.getElementById('cert-recipient-title');
+          const descEl = document.getElementById('cert-desc-text');
+          const diffNameEl = document.getElementById('cert-diff-name');
+          const timeEl = document.getElementById('cert-time');
+          const scoreEl = document.getElementById('cert-score');
+          const dateEl = document.getElementById('cert-issue-date');
+
+          if (serialEl) serialEl.textContent = `NO. SY-2026-CERT-${celebration.diffCode || 'S30C'}`;
+          if (engTitleEl) engTitleEl.textContent = celebration.certEngTitle || 'CERTIFICATE OF MASTERY';
+          if (mainTitleEl) mainTitleEl.textContent = celebration.certMainTitle || '공 인 정 복 인 증 서';
+          if (emblemImg) {
+            emblemImg.src = celebration.imageSrc;
+            emblemImg.className = `cert-emblem-img ${celebration.imageClass}`;
+          }
+          if (sealBadge) sealBadge.textContent = celebration.sealText || 'OFFICIAL SEAL';
+          if (recipTitleEl) recipTitleEl.textContent = celebration.recipientTitle;
+          if (descEl) descEl.innerHTML = celebration.certDesc;
+          if (diffNameEl) {
+            diffNameEl.textContent = `${diffCfg.name} (전 30관문 완파)`;
+            diffNameEl.className = `cert-record-val ${targetDiff}`;
+          }
+          if (timeEl) timeEl.textContent = formattedTime;
+          if (scoreEl) scoreEl.textContent = `${formattedScore}점 (+${celebration.bonus.toLocaleString()} 보너스)`;
+
+          if (dateEl) {
+            const now = new Date();
+            dateEl.textContent = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일`;
+          }
+
           if (isPreview) {
             confirmBtn.textContent = fromEasterModal ? '✨ 보석 축하 전당으로 복귀' : '🏆 명예의 전당으로 복귀';
           } else {
@@ -13696,15 +14139,24 @@
           }
           confirmBtn.style.background = celebration.btnGrad;
         } else {
+          // [일반 판(1~29판) 클리어 뷰 활성화]
+          if (normalView) normalView.style.display = 'block';
+          if (certView) certView.style.display = 'none';
+
+          const modalTitle = document.getElementById('modal-title');
+          const modalDesc = document.getElementById('modal-desc');
+          const modalEmoji = document.getElementById('modal-emoji');
+
           if (modalEmoji) modalEmoji.textContent = '🎉';
           confirmBtn.style.background = '';
           modalTitle.textContent = `제 ${this.currentStage}판 클리어!`;
           modalDesc.textContent = `[${diffCfg.name}] 난이도 제 ${this.currentStage}판 격파 완료! (보너스 +${clearBonus}점, 하트 +1 회복)`;
           confirmBtn.textContent = `다음 판 시작 (제 ${this.currentStage + 1}판) ➔`;
+
+          document.getElementById('modal-time').textContent = formattedTime;
+          document.getElementById('modal-score').textContent = formattedScore;
         }
 
-        document.getElementById('modal-time').textContent = this.formatTime(this.timerSeconds);
-        document.getElementById('modal-score').textContent = this.score.toLocaleString();
         document.getElementById('modal').classList.add('active');
       }
 
