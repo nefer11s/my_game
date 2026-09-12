@@ -13408,14 +13408,15 @@
           // [슬롯 보호 시스템]
           // 슬롯이 1칸 남았을 때 마지막 칸을 채우려 시도했으나 짝이 없어 슬롯이 꽉 차게 된 경우 (activeCount >= this.maxSlots)
           if (activeCount >= this.maxSlots) {
-            this.handleTrayNearFull(newItem);
+            setTimeout(() => {
+              if (!this.isGameOver && !this.isClear) {
+                this.handleTrayNearFull(newItem);
+              }
+            }, 120);
           }
         }
       }
 
-      /**
-       * 슬롯이 1칸 남았을 때 짝 없는 패로 마지막 칸을 채우려 시도 시 자동 되돌림 및 알림멘트 표시
-       */
       /**
        * 슬롯이 꽉 찼을 때 (포화): 하트 1개 소모 슬롯 탈출 모달 발동 또는 게임오버
        */
@@ -13440,7 +13441,7 @@
       }
 
       /**
-       * 슬롯 탈출 모달 표시 및 터치 시 즉시 탈출 처리
+       * 슬롯 탈출 모달 표시 및 터치 시 슬롯 비우기 처리
        */
       showSlotEscapeModal() {
         let modal = document.getElementById('slot-escape-modal');
@@ -13459,20 +13460,31 @@
               보관함(슬롯)이 가득 찼습니다.<br>
               <strong>하트 1개를 소진</strong>하여 슬롯 패 2개를 보드로 복귀시키고 슬롯을 비웁니다.
             </div>
-            <div class="slot-escape-notice">화면 또는 버튼을 터치하면 즉시 슬롯을 비우고 계속 진행합니다.</div>
-            <button id="btn-slot-escape-confirm" class="slot-escape-btn">💔 하트 소진하고 슬롯 비우기 (남은 하트: ${this.lives}개)</button>
+            <button id="btn-slot-escape-confirm" class="slot-escape-btn">💔 하트 1개 소진하고 슬롯 비우기 (남은 하트: ${this.lives}개)</button>
           </div>
         `;
 
         modal.classList.add('active');
 
+        // 타일 클릭(pointerdown) 시 발생한 잔여 pointerup/click 이벤트가 모달을 즉각 닫아버리는 현상 방지
+        const enableTime = Date.now() + 350;
+        let isEscaping = false;
+
         const doEscape = (e) => {
+          if (Date.now() < enableTime || isEscaping) {
+            if (e) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+            return;
+          }
+          isEscaping = true;
           if (e) {
             e.preventDefault();
             e.stopPropagation();
           }
           modal.classList.remove('active');
-          modal.removeEventListener('click', doEscape);
+          modal.removeEventListener('click', handleModalClick);
 
           // 1. 하트 1개 차감
           this.loseLife();
@@ -13497,11 +13509,18 @@
           this.updateTileStates();
           this.updateHeaderUI();
           this.updateToolButtonsUI();
-          this.showToast(`💔 하트 1개를 사용하여 슬롯을 비웠습니다! (남은 하트: ${this.lives}개)`);
+          // 모달에서 이미 하트 소진을 확인했으므로 혼란을 주는 중복 토스트는 제거
         };
 
-        // 모달 카드 또는 오버레이 어디를 터치해도 즉시 발동
-        modal.addEventListener('click', doEscape, { once: true });
+        const handleModalClick = (e) => {
+          const btn = document.getElementById('btn-slot-escape-confirm');
+          const card = document.getElementById('slot-escape-card');
+          if (e.target === btn || e.target === modal || (card && card.contains(e.target))) {
+            doEscape(e);
+          }
+        };
+
+        modal.addEventListener('click', handleModalClick);
       }
 
       /**
