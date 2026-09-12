@@ -1866,8 +1866,8 @@
 
     .splash-btn-resume {
       width: 100%;
-      height: 52px;
-      border-radius: 14px;
+      height: 42px;
+      border-radius: 12px;
       background: linear-gradient(135deg, #f39c12 0%, #d35400 100%);
       color: #ffffff;
       font-size: 16px;
@@ -1920,12 +1920,15 @@
 
     .splash-card {
       background: linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(243, 250, 245, 0.96) 100%);
-      width: 90%;
-      max-width: 440px;
-      border-radius: 26px;
+      width: 92%;
+      max-width: 420px;
+      max-height: min(94vh, 560px);
+      border-radius: 22px;
       text-align: center;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.8);
-      overflow: hidden;
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.8);
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
       transform: scale(1) translateY(0);
       transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.35s;
     }
@@ -1939,7 +1942,7 @@
     .splash-img-wrap {
       position: relative;
       width: 100%;
-      height: 210px;
+      height: 120px;
       overflow: hidden;
       background: #184c36;
     }
@@ -2000,11 +2003,11 @@
     }
 
     .splash-content {
-      padding: 22px 24px 26px;
+      padding: 12px 18px 16px;
     }
 
     .splash-title {
-      font-size: 26px;
+      font-size: 21px;
       font-weight: 900;
       color: #123927;
       letter-spacing: -0.5px;
@@ -2012,41 +2015,48 @@
     }
 
     .splash-subtitle {
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 800;
       color: #2ea779;
-      letter-spacing: 0.5px;
-      margin-bottom: 4px;
+      letter-spacing: 0.4px;
+      margin-bottom: 2px;
     }
 
     .splash-provider {
-      font-size: 13px;
+      font-size: 11.5px;
       font-weight: 700;
       color: #698d7b;
-      margin-bottom: 22px;
+      margin-bottom: 8px;
     }
 
     .splash-btn-group {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 7px;
+    }
+
+    .splash-sub-btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      width: 100%;
     }
 
     .splash-btn-start {
       width: 100%;
-      height: 50px;
-      border-radius: 14px;
+      height: 44px;
+      border-radius: 12px;
       background: linear-gradient(135deg, #2ea779 0%, #1e7e55 100%);
       color: #ffffff;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 800;
       border: none;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      box-shadow: 0 8px 20px rgba(32, 135, 92, 0.38);
+      gap: 6px;
+      box-shadow: 0 4px 14px rgba(32, 135, 92, 0.35);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
     }
 
@@ -2057,11 +2067,11 @@
 
     .splash-btn-rules {
       width: 100%;
-      height: 44px;
-      border-radius: 12px;
+      height: 38px;
+      border-radius: 10px;
       background: #eef7f2;
       color: #206d4a;
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 800;
       border: 1.5px solid #d0e7d9;
       cursor: pointer;
@@ -2075,6 +2085,30 @@
     .splash-btn-rules:hover {
       background: #e3f2e9;
       transform: translateY(-1px);
+    }
+
+    /* 극소형 세로 뷰포트 (520px 이하) 스플래시 화면 컴팩트 조정 */
+    @media (max-height: 540px) {
+      .splash-img-wrap {
+        height: 85px !important;
+      }
+      .splash-content {
+        padding: 8px 14px 12px !important;
+      }
+      .splash-title {
+        font-size: 18px !important;
+      }
+      .splash-provider {
+        margin-bottom: 4px !important;
+      }
+      .splash-btn-start {
+        height: 38px !important;
+        font-size: 14.5px !important;
+      }
+      .splash-sub-btn-grid button {
+        height: 34px !important;
+        font-size: 12px !important;
+      }
     }
 
     /* 게임 방법 안내 모달 커스텀 */
@@ -2388,11 +2422,11 @@
     /* 스플래시 명예의 전당 버튼 */
     .splash-btn-rank {
       width: 100%;
-      height: 44px;
-      border-radius: 12px;
+      height: 38px;
+      border-radius: 10px;
       background: #fff8e7;
       color: #b7791f;
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 800;
       border: 1.5px solid #f6e05e;
       cursor: pointer;
@@ -2411,11 +2445,11 @@
     /* 스플래시 홈 화면 바로가기 추가 버튼 */
     .splash-btn-shortcut {
       width: 100%;
-      height: 44px;
-      border-radius: 12px;
+      height: 38px;
+      border-radius: 10px;
       background: #f0fdf4;
       color: #15803d;
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 800;
       border: 1.5px solid #86efac;
       cursor: pointer;
@@ -4316,12 +4350,12 @@
     /* 초기화면 설정 버튼 */
     .splash-btn-settings {
       width: 100%;
-      height: 44px;
-      border-radius: 14px;
+      height: 38px;
+      border-radius: 10px;
       background: rgba(20, 54, 38, 0.08);
       border: 1.5px solid rgba(46, 167, 121, 0.45);
       color: #1a5638;
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 800;
       cursor: pointer;
       display: flex;
@@ -5041,18 +5075,20 @@
           <button class="splash-btn-start" id="btn-splash-start">
             <span class="btn-icon">🎮</span> 게임 시작
           </button>
-          <button class="splash-btn-settings" id="btn-splash-settings" title="게임 난이도 및 환경 설정">
-            <span class="btn-icon">⚙️</span> 게임 설정
-          </button>
-          <button class="splash-btn-rules" id="btn-splash-rules">
-            <span class="btn-icon">📜</span> 게임방법 간단설명
-          </button>
-          <button class="splash-btn-rank" id="btn-splash-rank">
-            <span class="btn-icon">🏆</span> 명예의 전당
-          </button>
-          <button class="splash-btn-shortcut" id="btn-splash-shortcut" title="스마트폰 홈 화면이나 데스크톱에 바로가기 앱 추가">
-            <span class="btn-icon">📲</span> 홈 화면에 바로가기 추가
-          </button>
+          <div class="splash-sub-btn-grid">
+            <button class="splash-btn-settings" id="btn-splash-settings" title="게임 난이도 및 환경 설정">
+              <span class="btn-icon">⚙️</span> 설정
+            </button>
+            <button class="splash-btn-rules" id="btn-splash-rules" title="게임방법 간단설명">
+              <span class="btn-icon">📜</span> 게임방법
+            </button>
+            <button class="splash-btn-rank" id="btn-splash-rank" title="명예의 전당">
+              <span class="btn-icon">🏆</span> 명예의 전당
+            </button>
+            <button class="splash-btn-shortcut" id="btn-splash-shortcut" title="스마트폰 홈 화면이나 데스크톱에 바로가기 앱 추가">
+              <span class="btn-icon">📲</span> 바로가기
+            </button>
+          </div>
         </div>
       </div>
     </div>
