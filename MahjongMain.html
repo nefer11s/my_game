@@ -34,7 +34,8 @@
       } catch (err) { }
     });
 
-    // PWA 필수 서비스 워커 등록 및 오프라인 상태 모니터링
+    // PWA 필수 서비스 워커 등록 및 오프라인 상태 모니터링 (업데이트 시에만 알림)
+    const APP_VERSION = 'v1.5.27';
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').then((reg) => {
@@ -44,6 +45,12 @@
               installingWorker.onstatechange = () => {
                 if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
                   console.log('[SW] 새 버전이 백그라운드에 캐시되었습니다.');
+                  // 새 버전 캐시 완료 시 업데이트 알림 모달 1회 표시
+                  const modal = document.getElementById('offline-ready-modal');
+                  if (modal) modal.classList.add('active');
+                  try {
+                    localStorage.setItem('siyeon_mahjong_notified_ver', APP_VERSION);
+                  } catch (e) {}
                 }
               };
             }
@@ -62,14 +69,20 @@
             if (dot) dot.style.background = '#38a169';
           }
 
-          // 세션당 최초 1회 오프라인 실행 가능 알림창 자동 팝업
-          if (!sessionStorage.getItem('offline_ready_notified')) {
-            sessionStorage.setItem('offline_ready_notified', '1');
-            setTimeout(() => {
-              const modal = document.getElementById('offline-ready-modal');
-              if (modal) modal.classList.add('active');
-            }, 600);
-          }
+          // 업데이트가 되었을 때만 1회 안내 모달 표시
+          try {
+            const lastNotifiedVer = localStorage.getItem('siyeon_mahjong_notified_ver');
+            if (lastNotifiedVer && lastNotifiedVer !== APP_VERSION) {
+              localStorage.setItem('siyeon_mahjong_notified_ver', APP_VERSION);
+              setTimeout(() => {
+                const modal = document.getElementById('offline-ready-modal');
+                if (modal) modal.classList.add('active');
+              }, 600);
+            } else if (!lastNotifiedVer) {
+              // 최초 설치 시에는 버전만 기록하고 게임에 집중
+              localStorage.setItem('siyeon_mahjong_notified_ver', APP_VERSION);
+            }
+          } catch (e) {}
         });
       });
     }
@@ -5122,7 +5135,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.5.26
+            Si-Yeon Mahjong Solitaire v1.5.27
           </div>
         </div>
       </div>
@@ -5336,7 +5349,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.5.26</div>
+        <div class="splash-version-badge">v1.5.27</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -5392,20 +5405,28 @@
     </div>
   </div>
 
-  <!-- 오프라인 실행 가능 안내 모달 -->
+  <!-- 최신 버전 업데이트 완료 및 오프라인 준비 안내 모달 -->
   <div class="modal-overlay" id="offline-ready-modal" style="z-index: 10009;">
-    <div class="modal-card" style="max-width: 380px; text-align: center; padding: 26px 20px;">
-      <div style="font-size: 44px; margin-bottom: 8px;">📶</div>
-      <h2 class="modal-title" style="margin: 0 0 10px 0; font-size: 20px; color: #15803d;">오프라인 실행 준비 완료!</h2>
-      <p style="font-size: 13.5px; color: #4a5568; line-height: 1.6; margin-bottom: 18px; word-break: keep-all;">
-        게임의 모든 필수 데이터와 타일 이미지가 기기에 안전하게 저장되었습니다.<br><br>
-        이제 <strong>비행기 모드</strong>나 <strong>인터넷 연결이 없는 환경</strong>에서도 언제든 자유롭게 플레이하실 수 있습니다.
-      </p>
+    <div class="modal-card" style="max-width: 400px; text-align: left; padding: 24px 22px;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 10px;">
+        <span style="font-size: 28px;">🎉</span>
+        <div>
+          <h2 class="modal-title" style="margin: 0; font-size: 19px; color: #15803d;">최신 버전 업데이트 완료!</h2>
+          <div style="font-size: 12px; color: #64748b; font-weight: 700;">v1.5.27 (오프라인 캐시 적용)</div>
+        </div>
+      </div>
+      <div style="font-size: 13.5px; color: #2d3748; line-height: 1.65; margin-bottom: 16px;">
+        <p style="margin: 0 0 8px 0; color: #1e3a2b; font-weight: 700; font-size: 13px;">업데이트 주요 내용:</p>
+        <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #374151;">
+          <li style="margin-bottom: 6px;"><strong>🎆 슬롯 매칭 폭죽 효과음:</strong> 패가 슬롯에서 사라질 때 한판 클리어 축하 폭죽 소리가 출력됩니다.</li>
+          <li style="margin-bottom: 6px;"><strong>📲 홈 화면 앱 모드 최적화:</strong> 앱 설치 시 불필요한 설치 팝업/버튼을 감추고 전체화면 환경을 제공합니다.</li>
+          <li style="margin-bottom: 6px;"><strong>📶 오프라인 플레이 최신화:</strong> 최신 게임 리소스가 기기에 저장되어 비행기 모드에서도 원활히 동작합니다.</li>
+        </ul>
+      </div>
       <button class="modal-btn" id="btn-offline-ready-close" style="width: 100%; margin: 0; background: linear-gradient(135deg, #15803d, #166534); color: #fff;">확인 완료</button>
     </div>
   </div>
 
-  <!-- 게임방법 간단설명 (하트 소진 2가지 가이드) 모달 -->
   <div class="modal-overlay" id="quick-rules-modal">
     <div class="modal-card quick-rules-card">
       <div class="quick-rules-header">
