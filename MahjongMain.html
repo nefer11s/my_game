@@ -35,7 +35,7 @@
     });
 
     // PWA 필수 서비스 워커 등록 및 오프라인 상태 모니터링 (업데이트 시에만 알림)
-    const APP_VERSION = 'v1.5.32';
+    const APP_VERSION = 'v1.5.33';
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').then((reg) => {
@@ -5233,7 +5233,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.5.32
+            Si-Yeon Mahjong Solitaire v1.5.33
           </div>
         </div>
       </div>
@@ -5457,7 +5457,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.5.32</div>
+        <div class="splash-version-badge">v1.5.33</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -5522,15 +5522,15 @@
         <span style="font-size: 28px;">🎉</span>
         <div>
           <h2 class="modal-title" style="margin: 0; font-size: 19px; color: #15803d;">최신 버전 업데이트 완료!</h2>
-          <div style="font-size: 12px; color: #64748b; font-weight: 700;">v1.5.32 (오프라인 캐시 적용)</div>
+          <div style="font-size: 12px; color: #64748b; font-weight: 700;">v1.5.33 (오프라인 캐시 적용)</div>
         </div>
       </div>
       <div style="font-size: 13.5px; color: #2d3748; line-height: 1.65; margin-bottom: 16px;">
         <p style="margin: 0 0 8px 0; color: #1e3a2b; font-weight: 700; font-size: 13px;">업데이트 주요 내용:</p>
         <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #374151;">
-          <li style="margin-bottom: 6px;"><strong>📲 앱 설치 안내 초간소화:</strong> 장황한 설명을 걷어내고 핵심 한 줄과 원클릭 버튼으로 깔끔하게 개선했습니다.</li>
+          <li style="margin-bottom: 6px;"><strong>📶 오프라인 상태 UI 최적화:</strong> 오프라인 준비 배지를 화면 맨 아래로 정돈하여 타이틀 집중도를 높였습니다.</li>
+          <li style="margin-bottom: 6px;"><strong>📲 앱 설치 안내 초간소화:</strong> 핵심 문구 한 줄과 원클릭 버튼으로 군더더기 없는 인터페이스를 제공합니다.</li>
           <li style="margin-bottom: 6px;"><strong>🎴 판 클리어 타일 덱 연출:</strong> 각 판 격파 시 격파 테마 타일 5종이 화려하게 부채꼴로 펼쳐집니다!</li>
-          <li style="margin-bottom: 6px;"><strong>📶 오프라인 리소스 최신화:</strong> 최신 게임 리소스가 기기에 저장되어 비행기 모드에서도 원활히 동작합니다.</li>
         </ul>
       </div>
       <button class="modal-btn" id="btn-offline-ready-close" style="width: 100%; margin: 0; background: linear-gradient(135deg, #15803d, #166534); color: #fff;">확인 완료</button>
