@@ -5463,10 +5463,6 @@
         <h1 class="splash-title">시연이네 그림맞추기</h1>
         <div class="splash-subtitle">Si-Yeon Mahjong</div>
         <div class="splash-provider">SY Soft 제공</div>
-        <div class="splash-offline-status" id="splash-offline-status" style="font-size: 11.5px; color: #2b6cb0; background: #ebf8ff; border: 1px solid #bee3f8; border-radius: 20px; padding: 3px 10px; display: inline-flex; align-items: center; gap: 5px; margin: 4px auto 8px auto; cursor: pointer; transition: transform 0.15s ease;" title="오프라인 실행 상태 확인 (터치 시 안내)">
-          <span class="status-dot" style="width: 7px; height: 7px; background: #3182ce; border-radius: 50%; display: inline-block;"></span>
-          <span id="splash-offline-text">오프라인 리소스 준비 중...</span>
-        </div>
 
         <div class="splash-btn-group">
           <button class="splash-btn-resume" id="btn-splash-resume" style="display: none;">
@@ -5489,6 +5485,12 @@
               <span class="btn-icon">📲</span> 홈화면 설치
             </button>
           </div>
+        </div>
+
+        <!-- 화면 맨 아래로 이동된 오프라인 상태 배지 -->
+        <div class="splash-offline-status" id="splash-offline-status" style="font-size: 11px; color: #2b6cb0; background: #ebf8ff; border: 1px solid #bee3f8; border-radius: 20px; padding: 3px 10px; display: inline-flex; align-items: center; gap: 5px; margin: 12px auto 2px auto; cursor: pointer; transition: transform 0.15s ease;" title="오프라인 실행 상태 확인 (터치 시 안내)">
+          <span class="status-dot" style="width: 7px; height: 7px; background: #3182ce; border-radius: 50%; display: inline-block;"></span>
+          <span id="splash-offline-text">오프라인 리소스 준비 중...</span>
         </div>
       </div>
     </div>
