@@ -1838,6 +1838,35 @@
       }
     }
 
+    /* 폭죽 모드: 순간 팽창 플래시 후 산산이 터지며 소멸 */
+    .tray-tile.matching-firework {
+      animation: trayTileMatchFirework 0.32s cubic-bezier(0.15, 0.9, 0.3, 1.2) forwards;
+    }
+
+    @keyframes trayTileMatchFirework {
+      0% {
+        transform: scale(1);
+        filter: brightness(1);
+      }
+
+      25% {
+        transform: scale(1.38) rotate(-3deg);
+        filter: brightness(2.2) drop-shadow(0 0 16px #ff4757) drop-shadow(0 0 24px #ffd700);
+      }
+
+      50% {
+        transform: scale(1.42) rotate(3deg);
+        filter: brightness(2.5) drop-shadow(0 0 20px #ff6b81);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(0) rotate(15deg);
+        opacity: 0;
+        filter: brightness(3);
+      }
+    }
+
     .tray-tile .tile-corner-badge {
       position: absolute;
       top: 1px;
@@ -5025,6 +5054,17 @@
                 <option value="instant">🚀 즉시 이동 (0초 · 애니메이션 끄기)</option>
               </select>
             </div>
+            <!-- 슬롯 매칭 소멸 효과 옵션 -->
+            <div class="settings-item" id="slot-match-effect-wrapper" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span class="settings-label" style="margin-bottom: 0;">💥 슬롯 매칭 효과</span>
+                <span id="slot-match-effect-badge" style="font-size: 11px; color: #b45309; font-weight: 700; background: #fef3c7; padding: 2px 7px; border-radius: 10px;">축제 폭죽</span>
+              </div>
+              <select class="diff-select" id="select-slot-match-effect" title="슬롯에서 짝이 맞아 없어질 때의 연출 및 사운드 효과">
+                <option value="firework" selected>🎆 축제 폭죽 (팡! 폭죽 애니메이션 & 팡! 소리 · 기본)</option>
+                <option value="classic">✨ 클래식 마법 (은은하게 뾰로롱 소멸 & 차임벨 소리)</option>
+              </select>
+            </div>
           </div>
 
           <!-- 3. 사운드 & 화면 모드 탭 -->
@@ -6129,6 +6169,67 @@
         }
       }
 
+      // 슬롯 매칭 전용 팡! 폭죽/팝 소리 (통쾌한 타격음 + 크래커 노이즈 버스트 + 스파클)
+      playSlotPop() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+
+        // 1. 묵직한 펀치 팝 (저주파 드롭: 팡!)
+        const popOsc = this.ctx.createOscillator();
+        const popGain = this.ctx.createGain();
+        popOsc.type = 'triangle';
+        popOsc.frequency.setValueAtTime(260, now);
+        popOsc.frequency.exponentialRampToValueAtTime(45, now + 0.09);
+        popGain.gain.setValueAtTime(0.50, now);
+        popGain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+        popOsc.connect(popGain);
+        popGain.connect(this.getDestination());
+        popOsc.start(now);
+        popOsc.stop(now + 0.12);
+
+        // 2. 크래커 노이즈 버스트 (스냅 크래클 파샤샥!)
+        if (this.ctx.createBuffer) {
+          try {
+            const bufferSize = Math.floor(this.ctx.sampleRate * 0.09);
+            const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+              output[i] = Math.random() * 2 - 1;
+            }
+            const whiteNoise = this.ctx.createBufferSource();
+            whiteNoise.buffer = noiseBuffer;
+            const filter = this.ctx.createBiquadFilter();
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(2400, now);
+            filter.Q.setValueAtTime(1.6, now);
+            const noiseGain = this.ctx.createGain();
+            noiseGain.gain.setValueAtTime(0.35, now);
+            noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.085);
+            whiteNoise.connect(filter);
+            filter.connect(noiseGain);
+            noiseGain.connect(this.getDestination());
+            whiteNoise.start(now);
+          } catch (e) { }
+        }
+
+        // 3. 반짝이는 스파클링 피치 글라이드 (챠르르~)
+        for (let i = 0; i < 4; i++) {
+          const ct = now + 0.02 + i * 0.025;
+          const sOsc = this.ctx.createOscillator();
+          const sGain = this.ctx.createGain();
+          sOsc.type = 'sine';
+          sOsc.frequency.setValueAtTime(1600 + Math.random() * 1400, ct);
+          sOsc.frequency.exponentialRampToValueAtTime(800 + Math.random() * 600, ct + 0.05);
+          sGain.gain.setValueAtTime(0.12, ct);
+          sGain.gain.exponentialRampToValueAtTime(0.0001, ct + 0.05);
+          sOsc.connect(sGain);
+          sGain.connect(this.getDestination());
+          sOsc.start(ct);
+          sOsc.stop(ct + 0.055);
+        }
+      }
+
       // 3. 짝 소멸 바차임 (Chime): lydian | celesta | shimmer | retro
       playWindChime(startTime = null, overrideType = null) {
         this.init();
@@ -6598,6 +6699,44 @@
             friction: 0.965,
             twinkle: Math.random() > 0.5
           });
+        }
+      }
+
+      /**
+       * 슬롯 패 매칭 시 해당 슬롯 좌표에서 터지는 미니 폭죽 파티클 효과
+       */
+      burstMini(x, y, count = 38) {
+        this.resize();
+        if (this.canvas) {
+          this.canvas.style.zIndex = '99998';
+          this.canvas.style.display = 'block';
+          this.canvas.style.opacity = '1';
+        }
+        const colors = ['#ffd700', '#ff4757', '#2ea779', '#ff9f43', '#00d2d3', '#54a0ff', '#ffffff'];
+        for (let i = 0; i < count; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 2.5 + Math.random() * 7.0;
+          const color = Math.random() < 0.35 ? '#ffffff' : colors[Math.floor(Math.random() * colors.length)];
+          this.particles.push({
+            x: x,
+            y: y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed - 1.5, // 살짝 위로 솟구치며 팡!
+            size: 2.2 + Math.random() * 2.8,
+            alpha: 1.0,
+            decay: 0.022 + Math.random() * 0.022,
+            color: color,
+            gravity: 0.18,
+            friction: 0.955,
+            twinkle: Math.random() > 0.4
+          });
+        }
+        if (!this.isRunning) {
+          this.isRunning = true;
+          this.isStopping = true; // 파티클 완료 시 자동 정지
+          this.loop();
+        } else {
+          this.isStopping = true;
         }
       }
 
@@ -10618,6 +10757,8 @@
           this.seniorMode = (savedSeniorMode === 'on' || savedSeniorMode === '1' || savedSeniorMode === 'longpress' || savedSeniorMode === 'hud') ? 'on' : 'off';
           const savedSlotSpeed = localStorage.getItem('siyeon_mahjong_slot_anim_speed');
           this.slotAnimSpeed = (savedSlotSpeed && SLOT_ANIM_SPEED_MAP[savedSlotSpeed]) ? savedSlotSpeed : 'slow';
+          const savedMatchEffect = localStorage.getItem('siyeon_mahjong_slot_match_effect');
+          this.slotMatchEffect = (savedMatchEffect === 'classic') ? 'classic' : 'firework';
           // 테마 기본값: 무조건 '명리학'('saju')을 디폴트로 적용
           let savedTheme = localStorage.getItem('siyeon_mahjong_active_theme');
           const defaultThemeMigrated = localStorage.getItem('siyeon_mahjong_default_theme_v1478');
@@ -11989,6 +12130,36 @@
           });
         }
 
+        const selectSlotMatchEffect = document.getElementById('select-slot-match-effect');
+        const badgeSlotMatchEffect = document.getElementById('slot-match-effect-badge');
+        const updateSlotMatchEffectUI = () => {
+          const curEffect = this.slotMatchEffect || 'firework';
+          if (selectSlotMatchEffect) selectSlotMatchEffect.value = curEffect;
+          if (badgeSlotMatchEffect) {
+            badgeSlotMatchEffect.textContent = curEffect === 'classic' ? '클래식 마법' : '축제 폭죽';
+            badgeSlotMatchEffect.style.background = curEffect === 'classic' ? '#e0e7ff' : '#fef3c7';
+            badgeSlotMatchEffect.style.color = curEffect === 'classic' ? '#3730a3' : '#b45309';
+          }
+        };
+        updateSlotMatchEffectUI();
+        if (selectSlotMatchEffect) {
+          selectSlotMatchEffect.addEventListener('change', (e) => {
+            const val = e.target.value;
+            this.slotMatchEffect = (val === 'classic') ? 'classic' : 'firework';
+            try {
+              localStorage.setItem('siyeon_mahjong_slot_match_effect', this.slotMatchEffect);
+            } catch (err) { }
+            updateSlotMatchEffectUI();
+            if (this.slotMatchEffect === 'firework') {
+              if (this.sound && typeof this.sound.playSlotPop === 'function') this.sound.playSlotPop();
+              this.showToast('🎆 슬롯 매칭: 축제 폭죽 (팡!)');
+            } else {
+              this.sound.playMatch();
+              this.showToast('✨ 슬롯 매칭: 클래식 마법 (뾰로롱~)');
+            }
+          });
+        }
+
         document.getElementById('btn-undo').addEventListener('click', () => this.undo());
         document.getElementById('btn-hint').addEventListener('click', () => this.showHint());
         document.getElementById('btn-shuffle').addEventListener('click', () => this.shuffleRemain());
@@ -12184,6 +12355,16 @@
         if (selectSlotSpeedEl) selectSlotSpeedEl.value = this.slotAnimSpeed || 'slow';
         if (badgeSlotSpeedEl && typeof SLOT_ANIM_SPEED_MAP !== 'undefined' && SLOT_ANIM_SPEED_MAP[this.slotAnimSpeed]) {
           badgeSlotSpeedEl.textContent = SLOT_ANIM_SPEED_MAP[this.slotAnimSpeed].label;
+        }
+
+        const selectSlotMatchEffectEl = document.getElementById('select-slot-match-effect');
+        const badgeSlotMatchEffectEl = document.getElementById('slot-match-effect-badge');
+        if (selectSlotMatchEffectEl) selectSlotMatchEffectEl.value = this.slotMatchEffect || 'firework';
+        if (badgeSlotMatchEffectEl) {
+          const isClassic = (this.slotMatchEffect === 'classic');
+          badgeSlotMatchEffectEl.textContent = isClassic ? '클래식 마법' : '축제 폭죽';
+          badgeSlotMatchEffectEl.style.background = isClassic ? '#e0e7ff' : '#fef3c7';
+          badgeSlotMatchEffectEl.style.color = isClassic ? '#3730a3' : '#b45309';
         }
         
         const selectEl = document.getElementById('select-difficulty');
@@ -13895,6 +14076,9 @@
           t2.isMatching = true;
 
           const triggerVisualMatch = () => {
+            const isFirework = (this.slotMatchEffect !== 'classic'); // 기본값: 축제 폭죽
+            const matchClass = isFirework ? 'matching-firework' : 'matching';
+
             // 매치 애니메이션 실행
             const slotsEl = document.getElementById('tray-slots');
             if (slotsEl) {
@@ -13903,12 +14087,26 @@
                 const idx = parseInt(el.dataset.trayIndex, 10);
                 const curItem = this.trayTiles[idx];
                 if (curItem && (curItem.id === t1.id || curItem.id === t2.id)) {
-                  el.classList.add('matching');
+                  el.classList.add(matchClass);
+
+                  // 폭죽 모드일 때 해당 슬롯 패 중심에서 팡! 미니 폭죽 파티클 발사
+                  if (isFirework && this.fireworks && typeof this.fireworks.burstMini === 'function') {
+                    const r = el.getBoundingClientRect();
+                    if (r.width > 0 && r.height > 0) {
+                      this.fireworks.burstMini(r.left + r.width / 2, r.top + r.height / 2, 38);
+                    }
+                  }
                 }
               });
             }
 
-            this.sound.playMatch();
+            // 사운드 연동: 폭죽 팡! 소리 vs 클래식 뾰로롱 차임벨 소리
+            if (isFirework && this.sound && typeof this.sound.playSlotPop === 'function') {
+              this.sound.playSlotPop();
+            } else {
+              this.sound.playMatch();
+            }
+
             const bonus = (t1.wasCovered || t2.wasCovered) ? 150 : 100;
             this.score += bonus;
             this.blindMismatchCount = 0; // 일반 패 매치 성공 시에도 실패 카운트 초기화
