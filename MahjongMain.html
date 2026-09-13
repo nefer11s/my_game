@@ -14915,6 +14915,18 @@
       }
 
       /**
+       * 판 클리어(승리) 여부 확인 및 연출 트리거
+       */
+      checkWinCondition() {
+        if (this.isClear || this.isGameOver) return;
+        const remainBoard = this.tiles ? this.tiles.filter(t => !t.removed).length : 0;
+        const remainTray = (this.trayTiles || []).length;
+        if (remainBoard === 0 && remainTray === 0) {
+          this.triggerBoardShatter();
+        }
+      }
+
+      /**
        * 판이 깨지고 WIN 표시가 터져 나오는 피날레 연출
        */
       triggerBoardShatter() {
