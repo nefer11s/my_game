@@ -1257,6 +1257,12 @@
       z-index: 2;
     }
 
+    /* 전통패 글자(라벨) 숨김 고급 옵션 */
+    body.hide-classic-labels .tile-corner-badge,
+    body.hide-classic-labels .tile-sub-label {
+      display: none !important;
+    }
+
     /* 사주 명리학 타일: 외곽 중복 한자 및 라벨을 제거하고 SVG/WebP 내부 올인원 디자인에 집중 */
     .saju-tile .tile-corner-badge,
     .saju-tile .tile-sub-label {
@@ -5056,6 +5062,17 @@
             <button class="btn settings-btn" id="btn-open-stage-warp" title="원하는 난이도와 판(Stage)으로 직행" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1.5px solid #86efac; color: #166534; font-weight: 800;">
               <span class="btn-icon">🚀</span> 레벨/판 직행 이동...
             </button>
+            <!-- 전통패 글자(라벨) 숨김 고급 옵션 -->
+            <div class="settings-item" style="margin-top: 6px; padding-top: 8px; border-top: 1px dashed rgba(46, 167, 121, 0.3);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span class="settings-label" style="margin-bottom: 0;">🀄 전통패 글자(라벨) 표시</span>
+                <span id="classic-label-badge" style="font-size: 11px; color: #166534; font-weight: 700; background: #dcfce7; padding: 2px 7px; border-radius: 10px;">글자 표시</span>
+              </div>
+              <select class="diff-select" id="select-classic-label-mode" title="전통 마작 패의 모서리 숫자/기호 및 하단 라벨 글자 표시 여부">
+                <option value="show" selected>표시함 (숫자·보조 라벨 글자 표시 · 기본)</option>
+                <option value="hide">숨김 (글자 없이 순수 패 그림만 표시)</option>
+              </select>
+            </div>
             <!-- 난이도별 판당 시간 제한 상세 설정 -->
             <div class="settings-item" style="margin-top: 6px; padding-top: 8px; border-top: 1px dashed rgba(46, 167, 121, 0.3);">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
@@ -10792,6 +10809,11 @@
           this.slotAnimSpeed = (savedSlotSpeed && SLOT_ANIM_SPEED_MAP[savedSlotSpeed]) ? savedSlotSpeed : 'slow';
           const savedMatchEffect = localStorage.getItem('siyeon_mahjong_slot_match_effect');
           this.slotMatchEffect = (savedMatchEffect === 'classic') ? 'classic' : 'firework';
+          const savedClassicLabelMode = localStorage.getItem('siyeon_mahjong_classic_label_mode') || 'show';
+          this.classicLabelMode = (savedClassicLabelMode === 'hide') ? 'hide' : 'show';
+          if (this.classicLabelMode === 'hide') {
+            document.body.classList.add('hide-classic-labels');
+          }
           // 테마 기본값: 무조건 '명리학'('saju')을 디폴트로 적용
           let savedTheme = localStorage.getItem('siyeon_mahjong_active_theme');
           const defaultThemeMigrated = localStorage.getItem('siyeon_mahjong_default_theme_v1478');
@@ -11638,6 +11660,19 @@ btnSplashShortcut.addEventListener('click', handleShortcutClick);
             if (e.stopPropagation) e.stopPropagation();
             if (e.preventDefault) e.preventDefault();
           }
+          const selectDynamicZoomCols = document.getElementById('select-dynamic-zoom-cols');
+          if (selectDynamicZoomCols) {
+            selectDynamicZoomCols.value = String(this.dynamicZoomCols || 5);
+          }
+          const selectClassicLabelModeEl = document.getElementById('select-classic-label-mode');
+          const badgeClassicLabelEl = document.getElementById('classic-label-badge');
+          if (selectClassicLabelModeEl) selectClassicLabelModeEl.value = this.classicLabelMode || 'show';
+          if (badgeClassicLabelEl) {
+            const isHide = (this.classicLabelMode === 'hide');
+            badgeClassicLabelEl.textContent = isHide ? '글자 숨김' : '글자 표시';
+            badgeClassicLabelEl.style.background = isHide ? '#fef3c7' : '#dcfce7';
+            badgeClassicLabelEl.style.color = isHide ? '#b45309' : '#166534';
+          }
           modalOpenTimestamp = Date.now();
           this.sound.playSelect();
           if (settingsDropdown) {
@@ -12211,6 +12246,35 @@ btnSplashShortcut.addEventListener('click', handleShortcutClick);
             } catch (e) { }
             updateDynamicZoomUI();
             this.handleResize(true); // 즉시 화면에 스케일 반영
+          });
+        }
+
+        const selectClassicLabelMode = document.getElementById('select-classic-label-mode');
+        const badgeClassicLabel = document.getElementById('classic-label-badge');
+        const updateClassicLabelUI = () => {
+          const isHide = (this.classicLabelMode === 'hide');
+          if (selectClassicLabelMode) selectClassicLabelMode.value = isHide ? 'hide' : 'show';
+          if (badgeClassicLabel) {
+            badgeClassicLabel.textContent = isHide ? '글자 숨김' : '글자 표시';
+            badgeClassicLabel.style.background = isHide ? '#fef3c7' : '#dcfce7';
+            badgeClassicLabel.style.color = isHide ? '#b45309' : '#166534';
+          }
+          document.body.classList.toggle('hide-classic-labels', isHide);
+        };
+        updateClassicLabelUI();
+        if (selectClassicLabelMode) {
+          selectClassicLabelMode.addEventListener('change', (e) => {
+            const val = e.target.value;
+            this.classicLabelMode = (val === 'hide') ? 'hide' : 'show';
+            try {
+              localStorage.setItem('siyeon_mahjong_classic_label_mode', this.classicLabelMode);
+            } catch (err) {}
+            updateClassicLabelUI();
+            if (this.classicLabelMode === 'hide') {
+              this.showToast('🀄 전통패 글자가 숨겨졌습니다.');
+            } else {
+              this.showToast('🀄 전통패 글자가 표시됩니다.');
+            }
           });
         }
 
