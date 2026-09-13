@@ -213,6 +213,16 @@
       font-variant-numeric: tabular-nums;
     }
 
+    .hud-pill-val.time-warning {
+      color: #e53e3e !important;
+      font-weight: 900;
+      animation: timePulseWarning 0.75s infinite alternate ease-in-out;
+    }
+    @keyframes timePulseWarning {
+      0% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(229, 62, 62, 0)); }
+      100% { transform: scale(1.15); filter: drop-shadow(0 0 6px rgba(229, 62, 62, 0.75)); }
+    }
+
     .btn-dock-settings {
       border-color: rgba(74, 110, 93, 0.4);
       color: #214e39;
@@ -4806,6 +4816,64 @@
                 <option value="master" id="diff-opt-master">👑 달인 (89종 · 슬롯 3개 · 블라인드 30%➔100% 올 블라인드)</option>
               </select>
             </div>
+            <!-- 난이도별 판당 시간 제한 설정 -->
+            <div class="settings-item" style="margin-top: 6px; padding-top: 8px; border-top: 1px dashed rgba(46, 167, 121, 0.3);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span class="settings-label" style="margin-bottom: 0;">⏱️ 난이도별 시간 제한</span>
+                <span id="time-limit-badge" style="font-size: 11px; color: #166534; font-weight: 700; background: #dcfce7; padding: 2px 7px; border-radius: 10px;"></span>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                <div>
+                  <label for="select-time-easy" style="font-size: 11px; color: #4a5568; display: block; margin-bottom: 2px; font-weight: 600;">🌱 쉬움</label>
+                  <select class="diff-select" id="select-time-easy" style="width: 100%; font-size: 12px; padding: 4px 6px;">
+                    <option value="0">무제한 (0초)</option>
+                    <option value="120">2분 (120초)</option>
+                    <option value="180">3분 (180초)</option>
+                    <option value="240" selected>4분 (240초 · 기본)</option>
+                    <option value="300">5분 (300초)</option>
+                    <option value="360">6분 (360초)</option>
+                    <option value="480">8분 (480초)</option>
+                    <option value="600">10분 (600초)</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="select-time-normal" style="font-size: 11px; color: #4a5568; display: block; margin-bottom: 2px; font-weight: 600;">🌿 보통</label>
+                  <select class="diff-select" id="select-time-normal" style="width: 100%; font-size: 12px; padding: 4px 6px;">
+                    <option value="0">무제한 (0초)</option>
+                    <option value="90">1분 30초</option>
+                    <option value="120">2분 (120초)</option>
+                    <option value="150">2분 30초</option>
+                    <option value="180" selected>3분 (180초 · 기본)</option>
+                    <option value="240">4분 (240초)</option>
+                    <option value="300">5분 (300초)</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="select-time-hard" style="font-size: 11px; color: #4a5568; display: block; margin-bottom: 2px; font-weight: 600;">🔥 어려움</label>
+                  <select class="diff-select" id="select-time-hard" style="width: 100%; font-size: 12px; padding: 4px 6px;">
+                    <option value="0">무제한 (0초)</option>
+                    <option value="60">1분 (60초)</option>
+                    <option value="90">1분 30초</option>
+                    <option value="120">2분 (120초)</option>
+                    <option value="140" selected>2분 20초 (기본)</option>
+                    <option value="180">3분 (180초)</option>
+                    <option value="240">4분 (240초)</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="select-time-master" style="font-size: 11px; color: #4a5568; display: block; margin-bottom: 2px; font-weight: 600;">👑 달인</label>
+                  <select class="diff-select" id="select-time-master" style="width: 100%; font-size: 12px; padding: 4px 6px;">
+                    <option value="0">무제한 (0초)</option>
+                    <option value="60">1분 (60초)</option>
+                    <option value="80">1분 20초</option>
+                    <option value="100" selected>1분 40초 (기본)</option>
+                    <option value="120">2분 (120초)</option>
+                    <option value="150">2분 30초</option>
+                    <option value="180">3분 (180초)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
             <div class="settings-item">
               <span class="settings-label">🎨 테마 패 선택</span>
               <div class="theme-radio-group" id="theme-radio-group">
@@ -7472,6 +7540,16 @@
         lives: 3, // 하트 3개
         filter: () => true // 89종 전체 총출동 (화패 8종 + 4예패 4종 + 사신수 4종 + 10간 10종 + 12지 12종 + 10신 10종 + 음양 2종 + 5행 5종)
       }
+    };
+
+    /**
+     * 난이도별 기본 제한 시간(초) 설정 (0은 무제한)
+     */
+    const DEFAULT_TIME_LIMITS = {
+      easy: 240,   // 쉬움: 4분
+      normal: 180, // 보통: 3분
+      hard: 140,   // 어려움: 2분 20초
+      master: 100  // 달인: 1분 40초
     };
 
     /**
@@ -10388,6 +10466,8 @@
         this.shuffleRemaining = 1;
         this.score = 0;
         this.timerSeconds = 0;
+        this.remainingSeconds = 0;
+        this.isCountdown = false;
         this.timerId = null;
         this.isClear = false;
         this.isAutoClearing = false;
@@ -11618,6 +11698,17 @@
           });
         }
 
+        // 난이도별 시간 제한 설정 변경 리스너
+        ['easy', 'normal', 'hard', 'master'].forEach(d => {
+          const sel = document.getElementById(`select-time-${d}`);
+          if (sel) {
+            sel.addEventListener('change', (e) => {
+              this.setTimeLimitForDiff(d, parseInt(e.target.value, 10));
+            });
+          }
+        });
+        this.updateTimeLimitUI();
+
         // 소리 On / Off 토글 버튼 이벤트
         const btnSound = document.getElementById('btn-sound-toggle');
         const updateSoundUI = () => {
@@ -11814,6 +11905,7 @@
         this.clearSavedProgress();
         const selectEl = document.getElementById('select-difficulty');
         if (selectEl) selectEl.value = diffKey;
+        this.updateTimeLimitUI();
         this.hasStarted = true;
         this.startNewGame();
       }
@@ -11828,6 +11920,8 @@
           score: this.score,
           lives: this.lives,
           timerSeconds: this.timerSeconds,
+          remainingSeconds: this.remainingSeconds,
+          isCountdown: this.isCountdown,
           autoBlindPairMatch: this.autoBlindPairMatch,
           autoEndMatch: this.autoEndMatch,
           dynamicZoom: this.dynamicZoom,
@@ -11867,6 +11961,13 @@
         this.score = saved.score || 0;
         this.lives = saved.lives !== undefined ? saved.lives : 3;
         this.timerSeconds = saved.timerSeconds || 0;
+        if (saved.remainingSeconds !== undefined) {
+          this.remainingSeconds = saved.remainingSeconds;
+          this.isCountdown = saved.isCountdown !== undefined ? Boolean(saved.isCountdown) : (this.getTimeLimitForDiff(this.difficulty) > 0);
+        } else {
+          this.initRoundTimer();
+        }
+        this.updateTimerDisplay();
 
         // 저장된 옵션 설정 복원
         if (saved.autoBlindPairMatch !== undefined) {
@@ -11991,12 +12092,126 @@
         }
       }
 
+      /**
+       * 난이도별 시간 제한 설정 관리
+       */
+      getTimeLimits() {
+        const saved = safeStorage.getJSON('siyeon_mahjong_time_limits');
+        if (saved && typeof saved === 'object') {
+          return {
+            easy: saved.easy !== undefined ? Number(saved.easy) : DEFAULT_TIME_LIMITS.easy,
+            normal: saved.normal !== undefined ? Number(saved.normal) : DEFAULT_TIME_LIMITS.normal,
+            hard: saved.hard !== undefined ? Number(saved.hard) : DEFAULT_TIME_LIMITS.hard,
+            master: saved.master !== undefined ? Number(saved.master) : DEFAULT_TIME_LIMITS.master
+          };
+        }
+        return { ...DEFAULT_TIME_LIMITS };
+      }
+
+      getTimeLimitForDiff(diffKey) {
+        const limits = this.getTimeLimits();
+        return limits[diffKey] !== undefined ? limits[diffKey] : (DEFAULT_TIME_LIMITS[diffKey] || 0);
+      }
+
+      setTimeLimitForDiff(diffKey, seconds) {
+        const limits = this.getTimeLimits();
+        limits[diffKey] = Number(seconds);
+        safeStorage.setJSON('siyeon_mahjong_time_limits', limits);
+        this.updateTimeLimitUI();
+
+        // 현재 진행 중인 판의 난이도라면 실시간 반영
+        if (this.difficulty === diffKey && !this.isGameOver && !this.isClear) {
+          if (limits[diffKey] === 0) {
+            this.isCountdown = false;
+          } else {
+            this.isCountdown = true;
+            this.remainingSeconds = limits[diffKey];
+          }
+          this.updateTimerDisplay();
+        }
+        const diffCfg = DIFFICULTY_CONFIG[diffKey] || DIFFICULTY_CONFIG.normal;
+        const timeText = seconds === 0 ? '무제한' : this.formatTime(seconds);
+        this.showToast(`⏱️ [${diffCfg.name}] 제한 시간: ${timeText} 설정 완료`);
+      }
+
+      updateTimeLimitUI() {
+        const limits = this.getTimeLimits();
+        ['easy', 'normal', 'hard', 'master'].forEach(d => {
+          const sel = document.getElementById(`select-time-${d}`);
+          if (sel && limits[d] !== undefined) {
+            sel.value = String(limits[d]);
+          }
+        });
+        const badge = document.getElementById('time-limit-badge');
+        if (badge) {
+          const curLimit = limits[this.difficulty] !== undefined ? limits[this.difficulty] : (DEFAULT_TIME_LIMITS[this.difficulty] || 0);
+          const diffCfg = DIFFICULTY_CONFIG[this.difficulty] || DIFFICULTY_CONFIG.normal;
+          badge.textContent = `${diffCfg.name}: ${curLimit === 0 ? '무제한' : this.formatTime(curLimit)}`;
+        }
+      }
+
+      initRoundTimer() {
+        const limit = this.getTimeLimitForDiff(this.difficulty);
+        if (limit > 0) {
+          this.isCountdown = true;
+          this.remainingSeconds = limit;
+        } else {
+          this.isCountdown = false;
+          this.remainingSeconds = 0;
+        }
+        this.timerSeconds = 0;
+        this.updateTimerDisplay();
+      }
+
+      updateTimerDisplay() {
+        const timePill = document.getElementById('stat-time');
+        if (!timePill) return;
+        const parentPill = timePill.closest('.hud-pill');
+        if (this.isCountdown) {
+          if (parentPill) parentPill.title = `남은 시간 (제한: ${this.formatTime(this.getTimeLimitForDiff(this.difficulty))})`;
+          timePill.textContent = this.formatTime(Math.max(0, this.remainingSeconds));
+          if (this.remainingSeconds <= 30 && this.remainingSeconds > 0) {
+            timePill.classList.add('time-warning');
+          } else {
+            timePill.classList.remove('time-warning');
+          }
+        } else {
+          if (parentPill) parentPill.title = '경과 시간 (무제한)';
+          timePill.classList.remove('time-warning');
+          timePill.textContent = this.formatTime(this.timerSeconds);
+        }
+      }
+
       startTimer() {
         clearInterval(this.timerId);
         this.timerId = setInterval(() => {
+          if (this.isGameOver || this.isClear || !this.hasStarted) return;
           this.timerSeconds++;
-          document.getElementById('stat-time').textContent = this.formatTime(this.timerSeconds);
+          if (this.isCountdown) {
+            this.remainingSeconds--;
+            this.updateTimerDisplay();
+            if (this.remainingSeconds <= 0) {
+              this.handleTimeOut();
+            }
+          } else {
+            this.updateTimerDisplay();
+          }
         }, 1000);
+      }
+
+      handleTimeOut() {
+        if (this.isGameOver || this.isClear || !this.hasStarted) return;
+        if (this.sound && this.sound.playMiss) this.sound.playMiss();
+
+        if (this.lives > 0) {
+          this.loseLife();
+          this.remainingSeconds = 30; // 비상 추가시간 +30초 연장
+          this.updateTimerDisplay();
+          this.showToast(`⏰ 시간 초과! 하트 1개를 소진하여 +30초를 연장했습니다! (남은 하트: ${this.lives}개)`);
+        } else {
+          this.showToast('⏰ 시간 초과! 남은 하트가 없어 게임이 종료됩니다.');
+          this.triggerGameOver();
+        }
       }
 
       updateLivesUI() {
@@ -12269,8 +12484,7 @@
           this.hideSplashScreen();
         }
         clearInterval(this.timerId);
-        this.timerSeconds = 0;
-        document.getElementById('stat-time').textContent = '00:00';
+        this.initRoundTimer();
         if (!keepScore) {
           this.score = 0;
         }
@@ -12373,8 +12587,7 @@
           this.hideSplashScreen();
         }
         clearInterval(this.timerId);
-        this.timerSeconds = 0;
-        document.getElementById('stat-time').textContent = '00:00';
+        this.initRoundTimer();
         this.score = this.stageStartScore || 0;
         this.undoStack = [];
         this.selectedTile = null;
