@@ -1729,6 +1729,94 @@
       box-shadow: 0 6px 14px rgba(212, 175, 55, 0.5);
     }
 
+    /* 보드에서 슬롯으로 스무스하게 날아가는 마작 패 비행 애니메이션 */
+    .flying-tile {
+      position: fixed;
+      z-index: 10000;
+      pointer-events: none;
+      box-sizing: border-box;
+      transform-origin: top left;
+      border-radius: var(--tile-radius, 10px);
+      background: linear-gradient(145deg, #ffffff 0%, #faf6ee 55%, #eae0ce 100%);
+      border: 1.5px solid #dcd1be;
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.38), 0 6px 12px rgba(0, 0, 0, 0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                  border-radius 0.25s ease,
+                  box-shadow 0.25s ease;
+      will-change: transform;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .flying-tile * {
+      pointer-events: none !important;
+    }
+
+    .flying-tile .tile-corner-badge {
+      position: absolute;
+      top: 3px;
+      left: 5px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #6d5b47;
+      opacity: 0.85;
+    }
+
+    .flying-tile .tile-graphic-wrap {
+      width: 68%;
+      height: 60%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .flying-tile .tile-graphic-wrap svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));
+    }
+
+    .flying-tile .tile-sub-label {
+      position: absolute;
+      bottom: 2px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #4a3d31;
+    }
+
+    .flying-tile.saju-tile {
+      background: linear-gradient(145deg, #ffffff 0%, #fdfbf7 55%, #f4ede1 100%);
+      border-color: #d4af37;
+    }
+
+    /* 슬롯 도착 대기 및 안착 효과 */
+    .tray-tile.fly-incoming {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      animation: none !important;
+    }
+
+    @keyframes trayTileLand {
+      0% {
+        transform: scale(1.18);
+        filter: brightness(1.2);
+      }
+      50% {
+        transform: scale(0.96);
+      }
+      100% {
+        transform: scale(1);
+        filter: brightness(1);
+      }
+    }
+
+    .tray-tile.landed {
+      animation: trayTileLand 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    }
+
     .tray-tile.matching {
       animation: trayTileMatch 0.35s ease forwards;
     }
@@ -12673,10 +12761,104 @@
        * 슬롯(트레이) 초기화 및 렌더링 (난이도별 고정 슬롯)
        */
       initTray() {
+        this.cleanupFlyingTiles();
         const diffCfg = DIFFICULTY_CONFIG[this.difficulty] || DIFFICULTY_CONFIG.normal;
         this.maxSlots = diffCfg.slotCount || 4;
         this.trayTiles = [];
         this.renderTray();
+      }
+
+      /**
+       * 활성화된 비행 타일 DOM 및 슬롯 임시 상태 즉시 정리
+       */
+      cleanupFlyingTiles() {
+        document.querySelectorAll('.flying-tile').forEach(el => el.remove());
+        document.querySelectorAll('.tray-tile.fly-incoming').forEach(el => {
+          el.classList.remove('fly-incoming');
+        });
+      }
+
+      /**
+       * 패가 보드에서 슬롯으로 스무스하게 날아가는 애니메이션
+       * @param {DOMRect} startRect - 원래 보드 타일의 시작 좌표/크기
+       * @param {number} targetIndex - 트레이 슬롯 인덱스
+       * @param {object} tileDef - 패 정의(렌더링 정보)
+       * @param {function} onComplete - 도착 시 콜백
+       */
+      flyTileToTray(startRect, targetIndex, tileDef, onComplete) {
+        const slotsEl = document.getElementById('tray-slots');
+        if (!startRect || !slotsEl || startRect.width <= 0 || startRect.height <= 0) {
+          if (typeof onComplete === 'function') onComplete();
+          return;
+        }
+
+        const slotBoxes = slotsEl.querySelectorAll('.tray-slot-box');
+        const targetBox = slotBoxes[targetIndex];
+        const targetTileEl = targetBox ? targetBox.querySelector('.tray-tile') : null;
+
+        if (!targetBox || !targetTileEl) {
+          if (typeof onComplete === 'function') onComplete();
+          return;
+        }
+
+        // 도착하기 전까지 슬롯 내부 타일은 임시 투명 숨김
+        targetTileEl.classList.add('fly-incoming');
+
+        const targetRect = targetTileEl.getBoundingClientRect();
+        if (targetRect.width <= 0 || targetRect.height <= 0) {
+          targetTileEl.classList.remove('fly-incoming');
+          if (typeof onComplete === 'function') onComplete();
+          return;
+        }
+
+        // 날아가는 비행 타일 DOM 생성
+        const flyer = document.createElement('div');
+        const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong', 'dragon_head', 'dragon_gold'].includes(tileDef.suit);
+        flyer.className = `flying-tile${isSaju ? ' saju-tile' : ''}`;
+        flyer.innerHTML = `
+          <span class="tile-corner-badge">${tileDef.badge || ''}</span>
+          <div class="tile-graphic-wrap">${tileDef.render ? tileDef.render() : ''}</div>
+          <span class="tile-sub-label">${tileDef.label || ''}</span>
+        `;
+
+        // 시작 위치 및 스타일 설정
+        flyer.style.left = `${startRect.left}px`;
+        flyer.style.top = `${startRect.top}px`;
+        flyer.style.width = `${startRect.width}px`;
+        flyer.style.height = `${startRect.height}px`;
+
+        document.body.appendChild(flyer);
+
+        // 다음 렌더링 프레임에 목표 슬롯 위치로 부드럽게 3D 비행 변환 (GPU 가속)
+        requestAnimationFrame(() => {
+          const dx = targetRect.left - startRect.left;
+          const dy = targetRect.top - startRect.top;
+          const sx = targetRect.width / startRect.width;
+          const sy = targetRect.height / startRect.height;
+
+          flyer.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${sx}, ${sy})`;
+          flyer.style.borderRadius = '5px';
+          flyer.style.boxShadow = '1px 1px 0 #ede5d4, 2px 2px 0 #dfd5bf, 2px 2px 0 #287756, 3px 3px 5px rgba(0, 0, 0, 0.32)';
+        });
+
+        // 비행 완료 시 처리
+        let finished = false;
+        const finish = () => {
+          if (finished) return;
+          finished = true;
+          if (flyer.parentNode) flyer.remove();
+          if (targetTileEl) {
+            targetTileEl.classList.remove('fly-incoming');
+            targetTileEl.classList.add('landed');
+            setTimeout(() => {
+              if (targetTileEl) targetTileEl.classList.remove('landed');
+            }, 240);
+          }
+          if (typeof onComplete === 'function') onComplete();
+        };
+
+        flyer.addEventListener('transitionend', finish, { once: true });
+        setTimeout(finish, 280); // 안전 타임아웃
       }
 
       renderTray() {
@@ -13513,12 +13695,31 @@
                 isMatching: true
               };
 
+              const startRect1 = (prevRevealed.el && typeof prevRevealed.el.getBoundingClientRect === 'function')
+                ? prevRevealed.el.getBoundingClientRect() : null;
+              const startRect2 = (tile.el && typeof tile.el.getBoundingClientRect === 'function')
+                ? tile.el.getBoundingClientRect() : null;
+
+              const idx1 = this.trayTiles.length;
+              const idx2 = this.trayTiles.length + 1;
+
               this.trayTiles.push(item1, item2);
               this.sound.playSelect();
               this.renderTray();
 
               this.blindMismatchCount = 0;
-              this.checkTrayMatch(item2);
+              const onLandedAction = this.checkTrayMatch(item2, false);
+
+              let arrivedCount = 0;
+              const handleBothArrive = () => {
+                arrivedCount++;
+                if (arrivedCount >= 2 && typeof onLandedAction === 'function') {
+                  onLandedAction();
+                }
+              };
+
+              this.flyTileToTray(startRect1, idx1, item1.def, handleBothArrive);
+              this.flyTileToTray(startRect2, idx2, item2.def, handleBothArrive);
               return;
             } else {
               // 옵션 꺼짐(기본값): 단독 슬롯 이동 진행
@@ -13568,18 +13769,23 @@
         // 블라인드 패였는지 기록
         const wasCovered = tile.isCovered;
 
+        // 슬롯 이동 전 원래 보드 타일의 실제 화면 좌표 캡처
+        const startRect = (tile.el && typeof tile.el.getBoundingClientRect === 'function')
+          ? tile.el.getBoundingClientRect()
+          : null;
+
         // 보드에서 패 숨김 및 제거 플래그 (2단계 GPU 해제)
         tile.removed = true;
         if (tile.el) {
           this.hideTileEl(tile.el);
           tile.el.classList.remove('selected', 'face-down', 'revealed');
         }
-        
 
         // 보드 상태 즉시 갱신 (자유 패 및 가능한 수 재계산)
         this.updateTileStates();
 
         // 트레이에 아이템 추가
+        const targetIndex = this.trayTiles.length;
         const trayItem = {
           tile: tile,
           def: tile.def,
@@ -13590,14 +13796,24 @@
         this.sound.playSelect();
         this.renderTray();
 
-        // 슬롯 내 2개 짝(매칭) 검사
-        this.checkTrayMatch(trayItem);
+        // 짝 매칭 판정 및 논리 슬롯 즉시 확보 (시각 이펙트는 비행 안착 시점에 연결)
+        const onLandedAction = this.checkTrayMatch(trayItem, false);
+
+        // 스무스한 슬롯 비행 애니메이션 실행
+        this.flyTileToTray(startRect, targetIndex, tile.def, () => {
+          if (typeof onLandedAction === 'function') {
+            onLandedAction();
+          }
+        });
       }
 
       /**
        * 슬롯 내 2개 짝(매치) 판정 및 제거
+       * @param {object} newItem - 새로 추가된 슬롯 패
+       * @param {boolean} isVisualReady - 즉시 시각 이펙트를 실행할지 여부 (기본 true)
+       * @returns {function|void} isVisualReady가 false인 경우 안착 후 실행할 콜백 반환
        */
-      checkTrayMatch(newItem) {
+      checkTrayMatch(newItem, isVisualReady = true) {
         // newItem과 동일한 def.id를 가진 기존 패 검색 (아직 완전히 제거되지 않은 패 중)
         const matches = this.trayTiles.filter(t => t.def.id === newItem.def.id);
 
@@ -13609,67 +13825,83 @@
           t1.isMatching = true;
           t2.isMatching = true;
 
-          // 매치 애니메이션 실행
-          const slotsEl = document.getElementById('tray-slots');
-          if (slotsEl) {
-            const tilesInDom = slotsEl.querySelectorAll('.tray-tile');
-            tilesInDom.forEach(el => {
-              const idx = parseInt(el.dataset.trayIndex, 10);
-              const curItem = this.trayTiles[idx];
-              if (curItem && (curItem.id === t1.id || curItem.id === t2.id)) {
-                el.classList.add('matching');
-              }
-            });
-          }
-
-          this.sound.playMatch();
-          const bonus = (t1.wasCovered || t2.wasCovered) ? 150 : 100;
-          this.score += bonus;
-          this.blindMismatchCount = 0; // 일반 패 매치 성공 시에도 실패 카운트 초기화
-          this.updateHeaderUI();
-          this.logTouch(`[매칭 성공] '${t1.def.label}' 짝 소멸! (+${bonus}점)`);
-
-          // 되돌리기 스택에 매칭 기록
-          this.undoStack.push({
-            type: 'match',
-            tiles: [t1, t2]
-          });
-          this.updateToolButtonsUI();
-
-          setTimeout(() => {
-            // 트레이에서 두 패 제거
-            this.trayTiles = this.trayTiles.filter(t => t.id !== t1.id && t.id !== t2.id);
-            this.renderTray();
-            this.handleResize(true); // 남은 타일에 맞춰 부드럽게 화면 꽉 채움(Auto-Fit)
-
-            // 남은 보드 타일 수 및 클리어 체크
-            const remainBoard = this.tiles.filter(t => !t.removed).length;
-            const remainTray = this.trayTiles.length;
-            if (remainBoard === 0 && remainTray === 0) {
-              this.checkWinCondition();
-            } else if (this.autoEndMatch && remainBoard + remainTray <= 10 && !this.isAutoClearing) {
-              this.triggerAutoClearFinale();
+          const triggerVisualMatch = () => {
+            // 매치 애니메이션 실행
+            const slotsEl = document.getElementById('tray-slots');
+            if (slotsEl) {
+              const tilesInDom = slotsEl.querySelectorAll('.tray-tile');
+              tilesInDom.forEach(el => {
+                const idx = parseInt(el.dataset.trayIndex, 10);
+                const curItem = this.trayTiles[idx];
+                if (curItem && (curItem.id === t1.id || curItem.id === t2.id)) {
+                  el.classList.add('matching');
+                }
+              });
             }
-          }, 320);
+
+            this.sound.playMatch();
+            const bonus = (t1.wasCovered || t2.wasCovered) ? 150 : 100;
+            this.score += bonus;
+            this.blindMismatchCount = 0; // 일반 패 매치 성공 시에도 실패 카운트 초기화
+            this.updateHeaderUI();
+            this.logTouch(`[매칭 성공] '${t1.def.label}' 짝 소멸! (+${bonus}점)`);
+
+            // 되돌리기 스택에 매칭 기록
+            this.undoStack.push({
+              type: 'match',
+              tiles: [t1, t2]
+            });
+            this.updateToolButtonsUI();
+
+            setTimeout(() => {
+              // 트레이에서 두 패 제거
+              this.trayTiles = this.trayTiles.filter(t => t.id !== t1.id && t.id !== t2.id);
+              this.renderTray();
+              this.handleResize(true); // 남은 타일에 맞춰 부드럽게 화면 꽉 채움(Auto-Fit)
+
+              // 남은 보드 타일 수 및 클리어 체크
+              const remainBoard = this.tiles.filter(t => !t.removed).length;
+              const remainTray = this.trayTiles.length;
+              if (remainBoard === 0 && remainTray === 0) {
+                this.checkWinCondition();
+              } else if (this.autoEndMatch && remainBoard + remainTray <= 10 && !this.isAutoClearing) {
+                this.triggerAutoClearFinale();
+              }
+            }, 320);
+          };
+
+          if (isVisualReady) {
+            triggerVisualMatch();
+          } else {
+            return triggerVisualMatch;
+          }
 
         } else {
           // 짝이 아직 없어 슬롯에 안착됨
-          this.undoStack.push({
-            type: 'toTray',
-            tileItem: newItem
-          });
-          this.updateToolButtonsUI();
+          const triggerNonMatch = () => {
+            this.undoStack.push({
+              type: 'toTray',
+              tileItem: newItem
+            });
+            this.updateToolButtonsUI();
 
-          const activeCount = this.trayTiles.filter(t => !t.isMatching).length;
+            const activeCount = this.trayTiles.filter(t => !t.isMatching).length;
 
-          // [슬롯 보호 시스템]
-          // 슬롯이 1칸 남았을 때 마지막 칸을 채우려 시도했으나 짝이 없어 슬롯이 꽉 차게 된 경우 (activeCount >= this.maxSlots)
-          if (activeCount >= this.maxSlots) {
-            setTimeout(() => {
-              if (!this.isGameOver && !this.isClear) {
-                this.handleTrayNearFull(newItem);
-              }
-            }, 120);
+            // [슬롯 보호 시스템]
+            // 슬롯이 1칸 남았을 때 마지막 칸을 채우려 시도했으나 짝이 없어 슬롯이 꽉 차게 된 경우 (activeCount >= this.maxSlots)
+            if (activeCount >= this.maxSlots) {
+              setTimeout(() => {
+                if (!this.isGameOver && !this.isClear) {
+                  this.handleTrayNearFull(newItem);
+                }
+              }, 120);
+            }
+          };
+
+          if (isVisualReady) {
+            triggerNonMatch();
+          } else {
+            return triggerNonMatch;
           }
         }
       }
@@ -13807,6 +14039,7 @@
        */
       returnTileFromTray(trayIndex, isSystemFree = false) {
         if (this.isGameOver || this.isAutoClearing || this.isDealing) return;
+        this.cleanupFlyingTiles();
         const item = this.trayTiles[trayIndex];
         if (!item || item.isMatching) return;
 
