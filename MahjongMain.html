@@ -11299,29 +11299,24 @@
             let installActionHtml = '';
             if (window.deferredInstallPrompt) {
               installActionHtml = `
-                <div style="background: linear-gradient(135deg, #15803d, #166534); border-radius: 14px; padding: 16px; text-align: center; margin-top: 14px; box-shadow: 0 4px 14px rgba(21, 128, 61, 0.25);">
-                  <div style="color: #ffffff; font-size: 14.5px; font-weight: 800; margin-bottom: 8px;">원클릭으로 바탕화면에 앱을 설치할 수 있습니다!</div>
-                  <button id="btn-trigger-pwa-install" style="width: 100%; height: 44px; border-radius: 10px; border: none; background: #ffffff; color: #15803d; font-size: 15px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-                    <span>📲</span> 지금 즉시 앱 설치하기
-                  </button>
-                </div>
+                <button id="btn-trigger-pwa-install" style="width: 100%; height: 46px; border-radius: 12px; border: none; background: linear-gradient(135deg, #15803d, #166534); color: #ffffff; font-size: 15.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(21, 128, 61, 0.3);">
+                  <span>📲</span> 원클릭 앱 설치하기
+                </button>
               `;
             } else {
               installActionHtml = `
-                <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-top: 14px; text-align: center; font-size: 13.5px; color: #475569; line-height: 1.6;">
-                  브라우저 메뉴(또는 공유 버튼)에서 <strong>[홈 화면에 추가]</strong> 또는 <strong>[앱 설치]</strong>를 누르시면 전체화면 앱으로 등록됩니다.
+                <div style="font-size: 13.5px; color: #334155; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; line-height: 1.5;">
+                  브라우저 메뉴(또는 공유 ⎋) ➔ <strong>[홈 화면에 추가]</strong> 선택
                 </div>
               `;
             }
 
             if (shortcutContent) {
               shortcutContent.innerHTML = `
-                <div style="text-align: center; padding: 10px 4px 6px;">
-                  <div style="font-size: 38px; margin-bottom: 8px;">📲</div>
-                  <div style="font-size: 17px; font-weight: 800; color: #15803d; margin-bottom: 8px;">스마트폰 홈 화면에 앱 설치</div>
-                  <div style="font-size: 13.5px; color: #374151; line-height: 1.65; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px 14px; text-align: left;">
-                    💡 스마트폰 홈 화면(바탕화면)에 앱을 설치하시면 브라우저 주소창 없이 <strong>전체화면 게임</strong>으로 언제든 빠르고 쾌적하게 즐기실 수 있습니다!
-                  </div>
+                <div style="text-align: center; padding: 8px 4px 4px;">
+                  <p style="font-size: 14px; color: #1e293b; margin-bottom: 14px; line-height: 1.5; font-weight: 600;">
+                    주소창 없는 <strong>전체화면 앱</strong>으로 더 빠르고 쾌적하게 즐기세요!
+                  </p>
                   ${installActionHtml}
                 </div>
               `;
