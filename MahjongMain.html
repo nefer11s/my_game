@@ -30,12 +30,12 @@
     });
     window.addEventListener('appinstalled', () => {
       try {
-        localStorage.setItem('pwa_installed_success', '1');
+        // 앱 설치 이벤트 수신 완료
       } catch (err) { }
     });
 
     // PWA 필수 서비스 워커 등록 및 오프라인 상태 모니터링 (업데이트 시에만 알림)
-    const APP_VERSION = 'v1.5.27';
+    const APP_VERSION = 'v1.5.28';
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').then((reg) => {
@@ -5135,7 +5135,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.5.27
+            Si-Yeon Mahjong Solitaire v1.5.28
           </div>
         </div>
       </div>
@@ -5349,7 +5349,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.5.27</div>
+        <div class="splash-version-badge">v1.5.28</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">시연이네 그림맞추기</h1>
@@ -5412,7 +5412,7 @@
         <span style="font-size: 28px;">🎉</span>
         <div>
           <h2 class="modal-title" style="margin: 0; font-size: 19px; color: #15803d;">최신 버전 업데이트 완료!</h2>
-          <div style="font-size: 12px; color: #64748b; font-weight: 700;">v1.5.27 (오프라인 캐시 적용)</div>
+          <div style="font-size: 12px; color: #64748b; font-weight: 700;">v1.5.28 (오프라인 캐시 적용)</div>
         </div>
       </div>
       <div style="font-size: 13.5px; color: #2d3748; line-height: 1.65; margin-bottom: 16px;">
@@ -11133,7 +11133,7 @@
         const closeShortcutModal = () => {
           if (this.sound) this.sound.playSelect();
           try {
-            localStorage.setItem('pwa_install_guide_dismissed', '1');
+            sessionStorage.setItem('pwa_install_guide_dismissed', '1');
           } catch (err) { }
           if (shortcutModal) shortcutModal.classList.remove('active');
         };
@@ -11306,9 +11306,9 @@
             }
           };
 
-          btnSplashShortcut.addEventListener('click', handleShortcutClick);
+btnSplashShortcut.addEventListener('click', handleShortcutClick);
 
-          // 다각도 앱(PWA Standalone/Fullscreen) 모드 정밀 감지 함수
+          // 1. 실시간 런타임 Display Mode 기반 앱 실행 여부 판별 (영구 플래그 미사용으로 삭제 후 재접속 대응)
           const checkIsAppMode = () => {
             try {
               if (window.matchMedia('(display-mode: standalone)').matches) return true;
@@ -11318,38 +11318,65 @@
               if (window.navigator.standalone === true) return true;
               if (location.search.includes('mode=app')) return true;
               if (document.referrer && document.referrer.includes('android-app://')) return true;
-              if (localStorage.getItem('pwa_installed_success') === '1') return true;
             } catch (err) { }
             return false;
           };
 
           const isAppMode = checkIsAppMode();
 
-          // 1. 이미 앱으로 실행 중인 경우: 초기화면의 '홈화면 설치' 버튼 자체를 감추어 깔끔한 UI 유지
-          if (isAppMode && btnSplashShortcut) {
-            btnSplashShortcut.style.display = 'none';
-          }
+          if (isAppMode) {
+            // [상황 1] 바탕화면 앱 아이콘으로 실행 시: 설치 관련 버튼/팝업 완전 숨김 (100% 네이티브 앱 UX)
+            if (btnSplashShortcut) btnSplashShortcut.style.display = 'none';
+          } else {
+            // [상황 2 & 3] 브라우저(카톡 링크 등)로 접속한 경우: 기기 내 실제 설치 여부 정밀 확인
+            const checkDeviceAppInstalled = async () => {
+              let isDeviceInstalled = false;
+              if ('getInstalledRelatedApps' in navigator) {
+                try {
+                  const relatedApps = await navigator.getInstalledRelatedApps();
+                  if (Array.isArray(relatedApps) && relatedApps.length > 0) {
+                    isDeviceInstalled = true;
+                  }
+                } catch (e) {}
+              }
 
-          // 2. 일반 브라우저 최초 접속 시: 아직 영구 닫기하지 않은 경우에만 세션당 1회 친절 안내 팝업
-          if (!isAppMode && btnSplashShortcut) {
-            let hasDismissed = false;
-            try {
-              hasDismissed = (localStorage.getItem('pwa_install_guide_dismissed') === '1');
-            } catch (err) { }
-
-            if (!hasDismissed && !sessionStorage.getItem('pwa_install_guide_auto_shown')) {
-              sessionStorage.setItem('pwa_install_guide_auto_shown', '1');
-              setTimeout(() => {
-                const splashEl = document.getElementById('splash-screen');
-                if (splashEl && splashEl.classList.contains('active')) {
-                  handleShortcutClick();
+              if (isDeviceInstalled && btnSplashShortcut) {
+                // [상황 2] 기기에 이미 앱이 깔려있는데 카톡 링크로 브라우저에 들어온 경우:
+                // 불필요한 재설치 팝업을 띄우지 않고, 버튼을 '🚀 앱으로 열기'로 똑똑하게 전환!
+                btnSplashShortcut.innerHTML = '<span class="btn-icon">🚀</span> 앱으로 열기';
+                btnSplashShortcut.title = '이미 설치된 스마트폰 바탕화면 앱으로 실행합니다';
+                btnSplashShortcut.onclick = (e) => {
+                  if (e && e.stopPropagation) e.stopPropagation();
+                  if (this.sound) this.sound.playSelect();
+                  alert('이미 스마트폰에 [시연이네 그림맞추기] 앱이 설치되어 있습니다! 🎉\n바탕화면의 앱 아이콘을 터치하시면 주소창 없는 전체화면으로 즉시 실행됩니다.');
+                };
+              } else {
+                // [상황 3] 앱이 없거나(지운 뒤) 카톡 링크로 들어온 경우:
+                // 정상적으로 '홈화면 설치' 버튼과 1회 자동 유도 팝업 활성화!
+                if (btnSplashShortcut) {
+                  btnSplashShortcut.style.display = '';
+                  btnSplashShortcut.innerHTML = '<span class="btn-icon">📲</span> 홈화면 설치';
+                  btnSplashShortcut.title = '스마트폰 홈 화면이나 데스크톱에 바로가기 앱 추가';
+                  btnSplashShortcut.onclick = handleShortcutClick;
                 }
-              }, 650);
-            }
+
+                if (!sessionStorage.getItem('pwa_install_guide_auto_shown') && !sessionStorage.getItem('pwa_install_guide_dismissed')) {
+                  sessionStorage.setItem('pwa_install_guide_auto_shown', '1');
+                  setTimeout(() => {
+                    const splashEl = document.getElementById('splash-screen');
+                    if (splashEl && splashEl.classList.contains('active')) {
+                      handleShortcutClick();
+                    }
+                  }, 650);
+                }
+              }
+            };
+
+            checkDeviceAppInstalled();
           }
         }
 
-        // 설정 드롭다운 카테고리 탭 클릭 이벤트 바인딩
+                // 설정 드롭다운 카테고리 탭 클릭 이벤트 바인딩
         const settingsTabBtns = document.querySelectorAll('.settings-tab-btn');
         const settingsTabPanels = document.querySelectorAll('.settings-tab-panel');
         settingsTabBtns.forEach(btn => {
