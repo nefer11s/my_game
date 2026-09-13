@@ -11448,11 +11448,30 @@
           if (btnSplashShortcut) btnSplashShortcut.style.display = 'none';
           if (shortcutModal) shortcutModal.classList.remove('active');
         } else {
-          // [일반 브라우저 접속 시 (A안 강제)]: 초기화면(게임시작) 숨김 및 설치 전용 게이트 고정 노출
-          if (splashCard) splashCard.style.display = 'none';
-          if (btnShortcutCloseX) btnShortcutCloseX.style.display = 'none';
+          // [일반 브라우저 접속 시]: 앱설치 실패 대비 초기화면(게임시작) 항상 유지 & 닫기 가능한 설치 모달 제공
+          if (splashCard) splashCard.style.display = '';
+          if (btnSplashShortcut) btnSplashShortcut.style.display = '';
+          if (btnShortcutCloseX) btnShortcutCloseX.style.display = 'block';
+
+          const closeShortcutModal = () => {
+            if (this.sound) this.sound.playSelect();
+            if (shortcutModal) ModalHelper.close(shortcutModal);
+            if (splashCard) splashCard.style.display = '';
+          };
+
+          if (btnShortcutCloseX) {
+            btnShortcutCloseX.onclick = closeShortcutModal;
+          }
           if (shortcutModal) {
-            shortcutModal.classList.add('active');
+            ModalHelper.setupBackdropClose(shortcutModal, closeShortcutModal);
+          }
+
+          if (btnSplashShortcut) {
+            btnSplashShortcut.onclick = (e) => {
+              if (e && e.stopPropagation) e.stopPropagation();
+              if (this.sound) this.sound.playSelect();
+              if (shortcutModal) ModalHelper.open(shortcutModal);
+            };
           }
 
           // 디바이스 및 브라우저 환경 판별 후 맞춤 설치 가이드 렌더링
@@ -11478,6 +11497,11 @@
                     오른쪽 상단 메뉴(<strong>⋮</strong> 또는 <strong>···</strong>)를 누르신 후 <strong>[다른 브라우저로 열기]</strong>를 선택해 주세요.
                   </div>
                 `}
+                <div style="margin-top: 14px; text-align: center;">
+                  <button id="btn-browser-continue" style="background: none; border: none; color: #64748b; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 4px 8px;">
+                    웹 브라우저에서 바로 게임하기 (닫기)
+                  </button>
+                </div>
               `;
               const btnInAppChrome = document.getElementById('btn-inapp-open-chrome');
               if (btnInAppChrome) {
@@ -11507,6 +11531,11 @@
                   2. <strong>[현재 페이지 추가]</strong> 선택<br>
                   3. <strong>[홈 화면]</strong> 선택 후 추가
                 </div>
+                <div style="margin-top: 14px; text-align: center;">
+                  <button id="btn-browser-continue" style="background: none; border: none; color: #64748b; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 4px 8px;">
+                    웹 브라우저에서 바로 게임하기 (닫기)
+                  </button>
+                </div>
               `;
 
               const btnOpenChrome = document.getElementById('btn-open-chrome-install');
@@ -11535,6 +11564,11 @@
                   1. Safari 브라우저 하단 <strong>공유 버튼 [ ⎋ ]</strong> 터치<br>
                   2. 메뉴 목록에서 <strong>[홈 화면에 추가]</strong> 선택<br>
                   3. 우측 상단 <strong>[추가]</strong> 후 홈 화면 아이콘으로 실행
+                </div>
+                <div style="margin-top: 14px; text-align: center;">
+                  <button id="btn-browser-continue" style="background: none; border: none; color: #64748b; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 4px 8px;">
+                    웹 브라우저에서 바로 게임하기 (닫기)
+                  </button>
                 </div>
               `;
             } else {
@@ -11582,6 +11616,12 @@
                     크롬 우측 상단 메뉴(<strong>⋮</strong>) 터치 → <strong>[홈 화면에 추가]</strong>를 누르시면 스마트폰 바탕화면에 즉시 바로가기가 생성됩니다.
                   </div>
                 `}
+
+                <div style="margin-top: 14px; text-align: center;">
+                  <button id="btn-browser-continue" style="background: none; border: none; color: #64748b; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 4px 8px;">
+                    웹 브라우저에서 바로 게임하기 (닫기)
+                  </button>
+                </div>
               `;
 
               const renderInstallSuccess = () => {
@@ -11606,11 +11646,7 @@
                 `;
                 const btnDoneStart = document.getElementById('btn-done-start');
                 if (btnDoneStart) {
-                  btnDoneStart.onclick = () => {
-                    if (this.sound) this.sound.playSelect();
-                    if (shortcutModal) shortcutModal.classList.remove('active');
-                    if (splashCard) splashCard.style.display = '';
-                  };
+                  btnDoneStart.onclick = closeShortcutModal;
                 }
               };
 
@@ -11652,6 +11688,20 @@
                 }
               };
               setupInstallAction();
+            }
+
+            // 공통: 웹 브라우저에서 바로 게임하기 (닫기) 버튼 이벤트 바인딩
+            const btnBrowserContinue = document.getElementById('btn-browser-continue');
+            if (btnBrowserContinue) {
+              btnBrowserContinue.onclick = closeShortcutModal;
+            }
+          }
+
+          // 브라우저 최초 접속 시 1회만 친절하게 설치 안내 모달 오픈 (닫으면 초기화면 그대로 플레이)
+          if (!sessionStorage.getItem('pwa_install_guide_auto_shown')) {
+            sessionStorage.setItem('pwa_install_guide_auto_shown', '1');
+            if (shortcutModal) {
+              ModalHelper.open(shortcutModal);
             }
           }
         }
