@@ -9,7 +9,7 @@
       if (ua.indexOf('kakaotalk') !== -1) {
         var currentUrl = location.href;
         if (ua.indexOf('android') !== -1) {
-          location.href = 'intent://' + currentUrl.replace(/^https?:\/\//i, '') + '#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=com.android.chrome;end';
+          location.href = 'intent://' + currentUrl.replace(/^https?:\/\//i, '') + '#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end';
         } else if (ua.indexOf('iphone') !== -1 || ua.indexOf('ipad') !== -1 || ua.indexOf('ipod') !== -1) {
           location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(currentUrl);
         }
@@ -5374,7 +5374,7 @@
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 10px;">
         <div style="display: flex; align-items: center; gap: 8px;">
           <span style="font-size: 24px;">📲</span>
-          <h2 class="modal-title" style="margin: 0; font-size: 20px; color: #14532d;">홈 화면에 바로가기 추가</h2>
+          <h2 class="modal-title" style="margin: 0; font-size: 20px; color: #14532d;">홈 화면에 앱 설치</h2>
         </div>
         <button id="btn-shortcut-modal-close-x" style="background: none; border: none; font-size: 18px; color: #718096; cursor: pointer; padding: 4px;" aria-label="닫기">✕</button>
       </div>
@@ -5382,7 +5382,7 @@
         <!-- 동적 안내 내용 (기기별 자동 분기) -->
       </div>
       <div style="margin-top: 18px; display: flex; gap: 8px;">
-        <button class="modal-btn" id="btn-shortcut-modal-close" style="width: 100%; margin: 0;">확인 완료</button>
+        <button class="modal-btn" id="btn-shortcut-modal-close" style="width: 100%; margin: 0;">닫기 / 게임 시작</button>
       </div>
     </div>
   </div>
@@ -11142,7 +11142,7 @@
         if (btnSplashShortcut) {
           const handleShortcutClick = (e) => {
             if (e && e.stopPropagation) e.stopPropagation();
-            this.sound.playSelect();
+            if (e && this.sound) this.sound.playSelect();
 
             const ua = (navigator.userAgent || '').toLowerCase();
             const isKakao = ua.includes('kakaotalk');
@@ -11159,7 +11159,7 @@
             if (isStandalone) {
               promptButtonHtml = `
                 <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 14px;">
-                  <span style="font-size: 15px; font-weight: 800; color: #15803d;">✅ 이미 홈 화면 바로가기(앱) 모드로 실행 중입니다!</span>
+                  <span style="font-size: 15px; font-weight: 800; color: #15803d;">✅ 이미 홈 화면 앱 모드로 실행 중입니다!</span>
                   <div style="font-size: 12px; color: #166534; margin-top: 4px;">주소창 없이 쾌적한 전체화면으로 플레이하고 계십니다.</div>
                 </div>
               `;
@@ -11167,9 +11167,18 @@
               promptButtonHtml = `
                 <div style="background: linear-gradient(135deg, #15803d, #166534); border-radius: 14px; padding: 14px; text-align: center; margin-bottom: 14px; box-shadow: 0 4px 14px rgba(21, 128, 61, 0.25);">
                   <div style="color: #ffffff; font-size: 14.5px; font-weight: 800; margin-bottom: 8px;">원클릭으로 바탕화면에 앱을 설치할 수 있습니다!</div>
-                  <button id="btn-trigger-pwa-install" style="width: 100%; height: 42px; border-radius: 10px; border: none; background: #ffffff; color: #15803d; font-size: 15px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                  <button id="btn-trigger-pwa-install" style="width: 100%; height: 44px; border-radius: 10px; border: none; background: #ffffff; color: #15803d; font-size: 15px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
                     <span>📲</span> 지금 즉시 앱 설치하기
                   </button>
+                </div>
+              `;
+            }
+
+            let introDesc = '';
+            if (!isStandalone) {
+              introDesc = `
+                <div style="font-size: 13.5px; color: #1e3a2b; background: #f2fbf5; border: 1px solid #d1fae5; border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; line-height: 1.5;">
+                  💡 바탕화면에 앱을 설치하시면 브라우저 주소창 없이 <strong>전체화면 게임</strong>으로 언제든 빠르게 실행할 수 있습니다.
                 </div>
               `;
             }
@@ -11185,7 +11194,7 @@
                     <li>'추가'를 누르면 스마트폰 바탕화면에 바로가기 앱이 즉시 생성됩니다!</li>
                   </ol>
                 </div>
-                <p style="font-size: 12px; color: #64748b; margin: 0;">※ 브레이브 브라우저의 강력한 쉴드(보안) 정책으로 인해 메뉴에서 직접 추가하시면 주소창 없는 전체화면 앱으로 등록됩니다.</p>
+                <p style="font-size: 12px; color: #64748b; margin: 0;">※ 브레이브 브라우저의 보안 정책으로 인해 메뉴에서 직접 추가하시면 주소창 없는 전체화면 앱으로 등록됩니다.</p>
               `;
             } else if (isInApp) {
               const appName = isKakao ? '카카오톡' : (isNaver ? '네이버' : '인앱');
@@ -11231,7 +11240,7 @@
                 <div style="background: #f8fafc; border-radius: 12px; padding: 14px; border: 1.5px solid #e2e8f0; margin-bottom: 12px;">
                   <div style="font-weight: 800; color: #1e293b; font-size: 15px; margin-bottom: 8px;">💻 PC / 데스크톱 브라우저</div>
                   <ul style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
-                    <li>브라우저 상단 주소창 우측의 <strong>설치 아이콘(⊕ / 컴퓨터 모양)</strong>을 클릭하세요.</li>
+                    <li>브라우저 상단 주소창 우측의 <strong>설치 아이콘(⊕ / 모니터 다운로드 모양)</strong>을 클릭하세요.</li>
                     <li>또는 브라우저 메뉴(⋮) ➔ <strong>[저장 및 공유] ➔ [바로가기 만들기]</strong>를 클릭하세요.</li>
                     <li>즐겨찾기로 두시려면 <strong>Ctrl + D</strong>를 눌러 북마크에 추가하세요.</li>
                   </ul>
@@ -11241,18 +11250,18 @@
             }
 
             if (shortcutContent) {
-              shortcutContent.innerHTML = promptButtonHtml + guideHtml;
+              shortcutContent.innerHTML = introDesc + promptButtonHtml + guideHtml;
 
               const triggerBtn = document.getElementById('btn-trigger-pwa-install');
               if (triggerBtn) {
                 triggerBtn.addEventListener('click', () => {
-                  this.sound.playSelect();
+                  if (this.sound) this.sound.playSelect();
                   if (window.deferredInstallPrompt) {
                     try {
                       window.deferredInstallPrompt.prompt();
                       window.deferredInstallPrompt.userChoice.then((choiceResult) => {
                         if (choiceResult && choiceResult.outcome === 'accepted') {
-                          alert('홈 화면에 바로가기가 성공적으로 추가되었습니다! 🎉');
+                          alert('홈 화면에 바로가기 앱이 성공적으로 추가되었습니다! 🎉');
                         }
                         window.deferredInstallPrompt = null;
                         if (shortcutModal) ModalHelper.close(shortcutModal);
@@ -11269,6 +11278,18 @@
           };
 
           btnSplashShortcut.addEventListener('click', handleShortcutClick);
+
+          // 브라우저 최초 접속 시 세션당 1회 자동으로 홈화면 설치 모달 팝업 (이미 앱으로 실행 중인 경우 제외)
+          const isStandaloneInit = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+          if (!isStandaloneInit && !sessionStorage.getItem('pwa_install_guide_auto_shown')) {
+            sessionStorage.setItem('pwa_install_guide_auto_shown', '1');
+            setTimeout(() => {
+              const splashEl = document.getElementById('splash-screen');
+              if (splashEl && splashEl.classList.contains('active')) {
+                handleShortcutClick();
+              }
+            }, 650);
+          }
         }
 
         // 설정 드롭다운 카테고리 탭 클릭 이벤트 바인딩
