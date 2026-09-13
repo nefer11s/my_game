@@ -90,12 +90,12 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="시연이네 그림맞추기">
+  <meta name="apple-mobile-web-app-title" content="SY 그림맞추기">
   <meta name="theme-color" content="#123e2b">
     <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&family=Pretendard:wght@700;900&display=swap" rel="stylesheet">
-  <title>시연 마작 솔리테어 (Si-Yeon Mahjong Solitaire)</title>
+  <title>SY 그림맞추기 (그린빌라/오룡이 에디션)</title>
   <style>
     :root {
       --bg-gradient-start: #eef7f2;
@@ -5403,7 +5403,7 @@
             </div>
 
             <div class="cert-desc-text" id="cert-desc-text">
-              위 플레이어는 『시연이네 그림맞추기』 전 30개 관문과 극한의 블라인드 시련을 뛰어난 지혜와 불굴의 집중력으로 완파하여 본 칭호에 등극하였음을 공식 인증합니다.
+              위 플레이어는 『SY 그림맞추기 (그린빌라/오룡이 에디션)』 전 30개 관문과 극한의 블라인드 시련을 뛰어난 지혜와 불굴의 집중력으로 완파하여 본 칭호에 등극하였음을 공식 인증합니다.
             </div>
 
             <!-- 공식 수행 기록 -->
@@ -5453,15 +5453,15 @@
   <div class="splash-overlay active" id="splash-screen">
     <div class="splash-card">
       <div class="splash-img-wrap">
-        <img src="assets/mahjong_splash.jpg" alt="시연이네 그림맞추기" class="splash-hero-img" decoding="sync" fetchpriority="high">
+        <img src="assets/mahjong_splash.jpg" alt="SY 그림맞추기 (그린빌라/오룡이 에디션)" class="splash-hero-img" decoding="sync" fetchpriority="high">
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
         <div class="splash-version-badge">v1.5.36</div>
       </div>
       <div class="splash-content">
-        <h1 class="splash-title">시연이네 그림맞추기</h1>
-        <div class="splash-subtitle">Si-Yeon Mahjong</div>
+        <h1 class="splash-title">SY 그림맞추기</h1>
+        <div class="splash-subtitle">(그린빌라/오룡이 에디션)</div>
         <div class="splash-provider">SY Soft 제공</div>
 
         <div class="splash-btn-group">
@@ -5502,7 +5502,7 @@
       <button id="btn-shortcut-modal-close-x" style="position: absolute; top: 12px; right: 14px; background: none; border: none; font-size: 20px; color: #94a3b8; cursor: pointer; padding: 4px; line-height: 1;" aria-label="닫기">✕</button>
       <h3 style="margin: 2px 0 12px 0; font-size: 20px; font-weight: 800; color: #14532d;">홈화면에 앱 설치</h3>
       <div style="width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); border: 1px solid #e2e8f0; background: #123e2b;">
-        <img src="assets/mahjong_splash.jpg" alt="시연이네 그림맞추기 초기화면" style="width: 100%; height: auto; max-height: 180px; object-fit: contain; display: block;">
+        <img src="assets/mahjong_splash.jpg" alt="SY 그림맞추기 (그린빌라/오룡이 에디션) 초기화면" style="width: 100%; height: auto; max-height: 180px; object-fit: contain; display: block;">
       </div>
       <p style="font-size: 13.5px; color: #374151; line-height: 1.6; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 12px 14px; margin: 0 0 16px 0; text-align: left;">
         스마트폰 홈 화면에 앱을 설치하시면 <strong>인터넷 없이</strong>, <strong>넓은 화면</strong>의 게임을 즐기실 수 있습니다.
@@ -11374,7 +11374,7 @@
                 btnSplashShortcut.onclick = (e) => {
                   if (e && e.stopPropagation) e.stopPropagation();
                   if (this.sound) this.sound.playSelect();
-                  alert('이미 스마트폰에 [시연이네 그림맞추기] 앱이 설치되어 있습니다! 🎉\n바탕화면의 앱 아이콘을 터치하시면 주소창 없는 전체화면으로 즉시 실행됩니다.');
+                  alert('이미 스마트폰에 [SY 그림맞추기 (그린빌라/오룡이 에디션)] 앱이 설치되어 있습니다! 🎉\n바탕화면의 앱 아이콘을 터치하시면 주소창 없는 전체화면으로 즉시 실행됩니다.');
                 };
               } else {
                 // [상황 3] 앱이 아직 없거나 브라우저인 경우: 버튼 및 1회 자동 설치 유도 팝업 활성화!
@@ -15011,7 +15011,7 @@
             certTitleL2: '정 복 인 증 서',
             certMainTitle: '비 취\n정 복 인 증 서',
             recipientTitle: '[청아한 영롱 비취의 수호자]',
-            certDesc: '위 사람은 『시연이네 그림맞추기』 70% 블라인드의 안개를 뚫고 쉬움 모드 30개 전 관문을 정복하여 그 맑은 지혜와 집중력을 증명하였기에 본 인증서를 수여함.',
+            certDesc: '위 사람은 『SY 그림맞추기 (그린빌라/오룡이 에디션)』 70% 블라인드의 안개를 뚫고 쉬움 모드 30개 전 관문을 정복하여 그 맑은 지혜와 집중력을 증명하였기에 본 인증서를 수여함.',
             sealText: 'JADE SEAL',
             btnText: `보통 모드로 도약하기 (제 ${nextStage}판 무한 순환) ➔`,
             btnGrad: 'linear-gradient(135deg, #10b981 0%, #047857 100%)',
@@ -15034,7 +15034,7 @@
             certTitleL2: '정 복 인 증 서',
             certMainTitle: '사 파 이 어\n정 복 인 증 서',
             recipientTitle: '[벽공천상 사파이어의 현자]',
-            certDesc: '위 사람은 『시연이네 그림맞추기』 80% 블라인드의 짙은 장막 속에서도 탁월한 전략과 직관으로 30강 대결전을 완승하였기에 본 인증서를 수여함.',
+            certDesc: '위 사람은 『SY 그림맞추기 (그린빌라/오룡이 에디션)』 80% 블라인드의 짙은 장막 속에서도 탁월한 전략과 직관으로 30강 대결전을 완승하였기에 본 인증서를 수여함.',
             sealText: 'SAPPHIRE SEAL',
             btnText: `어려움 모드로 도전하기 (제 ${nextStage}판 무한 순환) ➔`,
             btnGrad: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
@@ -15057,7 +15057,7 @@
             certTitleL2: '정 복 인 증 서',
             certMainTitle: '루 비\n정 복 인 증 서',
             recipientTitle: '[고귀무쌍 루비의 지휘관]',
-            certDesc: '위 사람은 『시연이네 그림맞추기』 90% 암흑의 극한 시련 속에서도 단 10%의 단서로 30개 전 관문을 굴복시켰기에 본 인증서를 수여함.',
+            certDesc: '위 사람은 『SY 그림맞추기 (그린빌라/오룡이 에디션)』 90% 암흑의 극한 시련 속에서도 단 10%의 단서로 30개 전 관문을 굴복시켰기에 본 인증서를 수여함.',
             sealText: 'RUBY SEAL',
             btnText: `최종 달인(Master) 영역 진입 (제 ${nextStage}판) ➔`,
             btnGrad: 'linear-gradient(135deg, #ea580c 0%, #b91c1c 100%)',
@@ -15080,7 +15080,7 @@
             certTitleL2: '정 복 인 증 서',
             certMainTitle: '황 실  마 스 터\n정 복 인 증 서',
             recipientTitle: '[천상천하 전설의 마작 황제]',
-            certDesc: '위 사람은 『시연이네 그림맞추기』 100% 올 블라인드의 전설적 시련을 제패하고 최고 존엄의 마작 마스터에 등극하였기에 본 인증서를 수여함.',
+            certDesc: '위 사람은 『SY 그림맞추기 (그린빌라/오룡이 에디션)』 100% 올 블라인드의 전설적 시련을 제패하고 최고 존엄의 마작 마스터에 등극하였기에 본 인증서를 수여함.',
             sealText: 'ROYAL SEAL',
             btnText: `전설의 무한 마스터 순환 계속 (제 ${nextStage}판) ➔`,
             btnGrad: 'linear-gradient(135deg, #d4af37 0%, #aa771c 100%)',
@@ -15392,7 +15392,7 @@
           certEngTitle: 'CERTIFICATE OF MASTERY',
           certMainTitle: '공 인 정 복 인 증 서',
           recipientTitle: '[천상천하 전설의 마작 황제]',
-          certDesc: '위 사람은 『시연이네 그림맞추기』 전 관문을 완파하여 본 칭호에 등극하였음을 공식 인증함.',
+          certDesc: '위 사람은 『SY 그림맞추기 (그린빌라/오룡이 에디션)』 전 관문을 완파하여 본 칭호에 등극하였음을 공식 인증함.',
           sealText: 'OFFICIAL SEAL',
           imageSrc: 'assets/emblems/crown.jpg'
         };
@@ -15546,7 +15546,7 @@
         // 8. 본문 공인 문구
         ctx.font = '600 20px sans-serif';
         ctx.fillStyle = '#453c2a';
-        const descText = celebration.certDesc || '위 사람은 『시연이네 그림맞추기』 전 관문을 완파하여 본 칭호에 등극하였음을 공식 인증함.';
+        const descText = celebration.certDesc || '위 사람은 『SY 그림맞추기 (그린빌라/오룡이 에디션)』 전 관문을 완파하여 본 칭호에 등극하였음을 공식 인증함.';
         const maxLineWidth = 640;
         let words = descText.split(' ');
         let line = '';
@@ -15701,8 +15701,8 @@
           const fileName = `시연이네그림맞추기_공인인증서_${dateTag}.png`;
           const file = new File([blob], fileName, { type: 'image/png' });
 
-          const shareTitle = `『시연이네 그림맞추기』 ${diffCfg.name} 모드 공식 정복 인증서`;
-          const shareText = `『시연이네 그림맞추기』 전 30개 관문 돌파! 공식 정복 인증서를 획득했습니다! 🏆✨\n#시연이네그림맞추기 #마작솔리테어 #정복인증서`;
+          const shareTitle = `『SY 그림맞추기 (그린빌라/오룡이 에디션)』 ${diffCfg.name} 모드 공식 정복 인증서`;
+          const shareText = `『SY 그림맞추기 (그린빌라/오룡이 에디션)』 전 30개 관문 돌파! 공식 정복 인증서를 획득했습니다! 🏆✨\n#SY그림맞추기 #마작솔리테어 #정복인증서`;
 
           // 1. Web Share API 시도 (모바일 카카오톡, 인스타, X, 페이스북, 메시지 등으로 바로 이미지 전달)
           let sharedSuccess = false;
