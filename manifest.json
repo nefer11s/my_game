@@ -5,14 +5,25 @@
   "description": "다양한 테마와 사주 패가 어우러진 프리미엄 마작 솔리테어 퍼즐 게임",
   "start_url": "./MahjongMain.html?mode=app",
   "scope": "./",
-  "display": "fullscreen",
+  "display": "standalone",
+  "display_override": ["standalone", "fullscreen", "minimal-ui"],
   "orientation": "any",
   "background_color": "#123e2b",
   "theme_color": "#123e2b",
-  "related_applications": [
+  "prefer_related_applications": false,
+  "shortcuts": [
     {
-      "platform": "webapp",
-      "url": "./manifest.json"
+      "name": "SY 그림맞추기 게임 시작",
+      "short_name": "게임 시작",
+      "description": "SY 그림맞추기 마작 게임을 바로 실행합니다",
+      "url": "./MahjongMain.html?mode=app",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ],
   "icons": [
