@@ -13295,6 +13295,7 @@
           }
           slotsEl.appendChild(box);
         }
+        this.updateToolButtonsUI();
       }
 
       /**
@@ -14517,9 +14518,14 @@
         if (btnUndo) {
           if (undoLabel) undoLabel.textContent = '되돌리기';
           if (undoCount) undoCount.textContent = this.undoRemaining;
-          btnUndo.disabled = (this.undoRemaining <= 0 || this.undoStack.length === 0);
-          btnUndo.title = `한 수 되돌리기 (남은 횟수: ${this.undoRemaining}/2)`;
-          btnUndo.style.opacity = (this.undoRemaining <= 0 || this.undoStack.length === 0) ? '0.45' : '1';
+          // 슬롯(트레이)에 패가 하나도 없거나 남은 횟수가 0이면 비활성화
+          const hasTrayTiles = Array.isArray(this.trayTiles) && this.trayTiles.some(t => !t.isMatching);
+          const isUndoDisabled = (this.undoRemaining <= 0 || !hasTrayTiles);
+          btnUndo.disabled = isUndoDisabled;
+          btnUndo.title = !hasTrayTiles 
+            ? '슬롯에 패가 있을 때만 되돌릴 수 있습니다' 
+            : `한 수 되돌리기 (남은 횟수: ${this.undoRemaining}/2)`;
+          btnUndo.style.opacity = isUndoDisabled ? '0.45' : '1';
         }
 
         const btnHint = document.getElementById('btn-hint');
@@ -14610,40 +14616,50 @@
       }
 
       undo() {
-        if (this.isAutoClearing || this.undoStack.length === 0) return;
+        if (this.isAutoClearing || this.isGameOver || this.isDealing) return;
+        
+        // 슬롯에 아무것도 없으면 실행 불가
+        const hasTrayTiles = Array.isArray(this.trayTiles) && this.trayTiles.some(t => !t.isMatching);
+        if (!hasTrayTiles) {
+          this.showToast('⚠️ 되돌릴 슬롯 패가 없습니다.');
+          this.updateToolButtonsUI();
+          return;
+        }
+
         if (this.undoRemaining <= 0) {
           this.showToast('⚠️ 이번 판의 되돌리기 기회(2회)를 모두 사용했습니다.');
           if (this.sound && this.sound.playMiss) this.sound.playMiss();
           return;
         }
-        this.undoRemaining--;
-        this.updateToolButtonsUI();
-        this.sound.playSelect();
-        this.clearHints();
 
-        const lastAction = this.undoStack.pop();
-        if (!lastAction) return;
-
-        if (lastAction.type === 'toTray') {
-          // 슬롯으로 들어갔던 패를 보드로 복귀
-          const idx = this.trayTiles.findIndex(t => t.id === lastAction.tileItem.id);
-          if (idx !== -1) {
-            this.returnTileFromTray(idx, true);
+        // 되돌릴 대상 슬롯 패 결정 (최근 toTray 패 우선, 없으면 슬롯 마지막 패)
+        let targetTrayIndex = -1;
+        while (this.undoStack.length > 0) {
+          const action = this.undoStack.pop();
+          if (action && action.type === 'toTray' && action.tileItem) {
+            const idx = this.trayTiles.findIndex(t => t.id === action.tileItem.id && !t.isMatching);
+            if (idx !== -1) {
+              targetTrayIndex = idx;
+              break;
+            }
           }
-        } else if (lastAction.type === 'match') {
-          // 매치되어 사라진 두 패를 다시 슬롯으로 복귀
-          const [t1, t2] = lastAction.tiles;
-          this.trayTiles.push(t1, t2);
-          this.score = Math.max(0, this.score - ((t1.wasCovered || t2.wasCovered) ? 150 : 100));
-          this.renderTray();
-          this.updateHeaderUI();
-          this.updateTileStates();
-        } else if (Array.isArray(lastAction)) {
-          lastAction.forEach(tile => {
-            tile.removed = false;
-            if (tile.el) { this.showTileEl(tile.el); }
-          });
-          this.updateTileStates();
+        }
+
+        if (targetTrayIndex === -1) {
+          for (let i = this.trayTiles.length - 1; i >= 0; i--) {
+            if (!this.trayTiles[i].isMatching) {
+              targetTrayIndex = i;
+              break;
+            }
+          }
+        }
+
+        if (targetTrayIndex !== -1) {
+          this.undoRemaining--;
+          this.sound.playSelect();
+          this.clearHints();
+          // returnTileFromTray 호출 (isSystemFree=true: 기회는 위에서 1회 차감함)
+          this.returnTileFromTray(targetTrayIndex, true);
         }
 
         this.updateToolButtonsUI();
