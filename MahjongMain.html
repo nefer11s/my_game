@@ -5011,6 +5011,20 @@
                 <option value="on">켜짐 (5x7 대형 패 전용)</option>
               </select>
             </div>
+            <!-- 슬롯 이동 속도 조절 옵션 -->
+            <div class="settings-item" id="slot-anim-speed-wrapper" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span class="settings-label" style="margin-bottom: 0;">✈️ 슬롯 이동 속도</span>
+                <span id="slot-anim-speed-badge" style="font-size: 11px; color: #166534; font-weight: 700; background: #dcfce7; padding: 2px 7px; border-radius: 10px;">느림 (0.6초)</span>
+              </div>
+              <select class="diff-select" id="select-slot-anim-speed" title="패가 슬롯으로 날아가는 애니메이션 속도 조절">
+                <option value="very_slow">🐢 아주 느림 (0.8초)</option>
+                <option value="slow" selected>🦥 느림 (0.6초 · 기본)</option>
+                <option value="normal">🌿 보통 (0.45초)</option>
+                <option value="fast">⚡ 빠름 (0.3초)</option>
+                <option value="instant">🚀 즉시 이동 (0초 · 애니메이션 끄기)</option>
+              </select>
+            </div>
           </div>
 
           <!-- 3. 사운드 & 화면 모드 탭 -->
@@ -7591,6 +7605,17 @@
         }
       }
     }
+
+    /**
+     * 슬롯 이동 애니메이션 속도 프리셋
+     */
+    const SLOT_ANIM_SPEED_MAP = {
+      very_slow: { duration: 800, label: '🐢 아주 느림 (0.8초)' },
+      slow: { duration: 600, label: '🦥 느림 (0.6초)' },
+      normal: { duration: 450, label: '🌿 보통 (0.45초)' },
+      fast: { duration: 280, label: '⚡ 빠름 (0.3초)' },
+      instant: { duration: 0, label: '🚀 즉시 이동 (0초)' }
+    };
 
     /**
      * 난이도 설정 (패 종류 수 및 상용급 조합 복잡도 구성)
@@ -10591,6 +10616,8 @@
           this.dynamicZoomCols = (!isNaN(savedZoomCols) && savedZoomCols >= 3 && savedZoomCols <= 10) ? savedZoomCols : 5;
           const savedSeniorMode = localStorage.getItem('siyeon_mahjong_senior_mode') || 'off';
           this.seniorMode = (savedSeniorMode === 'on' || savedSeniorMode === '1' || savedSeniorMode === 'longpress' || savedSeniorMode === 'hud') ? 'on' : 'off';
+          const savedSlotSpeed = localStorage.getItem('siyeon_mahjong_slot_anim_speed');
+          this.slotAnimSpeed = (savedSlotSpeed && SLOT_ANIM_SPEED_MAP[savedSlotSpeed]) ? savedSlotSpeed : 'slow';
           // 테마 기본값: 무조건 '명리학'('saju')을 디폴트로 적용
           let savedTheme = localStorage.getItem('siyeon_mahjong_active_theme');
           const defaultThemeMigrated = localStorage.getItem('siyeon_mahjong_default_theme_v1478');
@@ -11940,6 +11967,28 @@
           });
         }
 
+        const selectSlotSpeed = document.getElementById('select-slot-anim-speed');
+        const badgeSlotSpeed = document.getElementById('slot-anim-speed-badge');
+        const updateSlotSpeedUI = () => {
+          const curKey = this.slotAnimSpeed || 'slow';
+          const cfg = (typeof SLOT_ANIM_SPEED_MAP !== 'undefined' && SLOT_ANIM_SPEED_MAP[curKey]) ? SLOT_ANIM_SPEED_MAP[curKey] : { label: '느림 (0.6초)' };
+          if (selectSlotSpeed) selectSlotSpeed.value = curKey;
+          if (badgeSlotSpeed) badgeSlotSpeed.textContent = cfg.label;
+        };
+        updateSlotSpeedUI();
+        if (selectSlotSpeed) {
+          selectSlotSpeed.addEventListener('change', (e) => {
+            const val = e.target.value;
+            this.slotAnimSpeed = (typeof SLOT_ANIM_SPEED_MAP !== 'undefined' && SLOT_ANIM_SPEED_MAP[val]) ? val : 'slow';
+            try {
+              localStorage.setItem('siyeon_mahjong_slot_anim_speed', this.slotAnimSpeed);
+            } catch (err) { }
+            updateSlotSpeedUI();
+            const cfg = SLOT_ANIM_SPEED_MAP[this.slotAnimSpeed];
+            this.showToast(`✈️ 슬롯 이동 속도: ${cfg.label}`);
+          });
+        }
+
         document.getElementById('btn-undo').addEventListener('click', () => this.undo());
         document.getElementById('btn-hint').addEventListener('click', () => this.showHint());
         document.getElementById('btn-shuffle').addEventListener('click', () => this.shuffleRemain());
@@ -12128,6 +12177,13 @@
         const selectSeniorMode = document.getElementById('select-senior-mode');
         if (selectSeniorMode) {
           selectSeniorMode.value = this.seniorMode || 'off';
+        }
+
+        const selectSlotSpeedEl = document.getElementById('select-slot-anim-speed');
+        const badgeSlotSpeedEl = document.getElementById('slot-anim-speed-badge');
+        if (selectSlotSpeedEl) selectSlotSpeedEl.value = this.slotAnimSpeed || 'slow';
+        if (badgeSlotSpeedEl && typeof SLOT_ANIM_SPEED_MAP !== 'undefined' && SLOT_ANIM_SPEED_MAP[this.slotAnimSpeed]) {
+          badgeSlotSpeedEl.textContent = SLOT_ANIM_SPEED_MAP[this.slotAnimSpeed].label;
         }
         
         const selectEl = document.getElementById('select-difficulty');
@@ -12801,6 +12857,17 @@
           return;
         }
 
+        const speedConfig = (typeof SLOT_ANIM_SPEED_MAP !== 'undefined' && SLOT_ANIM_SPEED_MAP[this.slotAnimSpeed])
+          ? SLOT_ANIM_SPEED_MAP[this.slotAnimSpeed]
+          : { duration: 600 };
+        const durationMs = speedConfig.duration;
+
+        // 즉시 이동 (애니메이션 끄기) 설정인 경우
+        if (durationMs <= 0) {
+          if (typeof onComplete === 'function') onComplete();
+          return;
+        }
+
         // 도착하기 전까지 슬롯 내부 타일은 임시 투명 숨김
         targetTileEl.classList.add('fly-incoming');
 
@@ -12830,12 +12897,14 @@
         document.body.appendChild(flyer);
 
         // 다음 렌더링 프레임에 목표 슬롯 위치로 부드럽게 3D 비행 변환 (GPU 가속)
+        const durationSec = (durationMs / 1000).toFixed(2);
         requestAnimationFrame(() => {
           const dx = targetRect.left - startRect.left;
           const dy = targetRect.top - startRect.top;
           const sx = targetRect.width / startRect.width;
           const sy = targetRect.height / startRect.height;
 
+          flyer.style.transition = `transform ${durationSec}s cubic-bezier(0.22, 1, 0.36, 1), border-radius ${durationSec}s ease, box-shadow ${durationSec}s ease`;
           flyer.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${sx}, ${sy})`;
           flyer.style.borderRadius = '5px';
           flyer.style.boxShadow = '1px 1px 0 #ede5d4, 2px 2px 0 #dfd5bf, 2px 2px 0 #287756, 3px 3px 5px rgba(0, 0, 0, 0.32)';
@@ -12858,7 +12927,7 @@
         };
 
         flyer.addEventListener('transitionend', finish, { once: true });
-        setTimeout(finish, 280); // 안전 타임아웃
+        setTimeout(finish, durationMs + 40); // 동적 안전 타임아웃
       }
 
       renderTray() {
