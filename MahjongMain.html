@@ -3,14 +3,17 @@
 
 <head>
   <script>
-    // 카카오톡 인앱 브라우저 감지 시 시스템 기본 브라우저(Chrome/Safari)로 즉시 강제 전환
+    // 카카오톡/인앱 브라우저 감지 시 삼성폰이라도 기본 브라우저 대신 크롬(Chrome)으로 강제 전환
     (function () {
       var ua = navigator.userAgent.toLowerCase();
-      if (ua.indexOf('kakaotalk') !== -1) {
+      var isKakao = ua.indexOf('kakaotalk') !== -1;
+      var isInApp = isKakao || ua.indexOf('naver') !== -1 || ua.indexOf('line') !== -1 || ua.indexOf('instagram') !== -1 || ua.indexOf('fb_iab') !== -1;
+      if (isInApp) {
         var currentUrl = location.href;
         if (ua.indexOf('android') !== -1) {
-          location.href = 'intent://' + currentUrl.replace(/^https?:\/\//i, '') + '#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end';
-        } else if (ua.indexOf('iphone') !== -1 || ua.indexOf('ipad') !== -1 || ua.indexOf('ipod') !== -1) {
+          // 삼성폰 기본 브라우저(삼성인터넷) 대신 크롬(Chrome)으로 직접 강제 오픈
+          location.href = 'intent://' + currentUrl.replace(/^https?:\/\//i, '') + '#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=com.android.chrome;end';
+        } else if (isKakao && (ua.indexOf('iphone') !== -1 || ua.indexOf('ipad') !== -1 || ua.indexOf('ipod') !== -1)) {
           location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(currentUrl);
         }
       }
@@ -11456,16 +11459,75 @@
           const userAgent = navigator.userAgent || '';
           const isKakaoOrInApp = /KAKAOTALK|NAVER|Line|Instagram|FB_IAB/i.test(userAgent);
           const isIOS = /iPhone|iPad|iPod/i.test(userAgent) && !window.MSStream;
+          const isAndroid = /Android/i.test(userAgent);
+          const isSamsungBrowser = isAndroid && /SamsungBrowser/i.test(userAgent);
 
           if (shortcutContent) {
             if (isKakaoOrInApp) {
               shortcutContent.innerHTML = `
-                <div style="background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 12px; padding: 12px; text-align: left; font-size: 13px; line-height: 1.6; color: #92400e;">
+                <div style="background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 12px; padding: 12px; text-align: left; font-size: 13px; line-height: 1.6; color: #92400e; margin-bottom: 12px;">
                   <div style="font-weight: 800; margin-bottom: 4px; font-size: 13.5px;">⚠️ 인앱 브라우저 접속 중</div>
-                  오른쪽 상단 메뉴(<strong>⋮</strong> 또는 <strong>···</strong>)를 누르신 후 <strong>[다른 브라우저로 열기 (Chrome/Safari)]</strong>를 선택해 주세요.<br>
-                  외부 브라우저에서 홈 화면에 설치하실 수 있습니다.
+                  홈 화면에 앱으로 설치하려면 <strong>크롬(Chrome) 브라우저</strong>로 열어주셔야 합니다.
+                </div>
+                ${isAndroid ? `
+                  <button id="btn-inapp-open-chrome" style="width: 100%; height: 48px; border-radius: 12px; border: none; background: linear-gradient(135deg, #1d4ed8, #2563eb); color: #ffffff; font-size: 15.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(29, 78, 216, 0.35);">
+                    <span style="font-size: 18px;">🌐</span> 크롬 브라우저로 열기
+                  </button>
+                ` : `
+                  <div style="font-size: 12.5px; color: #78350f; text-align: left;">
+                    오른쪽 상단 메뉴(<strong>⋮</strong> 또는 <strong>···</strong>)를 누르신 후 <strong>[다른 브라우저로 열기]</strong>를 선택해 주세요.
+                  </div>
+                `}
+              `;
+              const btnInAppChrome = document.getElementById('btn-inapp-open-chrome');
+              if (btnInAppChrome) {
+                btnInAppChrome.onclick = () => {
+                  if (this.sound) this.sound.playSelect();
+                  const cleanUrl = location.href.replace(/^https?:\/\//i, '');
+                  location.href = 'intent://' + cleanUrl + '#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=com.android.chrome;end';
+                };
+              }
+            } else if (isSamsungBrowser) {
+              // [삼성폰/삼성 브라우저 접속 시] 크롬 브라우저로 전환하여 완벽한 PWA 앱 설치 유도
+              shortcutContent.innerHTML = `
+                <div style="background: #eff6ff; border: 1.5px solid #93c5fd; border-radius: 12px; padding: 12px 14px; text-align: left; font-size: 13px; line-height: 1.6; color: #1e40af; margin-bottom: 12px;">
+                  <div style="font-weight: 800; margin-bottom: 4px; font-size: 13.5px; color: #1d4ed8; display: flex; align-items: center; gap: 6px;">
+                    <span>⚡</span> 크롬(Chrome) 전용 앱 설치 권장
+                  </div>
+                  삼성폰에서는 <strong>크롬(Chrome) 브라우저</strong>로 설치하셔야 게임 화면이 꽉 찬 전체화면으로 생성되며 오프라인에서도 안정적으로 실행됩니다.
+                </div>
+                <button id="btn-open-chrome-install" style="width: 100%; height: 48px; border-radius: 12px; border: none; background: linear-gradient(135deg, #1d4ed8, #2563eb); color: #ffffff; font-size: 15.5px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(29, 78, 216, 0.35);">
+                  <span style="font-size: 18px;">🌐</span> 크롬 브라우저로 앱 설치하기
+                </button>
+                <div style="margin-top: 10px; font-size: 12px; color: #64748b; text-align: center;">
+                  <span id="btn-samsung-manual-toggle" style="text-decoration: underline; cursor: pointer; color: #64748b;">삼성 브라우저에서 그대로 설치하시겠습니까?</span>
+                </div>
+                <div id="samsung-manual-guide" style="display: none; margin-top: 10px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px; padding: 10px; text-align: left; font-size: 12.5px; line-height: 1.55; color: #475569;">
+                  1. 화면 우측 하단 <strong>메뉴 [ ≡ ]</strong> 터치<br>
+                  2. <strong>[현재 페이지 추가]</strong> 선택<br>
+                  3. <strong>[홈 화면]</strong> 선택 후 추가
                 </div>
               `;
+
+              const btnOpenChrome = document.getElementById('btn-open-chrome-install');
+              if (btnOpenChrome) {
+                btnOpenChrome.onclick = () => {
+                  if (this.sound) this.sound.playSelect();
+                  const cleanUrl = location.href.replace(/^https?:\/\//i, '');
+                  location.href = 'intent://' + cleanUrl + '#Intent;scheme=https;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=com.android.chrome;end';
+                };
+              }
+
+              const btnSamsungToggle = document.getElementById('btn-samsung-manual-toggle');
+              const samsungGuide = document.getElementById('samsung-manual-guide');
+              if (btnSamsungToggle && samsungGuide) {
+                btnSamsungToggle.onclick = () => {
+                  if (this.sound) this.sound.playSelect();
+                  const isHidden = samsungGuide.style.display === 'none';
+                  samsungGuide.style.display = isHidden ? 'block' : 'none';
+                  btnSamsungToggle.textContent = isHidden ? '▲ 삼성 브라우저 설치 방법 닫기' : '삼성 브라우저에서 그대로 설치하시겠습니까?';
+                };
+              }
             } else if (isIOS) {
               shortcutContent.innerHTML = `
                 <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 12px; text-align: left; font-size: 13px; line-height: 1.6; color: #334155;">
@@ -11506,7 +11568,7 @@
                       }).catch(() => {});
                     } catch (err) {}
                   } else {
-                    alert('브라우저 우측 상단 메뉴(⋮)에서 [홈 화면에 추가] 또는 [앱 설치]를 선택해 주세요.');
+                    alert('크롬(Chrome) 브라우저 우측 상단 메뉴(⋮)에서 [홈 화면에 추가] 또는 [앱 설치]를 선택해 주세요.');
                   }
                 };
               };
