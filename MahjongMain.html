@@ -11190,137 +11190,47 @@
           this.showToast('🌐 온라인 네트워크 연결됨');
         });
 
-        if (btnSplashShortcut) {
+                if (btnSplashShortcut) {
           const handleShortcutClick = (e) => {
             if (e && e.stopPropagation) e.stopPropagation();
             if (e && this.sound) this.sound.playSelect();
 
-            const ua = (navigator.userAgent || '').toLowerCase();
-            const isKakao = ua.includes('kakaotalk');
-            const isNaver = ua.includes('naver');
-            const isOtherInApp = ua.includes('fbav') || ua.includes('instagram') || ua.includes('line');
-            const isInApp = isKakao || isNaver || isOtherInApp;
-
-            const isIOS = /iphone|ipad|ipod/.test(ua);
-            const isAndroid = /android/.test(ua);
-            const isBrave = !!(navigator.brave || window.brave || ua.includes('brave'));
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
-            let promptButtonHtml = '';
             if (isStandalone) {
-              promptButtonHtml = `
-                <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 14px;">
-                  <span style="font-size: 15px; font-weight: 800; color: #15803d;">✅ 이미 홈 화면 앱 모드로 실행 중입니다!</span>
-                  <div style="font-size: 12px; color: #166534; margin-top: 4px;">주소창 없이 쾌적한 전체화면으로 플레이하고 계십니다.</div>
-                </div>
-              `;
-            } else if (window.deferredInstallPrompt) {
-              promptButtonHtml = `
-                <div style="background: linear-gradient(135deg, #15803d, #166534); border-radius: 14px; padding: 14px; text-align: center; margin-bottom: 14px; box-shadow: 0 4px 14px rgba(21, 128, 61, 0.25);">
-                  <div style="color: #ffffff; font-size: 14.5px; font-weight: 800; margin-bottom: 8px;">원클릭으로 바탕화면에 앱을 설치할 수 있습니다!</div>
-                  <button id="btn-trigger-pwa-install" style="width: 100%; height: 44px; border-radius: 10px; border: none; background: #ffffff; color: #15803d; font-size: 15px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-                    <span>📲</span> 지금 즉시 앱 설치하기
-                  </button>
-                </div>
-              `;
+              alert('이미 스마트폰 바탕화면 앱 모드로 실행 중입니다! 🎉\n주소창 없는 전체화면으로 플레이하고 계십니다.');
+              return;
             }
 
-            let introDesc = '';
-            if (!isStandalone) {
-              introDesc = `
-                <div style="font-size: 13.5px; color: #1e3a2b; background: #f2fbf5; border: 1px solid #d1fae5; border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; line-height: 1.5;">
-                  💡 바탕화면에 앱을 설치하시면 브라우저 주소창 없이 <strong>전체화면 게임</strong>으로 언제든 빠르게 실행할 수 있습니다.
-                </div>
-              `;
+            // PWA 설치 프롬프트가 지원되는 경우 즉시 네이티브 설치 대화상자 호출
+            if (window.deferredInstallPrompt) {
+              try {
+                window.deferredInstallPrompt.prompt();
+                window.deferredInstallPrompt.userChoice.then((choiceResult) => {
+                  if (choiceResult && choiceResult.outcome === 'accepted') {
+                    if (this.sound) this.sound.playWin();
+                    alert('홈 화면에 바로가기 앱이 성공적으로 추가되었습니다! 🎉');
+                  }
+                  window.deferredInstallPrompt = null;
+                }).catch(() => {});
+              } catch (err) {}
+              return;
             }
 
-            let guideHtml = '';
-            if (isBrave) {
-              guideHtml = `
-                <div style="background: #fff7ed; border-radius: 12px; padding: 14px; border: 1.5px solid #fdba74; margin-bottom: 12px;">
-                  <div style="font-weight: 800; color: #ea580c; font-size: 15px; margin-bottom: 8px;">🦁 브레이브(Brave) 브라우저 안내</div>
-                  <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.8; color: #431407;">
-                    <li>브라우저 <strong>우측 하단(또는 우측 상단)의 더보기 메뉴(⋮)</strong>를 터치하세요.</li>
-                    <li>메뉴 목록에서 <strong>[홈 화면에 추가] ➕</strong> 또는 <strong>[앱 설치]</strong>를 선택하세요.</li>
-                    <li>'추가'를 누르면 스마트폰 바탕화면에 바로가기 앱이 즉시 생성됩니다!</li>
-                  </ol>
-                </div>
-                <p style="font-size: 12px; color: #64748b; margin: 0;">※ 브레이브 브라우저의 보안 정책으로 인해 메뉴에서 직접 추가하시면 주소창 없는 전체화면 앱으로 등록됩니다.</p>
-              `;
-            } else if (isInApp) {
-              const appName = isKakao ? '카카오톡' : (isNaver ? '네이버' : '인앱');
-              guideHtml = `
-                <div style="background: #fff7ed; border-radius: 12px; padding: 14px; border: 1.5px solid #fdba74; margin-bottom: 12px;">
-                  <div style="font-weight: 800; color: #c2410c; font-size: 15px; margin-bottom: 8px;">⚠️ ${appName} 인앱 브라우저 안내</div>
-                  <p style="font-size: 13.5px; color: #431407; line-height: 1.7; margin: 0 0 8px 0;">
-                    ${appName} 내부 화면에서는 보안상 '홈 화면 추가'가 직접 지원되지 않습니다.
-                  </p>
-                  <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #7c2d12;">
-                    <li>화면 우측 상단(또는 하단)의 <strong>더보기 메뉴(⋮ 또는 ...)</strong>를 터치하세요.</li>
-                    <li><strong>[다른 브라우저로 열기]</strong>(Brave, Chrome 또는 삼성인터넷/Safari)를 선택하세요.</li>
-                    <li>열린 브라우저에서 '홈화면 설치'를 누르면 즉시 설치됩니다!</li>
-                  </ol>
-                </div>
-              `;
-            } else if (isIOS) {
-              guideHtml = `
-                <div style="background: #f0fdf4; border-radius: 12px; padding: 14px; border: 1.5px solid #bbf7d0; margin-bottom: 12px;">
-                  <div style="font-weight: 800; color: #166534; font-size: 15px; margin-bottom: 8px;">🍎 아이폰 / 아이패드 사파리</div>
-                  <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
-                    <li>사파리 브라우저 하단의 <strong>공유 버튼 <span style="font-size: 16px;">⎋</span></strong>을 터치하세요.</li>
-                    <li>메뉴 목록을 아래로 내려 <strong>[홈 화면에 추가] ➕</strong>를 누르세요.</li>
-                    <li>우측 상단 <strong>[추가]</strong>를 누르면 바탕화면에 앱 아이콘이 생성됩니다!</li>
-                  </ol>
-                </div>
-                <p style="font-size: 12px; color: #64748b; margin: 0;">※ 홈 화면 아이콘으로 접속하시면 주소창 없이 전체화면 앱으로 더욱 쾌적하게 즐기실 수 있습니다.</p>
-              `;
-            } else if (isAndroid) {
-              guideHtml = `
-                <div style="background: #f0fdf4; border-radius: 12px; padding: 14px; border: 1.5px solid #bbf7d0; margin-bottom: 12px;">
-                  <div style="font-weight: 800; color: #166534; font-size: 15px; margin-bottom: 8px;">🤖 안드로이드 스마트폰 (크롬 / 삼성인터넷)</div>
-                  <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
-                    <li>브라우저 우측 상단(또는 하단)의 <strong>더보기 메뉴(⋮)</strong>를 터치하세요.</li>
-                    <li>메뉴에서 <strong>[홈 화면에 추가]</strong> 또는 <strong>[앱 설치]</strong>를 선택하세요.</li>
-                    <li>'추가' 또는 '설치'를 누르면 스마트폰 바탕화면에 즉시 생성됩니다!</li>
-                  </ol>
-                </div>
-                <p style="font-size: 12px; color: #64748b; margin: 0;">※ 설치된 바탕화면 아이콘으로 실행하시면 주소창 없는 전체화면으로 즉시 실행됩니다.</p>
-              `;
-            } else {
-              guideHtml = `
-                <div style="background: #f8fafc; border-radius: 12px; padding: 14px; border: 1.5px solid #e2e8f0; margin-bottom: 12px;">
-                  <div style="font-weight: 800; color: #1e293b; font-size: 15px; margin-bottom: 8px;">💻 PC / 데스크톱 브라우저</div>
-                  <ul style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
-                    <li>브라우저 상단 주소창 우측의 <strong>설치 아이콘(⊕ / 모니터 다운로드 모양)</strong>을 클릭하세요.</li>
-                    <li>또는 브라우저 메뉴(⋮) ➔ <strong>[저장 및 공유] ➔ [바로가기 만들기]</strong>를 클릭하세요.</li>
-                    <li>즐겨찾기로 두시려면 <strong>Ctrl + D</strong>를 눌러 북마크에 추가하세요.</li>
-                  </ul>
-                </div>
-                <p style="font-size: 12px; color: #64748b; margin: 0;">※ 스마트폰으로 접속하시면 바탕화면 앱으로 바로 설치하실 수 있습니다.</p>
-              `;
-            }
+            // 프롬프트가 바로 지원되지 않는 환경(사파리 등)일 때만 최소한의 간결한 팝업 제공
+            const shortcutModal = document.getElementById('shortcut-guide-modal');
+            const shortcutContent = document.getElementById('shortcut-guide-content');
 
             if (shortcutContent) {
-              shortcutContent.innerHTML = introDesc + promptButtonHtml + guideHtml;
-
-              const triggerBtn = document.getElementById('btn-trigger-pwa-install');
-              if (triggerBtn) {
-                triggerBtn.addEventListener('click', () => {
-                  if (this.sound) this.sound.playSelect();
-                  if (window.deferredInstallPrompt) {
-                    try {
-                      window.deferredInstallPrompt.prompt();
-                      window.deferredInstallPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult && choiceResult.outcome === 'accepted') {
-                          alert('홈 화면에 바로가기 앱이 성공적으로 추가되었습니다! 🎉');
-                        }
-                        window.deferredInstallPrompt = null;
-                        if (shortcutModal) ModalHelper.close(shortcutModal);
-                      }).catch(() => {});
-                    } catch (err) { }
-                  }
-                });
-              }
+              shortcutContent.innerHTML = `
+                <div style="text-align: center; padding: 14px 8px;">
+                  <div style="font-size: 36px; margin-bottom: 10px;">📲</div>
+                  <div style="font-size: 16px; font-weight: 800; color: #15803d; margin-bottom: 8px;">스마트폰 홈 화면에 앱 설치</div>
+                  <div style="font-size: 13.5px; color: #374151; line-height: 1.6; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px;">
+                    브라우저 메뉴(또는 공유 버튼)에서 <strong>[홈 화면에 추가]</strong> 또는 <strong>[앱 설치]</strong>를 선택하시면 주소창 없는 전체화면 앱으로 바로 즐기실 수 있습니다.
+                  </div>
+                </div>
+              `;
             }
 
             if (shortcutModal) {
@@ -11328,9 +11238,9 @@
             }
           };
 
-btnSplashShortcut.addEventListener('click', handleShortcutClick);
+          btnSplashShortcut.addEventListener('click', handleShortcutClick);
 
-          // 1. 실시간 런타임 Display Mode 기반 앱 실행 여부 판별 (영구 플래그 미사용으로 삭제 후 재접속 대응)
+          // 실시간 런타임 Display Mode 기반 앱 실행 여부 판별
           const checkIsAppMode = () => {
             try {
               if (window.matchMedia('(display-mode: standalone)').matches) return true;
@@ -11347,10 +11257,10 @@ btnSplashShortcut.addEventListener('click', handleShortcutClick);
           const isAppMode = checkIsAppMode();
 
           if (isAppMode) {
-            // [상황 1] 바탕화면 앱 아이콘으로 실행 시: 설치 관련 버튼/팝업 완전 숨김 (100% 네이티브 앱 UX)
+            // [상황 1] 바탕화면 앱 아이콘으로 실행 시: 설치 관련 버튼 완전 숨김
             if (btnSplashShortcut) btnSplashShortcut.style.display = 'none';
           } else {
-            // [상황 2 & 3] 브라우저(카톡 링크 등)로 접속한 경우: 기기 내 실제 설치 여부 정밀 확인
+            // [상황 2 & 3] 브라우저(카톡 링크 등)로 접속한 경우: 기기 내 실제 설치 여부 확인
             const checkDeviceAppInstalled = async () => {
               let isDeviceInstalled = false;
               if ('getInstalledRelatedApps' in navigator) {
@@ -11363,8 +11273,7 @@ btnSplashShortcut.addEventListener('click', handleShortcutClick);
               }
 
               if (isDeviceInstalled && btnSplashShortcut) {
-                // [상황 2] 기기에 이미 앱이 깔려있는데 카톡 링크로 브라우저에 들어온 경우:
-                // 불필요한 재설치 팝업을 띄우지 않고, 버튼을 '🚀 앱으로 열기'로 똑똑하게 전환!
+                // [상황 2] 기기에 이미 앱이 깔려있는데 링크로 브라우저에 들어온 경우:
                 btnSplashShortcut.innerHTML = '<span class="btn-icon">🚀</span> 앱으로 열기';
                 btnSplashShortcut.title = '이미 설치된 스마트폰 바탕화면 앱으로 실행합니다';
                 btnSplashShortcut.onclick = (e) => {
@@ -11373,23 +11282,12 @@ btnSplashShortcut.addEventListener('click', handleShortcutClick);
                   alert('이미 스마트폰에 [시연이네 그림맞추기] 앱이 설치되어 있습니다! 🎉\n바탕화면의 앱 아이콘을 터치하시면 주소창 없는 전체화면으로 즉시 실행됩니다.');
                 };
               } else {
-                // [상황 3] 앱이 없거나(지운 뒤) 카톡 링크로 들어온 경우:
-                // 정상적으로 '홈화면 설치' 버튼과 1회 자동 유도 팝업 활성화!
+                // [상황 3] 앱이 없거나 브라우저인 경우: 버튼만 표시하고 자동 팝업은 띄우지 않음!
                 if (btnSplashShortcut) {
                   btnSplashShortcut.style.display = '';
                   btnSplashShortcut.innerHTML = '<span class="btn-icon">📲</span> 홈화면 설치';
                   btnSplashShortcut.title = '스마트폰 홈 화면이나 데스크톱에 바로가기 앱 추가';
                   btnSplashShortcut.onclick = handleShortcutClick;
-                }
-
-                if (!sessionStorage.getItem('pwa_install_guide_auto_shown') && !sessionStorage.getItem('pwa_install_guide_dismissed')) {
-                  sessionStorage.setItem('pwa_install_guide_auto_shown', '1');
-                  setTimeout(() => {
-                    const splashEl = document.getElementById('splash-screen');
-                    if (splashEl && splashEl.classList.contains('active')) {
-                      handleShortcutClick();
-                    }
-                  }, 650);
                 }
               }
             };
@@ -11398,7 +11296,7 @@ btnSplashShortcut.addEventListener('click', handleShortcutClick);
           }
         }
 
-                // 설정 드롭다운 카테고리 탭 클릭 이벤트 바인딩
+        // 설정 드롭다운 카테고리 탭 클릭 이벤트 바인딩
         const settingsTabBtns = document.querySelectorAll('.settings-tab-btn');
         const settingsTabPanels = document.querySelectorAll('.settings-tab-panel');
         settingsTabBtns.forEach(btn => {
