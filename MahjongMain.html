@@ -5496,10 +5496,10 @@
     </div>
   </div>
 
-  <!-- 홈 화면 바로가기 추가 안내 모달 (요청 3가지 요소 구성) -->
+  <!-- 홈 화면 바로가기 추가 안내 모달 (A안: 앱 전용 강제 게이트) -->
   <div class="modal-overlay" id="shortcut-guide-modal" style="z-index: 10008;">
     <div class="modal-card" style="max-width: 350px; text-align: center; padding: 24px 20px; border-radius: 20px; box-shadow: 0 16px 40px rgba(0,0,0,0.35); position: relative;">
-      <button id="btn-shortcut-modal-close-x" style="position: absolute; top: 12px; right: 14px; background: none; border: none; font-size: 20px; color: #94a3b8; cursor: pointer; padding: 4px; line-height: 1;" aria-label="닫기">✕</button>
+      <button id="btn-shortcut-modal-close-x" style="position: absolute; top: 12px; right: 14px; background: none; border: none; font-size: 20px; color: #94a3b8; cursor: pointer; padding: 4px; line-height: 1; display: none;" aria-label="닫기">✕</button>
       <h3 style="margin: 2px 0 12px 0; font-size: 18px; font-weight: 800; color: #14532d; line-height: 1.35;">
         SY 그림맞추기<br>
         <span style="font-size: 13.5px; font-weight: 600; color: #166534;">(그린빌라/오룡이 에디션)</span><br>
@@ -5508,12 +5508,15 @@
       <div style="width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); border: 1px solid #e2e8f0; background: #123e2b;">
         <img src="assets/mahjong_splash.jpg" alt="SY 그림맞추기 (그린빌라/오룡이 에디션) 초기화면" style="width: 100%; height: auto; max-height: 180px; object-fit: contain; display: block;">
       </div>
-      <p style="font-size: 13.5px; color: #374151; line-height: 1.6; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 12px 14px; margin: 0 0 16px 0; text-align: left;">
+      <p style="font-size: 13.5px; color: #374151; line-height: 1.6; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 12px 14px; margin: 0 0 10px 0; text-align: left;">
         스마트폰 홈 화면에 앱을 설치하시면 <strong>인터넷 없이</strong>, <strong>넓은 화면</strong>의 게임을 즐기실 수 있습니다.
       </p>
+      <div id="shortcut-guide-app-only-notice" style="font-size: 12.5px; color: #b91c1c; font-weight: 700; margin-bottom: 14px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 8px 10px; text-align: center;">
+        🔒 본 게임은 앱 전용으로, 홈 화면에 설치 후 플레이하실 수 있습니다.
+      </div>
       <div id="shortcut-guide-content">
         <button id="btn-trigger-pwa-install" style="width: 100%; height: 46px; border-radius: 12px; border: none; background: linear-gradient(135deg, #15803d, #166534); color: #ffffff; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 3px 10px rgba(21, 128, 61, 0.25);">
-          앱 설치하기
+          📲 앱 설치하기
         </button>
       </div>
     </div>
@@ -11242,24 +11245,103 @@
           });
         }
 
-        // PWA 홈 화면 바로가기 설치 관리
+        // PWA 홈 화면 바로가기 설치 관리 (A안: 앱 전용 모드 강제 게이트)
         const btnSplashShortcut = document.getElementById('btn-splash-shortcut');
         const shortcutModal = document.getElementById('shortcut-guide-modal');
         const shortcutContent = document.getElementById('shortcut-guide-content');
-        const btnShortcutClose = document.getElementById('btn-shortcut-modal-close');
         const btnShortcutCloseX = document.getElementById('btn-shortcut-modal-close-x');
+        const splashCard = document.querySelector('.splash-card');
 
-        const closeShortcutModal = () => {
-          if (this.sound) this.sound.playSelect();
+        // 앱 실행 모드 판별 (Standalone PWA, Fullscreen, iOS 웹클립, 개발/테스트 파라미터)
+        const checkIsAppMode = () => {
           try {
-            sessionStorage.setItem('pwa_install_guide_dismissed', '1');
+            if (window.matchMedia('(display-mode: standalone)').matches) return true;
+            if (window.matchMedia('(display-mode: fullscreen)').matches) return true;
+            if (window.matchMedia('(display-mode: minimal-ui)').matches) return true;
+            if (window.matchMedia('(display-mode: window-controls-overlay)').matches) return true;
+            if (window.navigator.standalone === true) return true;
+            if (location.search.includes('mode=app') || location.search.includes('dev=true')) return true;
+            if (document.referrer && document.referrer.includes('android-app://')) return true;
           } catch (err) { }
-          if (shortcutModal) shortcutModal.classList.remove('active');
+          return false;
         };
-        if (btnShortcutClose) btnShortcutClose.addEventListener('click', closeShortcutModal);
-        if (btnShortcutCloseX) btnShortcutCloseX.addEventListener('click', closeShortcutModal);
-        if (shortcutModal) {
-          ModalHelper.setupBackdropClose(shortcutModal, closeShortcutModal);
+
+        const isAppMode = checkIsAppMode();
+
+        if (isAppMode) {
+          // [앱 모드로 정상 실행 시]: 초기화면 정상 표시 및 설치 버튼 숨김
+          if (splashCard) splashCard.style.display = '';
+          if (btnSplashShortcut) btnSplashShortcut.style.display = 'none';
+          if (shortcutModal) shortcutModal.classList.remove('active');
+        } else {
+          // [일반 브라우저 접속 시 (A안 강제)]: 초기화면(게임시작) 숨김 및 설치 전용 게이트 고정 노출
+          if (splashCard) splashCard.style.display = 'none';
+          if (btnShortcutCloseX) btnShortcutCloseX.style.display = 'none';
+          if (shortcutModal) {
+            shortcutModal.classList.add('active');
+          }
+
+          // 디바이스 및 브라우저 환경 판별 후 맞춤 설치 가이드 렌더링
+          const userAgent = navigator.userAgent || '';
+          const isKakaoOrInApp = /KAKAOTALK|NAVER|Line|Instagram|FB_IAB/i.test(userAgent);
+          const isIOS = /iPhone|iPad|iPod/i.test(userAgent) && !window.MSStream;
+
+          if (shortcutContent) {
+            if (isKakaoOrInApp) {
+              shortcutContent.innerHTML = `
+                <div style="background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 12px; padding: 12px; text-align: left; font-size: 13px; line-height: 1.6; color: #92400e;">
+                  <div style="font-weight: 800; margin-bottom: 4px; font-size: 13.5px;">⚠️ 인앱 브라우저 접속 중</div>
+                  오른쪽 상단 메뉴(<strong>⋮</strong> 또는 <strong>···</strong>)를 누르신 후 <strong>[다른 브라우저로 열기 (Chrome/Safari)]</strong>를 선택해 주세요.<br>
+                  외부 브라우저에서 홈 화면에 설치하실 수 있습니다.
+                </div>
+              `;
+            } else if (isIOS) {
+              shortcutContent.innerHTML = `
+                <div style="background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 12px; text-align: left; font-size: 13px; line-height: 1.6; color: #334155;">
+                  <div style="font-weight: 800; color: #1e293b; margin-bottom: 4px; font-size: 13.5px;">📲 아이폰(Safari) 설치 방법</div>
+                  1. Safari 브라우저 하단 <strong>공유 버튼 [ ⎋ ]</strong> 터치<br>
+                  2. 메뉴 목록에서 <strong>[홈 화면에 추가]</strong> 선택<br>
+                  3. 우측 상단 <strong>[추가]</strong> 후 홈 화면 아이콘으로 실행
+                </div>
+              `;
+            } else {
+              shortcutContent.innerHTML = `
+                <button id="btn-trigger-pwa-install" style="width: 100%; height: 46px; border-radius: 12px; border: none; background: linear-gradient(135deg, #15803d, #166534); color: #ffffff; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 3px 10px rgba(21, 128, 61, 0.25);">
+                  📲 앱 설치하기
+                </button>
+              `;
+
+              const setupInstallAction = () => {
+                const triggerBtn = document.getElementById('btn-trigger-pwa-install');
+                if (!triggerBtn) return;
+                triggerBtn.onclick = () => {
+                  if (this.sound) this.sound.playSelect();
+                  if (window.deferredInstallPrompt) {
+                    try {
+                      window.deferredInstallPrompt.prompt();
+                      window.deferredInstallPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult && choiceResult.outcome === 'accepted') {
+                          if (this.sound) this.sound.playWin();
+                          shortcutContent.innerHTML = `
+                            <div style="background: #ecfdf5; border: 1.5px solid #a7f3d0; color: #065f46; border-radius: 12px; padding: 16px 12px; font-weight: 700; font-size: 14px; line-height: 1.6; text-align: center;">
+                              🎉 앱 설치가 완료되었습니다!<br><br>
+                              스마트폰 홈 화면에 생성된<br>
+                              <strong>[SY 그림맞추기]</strong> 아이콘을 터치하여<br>
+                              게임을 시작해 주세요.
+                            </div>
+                          `;
+                        }
+                        window.deferredInstallPrompt = null;
+                      }).catch(() => {});
+                    } catch (err) {}
+                  } else {
+                    alert('브라우저 우측 상단 메뉴(⋮)에서 [홈 화면에 추가] 또는 [앱 설치]를 선택해 주세요.');
+                  }
+                };
+              };
+              setupInstallAction();
+            }
+          }
         }
 
         // 오프라인 실행 가능 안내 모달 관리
@@ -11286,125 +11368,6 @@
         window.addEventListener('online', () => {
           this.showToast('🌐 온라인 네트워크 연결됨');
         });
-
-                        if (btnSplashShortcut) {
-          const handleShortcutClick = (e) => {
-            if (e && e.stopPropagation) e.stopPropagation();
-            if (e && this.sound) this.sound.playSelect();
-
-            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-
-            if (isStandalone) {
-              alert('이미 스마트폰 바탕화면 앱 모드로 실행 중입니다! 🎉\n주소창 없는 전체화면으로 플레이하고 계십니다.');
-              return;
-            }
-
-            const shortcutModal = document.getElementById('shortcut-guide-modal');
-            const shortcutContent = document.getElementById('shortcut-guide-content');
-
-            if (shortcutContent) {
-              shortcutContent.innerHTML = `
-                <button id="btn-trigger-pwa-install" style="width: 100%; height: 46px; border-radius: 12px; border: none; background: linear-gradient(135deg, #15803d, #166534); color: #ffffff; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 3px 10px rgba(21, 128, 61, 0.25);">
-                  앱 설치하기
-                </button>
-              `;
-
-              const triggerBtn = document.getElementById('btn-trigger-pwa-install');
-              if (triggerBtn) {
-                triggerBtn.addEventListener('click', () => {
-                  if (this.sound) this.sound.playSelect();
-                  if (window.deferredInstallPrompt) {
-                    try {
-                      window.deferredInstallPrompt.prompt();
-                      window.deferredInstallPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult && choiceResult.outcome === 'accepted') {
-                          if (this.sound) this.sound.playWin();
-                          alert('홈 화면에 바로가기 앱이 성공적으로 추가되었습니다! 🎉');
-                        }
-                        window.deferredInstallPrompt = null;
-                        if (shortcutModal) ModalHelper.close(shortcutModal);
-                      }).catch(() => {});
-                    } catch (err) {}
-                  } else {
-                    alert('브라우저 메뉴(또는 하단 공유 버튼 ⎋)에서 [홈 화면에 추가]를 선택해 주세요.');
-                  }
-                });
-              }
-            }
-
-            if (shortcutModal) {
-              ModalHelper.open(shortcutModal);
-            }
-          };
-
-          btnSplashShortcut.addEventListener('click', handleShortcutClick);
-
-          // 실시간 런타임 Display Mode 기반 앱 실행 여부 판별
-          const checkIsAppMode = () => {
-            try {
-              if (window.matchMedia('(display-mode: standalone)').matches) return true;
-              if (window.matchMedia('(display-mode: fullscreen)').matches) return true;
-              if (window.matchMedia('(display-mode: minimal-ui)').matches) return true;
-              if (window.matchMedia('(display-mode: window-controls-overlay)').matches) return true;
-              if (window.navigator.standalone === true) return true;
-              if (location.search.includes('mode=app')) return true;
-              if (document.referrer && document.referrer.includes('android-app://')) return true;
-            } catch (err) { }
-            return false;
-          };
-
-          const isAppMode = checkIsAppMode();
-
-          if (isAppMode) {
-            // [상황 1] 바탕화면 앱 아이콘으로 실행 시: 설치 관련 버튼 완전 숨김
-            if (btnSplashShortcut) btnSplashShortcut.style.display = 'none';
-          } else {
-            // [상황 2 & 3] 브라우저(카톡 링크 등)로 접속한 경우: 기기 내 실제 설치 여부 확인
-            const checkDeviceAppInstalled = async () => {
-              let isDeviceInstalled = false;
-              if ('getInstalledRelatedApps' in navigator) {
-                try {
-                  const relatedApps = await navigator.getInstalledRelatedApps();
-                  if (Array.isArray(relatedApps) && relatedApps.length > 0) {
-                    isDeviceInstalled = true;
-                  }
-                } catch (e) {}
-              }
-
-              if (isDeviceInstalled && btnSplashShortcut) {
-                // [상황 2] 기기에 이미 앱이 깔려있는데 링크로 브라우저에 들어온 경우:
-                btnSplashShortcut.innerHTML = '<span class="btn-icon">🚀</span> 앱으로 열기';
-                btnSplashShortcut.title = '이미 설치된 스마트폰 바탕화면 앱으로 실행합니다';
-                btnSplashShortcut.onclick = (e) => {
-                  if (e && e.stopPropagation) e.stopPropagation();
-                  if (this.sound) this.sound.playSelect();
-                  alert('이미 스마트폰에 [SY 그림맞추기 (그린빌라/오룡이 에디션)] 앱이 설치되어 있습니다! 🎉\n바탕화면의 앱 아이콘을 터치하시면 주소창 없는 전체화면으로 즉시 실행됩니다.');
-                };
-              } else {
-                // [상황 3] 앱이 아직 없거나 브라우저인 경우: 버튼 및 1회 자동 설치 유도 팝업 활성화!
-                if (btnSplashShortcut) {
-                  btnSplashShortcut.style.display = '';
-                  btnSplashShortcut.innerHTML = '<span class="btn-icon">📲</span> 홈화면 설치';
-                  btnSplashShortcut.title = '스마트폰 홈 화면이나 데스크톱에 바로가기 앱 추가';
-                  btnSplashShortcut.onclick = handleShortcutClick;
-                }
-
-                // 브라우저 접속 시 1회 홈화면 설치 안내 멘트 팝업 표시
-                if (!sessionStorage.getItem('pwa_install_guide_auto_shown') && !sessionStorage.getItem('pwa_install_guide_dismissed')) {
-                  sessionStorage.setItem('pwa_install_guide_auto_shown', '1');
-                  setTimeout(() => {
-                    const splashEl = document.getElementById('splash-screen');
-                    if (splashEl && splashEl.classList.contains('active')) {
-                      handleShortcutClick();
-                    }
-                  }, 650);
-                }
-              }
-            };
-
-            checkDeviceAppInstalled();
-          }
-        }
 
         // 설정 드롭다운 카테고리 탭 클릭 이벤트 바인딩
         const settingsTabBtns = document.querySelectorAll('.settings-tab-btn');
