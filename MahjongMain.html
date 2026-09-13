@@ -1974,6 +1974,87 @@
       line-height: 1.5;
     }
 
+    
+    /* 일반 판 클리어 타일 부채꼴 쇼케이스 (3안) */
+    .clear-showcase-box {
+      background: radial-gradient(circle at center, #fdfbf7 0%, #f4eee1 100%);
+      border: 1.5px solid #e7dfcf;
+      border-radius: 18px;
+      padding: 16px 10px 12px;
+      margin: 14px 0 16px;
+      position: relative;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .clear-showcase-badge {
+      position: absolute;
+      top: -10px;
+      background: linear-gradient(135deg, #d97706, #b45309);
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 3px 14px;
+      border-radius: 20px;
+      box-shadow: 0 2px 8px rgba(180, 83, 9, 0.35);
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+
+    .showcase-fan-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 104px;
+      position: relative;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .fan-tile {
+      position: absolute;
+      transform-origin: bottom center;
+      width: 64px;
+      height: 88px;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-bottom: 4.5px solid #94a3b8;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 3px 3px;
+      user-select: none;
+      transition: transform 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+      background-image: linear-gradient(to bottom, #ffffff, #f8fafc);
+    }
+
+    .fan-tile.center-mvp {
+      border: 2px solid #eab308;
+      border-bottom: 5px solid #ca8a04;
+      box-shadow: 0 0 20px rgba(234, 179, 8, 0.5), 0 6px 16px rgba(0,0,0,0.2);
+    }
+
+    .clear-showcase-msg {
+      margin-top: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #854d0e;
+      background: #fef9c3;
+      border: 1px solid #fef08a;
+      padding: 4px 12px;
+      border-radius: 16px;
+      max-width: 95%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .modal-stats {
       background: #f1f8f4;
       border-radius: 16px;
@@ -5263,6 +5344,16 @@
         <div style="font-size: 48px; margin-bottom: 8px;" id="modal-emoji">🎉</div>
         <h2 class="modal-title" id="modal-title">클리어 완료!</h2>
         <p class="modal-desc" id="modal-desc">모든 마작 패를 성공적으로 매칭했습니다.</p>
+
+        <!-- [신규 추가] 타일 도감 부채꼴 덱 쇼케이스 (3안) -->
+        <div class="clear-showcase-box" id="clear-showcase-box">
+          <div class="clear-showcase-badge" id="clear-showcase-badge">✨ 이번 판 격파 테마 타일</div>
+          <div class="showcase-fan-wrap" id="clear-fan-wrap"></div>
+          <div class="clear-showcase-msg" id="clear-showcase-msg">
+            🎴 테마 컬렉션 완성! 다음 판으로 진격하세요!
+          </div>
+        </div>
+
         <div class="modal-stats" id="modal-stats-box">
           <div class="modal-stat-item">
             <span class="modal-stat-label">최종 시간</span>
@@ -15218,6 +15309,83 @@
 
           document.getElementById('modal-time').textContent = formattedTime;
           document.getElementById('modal-score').textContent = formattedScore;
+
+          // [3안] 타일 도감 부채꼴 덱 쇼케이스 동적 렌더링
+          const fanWrap = document.getElementById('clear-fan-wrap');
+          const badgeEl = document.getElementById('clear-showcase-badge');
+          const msgEl = document.getElementById('clear-showcase-msg');
+
+          if (fanWrap) {
+            fanWrap.innerHTML = '';
+
+            // 이번 판에서 격파된 타일 정의 추출 (중복 제거)
+            let uniqueDefs = [];
+            const seenIds = new Set();
+            if (this.tiles && this.tiles.length > 0) {
+              for (const t of this.tiles) {
+                if (t.def && !seenIds.has(t.def.id)) {
+                  seenIds.add(t.def.id);
+                  uniqueDefs.push(t.def);
+                }
+              }
+            }
+            // 부족할 경우 TILE_DEFINITIONS에서 보충
+            if (uniqueDefs.length < 5) {
+              for (const d of TILE_DEFINITIONS) {
+                if (!seenIds.has(d.id)) {
+                  seenIds.add(d.id);
+                  uniqueDefs.push(d);
+                  if (uniqueDefs.length >= 5) break;
+                }
+              }
+            }
+
+            // 5종 선택 (무작위 셔플)
+            const showcaseTiles = uniqueDefs.sort(() => Math.random() - 0.5).slice(0, 5);
+
+            // 부채꼴 배치 각도 및 오프셋
+            const angles = [-20, -10, 0, 10, 20];
+            const xOffsets = [-72, -36, 0, 36, 72];
+
+            const themeNameMap = {
+              'oryong': '오룡 & 신수',
+              'saju': '사주 명리',
+              'classic': '클래식 전통'
+            };
+            const curThemeName = themeNameMap[this.activeTheme] || '핵심 테마';
+
+            if (badgeEl) {
+              badgeEl.textContent = `✨ 제 ${this.currentStage}판 격파 [${curThemeName}] 컬렉션`;
+            }
+
+            showcaseTiles.forEach((def, i) => {
+              const tileDiv = document.createElement('div');
+              const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong', 'dragon_head', 'dragon_gold'].includes(def.suit);
+              tileDiv.className = 'fan-tile' + (isSaju ? ' saju-tile' : '') + (i === 2 ? ' center-mvp' : '');
+              tileDiv.style.zIndex = (i === 2 ? 10 : (i < 2 ? i + 1 : 5 - i));
+              tileDiv.innerHTML = `
+                <span class="tile-corner-badge">${def.badge || ''}</span>
+                <div class="tile-graphic-wrap">${typeof def.render === 'function' ? def.render() : ''}</div>
+                <span class="tile-sub-label">${def.label || ''}</span>
+              `;
+              // 초기 모션 상태
+              tileDiv.style.transform = 'translate(0, 35px) rotate(0deg) scale(0.6)';
+              tileDiv.style.opacity = '0';
+
+              fanWrap.appendChild(tileDiv);
+
+              // 촤라락 부채꼴 전개 애니메이션
+              setTimeout(() => {
+                tileDiv.style.opacity = '1';
+                tileDiv.style.transform = `translate(${xOffsets[i]}px, ${Math.abs(angles[i]) * 0.7}px) rotate(${angles[i]}deg) scale(${i === 2 ? 1.08 : 0.92})`;
+              }, 120 + i * 75);
+            });
+
+            if (msgEl) {
+              const mvpTile = showcaseTiles[2];
+              msgEl.innerHTML = `🎴 이번 판 활약 패: <strong>[${mvpTile.label || mvpTile.name}]</strong> 외 4종 격파 완료!`;
+            }
+          }
         }
 
         document.getElementById('modal').classList.add('active');
