@@ -5360,7 +5360,7 @@
               <span class="btn-icon">🏆</span> 나의 최고기록
             </button>
             <button class="splash-btn-shortcut" id="btn-splash-shortcut" title="스마트폰 홈 화면이나 데스크톱에 바로가기 앱 추가">
-              <span class="btn-icon">📲</span> 바로가기
+              <span class="btn-icon">📲</span> 홈화면 설치
             </button>
           </div>
         </div>
@@ -11153,102 +11153,122 @@
             const isIOS = /iphone|ipad|ipod/.test(ua);
             const isAndroid = /android/.test(ua);
             const isBrave = !!(navigator.brave || window.brave || ua.includes('brave'));
-
-            // 1. 이미 앱(Standalone PWA) 모드로 실행 중인 경우
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+            let promptButtonHtml = '';
             if (isStandalone) {
-              alert('이미 홈 화면 바로가기(앱) 모드로 실행 중입니다! 🎉');
-              return;
+              promptButtonHtml = `
+                <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 14px;">
+                  <span style="font-size: 15px; font-weight: 800; color: #15803d;">✅ 이미 홈 화면 바로가기(앱) 모드로 실행 중입니다!</span>
+                  <div style="font-size: 12px; color: #166534; margin-top: 4px;">주소창 없이 쾌적한 전체화면으로 플레이하고 계십니다.</div>
+                </div>
+              `;
+            } else if (window.deferredInstallPrompt) {
+              promptButtonHtml = `
+                <div style="background: linear-gradient(135deg, #15803d, #166534); border-radius: 14px; padding: 14px; text-align: center; margin-bottom: 14px; box-shadow: 0 4px 14px rgba(21, 128, 61, 0.25);">
+                  <div style="color: #ffffff; font-size: 14.5px; font-weight: 800; margin-bottom: 8px;">원클릭으로 바탕화면에 앱을 설치할 수 있습니다!</div>
+                  <button id="btn-trigger-pwa-install" style="width: 100%; height: 42px; border-radius: 10px; border: none; background: #ffffff; color: #15803d; font-size: 15px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                    <span>📲</span> 지금 즉시 앱 설치하기
+                  </button>
+                </div>
+              `;
             }
 
-            // 2. 브레이브가 아니고, 네이티브 설치 프롬프트가 대기 중인 경우에만 프롬프트 팝업 시도
-            if (!isBrave && window.deferredInstallPrompt) {
-              try {
-                window.deferredInstallPrompt.prompt();
-                window.deferredInstallPrompt.userChoice.then((choiceResult) => {
-                  if (choiceResult && choiceResult.outcome === 'accepted') {
-                    alert('홈 화면에 바로가기가 성공적으로 추가되었습니다! 🎉');
-                  }
-                  window.deferredInstallPrompt = null;
-                }).catch(() => {});
-                return;
-              } catch (err) { }
+            let guideHtml = '';
+            if (isBrave) {
+              guideHtml = `
+                <div style="background: #fff7ed; border-radius: 12px; padding: 14px; border: 1.5px solid #fdba74; margin-bottom: 12px;">
+                  <div style="font-weight: 800; color: #ea580c; font-size: 15px; margin-bottom: 8px;">🦁 브레이브(Brave) 브라우저 안내</div>
+                  <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.8; color: #431407;">
+                    <li>브라우저 <strong>우측 하단(또는 우측 상단)의 더보기 메뉴(⋮)</strong>를 터치하세요.</li>
+                    <li>메뉴 목록에서 <strong>[홈 화면에 추가] ➕</strong> 또는 <strong>[앱 설치]</strong>를 선택하세요.</li>
+                    <li>'추가'를 누르면 스마트폰 바탕화면에 바로가기 앱이 즉시 생성됩니다!</li>
+                  </ol>
+                </div>
+                <p style="font-size: 12px; color: #64748b; margin: 0;">※ 브레이브 브라우저의 강력한 쉴드(보안) 정책으로 인해 메뉴에서 직접 추가하시면 주소창 없는 전체화면 앱으로 등록됩니다.</p>
+              `;
+            } else if (isInApp) {
+              const appName = isKakao ? '카카오톡' : (isNaver ? '네이버' : '인앱');
+              guideHtml = `
+                <div style="background: #fff7ed; border-radius: 12px; padding: 14px; border: 1.5px solid #fdba74; margin-bottom: 12px;">
+                  <div style="font-weight: 800; color: #c2410c; font-size: 15px; margin-bottom: 8px;">⚠️ ${appName} 인앱 브라우저 안내</div>
+                  <p style="font-size: 13.5px; color: #431407; line-height: 1.7; margin: 0 0 8px 0;">
+                    ${appName} 내부 화면에서는 보안상 '홈 화면 추가'가 직접 지원되지 않습니다.
+                  </p>
+                  <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #7c2d12;">
+                    <li>화면 우측 상단(또는 하단)의 <strong>더보기 메뉴(⋮ 또는 ...)</strong>를 터치하세요.</li>
+                    <li><strong>[다른 브라우저로 열기]</strong>(Brave, Chrome 또는 삼성인터넷/Safari)를 선택하세요.</li>
+                    <li>열린 브라우저에서 '홈화면 설치'를 누르면 즉시 설치됩니다!</li>
+                  </ol>
+                </div>
+              `;
+            } else if (isIOS) {
+              guideHtml = `
+                <div style="background: #f0fdf4; border-radius: 12px; padding: 14px; border: 1.5px solid #bbf7d0; margin-bottom: 12px;">
+                  <div style="font-weight: 800; color: #166534; font-size: 15px; margin-bottom: 8px;">🍎 아이폰 / 아이패드 사파리</div>
+                  <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
+                    <li>사파리 브라우저 하단의 <strong>공유 버튼 <span style="font-size: 16px;">⎋</span></strong>을 터치하세요.</li>
+                    <li>메뉴 목록을 아래로 내려 <strong>[홈 화면에 추가] ➕</strong>를 누르세요.</li>
+                    <li>우측 상단 <strong>[추가]</strong>를 누르면 바탕화면에 앱 아이콘이 생성됩니다!</li>
+                  </ol>
+                </div>
+                <p style="font-size: 12px; color: #64748b; margin: 0;">※ 홈 화면 아이콘으로 접속하시면 주소창 없이 전체화면 앱으로 더욱 쾌적하게 즐기실 수 있습니다.</p>
+              `;
+            } else if (isAndroid) {
+              guideHtml = `
+                <div style="background: #f0fdf4; border-radius: 12px; padding: 14px; border: 1.5px solid #bbf7d0; margin-bottom: 12px;">
+                  <div style="font-weight: 800; color: #166534; font-size: 15px; margin-bottom: 8px;">🤖 안드로이드 스마트폰 (크롬 / 삼성인터넷)</div>
+                  <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
+                    <li>브라우저 우측 상단(또는 하단)의 <strong>더보기 메뉴(⋮)</strong>를 터치하세요.</li>
+                    <li>메뉴에서 <strong>[홈 화면에 추가]</strong> 또는 <strong>[앱 설치]</strong>를 선택하세요.</li>
+                    <li>'추가' 또는 '설치'를 누르면 스마트폰 바탕화면에 즉시 생성됩니다!</li>
+                  </ol>
+                </div>
+                <p style="font-size: 12px; color: #64748b; margin: 0;">※ 설치된 바탕화면 아이콘으로 실행하시면 주소창 없는 전체화면으로 즉시 실행됩니다.</p>
+              `;
+            } else {
+              guideHtml = `
+                <div style="background: #f8fafc; border-radius: 12px; padding: 14px; border: 1.5px solid #e2e8f0; margin-bottom: 12px;">
+                  <div style="font-weight: 800; color: #1e293b; font-size: 15px; margin-bottom: 8px;">💻 PC / 데스크톱 브라우저</div>
+                  <ul style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
+                    <li>브라우저 상단 주소창 우측의 <strong>설치 아이콘(⊕ / 컴퓨터 모양)</strong>을 클릭하세요.</li>
+                    <li>또는 브라우저 메뉴(⋮) ➔ <strong>[저장 및 공유] ➔ [바로가기 만들기]</strong>를 클릭하세요.</li>
+                    <li>즐겨찾기로 두시려면 <strong>Ctrl + D</strong>를 눌러 북마크에 추가하세요.</li>
+                  </ul>
+                </div>
+                <p style="font-size: 12px; color: #64748b; margin: 0;">※ 스마트폰으로 접속하시면 바탕화면 앱으로 바로 설치하실 수 있습니다.</p>
+              `;
             }
 
-            // 3. 브레이브 브라우저 또는 프롬프트 미지원 환경: 100% 무조건 친절한 안내 모달 즉시 표시
             if (shortcutContent) {
-              if (isBrave) {
-                shortcutContent.innerHTML = `
-                  <div style="background: #fff7ed; border-radius: 12px; padding: 14px; border: 1.5px solid #fdba74; margin-bottom: 12px;">
-                    <div style="font-weight: 800; color: #ea580c; font-size: 15px; margin-bottom: 8px;">🦁 브레이브(Brave) 브라우저 안내</div>
-                    <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.8; color: #431407;">
-                      <li>브라우저 <strong>우측 하단(또는 우측 상단)의 더보기 메뉴(⋮)</strong>를 터치하세요.</li>
-                      <li>메뉴 목록에서 <strong>[홈 화면에 추가] ➕</strong> 또는 <strong>[앱 설치]</strong>를 선택하세요.</li>
-                      <li>'추가'를 누르면 스마트폰 바탕화면에 바로가기 앱이 즉시 생성됩니다!</li>
-                    </ol>
-                  </div>
-                  <p style="font-size: 12px; color: #64748b; margin: 0;">※ 브레이브 브라우저의 강력한 쉴드(보안) 정책으로 인해 메뉴에서 직접 추가하시면 주소창 없는 전체화면 앱으로 등록됩니다.</p>
-                `;
-              } else if (isInApp) {
-                const appName = isKakao ? '카카오톡' : (isNaver ? '네이버' : '인앱');
-                shortcutContent.innerHTML = `
-                  <div style="background: #fff7ed; border-radius: 12px; padding: 14px; border: 1.5px solid #fdba74; margin-bottom: 12px;">
-                    <div style="font-weight: 800; color: #c2410c; font-size: 15px; margin-bottom: 8px;">⚠️ ${appName} 인앱 브라우저 안내</div>
-                    <p style="font-size: 13.5px; color: #431407; line-height: 1.7; margin: 0 0 8px 0;">
-                      ${appName} 내부 화면에서는 보안상 '홈 화면 추가'가 직접 지원되지 않습니다.
-                    </p>
-                    <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #7c2d12;">
-                      <li>화면 우측 상단(또는 하단)의 <strong>더보기 메뉴(⋮ 또는 ...)</strong>를 터치하세요.</li>
-                      <li><strong>[다른 브라우저로 열기]</strong>(Brave, Chrome 또는 삼성인터넷/Safari)를 선택하세요.</li>
-                      <li>열린 브라우저에서 '홈 화면에 바로가기 추가'를 누르면 즉시 설치됩니다!</li>
-                    </ol>
-                  </div>
-                `;
-              } else if (isIOS) {
-                shortcutContent.innerHTML = `
-                  <div style="background: #f0fdf4; border-radius: 12px; padding: 14px; border: 1.5px solid #bbf7d0; margin-bottom: 12px;">
-                    <div style="font-weight: 800; color: #166534; font-size: 15px; margin-bottom: 8px;">🍎 아이폰 / 아이패드 사파리</div>
-                    <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
-                      <li>사파리 브라우저 하단의 <strong>공유 버튼 <span style="font-size: 16px;">⎋</span></strong>을 터치하세요.</li>
-                      <li>메뉴 목록을 아래로 내려 <strong>[홈 화면에 추가] ➕</strong>를 누르세요.</li>
-                      <li>우측 상단 <strong>[추가]</strong>를 누르면 바탕화면에 앱 아이콘이 생성됩니다!</li>
-                    </ol>
-                  </div>
-                  <p style="font-size: 12px; color: #64748b; margin: 0;">※ 홈 화면 아이콘으로 접속하시면 주소창 없이 전체화면 앱으로 더욱 쾌적하게 즐기실 수 있습니다.</p>
-                `;
-              } else if (isAndroid) {
-                shortcutContent.innerHTML = `
-                  <div style="background: #f0fdf4; border-radius: 12px; padding: 14px; border: 1.5px solid #bbf7d0; margin-bottom: 12px;">
-                    <div style="font-weight: 800; color: #166534; font-size: 15px; margin-bottom: 8px;">🤖 안드로이드 스마트폰 (크롬 / 삼성인터넷 / 브레이브)</div>
-                    <ol style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
-                      <li>브라우저 우측 상단(또는 하단)의 <strong>더보기 메뉴(⋮)</strong>를 터치하세요.</li>
-                      <li>메뉴에서 <strong>[홈 화면에 추가]</strong> 또는 <strong>[앱 설치]</strong>를 선택하세요.</li>
-                      <li>'추가' 또는 '설치'를 누르면 스마트폰 바탕화면에 즉시 생성됩니다!</li>
-                    </ol>
-                  </div>
-                  <p style="font-size: 12px; color: #64748b; margin: 0;">※ 설치된 바탕화면 아이콘으로 실행하시면 주소창 없는 전체화면으로 즉시 실행됩니다.</p>
-                `;
-              } else {
-                shortcutContent.innerHTML = `
-                  <div style="background: #f8fafc; border-radius: 12px; padding: 14px; border: 1.5px solid #e2e8f0; margin-bottom: 12px;">
-                    <div style="font-weight: 800; color: #1e293b; font-size: 15px; margin-bottom: 8px;">💻 PC / 데스크톱 브라우저</div>
-                    <ul style="margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: #1f2937;">
-                      <li>브라우저 상단 주소창 우측의 <strong>설치 아이콘(⊕ / 컴퓨터 모양)</strong>을 클릭하세요.</li>
-                      <li>또는 <strong>Ctrl + D</strong>를 눌러 북마크에 추가하세요.</li>
-                    </ul>
-                  </div>
-                  <p style="font-size: 12px; color: #64748b; margin: 0;">※ 스마트폰으로 접속하시면 바탕화면 앱으로 바로 설치하실 수 있습니다.</p>
-                `;
+              shortcutContent.innerHTML = promptButtonHtml + guideHtml;
+
+              const triggerBtn = document.getElementById('btn-trigger-pwa-install');
+              if (triggerBtn) {
+                triggerBtn.addEventListener('click', () => {
+                  this.sound.playSelect();
+                  if (window.deferredInstallPrompt) {
+                    try {
+                      window.deferredInstallPrompt.prompt();
+                      window.deferredInstallPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult && choiceResult.outcome === 'accepted') {
+                          alert('홈 화면에 바로가기가 성공적으로 추가되었습니다! 🎉');
+                        }
+                        window.deferredInstallPrompt = null;
+                        if (shortcutModal) ModalHelper.close(shortcutModal);
+                      }).catch(() => {});
+                    } catch (err) { }
+                  }
+                });
               }
             }
 
-            if (shortcutModal) shortcutModal.classList.add('active');
+            if (shortcutModal) {
+              ModalHelper.open(shortcutModal);
+            }
           };
 
           btnSplashShortcut.addEventListener('click', handleShortcutClick);
-          btnSplashShortcut.addEventListener('pointerdown', (e) => {
-            if (e && e.stopPropagation) e.stopPropagation();
-          });
         }
 
         // 설정 드롭다운 카테고리 탭 클릭 이벤트 바인딩
