@@ -4969,7 +4969,7 @@
                 <span id="slot-match-effect-badge" style="font-size: 11px; color: #b45309; font-weight: 700; background: #fef3c7; padding: 2px 7px; border-radius: 10px;">축제 폭죽</span>
               </div>
               <select class="diff-select" id="select-slot-match-effect" title="슬롯에서 짝이 맞아 없어질 때의 연출 및 사운드 효과">
-                <option value="firework" selected>🎆 축제 폭죽 (팡! 폭죽 애니메이션 & 팡! 소리 · 기본)</option>
+                <option value="firework" selected>🎆 축제 폭죽 (팡! 폭죽 애니메이션 & 폭죽 소리 · 기본)</option>
                 <option value="classic">✨ 클래식 마법 (은은하게 뾰로롱 소멸 & 차임벨 소리)</option>
               </select>
             </div>
@@ -12158,8 +12158,8 @@
             } catch (err) { }
             updateSlotMatchEffectUI();
             if (this.slotMatchEffect === 'firework') {
-              if (this.sound && typeof this.sound.playSlotPop === 'function') this.sound.playSlotPop();
-              this.showToast('🎆 슬롯 매칭: 축제 폭죽 (팡!)');
+              if (this.sound && typeof this.sound.playFirework === 'function') this.sound.playFirework();
+              this.showToast('🎆 슬롯 매칭: 축제 폭죽 (폭죽 소리)');
             } else {
               this.sound.playMatch();
               this.showToast('✨ 슬롯 매칭: 클래식 마법 (뾰로롱~)');
@@ -14107,9 +14107,9 @@
               });
             }
 
-            // 사운드 연동: 폭죽 팡! 소리 vs 클래식 뾰로롱 차임벨 소리
-            if (isFirework && this.sound && typeof this.sound.playSlotPop === 'function') {
-              this.sound.playSlotPop();
+            // 사운드 연동: 한판 클리어 폭죽 소리 vs 클래식 뾰로롱 차임벨 소리
+            if (isFirework && this.sound && typeof this.sound.playFirework === 'function') {
+              this.sound.playFirework();
             } else {
               this.sound.playMatch();
             }
