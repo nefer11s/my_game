@@ -12373,14 +12373,14 @@
         overlay.appendChild(winBanner);
 
         let dismissed = false;
-        let lastTapTime = 0;
+        const enableTime = Date.now() + 500; // 배너 생성 후 0.5초 동안 잔여 터치/더블클릭 즉시 닫힘 방지
         const dismissBanner = (e) => {
-          const now = Date.now();
-          if (now - lastTapTime < 300) return;
-          lastTapTime = now;
-          if (e) {
-            if (e.stopPropagation) e.stopPropagation();
-            if (e.preventDefault) e.preventDefault();
+          if (Date.now() < enableTime) {
+            if (e) {
+              if (e.stopPropagation) e.stopPropagation();
+              if (e.preventDefault) e.preventDefault();
+            }
+            return;
           }
           if (dismissed) return;
           dismissed = true;
@@ -12449,12 +12449,12 @@
             tbody.appendChild(tr);
           });
 
-          // 30판 이상 보석 뱃지 클릭 이벤트 바인딩 (모바일 터치 및 데스크톱 클릭 지원)
+          // 30판 이상 보석 뱃지 클릭 이벤트 바인딩 (단일 click 이벤트로 이중 트리거 방지)
           tbody.querySelectorAll('.rank-gem-badge').forEach(badge => {
             let lastBadgeTap = 0;
             const handleBadgeTap = (e) => {
               const now = Date.now();
-              if (now - lastBadgeTap < 300) return;
+              if (now - lastBadgeTap < 400) return;
               lastBadgeTap = now;
               if (e && e.stopPropagation) e.stopPropagation();
               const diffKey = badge.dataset.gemDiff;
@@ -12463,7 +12463,6 @@
               }
             };
             badge.addEventListener('click', handleBadgeTap);
-            badge.addEventListener('pointerdown', handleBadgeTap);
           });
         } catch (err) {
           console.error("renderHallOfFame 에러:", err);
@@ -14427,14 +14426,14 @@
         overlay.appendChild(winBanner);
 
         let dismissed = false;
-        let lastTapTime = 0;
+        const enableTime = Date.now() + 500; // 배너 생성 후 0.5초 동안 잔여 터치/더블클릭 즉시 닫힘 방지
         const dismissBanner = (e) => {
-          const now = Date.now();
-          if (now - lastTapTime < 300) return;
-          lastTapTime = now;
-          if (e) {
-            if (e.stopPropagation) e.stopPropagation();
-            if (e.preventDefault) e.preventDefault();
+          if (Date.now() < enableTime) {
+            if (e) {
+              if (e.stopPropagation) e.stopPropagation();
+              if (e.preventDefault) e.preventDefault();
+            }
+            return;
           }
           if (dismissed) return;
           dismissed = true;
