@@ -11190,7 +11190,7 @@
           this.showToast('🌐 온라인 네트워크 연결됨');
         });
 
-                if (btnSplashShortcut) {
+                        if (btnSplashShortcut) {
           const handleShortcutClick = (e) => {
             if (e && e.stopPropagation) e.stopPropagation();
             if (e && this.sound) this.sound.playSelect();
@@ -11202,35 +11202,58 @@
               return;
             }
 
-            // PWA 설치 프롬프트가 지원되는 경우 즉시 네이티브 설치 대화상자 호출
-            if (window.deferredInstallPrompt) {
-              try {
-                window.deferredInstallPrompt.prompt();
-                window.deferredInstallPrompt.userChoice.then((choiceResult) => {
-                  if (choiceResult && choiceResult.outcome === 'accepted') {
-                    if (this.sound) this.sound.playWin();
-                    alert('홈 화면에 바로가기 앱이 성공적으로 추가되었습니다! 🎉');
-                  }
-                  window.deferredInstallPrompt = null;
-                }).catch(() => {});
-              } catch (err) {}
-              return;
-            }
-
-            // 프롬프트가 바로 지원되지 않는 환경(사파리 등)일 때만 최소한의 간결한 팝업 제공
             const shortcutModal = document.getElementById('shortcut-guide-modal');
             const shortcutContent = document.getElementById('shortcut-guide-content');
 
-            if (shortcutContent) {
-              shortcutContent.innerHTML = `
-                <div style="text-align: center; padding: 14px 8px;">
-                  <div style="font-size: 36px; margin-bottom: 10px;">📲</div>
-                  <div style="font-size: 16px; font-weight: 800; color: #15803d; margin-bottom: 8px;">스마트폰 홈 화면에 앱 설치</div>
-                  <div style="font-size: 13.5px; color: #374151; line-height: 1.6; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px;">
-                    브라우저 메뉴(또는 공유 버튼)에서 <strong>[홈 화면에 추가]</strong> 또는 <strong>[앱 설치]</strong>를 선택하시면 주소창 없는 전체화면 앱으로 바로 즐기실 수 있습니다.
-                  </div>
+            let installActionHtml = '';
+            if (window.deferredInstallPrompt) {
+              installActionHtml = `
+                <div style="background: linear-gradient(135deg, #15803d, #166534); border-radius: 14px; padding: 16px; text-align: center; margin-top: 14px; box-shadow: 0 4px 14px rgba(21, 128, 61, 0.25);">
+                  <div style="color: #ffffff; font-size: 14.5px; font-weight: 800; margin-bottom: 8px;">원클릭으로 바탕화면에 앱을 설치할 수 있습니다!</div>
+                  <button id="btn-trigger-pwa-install" style="width: 100%; height: 44px; border-radius: 10px; border: none; background: #ffffff; color: #15803d; font-size: 15px; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                    <span>📲</span> 지금 즉시 앱 설치하기
+                  </button>
                 </div>
               `;
+            } else {
+              installActionHtml = `
+                <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-top: 14px; text-align: center; font-size: 13.5px; color: #475569; line-height: 1.6;">
+                  브라우저 메뉴(또는 공유 버튼)에서 <strong>[홈 화면에 추가]</strong> 또는 <strong>[앱 설치]</strong>를 누르시면 전체화면 앱으로 등록됩니다.
+                </div>
+              `;
+            }
+
+            if (shortcutContent) {
+              shortcutContent.innerHTML = `
+                <div style="text-align: center; padding: 10px 4px 6px;">
+                  <div style="font-size: 38px; margin-bottom: 8px;">📲</div>
+                  <div style="font-size: 17px; font-weight: 800; color: #15803d; margin-bottom: 8px;">스마트폰 홈 화면에 앱 설치</div>
+                  <div style="font-size: 13.5px; color: #374151; line-height: 1.65; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 12px 14px; text-align: left;">
+                    💡 스마트폰 홈 화면(바탕화면)에 앱을 설치하시면 브라우저 주소창 없이 <strong>전체화면 게임</strong>으로 언제든 빠르고 쾌적하게 즐기실 수 있습니다!
+                  </div>
+                  ${installActionHtml}
+                </div>
+              `;
+
+              const triggerBtn = document.getElementById('btn-trigger-pwa-install');
+              if (triggerBtn) {
+                triggerBtn.addEventListener('click', () => {
+                  if (this.sound) this.sound.playSelect();
+                  if (window.deferredInstallPrompt) {
+                    try {
+                      window.deferredInstallPrompt.prompt();
+                      window.deferredInstallPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult && choiceResult.outcome === 'accepted') {
+                          if (this.sound) this.sound.playWin();
+                          alert('홈 화면에 바로가기 앱이 성공적으로 추가되었습니다! 🎉');
+                        }
+                        window.deferredInstallPrompt = null;
+                        if (shortcutModal) ModalHelper.close(shortcutModal);
+                      }).catch(() => {});
+                    } catch (err) {}
+                  }
+                });
+              }
             }
 
             if (shortcutModal) {
@@ -11282,12 +11305,23 @@
                   alert('이미 스마트폰에 [시연이네 그림맞추기] 앱이 설치되어 있습니다! 🎉\n바탕화면의 앱 아이콘을 터치하시면 주소창 없는 전체화면으로 즉시 실행됩니다.');
                 };
               } else {
-                // [상황 3] 앱이 없거나 브라우저인 경우: 버튼만 표시하고 자동 팝업은 띄우지 않음!
+                // [상황 3] 앱이 아직 없거나 브라우저인 경우: 버튼 및 1회 자동 설치 유도 팝업 활성화!
                 if (btnSplashShortcut) {
                   btnSplashShortcut.style.display = '';
                   btnSplashShortcut.innerHTML = '<span class="btn-icon">📲</span> 홈화면 설치';
                   btnSplashShortcut.title = '스마트폰 홈 화면이나 데스크톱에 바로가기 앱 추가';
                   btnSplashShortcut.onclick = handleShortcutClick;
+                }
+
+                // 브라우저 접속 시 1회 홈화면 설치 안내 멘트 팝업 표시
+                if (!sessionStorage.getItem('pwa_install_guide_auto_shown') && !sessionStorage.getItem('pwa_install_guide_dismissed')) {
+                  sessionStorage.setItem('pwa_install_guide_auto_shown', '1');
+                  setTimeout(() => {
+                    const splashEl = document.getElementById('splash-screen');
+                    if (splashEl && splashEl.classList.contains('active')) {
+                      handleShortcutClick();
+                    }
+                  }, 650);
                 }
               }
             };
