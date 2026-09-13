@@ -723,8 +723,8 @@
       flex: 1;
       border: none;
       background: transparent;
-      padding: 6px 3px;
-      font-size: 11px;
+      padding: 6px 2px;
+      font-size: 10.5px;
       font-weight: 700;
       color: #3b6b52;
       border-radius: 7px;
@@ -4907,11 +4907,12 @@
             <button type="button" id="btn-settings-close-x" style="background: rgba(0,0,0,0.06); border: none; font-size: 16px; cursor: pointer; color: #444; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease;">✕</button>
           </div>
           <!-- 기능별 카테고리 탭 헤더 -->
+          <!-- 기능별 카테고리 탭 헤더 (5개 탭) -->
           <div class="settings-tabs" role="tablist">
-            <button class="settings-tab-btn active" data-tab="game" role="tab" title="게임 진행 및 난이도 설정">
+            <button class="settings-tab-btn active" data-tab="game" role="tab" title="게임 난이도 및 진행 설정">
               <span>🎮</span> 게임
             </button>
-            <button class="settings-tab-btn" data-tab="assist" role="tab" title="자동 매칭 및 화면 편의 기능">
+            <button class="settings-tab-btn" data-tab="assist" role="tab" title="슬롯 연출 및 조작 편의">
               <span>🕹️</span> 편의
             </button>
             <button class="settings-tab-btn" data-tab="sound" role="tab" title="효과음 및 화면 모드">
@@ -4919,6 +4920,9 @@
             </button>
             <button class="settings-tab-btn" data-tab="info" role="tab" title="게임 규칙, 랭킹 및 타일 도감">
               <span>📖</span> 안내
+            </button>
+            <button class="settings-tab-btn" data-tab="advanced" role="tab" title="고급 설정 및 관리자 기능">
+              <span>🛠️</span> 고급
             </button>
           </div>
 
@@ -4933,10 +4937,111 @@
                 <option value="master" id="diff-opt-master">👑 달인 (89종 · 슬롯 3개 · 블라인드 30%➔100% 올 블라인드)</option>
               </select>
             </div>
-            <!-- 난이도별 판당 시간 제한 설정 -->
+            <div class="settings-item">
+              <span class="settings-label">🎨 테마 패 선택</span>
+              <div class="theme-radio-group" id="theme-radio-group">
+                <button class="theme-radio-btn" data-theme="classic" id="theme-btn-classic">🀄 전통</button>
+                <button class="theme-radio-btn active" data-theme="saju" id="theme-btn-saju">☯️ 명리학</button>
+                <button class="theme-radio-btn" data-theme="oryong" id="theme-btn-oryong">🐲 오룡이</button>
+              </div>
+            </div>
+            <div class="settings-item" id="senior-mode-wrapper" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
+              <span class="settings-label">👓 시니어 모드 (5x7 대형 패)</span>
+              <select class="diff-select" id="select-senior-mode" title="시니어 및 저시력자를 위한 5열 7행 특화 대형 패 모드">
+                <option value="off" selected>꺼짐 (기본)</option>
+                <option value="on">켜짐 (5x7 대형 패 전용)</option>
+              </select>
+            </div>
+            <button class="btn settings-btn" id="btn-save-progress" title="현재 진행 상태 저장">
+              <span class="btn-icon">💾</span> 현재 판 진행 저장
+            </button>
+            <button class="btn settings-btn" id="btn-reset-stage" title="진행 초기화 후 1판부터 시작">
+              <span class="btn-icon">🔄</span> 1판부터 새로하기
+            </button>
+          </div>
+
+          <!-- 2. 연출 및 조작 편의 탭 -->
+          <div class="settings-tab-panel" data-tab="assist" role="tabpanel">
+            <!-- 슬롯 매칭 소멸 효과 옵션 -->
+            <div class="settings-item" id="slot-match-effect-wrapper">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span class="settings-label" style="margin-bottom: 0;">💥 슬롯 매칭 효과</span>
+                <span id="slot-match-effect-badge" style="font-size: 11px; color: #b45309; font-weight: 700; background: #fef3c7; padding: 2px 7px; border-radius: 10px;">축제 폭죽</span>
+              </div>
+              <select class="diff-select" id="select-slot-match-effect" title="슬롯에서 짝이 맞아 없어질 때의 연출 및 사운드 효과">
+                <option value="firework" selected>🎆 축제 폭죽 (팡! 폭죽 애니메이션 & 팡! 소리 · 기본)</option>
+                <option value="classic">✨ 클래식 마법 (은은하게 뾰로롱 소멸 & 차임벨 소리)</option>
+              </select>
+            </div>
+            <!-- 슬롯 이동 속도 조절 옵션 -->
+            <div class="settings-item" id="slot-anim-speed-wrapper" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span class="settings-label" style="margin-bottom: 0;">✈️ 슬롯 이동 속도</span>
+                <span id="slot-anim-speed-badge" style="font-size: 11px; color: #166534; font-weight: 700; background: #dcfce7; padding: 2px 7px; border-radius: 10px;">느림 (0.6초)</span>
+              </div>
+              <select class="diff-select" id="select-slot-anim-speed" title="패가 슬롯으로 날아가는 애니메이션 속도 조절">
+                <option value="very_slow">🐢 아주 느림 (0.8초)</option>
+                <option value="slow" selected>🦥 느림 (0.6초 · 기본)</option>
+                <option value="normal">🌿 보통 (0.45초)</option>
+                <option value="fast">⚡ 빠름 (0.3초)</option>
+                <option value="instant">🚀 즉시 이동 (0초 · 애니메이션 끄기)</option>
+              </select>
+            </div>
+            <button class="btn settings-btn" id="btn-dynamic-zoom" title="남은 패에 맞춰 화면을 자동으로 꽉 채우는 동적 확대">
+              <span class="btn-icon" id="dynamic-zoom-icon">🔒</span> <span id="dynamic-zoom-text">동적확대: 꺼짐</span>
+            </button>
+            <button class="btn settings-btn" id="btn-auto-end-match" title="남은 타일 10개 이하 시 자동으로 매칭 진행">
+              <span class="btn-icon" id="auto-end-match-icon">🔒</span> <span id="auto-end-match-text">마지막10개 자동매칭: 꺼짐</span>
+            </button>
+            <button class="btn settings-btn" id="btn-auto-blind-pair" title="뒤집힌 패 뒤집은 후 같은 자유패 선택 시 두 패 자동 슬롯 이동">
+              <span class="btn-icon" id="auto-blind-pair-icon">🔒</span> <span id="auto-blind-pair-text">짝선택 자동슬롯: 꺼짐</span>
+            </button>
+          </div>
+
+          <!-- 3. 사운드 & 화면 모드 탭 -->
+          <div class="settings-tab-panel" data-tab="sound" role="tabpanel">
+            <button class="btn settings-btn" id="btn-sound-toggle" title="효과음 켜기/끄기">
+              <span class="btn-icon" id="sound-toggle-icon">🔊</span> <span id="sound-toggle-text">소리 켜짐</span>
+            </button>
+            <div class="settings-item">
+              <span class="settings-label">🎵 효과음 테마</span>
+              <select class="diff-select" id="select-sound-theme" title="효과음 테마 선택">
+                <option value="default" selected>✨ 시연 기본 테마 (리얼 마작 & 첼레스타)</option>
+                <option value="real">🀄 리얼 마작패 (실물 타격·바차임)</option>
+                <option value="wood">🪵 자연의 원목 (우드 & 오르골)</option>
+                <option value="synth">🎮 클래식 신디 (경쾌한 전자음)</option>
+              </select>
+            </div>
+            <button class="btn settings-btn" id="btn-open-sound-settings" title="타일선택, 매칭, 바차임, 폭죽 소리 개별 변경">
+              <span class="btn-icon">🎛️</span> 효과음 상세 소리 설정...
+            </button>
+            <button class="btn settings-btn" id="btn-fullscreen" title="전체화면 모드 토글">
+              <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
+            </button>
+          </div>
+
+          <!-- 4. 게임 안내 & 도감 탭 -->
+          <div class="settings-tab-panel" data-tab="info" role="tabpanel">
+            <button class="btn settings-btn" id="btn-rules-header" title="게임 방법 안내">
+              <span class="btn-icon">📜</span> 게임 방법
+            </button>
+            <button class="btn settings-btn" id="btn-rank-header" title="나의 최고기록">
+              <span class="btn-icon">🏆</span> 나의 최고기록
+            </button>
+            <button class="btn settings-btn" id="btn-tile-gallery" title="전체 타일 도감">
+              <span class="btn-icon">🀄</span> 전체 타일 도감
+            </button>
+          </div>
+
+          <!-- 5. 고급 설정 탭 (관리자 / 디버그 / 세부 파라미터) -->
+          <div class="settings-tab-panel" data-tab="advanced" role="tabpanel">
+            <button class="btn settings-btn" id="btn-open-stage-warp" title="원하는 난이도와 판(Stage)으로 직행" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1.5px solid #86efac; color: #166534; font-weight: 800;">
+              <span class="btn-icon">🚀</span> 레벨/판 직행 이동...
+            </button>
+            <!-- 난이도별 판당 시간 제한 상세 설정 -->
             <div class="settings-item" style="margin-top: 6px; padding-top: 8px; border-top: 1px dashed rgba(46, 167, 121, 0.3);">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <span class="settings-label" style="margin-bottom: 0;">⏱️ 난이도별 시간 제한</span>
+                <span class="settings-label" style="margin-bottom: 0;">⏱️ 난이도별 상세 시간 제한</span>
                 <span id="time-limit-badge" style="font-size: 11px; color: #166534; font-weight: 700; background: #dcfce7; padding: 2px 7px; border-radius: 10px;"></span>
               </div>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
@@ -4991,38 +5096,7 @@
                 </div>
               </div>
             </div>
-            <div class="settings-item">
-              <span class="settings-label">🎨 테마 패 선택</span>
-              <div class="theme-radio-group" id="theme-radio-group">
-                <button class="theme-radio-btn" data-theme="classic" id="theme-btn-classic">🀄 전통</button>
-                <button class="theme-radio-btn active" data-theme="saju" id="theme-btn-saju">☯️ 명리학</button>
-                <button class="theme-radio-btn" data-theme="oryong" id="theme-btn-oryong">🐲 오룡이</button>
-              </div>
-            </div>
-
-            <button class="btn settings-btn" id="btn-save-progress" title="현재 진행 상태 저장">
-              <span class="btn-icon">💾</span> 현재 판 진행 저장
-            </button>
-            <button class="btn settings-btn" id="btn-reset-stage" title="진행 초기화 후 1판부터 시작">
-              <span class="btn-icon">🔄</span> 1판부터 새로하기
-            </button>
-            <button class="btn settings-btn" id="btn-open-stage-warp" title="원하는 난이도와 판(Stage)으로 직행">
-              <span class="btn-icon">🚀</span> 레벨/판 직행 이동...
-            </button>
-          </div>
-
-          <!-- 2. 편의 기능 & 어시스트 탭 -->
-          <div class="settings-tab-panel" data-tab="assist" role="tabpanel">
-            <button class="btn settings-btn" id="btn-auto-blind-pair" title="뒤집힌 패 뒤집은 후 같은 자유패 선택 시 두 패 자동 슬롯 이동">
-              <span class="btn-icon" id="auto-blind-pair-icon">🔒</span> <span id="auto-blind-pair-text">짝선택 자동슬롯: 꺼짐</span>
-            </button>
-            <button class="btn settings-btn" id="btn-auto-end-match" title="남은 타일 10개 이하 시 자동으로 매칭 진행">
-              <span class="btn-icon" id="auto-end-match-icon">🔒</span> <span id="auto-end-match-text">마지막10개 자동매칭: 꺼짐</span>
-            </button>
-            <button class="btn settings-btn" id="btn-dynamic-zoom" title="남은 패에 맞춰 화면을 자동으로 꽉 채우는 동적 확대">
-              <span class="btn-icon" id="dynamic-zoom-icon">🔒</span> <span id="dynamic-zoom-text">동적확대: 꺼짐</span>
-            </button>
-            <div class="settings-item" id="dynamic-zoom-cols-wrapper" style="margin-top: 4px;">
+            <div class="settings-item" id="dynamic-zoom-cols-wrapper" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
               <span class="settings-label">🔍 동적확대 최대 배율 (열 수 제한)</span>
               <select class="diff-select" id="select-dynamic-zoom-cols" title="동적 확대 시 최대 확대 한도(기준 열 수)">
                 <option value="3">3열까지 (최대 확대: 매우 큼)</option>
@@ -5033,79 +5107,12 @@
                 <option value="8">8열까지 (최소 확대)</option>
               </select>
             </div>
-            <div class="settings-item" id="senior-mode-wrapper" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
-              <span class="settings-label">👓 시니어 모드 (5x7 대형 패)</span>
-              <select class="diff-select" id="select-senior-mode" title="어르신 및 저시력자를 위한 5열 7행 특화 대형 패 모드">
-                <option value="off" selected>꺼짐 (기본)</option>
-                <option value="on">켜짐 (5x7 대형 패 전용)</option>
-              </select>
-            </div>
-            <!-- 슬롯 이동 속도 조절 옵션 -->
-            <div class="settings-item" id="slot-anim-speed-wrapper" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                <span class="settings-label" style="margin-bottom: 0;">✈️ 슬롯 이동 속도</span>
-                <span id="slot-anim-speed-badge" style="font-size: 11px; color: #166534; font-weight: 700; background: #dcfce7; padding: 2px 7px; border-radius: 10px;">느림 (0.6초)</span>
-              </div>
-              <select class="diff-select" id="select-slot-anim-speed" title="패가 슬롯으로 날아가는 애니메이션 속도 조절">
-                <option value="very_slow">🐢 아주 느림 (0.8초)</option>
-                <option value="slow" selected>🦥 느림 (0.6초 · 기본)</option>
-                <option value="normal">🌿 보통 (0.45초)</option>
-                <option value="fast">⚡ 빠름 (0.3초)</option>
-                <option value="instant">🚀 즉시 이동 (0초 · 애니메이션 끄기)</option>
-              </select>
-            </div>
-            <!-- 슬롯 매칭 소멸 효과 옵션 -->
-            <div class="settings-item" id="slot-match-effect-wrapper" style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                <span class="settings-label" style="margin-bottom: 0;">💥 슬롯 매칭 효과</span>
-                <span id="slot-match-effect-badge" style="font-size: 11px; color: #b45309; font-weight: 700; background: #fef3c7; padding: 2px 7px; border-radius: 10px;">축제 폭죽</span>
-              </div>
-              <select class="diff-select" id="select-slot-match-effect" title="슬롯에서 짝이 맞아 없어질 때의 연출 및 사운드 효과">
-                <option value="firework" selected>🎆 축제 폭죽 (팡! 폭죽 애니메이션 & 팡! 소리 · 기본)</option>
-                <option value="classic">✨ 클래식 마법 (은은하게 뾰로롱 소멸 & 차임벨 소리)</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- 3. 사운드 & 화면 모드 탭 -->
-          <div class="settings-tab-panel" data-tab="sound" role="tabpanel">
-            <button class="btn settings-btn" id="btn-sound-toggle" title="효과음 켜기/끄기">
-              <span class="btn-icon" id="sound-toggle-icon">🔊</span> <span id="sound-toggle-text">소리 켜짐</span>
-            </button>
-            <div class="settings-item">
-              <span class="settings-label">🎵 효과음 테마</span>
-              <select class="diff-select" id="select-sound-theme" title="효과음 테마 선택">
-                <option value="default" selected>✨ 시연 기본 테마 (리얼 마작 & 첼레스타)</option>
-                <option value="real">🀄 리얼 마작패 (실물 타격·바차임)</option>
-                <option value="wood">🪵 자연의 원목 (우드 & 오르골)</option>
-                <option value="synth">🎮 클래식 신디 (경쾌한 전자음)</option>
-              </select>
-            </div>
-            <button class="btn settings-btn" id="btn-open-sound-settings" title="타일선택, 매칭, 바차임, 폭죽 소리 개별 변경">
-              <span class="btn-icon">🎛️</span> 효과음 상세 소리 설정...
-            </button>
-            <button class="btn settings-btn" id="btn-fullscreen" title="전체화면 모드 토글">
-              <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
-            </button>
-          </div>
-
-          <!-- 4. 게임 안내 & 도감 탭 -->
-          <div class="settings-tab-panel" data-tab="info" role="tabpanel">
-            <button class="btn settings-btn" id="btn-rules-header" title="게임 방법 안내">
-              <span class="btn-icon">📜</span> 게임 방법
-            </button>
-            <button class="btn settings-btn" id="btn-rank-header" title="나의 최고기록">
-              <span class="btn-icon">🏆</span> 나의 최고기록
-            </button>
-            <button class="btn settings-btn" id="btn-tile-gallery" title="전체 타일 도감">
-              <span class="btn-icon">🀄</span> 전체 타일 도감
+            <button class="btn settings-btn btn-clear-cache" id="btn-clear-cache" title="브라우저 캐시를 완전히 비우고 최신 버전을 다시 받아옵니다" style="margin-top: 8px;">
+              <span class="btn-icon">🔄</span> 캐시 완전 초기화 및 새로고침
             </button>
           </div>
 
           <div class="settings-divider"></div>
-          <button class="btn settings-btn btn-clear-cache" id="btn-clear-cache" title="브라우저 캐시를 완전히 비우고 최신 버전을 다시 받아옵니다">
-            <span class="btn-icon">🔄</span> 캐시 초기화 및 새로고침
-          </button>
           <button class="btn settings-btn btn-exit-app" id="btn-exit-app" title="게임을 종료하고 브라우저 창을 닫습니다">
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
