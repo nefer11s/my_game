@@ -2042,10 +2042,10 @@
       width: 64px;
       height: 88px;
       background: #ffffff;
-      border: 1.5px solid #cbd5e1;
-      border-bottom: 4.5px solid #94a3b8;
+      border: 1.8px solid #fde047;
+      border-bottom: 4.5px solid #eab308;
       border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 0 12px rgba(250, 204, 21, 0.45), 0 4px 12px rgba(0,0,0,0.18);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -2053,13 +2053,63 @@
       padding: 5px 3px 3px;
       user-select: none;
       transition: transform 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
-      background-image: linear-gradient(to bottom, #ffffff, #f8fafc);
+      background-image: linear-gradient(to bottom, #ffffff, #fefce8);
+      --tx: 0px;
+      --ty: 0px;
+      --rot: 0deg;
+      --scale: 1;
+      --delay: 0s;
+    }
+
+    /* 모든 부채꼴 패 테두리 광채 & 위아래 둥둥 부유 애니메이션 */
+    .fan-tile.fan-floating {
+      animation: fanTileBobbing 2.2s ease-in-out infinite alternate,
+                 fanTileBorderGlow 1.8s ease-in-out infinite alternate;
+      animation-delay: var(--delay, 0s);
+    }
+
+    @keyframes fanTileBobbing {
+      0% {
+        transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(var(--scale));
+      }
+      100% {
+        transform: translate(var(--tx), calc(var(--ty) - 9px)) rotate(var(--rot)) scale(calc(var(--scale) * 1.03));
+      }
+    }
+
+    @keyframes fanTileBorderGlow {
+      0% {
+        border-color: #fde047;
+        box-shadow: 0 0 10px rgba(250, 204, 21, 0.4), 0 4px 12px rgba(0,0,0,0.18);
+      }
+      100% {
+        border-color: #f59e0b;
+        box-shadow: 0 0 20px rgba(245, 158, 11, 0.8), 0 0 30px rgba(253, 224, 71, 0.5), 0 6px 16px rgba(0,0,0,0.22);
+      }
     }
 
     .fan-tile.center-mvp {
-      border: 2px solid #eab308;
-      border-bottom: 5px solid #ca8a04;
-      box-shadow: 0 0 20px rgba(234, 179, 8, 0.5), 0 6px 16px rgba(0,0,0,0.2);
+      border: 2px solid #fbbf24;
+      border-bottom: 5px solid #d97706;
+      box-shadow: 0 0 24px rgba(234, 179, 8, 0.75), 0 6px 16px rgba(0,0,0,0.22);
+      background-image: linear-gradient(to bottom, #ffffff, #fef9c3);
+    }
+
+    .fan-tile.center-mvp.fan-floating {
+      animation: fanTileBobbing 2.2s ease-in-out infinite alternate,
+                 fanTileMvpGlow 1.4s ease-in-out infinite alternate;
+      animation-delay: var(--delay, 0s);
+    }
+
+    @keyframes fanTileMvpGlow {
+      0% {
+        border-color: #facc15;
+        box-shadow: 0 0 18px rgba(234, 179, 8, 0.6), 0 0 30px rgba(250, 204, 21, 0.35), 0 6px 16px rgba(0,0,0,0.22);
+      }
+      100% {
+        border-color: #f59e0b;
+        box-shadow: 0 0 32px rgba(245, 158, 11, 0.95), 0 0 50px rgba(253, 224, 71, 0.7), 0 8px 20px rgba(0,0,0,0.26);
+      }
     }
 
     .clear-showcase-msg {
@@ -3549,31 +3599,76 @@
       }
     }
 
-    /* 난이도별 인증서 외곽 테두리 & 글로우 */
+    /* 난이도별 인증서 외곽 테두리 & 밝게 빛나는 동적 브라이트 글로우 */
     .modal-card.certificate-modal-card.cert-easy {
-      border: 4px solid #059669 !important;
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55), 0 0 45px rgba(52, 211, 153, 0.55) !important;
+      border: 4px solid #10b981 !important;
+      animation: certCardAppear 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), certGlowEasy 2s ease-in-out infinite alternate !important;
     }
     .modal-card.certificate-modal-card.cert-normal {
-      border: 4px solid #0284c7 !important;
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55), 0 0 45px rgba(56, 189, 248, 0.55) !important;
+      border: 4px solid #38bdf8 !important;
+      animation: certCardAppear 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), certGlowNormal 2s ease-in-out infinite alternate !important;
     }
     .modal-card.certificate-modal-card.cert-hard {
-      border: 4px solid #dc2626 !important;
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55), 0 0 45px rgba(239, 68, 68, 0.55) !important;
+      border: 4px solid #f87171 !important;
+      animation: certCardAppear 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), certGlowHard 2s ease-in-out infinite alternate !important;
     }
     .modal-card.certificate-modal-card.cert-master {
-      border: 4px solid #d4af37 !important;
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.55), 0 0 50px rgba(255, 215, 0, 0.65) !important;
+      border: 4px solid #facc15 !important;
+      animation: certCardAppear 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), certGlowMaster 1.8s ease-in-out infinite alternate !important;
+    }
+
+    @keyframes certGlowEasy {
+      0% {
+        border-color: #059669;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), 0 0 35px rgba(16, 185, 129, 0.65), 0 0 15px rgba(110, 231, 183, 0.8);
+      }
+      100% {
+        border-color: #34d399;
+        box-shadow: 0 25px 75px rgba(0, 0, 0, 0.6), 0 0 70px rgba(52, 211, 153, 1), 0 0 35px rgba(167, 243, 208, 1), inset 0 0 16px rgba(52, 211, 153, 0.45);
+      }
+    }
+
+    @keyframes certGlowNormal {
+      0% {
+        border-color: #0284c7;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), 0 0 35px rgba(14, 165, 233, 0.65), 0 0 15px rgba(125, 211, 252, 0.8);
+      }
+      100% {
+        border-color: #38bdf8;
+        box-shadow: 0 25px 75px rgba(0, 0, 0, 0.6), 0 0 70px rgba(56, 189, 248, 1), 0 0 35px rgba(186, 230, 253, 1), inset 0 0 16px rgba(56, 189, 248, 0.45);
+      }
+    }
+
+    @keyframes certGlowHard {
+      0% {
+        border-color: #dc2626;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), 0 0 35px rgba(239, 68, 68, 0.65), 0 0 15px rgba(252, 165, 165, 0.8);
+      }
+      100% {
+        border-color: #f87171;
+        box-shadow: 0 25px 75px rgba(0, 0, 0, 0.6), 0 0 70px rgba(248, 113, 113, 1), 0 0 35px rgba(254, 202, 202, 1), inset 0 0 16px rgba(248, 113, 113, 0.45);
+      }
+    }
+
+    @keyframes certGlowMaster {
+      0% {
+        border-color: #d4af37;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), 0 0 45px rgba(245, 158, 11, 0.75), 0 0 20px rgba(253, 224, 71, 0.85);
+      }
+      100% {
+        border-color: #fde047;
+        box-shadow: 0 25px 85px rgba(0, 0, 0, 0.6), 0 0 85px rgba(251, 191, 36, 1), 0 0 45px rgba(254, 240, 138, 1), inset 0 0 20px rgba(250, 204, 21, 0.5);
+      }
     }
 
     /* 인증서 내부 양피지 이중 테두리 및 배경 프레임 (GPU 부하 유발 backdrop-filter 완전 제거) */
     .cert-inner-border {
-      border: 1.5px solid rgba(180, 140, 60, 0.55);
+      border: 1.8px solid rgba(212, 175, 55, 0.75);
       border-radius: 12px;
       padding: 14px 12px 12px 12px;
       position: relative;
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: inset 0 0 18px rgba(254, 243, 199, 0.6), 0 0 10px rgba(212, 175, 55, 0.25);
     }
 
     /* 네 모서리 오너먼트 */
@@ -6788,7 +6883,7 @@
         this.canvas.height = window.innerHeight;
       }
 
-      start(customColors = null) {
+      start(customColors = null, options = {}) {
         if (this.isRunning) this.stop();
         this.isRunning = true;
         this.isStopping = false;
@@ -6806,39 +6901,76 @@
           this.activeColors = this.colors;
         }
 
-        // 시작하자마자 화려하게 좌/중/우 3연발 동시 폭죽 발사
+        const isDouble = Boolean(options && options.doubleIntensity);
+        const isInfinite = Boolean(options && options.infinite);
+
         const w = this.canvas.width;
         const h = this.canvas.height;
-        this.burst(w * 0.5, h * 0.32, 60);
-        setTimeout(() => { if (this.isRunning && !this.isStopping) this.burst(w * 0.25, h * 0.38, 50); }, 200);
-        setTimeout(() => { if (this.isRunning && !this.isStopping) this.burst(w * 0.75, h * 0.38, 50); }, 400);
 
-        // [요청 반영] 0.7초 간격으로 무작위 위치에서 지속 폭죽 발사
-        if (this.autoLaunchTimer) clearInterval(this.autoLaunchTimer);
-        this.autoLaunchTimer = setInterval(() => {
-          if (!this.isRunning || this.isStopping) return;
-          const targetX = w * (0.15 + Math.random() * 0.7);
-          const targetY = h * (0.15 + Math.random() * 0.4);
-          this.burst(targetX, targetY, 40 + Math.floor(Math.random() * 25));
-        }, 700);
-
-        // [요청 반영] 10초 후 폭죽 발사 중단 및 잔여 파티클 자연 페이드아웃
-        if (this.autoStopTimer) clearTimeout(this.autoStopTimer);
-        this.autoStopTimer = setTimeout(() => {
-          if (!this.isRunning) return;
-          this.isStopping = true;
-          if (this.autoLaunchTimer) {
-            clearInterval(this.autoLaunchTimer);
-            this.autoLaunchTimer = null;
-          }
-          if (this.canvas) {
-            this.canvas.style.transition = 'opacity 1.5s ease-out';
-            this.canvas.style.opacity = '0';
-          }
+        if (isDouble) {
+          // [30판 정복 특화] 2배 더 풍성한 메가 폭죽 쇼 (동시 다발 대형 버스트)
+          this.burst(w * 0.5, h * 0.3, 100);
+          this.burst(w * 0.3, h * 0.25, 90);
+          this.burst(w * 0.7, h * 0.25, 90);
           setTimeout(() => {
-            if (this.isStopping) this.stop();
-          }, 1600);
-        }, 10000);
+            if (this.isRunning && !this.isStopping) {
+              this.burst(w * 0.2, h * 0.38, 85);
+              this.burst(w * 0.8, h * 0.38, 85);
+            }
+          }, 180);
+          setTimeout(() => {
+            if (this.isRunning && !this.isStopping) {
+              this.burst(w * 0.4, h * 0.26, 95);
+              this.burst(w * 0.6, h * 0.26, 95);
+            }
+          }, 360);
+
+          // 2배 빠른 주기(350ms) + 매번 2곳 동시 버스트로 총 폭죽량 2배 이상 증가
+          if (this.autoLaunchTimer) clearInterval(this.autoLaunchTimer);
+          this.autoLaunchTimer = setInterval(() => {
+            if (!this.isRunning || this.isStopping) return;
+            const x1 = w * (0.12 + Math.random() * 0.38);
+            const y1 = h * (0.12 + Math.random() * 0.36);
+            const x2 = w * (0.50 + Math.random() * 0.38);
+            const y2 = h * (0.12 + Math.random() * 0.36);
+            this.burst(x1, y1, 60 + Math.floor(Math.random() * 30));
+            this.burst(x2, y2, 60 + Math.floor(Math.random() * 30));
+          }, 350);
+        } else {
+          // 일반 폭죽
+          this.burst(w * 0.5, h * 0.32, 60);
+          setTimeout(() => { if (this.isRunning && !this.isStopping) this.burst(w * 0.25, h * 0.38, 50); }, 200);
+          setTimeout(() => { if (this.isRunning && !this.isStopping) this.burst(w * 0.75, h * 0.38, 50); }, 400);
+
+          if (this.autoLaunchTimer) clearInterval(this.autoLaunchTimer);
+          this.autoLaunchTimer = setInterval(() => {
+            if (!this.isRunning || this.isStopping) return;
+            const targetX = w * (0.15 + Math.random() * 0.7);
+            const targetY = h * (0.15 + Math.random() * 0.4);
+            this.burst(targetX, targetY, 40 + Math.floor(Math.random() * 25));
+          }, 700);
+        }
+
+        // [30판 클리어 특화] isInfinite 시 지속시간 제한 없이 무제한 지속, 아닐 경우 10초 후 정지
+        if (this.autoStopTimer) clearTimeout(this.autoStopTimer);
+        this.autoStopTimer = null;
+        if (!isInfinite) {
+          this.autoStopTimer = setTimeout(() => {
+            if (!this.isRunning) return;
+            this.isStopping = true;
+            if (this.autoLaunchTimer) {
+              clearInterval(this.autoLaunchTimer);
+              this.autoLaunchTimer = null;
+            }
+            if (this.canvas) {
+              this.canvas.style.transition = 'opacity 1.5s ease-out';
+              this.canvas.style.opacity = '0';
+            }
+            setTimeout(() => {
+              if (this.isStopping) this.stop();
+            }, 1600);
+          }, 10000);
+        }
 
         this.loop();
       }
@@ -12928,7 +13060,7 @@
                 this.fireworks.canvas.style.zIndex = '99998';
                 this.fireworks.canvas.style.display = 'block';
               }
-              this.fireworks.start(celebration.colors);
+              this.fireworks.start(celebration.colors, { doubleIntensity: true, infinite: true });
             }
             this.showVictoryModal(diffKey, fromEasterModal);
           }, 280);
@@ -15185,7 +15317,8 @@
                 this.fireworks.canvas.style.zIndex = '99998';
                 this.fireworks.canvas.style.display = 'block';
               }
-              this.fireworks.start(celebration ? celebration.colors : null);
+              const fwOpts = celebration ? { doubleIntensity: true, infinite: true } : {};
+              this.fireworks.start(celebration ? celebration.colors : null, fwOpts);
             }
             this.showVictoryModal();
           }, 280);
@@ -15373,10 +15506,20 @@
 
               fanWrap.appendChild(tileDiv);
 
-              // 촤라락 부채꼴 전개 애니메이션
+              // 촤라락 부채꼴 전개 애니메이션 및 위아래 둥둥 부유 전환
               setTimeout(() => {
                 tileDiv.style.opacity = '1';
-                tileDiv.style.transform = `translate(${xOffsets[i]}px, ${Math.abs(angles[i]) * 0.7}px) rotate(${angles[i]}deg) scale(${i === 2 ? 1.08 : 0.92})`;
+                tileDiv.style.setProperty('--tx', `${xOffsets[i]}px`);
+                tileDiv.style.setProperty('--ty', `${Math.abs(angles[i]) * 0.7}px`);
+                tileDiv.style.setProperty('--rot', `${angles[i]}deg`);
+                tileDiv.style.setProperty('--scale', `${i === 2 ? 1.08 : 0.92}`);
+                tileDiv.style.setProperty('--delay', `${i * 0.22}s`);
+                tileDiv.style.transform = `translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(var(--scale))`;
+
+                // 전개 모션 완료 후 자연스럽게 부유(플로팅) & 광채 활성화
+                setTimeout(() => {
+                  tileDiv.classList.add('fan-floating');
+                }, 560);
               }, 120 + i * 75);
             });
 
