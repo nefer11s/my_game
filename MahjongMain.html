@@ -1799,24 +1799,11 @@
       user-select: none;
       -webkit-user-select: none;
       transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.2s ease;
-      animation: trayTileEnter 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .tray-tile * {
       pointer-events: none !important;
       -webkit-touch-callout: none !important;
-    }
-
-    @keyframes trayTileEnter {
-      from {
-        transform: translateY(22px) scale(0.65);
-        opacity: 0;
-      }
-
-      to {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-      }
     }
 
     .tray-tile:hover {
