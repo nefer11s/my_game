@@ -1019,6 +1019,7 @@
     .game-viewport {
       position: relative;
       flex: 1;
+      min-height: 0;
       width: 100%;
       display: flex;
       align-items: center;
@@ -7056,6 +7057,8 @@
       }
 
       playFlip() {
+        this.init();
+        if (!this.ctx) return;
         if (this.buffers && this.buffers.flip) {
             this.playBuffer(this.buffers.flip, { volume: 0.85, rate: 0.98 + Math.random() * 0.04 });
             return;
