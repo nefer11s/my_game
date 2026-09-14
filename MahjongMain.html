@@ -6174,6 +6174,7 @@
             <option value="crystal">🔔 크리스탈 핑 (청아한 유리)</option>
             <option value="wood">🪵 단단한 우드블록 탁 (원목 타격)</option>
             <option value="synth">✨ 클래식 뾱 (경쾌한 전자음)</option>
+            <option value="none">🔇 소리 없음</option>
           </select>
         </div>
 
@@ -6188,6 +6189,7 @@
             <option value="crystal">🔔 크리스탈 핑 (청아한 유리)</option>
             <option value="wood">🪵 우드 톡 (경쾌한 목재음)</option>
             <option value="synth">✨ 클래식 뾱 (전자음)</option>
+            <option value="none">🔇 소리 없음</option>
           </select>
         </div>
 
@@ -6203,6 +6205,7 @@
             <option value="real">🀄 리얼 마작 짝! (실물 강한 충돌)</option>
             <option value="crystal">🔔 크리스탈 벨 댕~ (깊은 공명)</option>
             <option value="punch">⚡ 묵직한 펀치 챡! (강한 임팩트)</option>
+            <option value="none">🔇 소리 없음</option>
           </select>
         </div>
 
@@ -6217,6 +6220,7 @@
             <option value="lydian">🎶 메탈 바차임 뾰로로롱 (12음 글리산도)</option>
             <option value="shimmer">✨ 반짝이는 크리스탈 쉬머 (고음 하모닉)</option>
             <option value="retro">🎮 아케이드 스타 (8비트 징글)</option>
+            <option value="none">🔇 소리 없음</option>
           </select>
         </div>
 
@@ -6231,6 +6235,7 @@
             <option value="sparkle">✨ 화려한 스파크 파라락 (불꽃 연출)</option>
             <option value="real">💥 리얼 파열 폭죽 쾅! (실제 폭발음)</option>
             <option value="cannon">💣 묵직한 대포 쾅 (서브베이스 펀치)</option>
+            <option value="none">🔇 소리 없음</option>
           </select>
         </div>
 
@@ -6243,6 +6248,7 @@
           <select class="diff-select sound-select" id="select-sound-shuffle">
             <option value="real_shuffle" selected>🀄 실제 마작패-섞기 (실물 마작패 촤르륵)</option>
             <option value="synth">🎲 클래식 셔플 (디지털 사운드)</option>
+            <option value="none">🔇 소리 없음</option>
           </select>
         </div>
       </div>
@@ -6835,6 +6841,7 @@
         this.init();
         if (!this.ctx) return;
         const type = overrideType || this.customSounds.select;
+        if (type === 'none') return;
         const now = this.ctx.currentTime;
 
         // 실제 마작패-선택(뒤집기)
@@ -6912,6 +6919,7 @@
         this.init();
         if (!this.ctx) return;
         const type = overrideType || this.customSounds.match;
+        if (type === 'none') return;
         const now = this.ctx.currentTime;
 
         // 실제 마작패-짝 충돌 단독 타격음 (temp/마작패-짝소리.mp3)
@@ -7044,6 +7052,7 @@
         this.init();
         if (!this.ctx) return;
         const type = overrideType || this.customSounds.chime;
+        if (type === 'none') return;
         const baseTime = startTime !== null ? startTime : this.ctx.currentTime;
         const delay = Math.max(0, baseTime - this.ctx.currentTime);
 
@@ -7116,6 +7125,7 @@
         this.init();
         if (!this.ctx) return;
         const type = overrideType || this.customSounds.firework;
+        if (type === 'none') return;
         const now = this.ctx.currentTime;
 
         if (type === 'real') {
@@ -7248,6 +7258,7 @@
         this.init();
         if (!this.ctx) return;
         const type = overrideType || this.customSounds.flip;
+        if (type === 'none') return;
 
         // 실제 마작패-뒤집기 (실물 녹음 음원)
         if (type === 'real_flip' || type === 'real') {
@@ -7325,6 +7336,7 @@
         this.init();
         if (!this.ctx) return;
         const type = overrideType || this.customSounds.shuffle;
+        if (type === 'none') return;
 
         // 실제 마작패-섞기 (실제 녹음된 마작패 섞는 소리) 재생: 너무 길지 않도록 음원 길이의 절반(50%)만 재생
         if (type === 'real_shuffle' || type === 'real') {
