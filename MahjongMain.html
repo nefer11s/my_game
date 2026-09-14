@@ -7115,23 +7115,65 @@
         const type = overrideType || this.customSounds.firework;
         const now = this.ctx.currentTime;
 
-        if (type === 'real' && this.buffers.exp) {
-          this.playBuffer(this.buffers.exp, {
-            volume: 0.60,
-            rate: 0.95 + Math.random() * 0.1
-          });
-          for (let i = 0; i < 3; i++) {
-            const ct = now + 0.08 + Math.random() * 0.2;
-            const sOsc = this.ctx.createOscillator();
-            const sGain = this.ctx.createGain();
-            sOsc.type = 'triangle';
-            sOsc.frequency.setValueAtTime(1800 + Math.random() * 2000, ct);
-            sGain.gain.setValueAtTime(0.05 + Math.random() * 0.04, ct);
-            sGain.gain.exponentialRampToValueAtTime(0.0001, ct + 0.03);
-            sOsc.connect(sGain);
-            sGain.connect(this.getDestination());
-            sOsc.start(ct);
-            sOsc.stop(ct + 0.035);
+        if (type === 'real') {
+          // 💥 리얼 파열 폭죽 쾅! (묵직한 화약 충격파 쾅! + 2차 파편 파열음 크래클)
+          // 1) 1차 본체 폭발 (강력한 저음 충격파: 쾅!)
+          const boomOsc = this.ctx.createOscillator();
+          const boomGain = this.ctx.createGain();
+          boomOsc.type = 'triangle';
+          boomOsc.frequency.setValueAtTime(260, now);
+          boomOsc.frequency.exponentialRampToValueAtTime(38, now + 0.28);
+          boomGain.gain.setValueAtTime(0.60, now);
+          boomGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          boomOsc.connect(boomGain);
+          boomGain.connect(this.getDestination());
+          boomOsc.start(now);
+          boomOsc.stop(now + 0.36);
+
+          // 2) 폭발 화약 파열 노이즈 버스트 (쾅하는 충격파 잔향)
+          try {
+            const sr = this.ctx.sampleRate;
+            const noiseDur = 0.25;
+            const noiseSamples = Math.floor(sr * noiseDur);
+            const noiseBuf = this.ctx.createBuffer(1, noiseSamples, sr);
+            const nData = noiseBuf.getChannelData(0);
+            for (let i = 0; i < noiseSamples; i++) {
+              const t = i / sr;
+              const env = Math.exp(-22 * t);
+              nData[i] = ((Math.random() * 2) - 1) * env * 0.75;
+            }
+            const noiseNode = this.ctx.createBufferSource();
+            noiseNode.buffer = noiseBuf;
+
+            const filter = this.ctx.createBiquadFilter();
+            filter.type = 'lowpass';
+            filter.frequency.setValueAtTime(1400, now);
+            filter.frequency.exponentialRampToValueAtTime(280, now + 0.22);
+
+            const noiseGain = this.ctx.createGain();
+            noiseGain.gain.setValueAtTime(0.55, now);
+            noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+            noiseNode.connect(filter);
+            filter.connect(noiseGain);
+            noiseGain.connect(this.getDestination());
+            noiseNode.start(now);
+          } catch (e) { }
+
+          // 3) 2차 파편 파열음 (하늘에 흩어지며 타라락 터지는 화약 크래클 8발)
+          for (let i = 0; i < 8; i++) {
+            const ct = now + 0.05 + Math.random() * 0.22;
+            const cOsc = this.ctx.createOscillator();
+            const cGain = this.ctx.createGain();
+            cOsc.type = 'sawtooth';
+            cOsc.frequency.setValueAtTime(800 + Math.random() * 1800, ct);
+            cOsc.frequency.exponentialRampToValueAtTime(180, ct + 0.025);
+            cGain.gain.setValueAtTime(0.12 + Math.random() * 0.08, ct);
+            cGain.gain.exponentialRampToValueAtTime(0.0001, ct + 0.03);
+            cOsc.connect(cGain);
+            cGain.connect(this.getDestination());
+            cOsc.start(ct);
+            cOsc.stop(ct + 0.035);
           }
           return;
         }
