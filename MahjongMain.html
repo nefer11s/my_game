@@ -14445,6 +14445,7 @@
               }
 
               this.logTouch(`[블라인드 짝 일치] '${tile.def.label}' 매칭 성공!`);
+              if (this.sound && this.sound.playSelect) this.sound.playSelect();
               // 두 타일을 보드에서 제거
               prevRevealed.removed = true;
               if (prevRevealed.el) {
@@ -14484,7 +14485,6 @@
               const idx2 = this.trayTiles.length + 1;
 
               this.trayTiles.push(item1, item2);
-              this.sound.playSelect();
               this.renderTray();
 
               this.blindMismatchCount = 0;
@@ -14544,6 +14544,11 @@
           return;
         }
 
+        // [터치 즉시 사운드 피드백] 슬롯 이동/연산 전 터치 즉시 선택음 재생
+        if (this.sound && this.sound.playSelect) {
+          this.sound.playSelect();
+        }
+
         this.logTouch(`[슬롯 이동] '${tile.def.label}' 담김 (${activeTrayTiles.length + 1}/${this.maxSlots})`);
 
         // 블라인드 패였는지 기록
@@ -14573,7 +14578,6 @@
           wasCovered: wasCovered
         };
         this.trayTiles.push(trayItem);
-        this.sound.playSelect();
         this.renderTray();
 
         // 짝 매칭 판정 및 논리 슬롯 즉시 확보 (시각 이펙트는 비행 안착 시점에 연결)
