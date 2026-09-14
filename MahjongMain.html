@@ -1894,26 +1894,6 @@
       animation: none !important;
     }
 
-    @keyframes trayTileLand {
-      0% {
-        transform: scale(1.18);
-        filter: brightness(1.2);
-      }
-
-      50% {
-        transform: scale(0.96);
-      }
-
-      100% {
-        transform: scale(1);
-        filter: brightness(1);
-      }
-    }
-
-    .tray-tile.landed {
-      animation: trayTileLand 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
-    }
-
     .tray-tile.matching {
       animation: trayTileMatch 0.35s ease forwards;
     }
@@ -14254,10 +14234,6 @@
           if (flyer.parentNode) flyer.remove();
           if (targetTileEl) {
             targetTileEl.classList.remove('fly-incoming');
-            targetTileEl.classList.add('landed');
-            setTimeout(() => {
-              if (targetTileEl) targetTileEl.classList.remove('landed');
-            }, 240);
           }
           if (typeof onComplete === 'function') onComplete();
         };
