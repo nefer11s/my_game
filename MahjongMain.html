@@ -343,15 +343,24 @@
 
     .btn-dock {
       height: 38px;
-      padding: 0 14px;
+      padding: 0 10px;
       font-size: 13px;
       font-weight: 800;
       border-radius: 12px;
-      gap: 6px;
+      gap: 4px;
       background: linear-gradient(145deg, #ffffff 0%, #f4faf6 100%);
       border: 1.5px solid rgba(46, 167, 121, 0.35);
       color: #174232;
       transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .btn-dock .btn-label {
+      display: none !important;
+    }
+
+    .btn-dock .btn-icon {
+      font-size: 17px;
+      line-height: 1;
     }
 
     .btn-dock-count {
@@ -4880,9 +4889,7 @@
       }
 
       .btn-dock .btn-label {
-        display: inline-block;
-        font-size: 11px;
-        letter-spacing: -0.5px;
+        display: none !important;
       }
 
       .btn-dock-count {
@@ -4966,9 +4973,7 @@
       }
 
       .btn-dock .btn-label {
-        display: inline-block;
-        font-size: 10px;
-        letter-spacing: -0.5px;
+        display: none !important;
       }
 
       .btn-dock-count {
@@ -5729,19 +5734,19 @@
 
     <div class="dock-actions">
       <button class="btn btn-dock" id="btn-undo" title="한 수 되돌리기 (판당 2회)">
-        <span class="btn-icon">↩</span><span class="btn-label" id="undo-label">되돌리기</span><span class="btn-dock-count"
+        <span class="btn-icon">↩</span><span class="btn-label" id="undo-label"></span><span class="btn-dock-count"
           id="undo-count">2</span>
       </button>
       <button class="btn btn-dock" id="btn-hint" title="매치 짝 힌트 (판당 2회)">
-        <span class="btn-icon">💡</span><span class="btn-label" id="hint-label">힌트</span><span class="btn-dock-count"
+        <span class="btn-icon">💡</span><span class="btn-label" id="hint-label"></span><span class="btn-dock-count"
           id="hint-count">2</span>
       </button>
       <button class="btn btn-dock" id="btn-shuffle" title="셔플(패섞기) (판당 1회)">
-        <span class="btn-icon">🔀</span><span class="btn-label" id="shuffle-label">셔플</span><span class="btn-dock-count"
+        <span class="btn-icon">🔀</span><span class="btn-label" id="shuffle-label"></span><span class="btn-dock-count"
           id="shuffle-count">1</span>
       </button>
       <button class="btn btn-dock" id="btn-restart" title="현재 판 다시 시작">
-        <span class="btn-icon">🔄</span><span class="btn-label">재도전</span>
+        <span class="btn-icon">🔄</span><span class="btn-label"></span>
       </button>
 
     </div>
@@ -15578,7 +15583,7 @@
         const undoLabel = document.getElementById('undo-label') || (btnUndo ? btnUndo.querySelector('.btn-label') : null);
         const undoCount = document.getElementById('undo-count');
         if (btnUndo) {
-          if (undoLabel) undoLabel.textContent = '되돌리기';
+          if (undoLabel) undoLabel.textContent = '';
           if (undoCount) undoCount.textContent = this.undoRemaining;
           // 슬롯(트레이)에 패가 하나도 없거나 남은 횟수가 0이면 비활성화
           const hasTrayTiles = Array.isArray(this.trayTiles) && this.trayTiles.some(t => !t.isMatching);
@@ -15594,7 +15599,7 @@
         const hintLabel = document.getElementById('hint-label') || (btnHint ? btnHint.querySelector('.btn-label') : null);
         const hintCount = document.getElementById('hint-count');
         if (btnHint) {
-          if (hintLabel) hintLabel.textContent = '힌트';
+          if (hintLabel) hintLabel.textContent = '';
           if (hintCount) hintCount.textContent = this.hintsRemaining;
           btnHint.disabled = (this.hintsRemaining <= 0);
           btnHint.title = `매치 짝 힌트 (남은 횟수: ${this.hintsRemaining}/2)`;
@@ -15605,7 +15610,7 @@
         const shuffleLabel = document.getElementById('shuffle-label') || (btnShuffle ? btnShuffle.querySelector('.btn-label') : null);
         const shuffleCount = document.getElementById('shuffle-count');
         if (btnShuffle) {
-          if (shuffleLabel) shuffleLabel.textContent = '셔플';
+          if (shuffleLabel) shuffleLabel.textContent = '';
           if (shuffleCount) shuffleCount.textContent = this.shuffleRemaining;
           btnShuffle.disabled = (this.shuffleRemaining <= 0);
           btnShuffle.title = `셔플(패섞기) (남은 횟수: ${this.shuffleRemaining}/1)`;
