@@ -4184,10 +4184,46 @@
     /* 인증서 버튼 그룹 및 SNS 공유 버튼 */
     .modal-card.certificate-modal-card .modal-btn-group {
       display: flex !important;
+      flex-wrap: wrap !important;
       gap: 10px !important;
       margin-top: 12px !important;
       align-items: center !important;
       justify-content: center !important;
+    }
+
+    /* 30판 인증서 전용 3-way 다음 액션 버튼 */
+    #cert-next-btn-row {
+      display: flex !important;
+      width: 100%;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .cert-next-btn {
+      flex: 1 !important;
+      font-size: 13px !important;
+      font-weight: 800 !important;
+      padding: 10px 6px !important;
+      border-radius: 22px !important;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25) !important;
+      min-width: 0 !important;
+    }
+    #cert-retry-btn {
+      background: linear-gradient(135deg, #15803d, #166534) !important;
+      color: #fff !important;
+    }
+    #cert-upgrade-btn {
+      background: linear-gradient(135deg, #b45309, #92400e) !important;
+      color: #fff !important;
+    }
+    #cert-upgrade-btn:disabled {
+      background: linear-gradient(135deg, #6b7280, #4b5563) !important;
+      opacity: 0.55 !important;
+      cursor: not-allowed !important;
+      pointer-events: none !important;
+    }
+    #cert-home-btn {
+      background: linear-gradient(135deg, #374151, #1f2937) !important;
+      color: #e5e7eb !important;
     }
 
     .modal-card.certificate-modal-card .modal-btn {
@@ -5905,6 +5941,12 @@
           <span class="btn-icon">🏆</span> 나의 기록
         </button>
         <button class="modal-btn" id="modal-confirm-btn">다음 판 시작 ➔</button>
+        <!-- 30판 인증서 전용: 다음 도전 3-way 버튼 -->
+        <div id="cert-next-btn-row" style="display: none; width: 100%; gap: 8px; margin-top: 6px;">
+          <button class="modal-btn cert-next-btn" id="cert-retry-btn">🔄 재도전</button>
+          <button class="modal-btn cert-next-btn" id="cert-upgrade-btn">⬆️ 난이도 업</button>
+          <button class="modal-btn cert-next-btn" id="cert-home-btn">🏠 처음으로</button>
+        </div>
       </div>
     </div>
   </div>
@@ -13578,6 +13620,51 @@
           this.saveProgress();
           this.startNewGame(true);
         });
+
+        // 30판 인증서 전용: 🔄 같은 난이도 재도전
+        const certRetryBtn = document.getElementById('cert-retry-btn');
+        if (certRetryBtn) {
+          certRetryBtn.addEventListener('click', () => {
+            if (this.sound) this.sound.playSelect();
+            if (this.fireworks) this.fireworks.stop();
+            document.getElementById('modal').classList.remove('active');
+            this.currentStage = 1;
+            this.hasStarted = true;
+            this.saveProgress();
+            this.startNewGame(true);
+          });
+        }
+
+        // 30판 인증서 전용: ⬆️ 난이도 업
+        const certUpgradeBtn = document.getElementById('cert-upgrade-btn');
+        if (certUpgradeBtn) {
+          certUpgradeBtn.addEventListener('click', () => {
+            const DIFF_ORDER = ['easy', 'normal', 'hard', 'master'];
+            const curIdx = DIFF_ORDER.indexOf(this.difficulty);
+            if (curIdx < 0 || curIdx >= DIFF_ORDER.length - 1) return;
+            if (this.sound) this.sound.playSelect();
+            if (this.fireworks) this.fireworks.stop();
+            document.getElementById('modal').classList.remove('active');
+            const nextKey = DIFF_ORDER[curIdx + 1];
+            this.difficulty = nextKey;
+            try { localStorage.setItem('siyeon_mahjong_difficulty', nextKey); } catch (e) { }
+            this.currentStage = 1;
+            this.hasStarted = true;
+            this.saveProgress();
+            this.startNewGame(true);
+          });
+        }
+
+        // 30판 인증서 전용: 🏠 처음으로 (초기화면/난이도 선택)
+        const certHomeBtn = document.getElementById('cert-home-btn');
+        if (certHomeBtn) {
+          certHomeBtn.addEventListener('click', () => {
+            if (this.sound) this.sound.playSelect();
+            if (this.fireworks) this.fireworks.stop();
+            document.getElementById('modal').classList.remove('active');
+            this.showSplashScreen();
+          });
+        }
       }
 
       setDifficulty(diffKey) {
@@ -16600,11 +16687,33 @@
           if (rankBtn) rankBtn.style.display = 'inline-flex';
 
           if (isPreview) {
+            // 프리뷰 모드: 기존 confirmBtn 유지
+            confirmBtn.style.display = 'inline-flex';
             confirmBtn.textContent = fromEasterModal ? '✨ 보석 축하 전당으로 복귀' : '🏆 나의 최고기록으로 복귀';
+            confirmBtn.style.background = celebration.btnGrad;
+            const certNextRow = document.getElementById('cert-next-btn-row');
+            if (certNextRow) certNextRow.style.display = 'none';
           } else {
-            confirmBtn.textContent = celebration.btnText;
+            // 실제 30판 클리어: confirmBtn 숨기고 3-way 버튼 표시
+            confirmBtn.style.display = 'none';
+            const certNextRow = document.getElementById('cert-next-btn-row');
+            if (certNextRow) certNextRow.style.display = 'flex';
+
+            // 난이도 업 버튼: 다음 난이도 계산
+            const DIFF_ORDER = ['easy', 'normal', 'hard', 'master'];
+            const curIdx = DIFF_ORDER.indexOf(this.difficulty);
+            const upgradeBtn = document.getElementById('cert-upgrade-btn');
+            if (upgradeBtn) {
+              if (curIdx >= DIFF_ORDER.length - 1) {
+                upgradeBtn.textContent = '⬆️ 최고 난이도 달성!';
+                upgradeBtn.disabled = true;
+              } else {
+                const nextDiff = DIFFICULTY_CONFIG[DIFF_ORDER[curIdx + 1]];
+                upgradeBtn.textContent = `⬆️ 난이도 업 (${nextDiff.name})`;
+                upgradeBtn.disabled = false;
+              }
+            }
           }
-          confirmBtn.style.background = celebration.btnGrad;
         } else {
           // [일반 판(1~29판) 클리어 뷰 활성화]
           if (normalView) normalView.style.display = 'block';
@@ -16615,6 +16724,11 @@
 
           const rankBtn = document.getElementById('modal-rank-btn');
           if (rankBtn) rankBtn.style.display = 'none';
+
+          // 일반 판(1~29판): 3-way 버튼 숨기고 confirmBtn 복구
+          const certNextRow = document.getElementById('cert-next-btn-row');
+          if (certNextRow) certNextRow.style.display = 'none';
+          confirmBtn.style.display = 'inline-flex';
 
           const modalTitle = document.getElementById('modal-title');
           const modalDesc = document.getElementById('modal-desc');
