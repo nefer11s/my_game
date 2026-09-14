@@ -5423,7 +5423,6 @@
             <button type="button" id="btn-settings-close-x"
               style="background: rgba(0,0,0,0.06); border: none; font-size: 16px; cursor: pointer; color: #444; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease;">✕</button>
           </div>
-          <!-- 기능별 카테고리 탭 헤더 -->
           <!-- 기능별 카테고리 탭 헤더 (5개 탭) -->
           <div class="settings-tabs" role="tablist">
             <button class="settings-tab-btn active" data-tab="game" role="tab" title="게임 난이도 및 진행 설정">
@@ -5435,11 +5434,11 @@
             <button class="settings-tab-btn" data-tab="sound" role="tab" title="효과음 및 화면 모드">
               <span>🎵</span> 소리/화면
             </button>
-            <button class="settings-tab-btn" data-tab="info" role="tab" title="게임 규칙, 랭킹 및 타일 도감">
-              <span>📖</span> 안내
-            </button>
             <button class="settings-tab-btn" data-tab="advanced" role="tab" title="고급 설정 및 관리자 기능">
               <span>🛠️</span> 고급
+            </button>
+            <button class="settings-tab-btn" data-tab="info" role="tab" title="게임 규칙, 랭킹 및 타일 도감">
+              <span>📖</span> 안내
             </button>
           </div>
 
@@ -5546,26 +5545,7 @@
             </button>
           </div>
 
-          <!-- 4. 게임 안내 & 도감 탭 -->
-          <div class="settings-tab-panel" data-tab="info" role="tabpanel">
-            <button class="btn settings-btn" id="btn-rules-header" title="한눈에 보는 핵심 가이드 (카드뉴스)">
-              <span class="btn-icon">💡</span> 한눈에 보는 핵심 가이드
-            </button>
-            <button class="btn settings-btn" id="btn-detail-rules-header" title="게임 전체 상세규칙 (6대 규칙)">
-              <span class="btn-icon">📜</span> 게임 전체 상세규칙
-            </button>
-            <button class="btn settings-btn" id="btn-settings-guide-header" title="게임 환경설정 옵션 설명">
-              <span class="btn-icon">⚙️</span> 게임 환경설정 옵션 설명
-            </button>
-            <button class="btn settings-btn" id="btn-rank-header" title="나의 최고기록">
-              <span class="btn-icon">🏆</span> 나의 최고기록
-            </button>
-            <button class="btn settings-btn" id="btn-tile-gallery" title="전체 타일 도감">
-              <span class="btn-icon">🀄</span> 전체 타일 도감
-            </button>
-          </div>
-
-          <!-- 5. 고급 설정 탭 (관리자 / 디버그 / 세부 파라미터) -->
+          <!-- 4. 고급 설정 탭 (관리자 / 디버그 / 세부 파라미터) -->
           <div class="settings-tab-panel" data-tab="advanced" role="tabpanel">
             <button class="btn settings-btn" id="btn-open-stage-warp" title="원하는 난이도와 판(Stage)으로 직행"
               style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1.5px solid #86efac; color: #166534; font-weight: 800;">
@@ -5677,6 +5657,25 @@
               title="모든 게임 환경설정(난이도 보통, 명리 테마, 짝선택 자동슬롯 켜짐 등)을 기본값으로 되돌립니다"
               style="margin-top: 6px; background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 1.5px solid #f87171; color: #b91c1c; font-weight: 800; box-shadow: 0 2px 6px rgba(220, 38, 38, 0.15);">
               <span class="btn-icon">⚙️</span> 전체 환경설정 기본값 복원
+            </button>
+          </div>
+
+          <!-- 5. 게임 안내 & 도감 탭 -->
+          <div class="settings-tab-panel" data-tab="info" role="tabpanel">
+            <button class="btn settings-btn" id="btn-rules-header" title="한눈에 보는 핵심 가이드 (카드뉴스)">
+              <span class="btn-icon">💡</span> 한눈에 보는 핵심 가이드
+            </button>
+            <button class="btn settings-btn" id="btn-detail-rules-header" title="게임 전체 상세규칙 (6대 규칙)">
+              <span class="btn-icon">📜</span> 게임 전체 상세규칙
+            </button>
+            <button class="btn settings-btn" id="btn-settings-guide-header" title="게임 환경설정 옵션 설명">
+              <span class="btn-icon">⚙️</span> 게임 환경설정 옵션 설명
+            </button>
+            <button class="btn settings-btn" id="btn-rank-header" title="나의 최고기록">
+              <span class="btn-icon">🏆</span> 나의 최고기록
+            </button>
+            <button class="btn settings-btn" id="btn-tile-gallery" title="전체 타일 도감">
+              <span class="btn-icon">🀄</span> 전체 타일 도감
             </button>
           </div>
 
