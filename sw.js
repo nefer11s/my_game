@@ -10,6 +10,7 @@ const PRECACHE_URLS = [
   './assets/icon-512.png',
   './assets/mahjong_splash.jpg',
   './assets/quick_rules_guide.jpg',
+  './assets/senior_guide_card.jpg',
   './assets/tiles/g_bing.webp',
   './assets/tiles/g_ding.webp',
   './assets/tiles/g_geng.webp',
