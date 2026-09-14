@@ -15299,10 +15299,17 @@
               });
             }
 
-            // 사운드 연동: 마작패-짝 실사 단독 타격음 재생 (바차임 결합 없는 단독음)
+            // 1단계: 슬롯 도착 & 짝 맞춤 순간 마작패-짝 단독 타격음 재생
             if (this.sound && typeof this.sound.playMatch === 'function') {
               this.sound.playMatch();
             }
+
+            // 2단계: 슬롯 패가 번쩍인 뒤 화면에서 쏙 사라지는 시점(250ms)에 바차임 소멸음 재생
+            setTimeout(() => {
+              if (this.sound && typeof this.sound.playWindChime === 'function') {
+                this.sound.playWindChime();
+              }
+            }, 250);
 
             const bonus = (t1.wasCovered || t2.wasCovered) ? 150 : 100;
             this.score += bonus;
