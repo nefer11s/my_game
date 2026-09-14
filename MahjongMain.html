@@ -5439,8 +5439,8 @@
             <div class="settings-item">
               <span class="settings-label">🎮 난이도 선택</span>
               <select class="diff-select" id="select-difficulty" title="난이도 선택">
-                <option value="easy" id="diff-opt-easy" selected>🌱 쉬움 (14종 · 슬롯 5개 · 블라인드 0%➔70%)</option>
-                <option value="normal" id="diff-opt-normal">🌿 보통 (39종 · 슬롯 4개 · 블라인드 10%➔80%)</option>
+                <option value="easy" id="diff-opt-easy">🌱 쉬움 (14종 · 슬롯 5개 · 블라인드 0%➔70%)</option>
+                <option value="normal" id="diff-opt-normal" selected>🌿 보통 (39종 · 슬롯 4개 · 블라인드 10%➔80% · 기본)</option>
                 <option value="hard" id="diff-opt-hard">🔥 어려움 (63종 · 슬롯 4개 · 블라인드 20%➔90%)</option>
                 <option value="master" id="diff-opt-master">👑 달인 (89종 · 슬롯 3개 · 블라인드 30%➔100% 올 블라인드)</option>
               </select>
@@ -5509,8 +5509,8 @@
                 꺼짐</span>
             </button>
             <button class="btn settings-btn" id="btn-auto-blind-pair" title="뒤집힌 패 뒤집은 후 같은 자유패 선택 시 두 패 자동 슬롯 이동">
-              <span class="btn-icon" id="auto-blind-pair-icon">🔒</span> <span id="auto-blind-pair-text">짝선택 자동슬롯:
-                꺼짐</span>
+              <span class="btn-icon" id="auto-blind-pair-icon">🔓</span> <span id="auto-blind-pair-text">짝선택 자동슬롯:
+                켜짐</span>
             </button>
           </div>
 
@@ -11693,7 +11693,8 @@
         this.hasUsedLastChanceShuffle = false; // 하트 1개일 때 마지막 무료 셔플 사용 여부
         // 옵션 로컬 스토리지 불러오기 (기본값: 꺼짐/false, 사주패 기본값: 켜짐/true)
         try {
-          this.autoBlindPairMatch = (localStorage.getItem('siyeon_mahjong_auto_blind_pair') || localStorage.getItem('autoBlindPairMatch')) === '1';
+          const savedAutoBlind = localStorage.getItem('siyeon_mahjong_auto_blind_pair') || localStorage.getItem('autoBlindPairMatch');
+        this.autoBlindPairMatch = (savedAutoBlind === null || savedAutoBlind === undefined) ? true : (savedAutoBlind === '1');
           this.autoEndMatch = (localStorage.getItem('siyeon_mahjong_auto_end_match') || localStorage.getItem('autoEndMatch')) === '1';
           this.dynamicZoom = (localStorage.getItem('siyeon_mahjong_dynamic_zoom') || localStorage.getItem('dynamicZoom')) === '1';
           const savedZoomCols = parseInt(localStorage.getItem('siyeon_mahjong_dynamic_zoom_cols') || localStorage.getItem('dynamicZoomCols') || '5', 10);
@@ -11748,21 +11749,21 @@
         this.isPanning = false;
         this.hasPannedFar = false;
 
-        // 난이도 및 무한 판수(스테이지) 설정 (기본값: 쉬움 'easy')
+        // 난이도 및 무한 판수(스테이지) 설정 (기본값: 보통 'normal')
         try {
           let savedDifficulty = localStorage.getItem('siyeon_mahjong_difficulty');
-          const defaultDiffMigrated = localStorage.getItem('siyeon_mahjong_default_easy_v1543');
+          const defaultDiffMigrated = localStorage.getItem('siyeon_mahjong_default_normal_v1562');
           if (!defaultDiffMigrated) {
-            savedDifficulty = 'easy';
-            localStorage.setItem('siyeon_mahjong_difficulty', 'easy');
-            localStorage.setItem('siyeon_mahjong_default_easy_v1543', '1');
+            savedDifficulty = 'normal';
+            localStorage.setItem('siyeon_mahjong_difficulty', 'normal');
+            localStorage.setItem('siyeon_mahjong_default_normal_v1562', '1');
           } else if (!savedDifficulty) {
-            savedDifficulty = 'easy';
-            localStorage.setItem('siyeon_mahjong_difficulty', 'easy');
+            savedDifficulty = 'normal';
+            localStorage.setItem('siyeon_mahjong_difficulty', 'normal');
           }
           this.difficulty = savedDifficulty;
         } catch (e) {
-          this.difficulty = 'easy';
+          this.difficulty = 'normal';
         }
         const initialDiffSelect = document.getElementById('select-difficulty');
         if (initialDiffSelect) initialDiffSelect.value = this.difficulty;
@@ -11918,6 +11919,121 @@
           toast.style.opacity = '0';
           toast.style.transform = 'translateX(-50%) translateY(-24px)';
         }, 5500);
+      }
+
+      // 전체 게임 환경설정을 표준 기본값으로 일괄 복원
+      resetAllSettings() {
+        this.sound.playSelect();
+        if (settingsDropdown) {
+          settingsDropdown.classList.remove('active');
+          if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
+        }
+        if (!confirm('모든 게임 환경설정(난이도 보통, 명리 기본 효과음, 짝선택 자동슬롯 켜짐 등)을 기본값으로 복원하시겠습니까?')) {
+          return;
+        }
+
+        // 1. 기본 난이도: 보통 (normal)
+        this.difficulty = 'normal';
+        try { localStorage.setItem('siyeon_mahjong_difficulty', 'normal'); } catch (e) { }
+        const diffSelect = document.getElementById('select-difficulty');
+        if (diffSelect) diffSelect.value = 'normal';
+        const warpSelectDiff = document.getElementById('warp-select-difficulty');
+        if (warpSelectDiff) warpSelectDiff.value = 'normal';
+
+        // 2. 시니어 모드: 켜짐 (on)
+        this.seniorMode = true;
+        try { localStorage.setItem('siyeon_mahjong_senior_mode', 'on'); } catch (e) { }
+        const seniorSelect = document.getElementById('select-senior-mode');
+        if (seniorSelect) seniorSelect.value = 'on';
+
+        // 3. 짝선택 자동슬롯: 켜짐 (true)
+        this.autoBlindPairMatch = true;
+        try {
+          localStorage.setItem('siyeon_mahjong_auto_blind_pair', '1');
+          localStorage.setItem('autoBlindPairMatch', '1');
+        } catch (e) { }
+        const autoBlindIcon = document.getElementById('auto-blind-pair-icon');
+        const autoBlindText = document.getElementById('auto-blind-pair-text');
+        if (autoBlindIcon && autoBlindText) {
+          autoBlindIcon.textContent = '🔓';
+          autoBlindText.textContent = '짝선택 자동슬롯: 켜짐';
+        }
+
+        // 4. 슬롯 이동 속도: 보통 (normal, 0.45초)
+        this.slotAnimSpeed = 'normal';
+        safeStorage.set('slot_anim_speed', 'normal');
+        const slotSpeedSelect = document.getElementById('select-slot-anim-speed');
+        if (slotSpeedSelect) slotSpeedSelect.value = 'normal';
+        const slotSpeedBadge = document.getElementById('slot-anim-speed-badge');
+        if (slotSpeedBadge) slotSpeedBadge.textContent = '🌿 보통 (0.45초)';
+
+        // 5. 슬롯 매칭 효과: 축제 폭죽 (firework)
+        safeStorage.set('slot_match_effect', 'firework');
+        const slotEffectSelect = document.getElementById('select-slot-match-effect');
+        if (slotEffectSelect) slotEffectSelect.value = 'firework';
+        const slotEffectBadge = document.getElementById('slot-match-effect-badge');
+        if (slotEffectBadge) slotEffectBadge.textContent = '🎆 축제 폭죽';
+
+        // 6. 사운드: 명리 기본 테마 (우드블록, 실제뒤집기, 실제짝, 첼레스타, 축하팝, 실제셔플)
+        this.sound.muted = false;
+        safeStorage.set('mahjong_sound_muted', 'false');
+        this.sound.resetDefaults();
+        const selectSoundTheme = document.getElementById('select-sound-theme');
+        if (selectSoundTheme) selectSoundTheme.value = 'myeongri';
+        const soundToggleIcon = document.getElementById('sound-toggle-icon');
+        const soundToggleText = document.getElementById('sound-toggle-text');
+        if (soundToggleIcon && soundToggleText) {
+          soundToggleIcon.textContent = '🔊';
+          soundToggleText.textContent = '소리 켜짐';
+        }
+
+        // 7. 전통패 라벨 표시: show
+        this.classicLabelMode = 'show';
+        try { localStorage.setItem('siyeon_mahjong_classic_label_mode', 'show'); } catch (e) { }
+        const selectClassicLabelModeEl = document.getElementById('select-classic-label-mode');
+        if (selectClassicLabelModeEl) selectClassicLabelModeEl.value = 'show';
+        const badgeClassicLabelEl = document.getElementById('classic-label-badge');
+        if (badgeClassicLabelEl) {
+          badgeClassicLabelEl.textContent = '글자 표시';
+          badgeClassicLabelEl.style.background = '#dcfce7';
+          badgeClassicLabelEl.style.color = '#166534';
+        }
+
+        // 8. 시간 제한 기본값 복원 (easy: 240, normal: 180, hard: 140, master: 100)
+        try {
+          localStorage.removeItem('siyeon_mahjong_time_limit_easy');
+          localStorage.removeItem('siyeon_mahjong_time_limit_normal');
+          localStorage.removeItem('siyeon_mahjong_time_limit_hard');
+          localStorage.removeItem('siyeon_mahjong_time_limit_master');
+        } catch (e) { }
+        this.updateTimeLimitUI();
+
+        // 9. 테마 패: 명리학 (saju)
+        this._applyTheme('saju');
+        document.querySelectorAll('.theme-radio-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.theme === 'saju');
+        });
+
+        // 10. 사운드 개별 모달 UI 동기화
+        const selectSoundSelect = document.getElementById('select-sound-select');
+        const selectSoundFlip = document.getElementById('select-sound-flip');
+        const selectSoundMatch = document.getElementById('select-sound-match');
+        const selectSoundChime = document.getElementById('select-sound-chime');
+        const selectSoundFirework = document.getElementById('select-sound-firework');
+        const selectSoundShuffle = document.getElementById('select-sound-shuffle');
+        if (selectSoundSelect) selectSoundSelect.value = 'wood';
+        if (selectSoundFlip) selectSoundFlip.value = 'real_flip';
+        if (selectSoundMatch) selectSoundMatch.value = 'real_pair';
+        if (selectSoundChime) selectSoundChime.value = 'celesta';
+        if (selectSoundFirework) selectSoundFirework.value = 'cheer';
+        if (selectSoundShuffle) selectSoundShuffle.value = 'real_shuffle';
+
+        // 11. 게임 화면 갱신 및 완료 알림
+        this.updateHeaderUI();
+        this.renderTiles();
+        if (this.sound && this.sound.playWin) this.sound.playWin();
+
+        this.showFloatingNotice('⚙️ 모든 환경설정이 기본값(난이도 보통, 명리 사운드 등)으로 복원되었습니다!');
       }
 
       bindEvents() {
@@ -13143,6 +13259,14 @@
               localStorage.setItem('siyeon_mahjong_auto_blind_pair', this.autoBlindPairMatch ? '1' : '0');
             } catch (e) { }
             updateAutoBlindPairUI();
+          });
+        }
+
+        // 전체 환경설정 기본값 초기화 버튼 이벤트
+        const btnResetAllSettings = document.getElementById('btn-reset-all-settings');
+        if (btnResetAllSettings) {
+          btnResetAllSettings.addEventListener('click', () => {
+            this.resetAllSettings();
           });
         }
 
