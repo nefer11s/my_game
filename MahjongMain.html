@@ -5539,8 +5539,14 @@
 
           <!-- 4. 게임 안내 & 도감 탭 -->
           <div class="settings-tab-panel" data-tab="info" role="tabpanel">
-            <button class="btn settings-btn" id="btn-rules-header" title="게임 방법 안내">
-              <span class="btn-icon">📜</span> 게임 방법
+            <button class="btn settings-btn" id="btn-rules-header" title="한눈에 보는 핵심 가이드 (카드뉴스)">
+              <span class="btn-icon">💡</span> 한눈에 보는 핵심 가이드
+            </button>
+            <button class="btn settings-btn" id="btn-detail-rules-header" title="게임 전체 상세규칙 (6대 규칙)">
+              <span class="btn-icon">📜</span> 게임 전체 상세규칙
+            </button>
+            <button class="btn settings-btn" id="btn-settings-guide-header" title="게임 환경설정 옵션 설명">
+              <span class="btn-icon">⚙️</span> 게임 환경설정 옵션 설명
             </button>
             <button class="btn settings-btn" id="btn-rank-header" title="나의 최고기록">
               <span class="btn-icon">🏆</span> 나의 최고기록
@@ -6055,23 +6061,23 @@
         <button class="btn-quick-confirm" id="btn-quick-rules-close">
           <span>🎮</span> <span>알겠어요! 게임 시작하기</span>
         </button>
-        <button class="btn-detail-rules-link" id="btn-show-detail-rules">전체 상세 규칙(7개 항목) 보기</button>
+        <button class="btn-detail-rules-link" id="btn-show-detail-rules">전체 상세 규칙(6대 기본 규칙) 보기</button>
       </div>
     </div>
   </div>
 
-  <!-- 게임 방법 모달 -->
+  <!-- 게임 전체 상세규칙 모달 -->
   <div class="modal-overlay" id="rules-modal">
     <div class="modal-card rules-card">
       <div class="rules-header">
         <span style="font-size: 26px;">📜</span>
-        <h2 class="modal-title" style="margin-bottom: 0; font-size: 22px;">게임 방법 안내</h2>
+        <h2 class="modal-title" style="margin-bottom: 0; font-size: 22px;">게임 전체 상세규칙</h2>
       </div>
       <div class="rules-body">
         <div style="margin-bottom: 2px;">
           <button class="btn-detail-rules-link" id="btn-back-to-quick-rules"
             style="width: 100%; text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px;">
-            <span>💡</span> <strong>한 컷 요약 가이드 보기</strong>
+            <span>💡</span> <strong>한눈에 보는 핵심 가이드(카드뉴스) 보기</strong>
           </button>
         </div>
         <div class="rule-item">
@@ -6121,21 +6127,79 @@
             <p>판 클리어 시 판수와 점수가 기기에 자동 저장됩니다. 첫 화면의 <strong>[▶ 이어하기]</strong>로 언제든 이어서 플레이할 수 있습니다.</p>
           </div>
         </div>
-        <div class="rule-item">
-          <div class="rule-num">7</div>
-          <div class="rule-text">
-            <strong>게임 편의 옵션 (설정 ⚙️)</strong>
-            <p style="margin-top: 4px; line-height: 1.6;">
-              • <strong>짝선택 자동슬롯</strong>: 블라인드 패 확인 중 보드의 짝 패를 누르면 두 패가 동시에 슬롯으로 이동해 즉시 매칭됩니다.<br>
-              • <strong>마지막 10개 자동매칭</strong>: 남은 패가 10개 이하가 되면 자동으로 짝을 맞추며 빠르게 클리어합니다.<br>
-              • <strong>동적 확대</strong>: 남은 패 수에 맞춰 보드를 실시간 자동 확대(최대 지정 열 수 기준)합니다.<br>
-              • <strong>시니어 모드</strong>: 큰 타일 위주의 특화 레이아웃(5열×7행 이하)만 등장하여 시인성을 높입니다.<br>
-              • <strong>효과음 테마</strong>: 리얼 마작패, 크리스탈 벨, 클래식 신디 중 원하는 사운드를 선택할 수 있습니다.
-            </p>
+      </div>
+      <button class="modal-btn" id="btn-rules-close">확인 완료</button>
+    </div>
+  </div>
+
+  <!-- 게임 환경설정 옵션 설명 모달 -->
+  <div class="modal-overlay" id="settings-guide-modal">
+    <div class="modal-card rules-card" style="max-width: 480px;">
+      <div class="rules-header">
+        <span style="font-size: 26px;">⚙️</span>
+        <div>
+          <h2 class="modal-title" style="margin-bottom: 0; font-size: 20px; color: #14532d;">게임 환경설정 옵션 설명</h2>
+          <div style="font-size: 12px; color: #5a7d6d; font-weight: 600;">각 설정 탭별 옵션 기능과 추천 활용 팁</div>
+        </div>
+      </div>
+      <div class="rules-body" style="max-height: 56vh; gap: 10px;">
+        <!-- 1. 게임 난이도 & 진행 옵션 -->
+        <div class="rule-item" style="flex-direction: column; gap: 6px;">
+          <strong style="font-size: 14px; color: #14532d; display: flex; align-items: center; gap: 6px;">
+            <span>🎮</span> [게임] 난이도 &amp; 진행 옵션
+          </strong>
+          <div style="font-size: 12.5px; color: #374151; line-height: 1.6; padding-left: 4px;">
+            • <strong>게임 난이도</strong>: 초급(슬롯 5칸/180초), 보통(4칸/150초), 고급(3칸/120초) 중 선택합니다.<br>
+            • <strong>판당 시간 제한</strong>: On/Off 가능. 시간 만료 시 하트 1개를 소진하여 60초가 자동 연장됩니다.<br>
+            • <strong>슬롯 만석 탈출(💔)</strong>: 슬롯이 다 찼을 때 하트 1개를 사용하여 패 2개를 보드로 되돌려 게임 오버를 모면합니다.<br>
+            • <strong>슬롯 만석 경고 연출</strong>: 슬롯이 위험하게 찰 때 붉은색 경고 점멸을 표시합니다.<br>
+            • <strong>진행판 재도전</strong>: 현재 진행 중인 판을 처음부터 다시 시작합니다.
+          </div>
+        </div>
+
+        <!-- 2. 보조 연출 & 조작 편의 옵션 -->
+        <div class="rule-item" style="flex-direction: column; gap: 6px;">
+          <strong style="font-size: 14px; color: #14532d; display: flex; align-items: center; gap: 6px;">
+            <span>⚡</span> [보조] 연출 &amp; 조작 편의 옵션
+          </strong>
+          <div style="font-size: 12.5px; color: #374151; line-height: 1.6; padding-left: 4px;">
+            • <strong>짝선택 자동슬롯</strong>: 블라인드 패 확인 중 보드의 짝을 누르면 두 패가 동시에 슬롯으로 이동해 즉시 매칭되는 빠른 조작 기능입니다.<br>
+            • <strong>마지막 10개 자동매칭</strong>: 남은 패가 10개 이하가 되면 자동으로 짝을 맞추며 신속하게 클리어합니다.<br>
+            • <strong>블라인드 물음표 패</strong>: 뒷면 패를 자유롭게 터치하여 앞면을 살짝 엿볼 수 있는 흥미 요소입니다.<br>
+            • <strong>동적 자동 확대</strong>: 패가 줄어듦에 따라 보드 화면을 최적 크기로 자동 확대하여 패를 크게 보여줍니다.<br>
+            • <strong>콤보 이펙트 &amp; 진동</strong>: 연속 짝맞춤 시 화려한 콤보 연출 및 햅틱 진동을 제공합니다.<br>
+            • <strong>시니어 모드</strong>: 큰 패 위주의 특화 레이아웃(5열×7행 이하)만 출제되어 눈의 피로를 덜어줍니다.
+          </div>
+        </div>
+
+        <!-- 3. 효과음 & 화면 모드 옵션 -->
+        <div class="rule-item" style="flex-direction: column; gap: 6px;">
+          <strong style="font-size: 14px; color: #14532d; display: flex; align-items: center; gap: 6px;">
+            <span>🎵</span> [소리] 효과음 &amp; 화면 옵션
+          </strong>
+          <div style="font-size: 12.5px; color: #374151; line-height: 1.6; padding-left: 4px;">
+            • <strong>효과음 켜기/끄기</strong>: 게임의 전체 효과음을 On/Off 전환합니다.<br>
+            • <strong>효과음 테마</strong>: 명리 기본, 리얼 마작패, 크리스탈 벨, 클래식 신디 등 사운드 프리셋을 적용합니다.<br>
+            • <strong>효과음 상세 소리 설정</strong>: 선택, 뒤집기, 짝맞춤, 알림, 폭죽, 셔플 등 6가지 효과음을 취향대로 개별 지정합니다.<br>
+            • <strong>전체화면</strong>: 상단 주소창과 여백을 숨기고 스마트폰 전체화면으로 넓게 플레이합니다.
+          </div>
+        </div>
+
+        <!-- 4. 고급 관리 & 테마 옵션 -->
+        <div class="rule-item" style="flex-direction: column; gap: 6px;">
+          <strong style="font-size: 14px; color: #14532d; display: flex; align-items: center; gap: 6px;">
+            <span>🛠️</span> [고급] 관리 &amp; 테마 옵션
+          </strong>
+          <div style="font-size: 12.5px; color: #374151; line-height: 1.6; padding-left: 4px;">
+            • <strong>레벨/판 직행 이동</strong>: 원하는 난이도와 1~30판 중 원하는 스테이지로 즉시 점프합니다.<br>
+            • <strong>전통패 글자(라벨) 표시</strong>: 전통 마작패 모서리의 숫자·기호 및 하단 라벨 표시 여부를 선택합니다.<br>
+            • <strong>난이도별 상세 시간 제한</strong>: 초급, 보통, 고급 각 난이도의 제한 시간을 초 단위로 정밀 조절합니다.<br>
+            • <strong>배경화면 테마</strong>: 명리 녹색, 오룡이 주황, 클래식 블루 테마를 선택합니다.<br>
+            • <strong>모든 설정 기본값으로 복원</strong>: 모든 옵션을 최초 표준 상태로 되돌립니다.
           </div>
         </div>
       </div>
-      <button class="modal-btn" id="btn-rules-close">확인 완료</button>
+      <button class="modal-btn" id="btn-settings-guide-close" style="width: 100%; margin: 0; background: linear-gradient(135deg, #15803d, #166534); color: #fff;">확인 완료</button>
     </div>
   </div>
 
@@ -12048,6 +12112,7 @@
         // 스플래시 화면 이벤트
         const splashEl = document.getElementById('splash-screen');
         const rulesModal = document.getElementById('rules-modal');
+        const settingsGuideModal = document.getElementById('settings-guide-modal');
         const rankModal = document.getElementById('rank-modal');
         const gameoverModal = document.getElementById('gameover-modal');
 
@@ -12056,6 +12121,9 @@
         const btnSplashRank = document.getElementById('btn-splash-rank');
         const btnRulesClose = document.getElementById('btn-rules-close');
         const btnRulesHeader = document.getElementById('btn-rules-header');
+        const btnDetailRulesHeader = document.getElementById('btn-detail-rules-header');
+        const btnSettingsGuideHeader = document.getElementById('btn-settings-guide-header');
+        const btnSettingsGuideClose = document.getElementById('btn-settings-guide-close');
         const btnRankHeader = document.getElementById('btn-rank-header');
         const btnRankClose = document.getElementById('btn-rank-close');
         const btnRankClear = document.getElementById('btn-rank-clear');
@@ -12836,6 +12904,28 @@
           });
         }
 
+        if (btnDetailRulesHeader) {
+          btnDetailRulesHeader.addEventListener('click', () => {
+            this.sound.playSelect();
+            if (settingsDropdown) {
+              settingsDropdown.classList.remove('active');
+              if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
+            }
+            if (rulesModal) rulesModal.classList.add('active');
+          });
+        }
+
+        if (btnSettingsGuideHeader) {
+          btnSettingsGuideHeader.addEventListener('click', () => {
+            this.sound.playSelect();
+            if (settingsDropdown) {
+              settingsDropdown.classList.remove('active');
+              if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
+            }
+            if (settingsGuideModal) settingsGuideModal.classList.add('active');
+          });
+        }
+
         if (btnRankHeader) {
           btnRankHeader.addEventListener('click', () => {
             this.sound.playSelect();
@@ -12866,6 +12956,27 @@
           btnRulesClose.addEventListener('click', () => {
             this.sound.playSelect();
             if (rulesModal) rulesModal.classList.remove('active');
+          });
+        }
+
+        if (rulesModal) {
+          ModalHelper.setupBackdropClose(rulesModal, () => {
+            this.sound.playSelect();
+            rulesModal.classList.remove('active');
+          });
+        }
+
+        if (btnSettingsGuideClose) {
+          btnSettingsGuideClose.addEventListener('click', () => {
+            this.sound.playSelect();
+            if (settingsGuideModal) settingsGuideModal.classList.remove('active');
+          });
+        }
+
+        if (settingsGuideModal) {
+          ModalHelper.setupBackdropClose(settingsGuideModal, () => {
+            this.sound.playSelect();
+            settingsGuideModal.classList.remove('active');
           });
         }
 
