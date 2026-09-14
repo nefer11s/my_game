@@ -5522,7 +5522,8 @@
             <div class="settings-item">
               <span class="settings-label">🎵 효과음 테마</span>
               <select class="diff-select" id="select-sound-theme" title="효과음 테마 선택">
-                <option value="default" selected>✨ 시연 기본 테마 (리얼 마작 & 첼레스타)</option>
+                <option value="myeongri" selected>🀄 명리 기본 테마 (우드블록 · 리얼 마작)</option>
+                <option value="jade">💎 시연 옥조각 (비취 옥패 · 리얼 마작)</option>
                 <option value="real">🀄 리얼 마작패 (실물 타격·바차임)</option>
                 <option value="wood">🪵 자연의 원목 (우드 & 오르골)</option>
                 <option value="synth">🎮 클래식 신디 (경쾌한 전자음)</option>
@@ -6156,10 +6157,10 @@
             <button class="sound-test-btn" id="btn-test-sound-select" title="선택음 미리듣기">▶ 듣기</button>
           </div>
           <select class="diff-select sound-select" id="select-sound-select">
-            <option value="jade" selected>💎 쫀득한 옥조각 딱! (비취 옥패 부딪침 · 추천)</option>
+            <option value="wood" selected>🪵 단단한 우드블록 탁 (원목 타격 · 명리 기본)</option>
+            <option value="jade">💎 쫀득한 옥조각 딱! (비취 옥패 부딪침)</option>
             <option value="real">🀄 리얼 마작패 톡 (실물 수지 접촉)</option>
             <option value="crystal">🔔 크리스탈 핑 (청아한 유리)</option>
-            <option value="wood">🪵 단단한 우드블록 탁 (원목 타격)</option>
             <option value="synth">✨ 클래식 뾱 (경쾌한 전자음)</option>
             <option value="none">🔇 소리 없음</option>
           </select>
@@ -6461,9 +6462,11 @@
         this.compressor = null;
         this.muted = safeStorage.get('mahjong_sound_muted') === 'true';
 
-        // 각 사운드별 선택된 소리 (디폴트: 옥조각 선택 + 실제 마작패 뒤집기 + 실제 마작패 짝 + 첼레스타 + 축하팝 + 실제 마작패 섞기)
+        // 사운드별 선택된 소리 (명리 기본 테마: 단단한 우드블록 탁 + 실제 마작패 뒤집기 + 실제 마작패 짝 + 첼레스타 오르골 + 축하 팝 + 실제 마작패 섞기)
+        const savedTheme = safeStorage.get('mahjong_sound_theme');
         const savedSelect = safeStorage.get('mahjong_sound_select');
-        const defaultSelect = (!savedSelect || savedSelect === 'flip') ? 'jade' : savedSelect;
+        // 신규 또는 명리 기본 테마 미설정 시 기본값으로 'wood' 적용
+        const defaultSelect = (!savedSelect || savedSelect === 'flip' || !savedTheme || savedTheme === 'myeongri' || savedTheme === 'default') ? 'wood' : savedSelect;
         const savedMatch = safeStorage.get('mahjong_sound_match');
         const defaultMatch = (!savedMatch || savedMatch === 'ceramic' || savedMatch === 'jade') ? 'real_pair' : savedMatch;
         this.customSounds = {
@@ -6474,6 +6477,8 @@
           firework: safeStorage.get('mahjong_sound_firework', 'cheer'),
           shuffle: safeStorage.get('mahjong_sound_shuffle', 'real_shuffle')
         };
+        this.theme = savedTheme || 'myeongri';
+        safeStorage.set('mahjong_sound_theme', this.theme);
         safeStorage.set('mahjong_sound_select', this.customSounds.select);
         safeStorage.set('mahjong_sound_flip', this.customSounds.flip);
         safeStorage.set('mahjong_sound_match', this.customSounds.match);
@@ -6500,7 +6505,17 @@
       }
 
       setTheme(theme) {
-        if (theme === 'default') {
+        this.theme = theme;
+        if (theme === 'myeongri' || theme === 'default') {
+          // 명리 기본 테마: 처음부터 단단한 우드블록 탁, 실제 마작패 뒤집기, 실제 마작패 짝, 첼레스타 오르골, 축하 팝, 실제 마작패 섞기
+          this.setSoundOption('select', 'wood');
+          this.setSoundOption('flip', 'real_flip');
+          this.setSoundOption('match', 'real_pair');
+          this.setSoundOption('chime', 'celesta');
+          this.setSoundOption('firework', 'cheer');
+          this.setSoundOption('shuffle', 'real_shuffle');
+        } else if (theme === 'jade') {
+          // 시연 옥조각 테마
           this.setSoundOption('select', 'jade');
           this.setSoundOption('flip', 'real_flip');
           this.setSoundOption('match', 'real_pair');
@@ -6540,8 +6555,9 @@
       }
 
       resetDefaults() {
+        this.theme = 'myeongri';
         this.customSounds = {
-          select: 'jade',
+          select: 'wood',
           flip: 'real_flip',
           match: 'real_pair',
           chime: 'celesta',
@@ -6551,7 +6567,7 @@
         ['select', 'flip', 'match', 'chime', 'firework', 'shuffle'].forEach(k => {
           safeStorage.set('mahjong_sound_' + k, this.customSounds[k]);
         });
-        safeStorage.set('mahjong_sound_theme', 'default');
+        safeStorage.set('mahjong_sound_theme', 'myeongri');
       }
 
       toggleMute() {
@@ -13080,9 +13096,10 @@
         // 효과음 테마 선택 이벤트
         const selectSoundTheme = document.getElementById('select-sound-theme');
         if (selectSoundTheme) {
-          selectSoundTheme.value = this.sound.theme || 'default';
+          selectSoundTheme.value = this.sound.theme || 'myeongri';
           selectSoundTheme.addEventListener('change', (e) => {
             this.sound.setTheme(e.target.value);
+            syncSoundModalUI();
             this.sound.playSelect();
           });
         }
