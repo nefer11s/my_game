@@ -13588,7 +13588,8 @@
           modalRankBtn.addEventListener('click', () => {
             this.sound.playSelect();
             if (this.fireworks) this.fireworks.stop();
-            document.getElementById('modal').classList.remove('active');
+            // 인증서 모달(#modal)은 닫지 않고 rank-modal을 그 위에 표시
+            // → rank-modal 닫으면 인증서 화면이 그대로 복귀됨
             this.renderHallOfFame();
             const rankModal = document.getElementById('rank-modal');
             if (rankModal) rankModal.classList.add('active');
