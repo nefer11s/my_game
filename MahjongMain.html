@@ -5949,8 +5949,8 @@
             <button class="splash-btn-rank" id="btn-splash-rank" title="나의 최고기록">
               <span class="btn-icon">🏆</span> 나의 최고기록
             </button>
-            <button class="splash-btn-shortcut" id="btn-splash-shortcut" title="스마트폰 홈 화면이나 데스크톱에 바로가기 앱 추가">
-              <span class="btn-icon">📲</span> 앱 설치하기
+            <button class="splash-btn-shortcut" id="btn-splash-shortcut" title="스마트폰 홈 화면이나 데스크톱에 바로가기 앱 추가 방법 설명">
+              <span class="btn-icon">📲</span> 홈화면 바로가기
             </button>
           </div>
         </div>
@@ -11991,37 +11991,36 @@
 
         const isAppMode = checkIsAppMode();
 
-        if (isAppMode) {
-          // [앱 모드로 정상 실행 시]: 초기화면 정상 표시 및 설치 버튼 숨김
+        // [초기화면 버튼 및 모달 상시 활성화]: 앱 모드 여부와 관계없이 바로가기 설명 버튼 상시 노출
+        if (splashCard) splashCard.style.display = '';
+        if (btnSplashShortcut) btnSplashShortcut.style.display = '';
+        if (btnShortcutCloseX) btnShortcutCloseX.style.display = 'block';
+
+        const closeShortcutModal = () => {
+          if (this.sound) this.sound.playSelect();
+          if (shortcutModal) ModalHelper.close(shortcutModal);
           if (splashCard) splashCard.style.display = '';
-          if (btnSplashShortcut) btnSplashShortcut.style.display = 'none';
+        };
+
+        if (btnShortcutCloseX) {
+          btnShortcutCloseX.onclick = closeShortcutModal;
+        }
+        if (shortcutModal) {
+          ModalHelper.setupBackdropClose(shortcutModal, closeShortcutModal);
+        }
+
+        if (btnSplashShortcut) {
+          btnSplashShortcut.onclick = (e) => {
+            if (e && e.stopPropagation) e.stopPropagation();
+            if (this.sound) this.sound.playSelect();
+            if (shortcutModal) ModalHelper.open(shortcutModal);
+          };
+        }
+
+        if (isAppMode) {
+          // [앱 모드로 정상 실행 시]: 시작 시 자동 팝업하지 않음 (버튼 클릭 시에는 언제든 모달 열림)
           if (shortcutModal) shortcutModal.classList.remove('active');
         } else {
-          // [일반 브라우저 접속 시]: 앱설치 실패 대비 초기화면(게임시작) 항상 유지 & 닫기 가능한 설치 모달 제공
-          if (splashCard) splashCard.style.display = '';
-          if (btnSplashShortcut) btnSplashShortcut.style.display = '';
-          if (btnShortcutCloseX) btnShortcutCloseX.style.display = 'block';
-
-          const closeShortcutModal = () => {
-            if (this.sound) this.sound.playSelect();
-            if (shortcutModal) ModalHelper.close(shortcutModal);
-            if (splashCard) splashCard.style.display = '';
-          };
-
-          if (btnShortcutCloseX) {
-            btnShortcutCloseX.onclick = closeShortcutModal;
-          }
-          if (shortcutModal) {
-            ModalHelper.setupBackdropClose(shortcutModal, closeShortcutModal);
-          }
-
-          if (btnSplashShortcut) {
-            btnSplashShortcut.onclick = (e) => {
-              if (e && e.stopPropagation) e.stopPropagation();
-              if (this.sound) this.sound.playSelect();
-              if (shortcutModal) ModalHelper.open(shortcutModal);
-            };
-          }
 
           // 디바이스 및 브라우저 환경 판별 후 맞춤 설치 가이드 렌더링
           const userAgent = navigator.userAgent || '';
