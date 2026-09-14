@@ -5556,10 +5556,6 @@
               style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1.5px solid #86efac; color: #166534; font-weight: 800;">
               <span class="btn-icon">🚀</span> 레벨/판 직행 이동...
             </button>
-            <button class="btn settings-btn" id="btn-advanced-sound-settings" title="타일선택, 짝맞춤, 셔플 등 효과음 상세 지정"
-              style="margin-top: 6px; background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%); border: 1.5px solid #7dd3fc; color: #0369a1; font-weight: 800;">
-              <span class="btn-icon">🎵</span> 효과음 상세 소리 설정...
-            </button>
             <!-- 전통패 글자(라벨) 숨김 고급 옵션 -->
             <div class="settings-item"
               style="margin-top: 6px; padding-top: 8px; border-top: 1px dashed rgba(46, 167, 121, 0.3);">
@@ -12883,7 +12879,6 @@
         // 사운드 개별 설정 모달 이벤트
         const soundModal = document.getElementById('sound-modal');
         const btnOpenSoundSettings = document.getElementById('btn-open-sound-settings');
-        const btnAdvancedSoundSettings = document.getElementById('btn-advanced-sound-settings');
         const btnSoundModalClose = document.getElementById('btn-sound-modal-close');
         const btnSoundDefaults = document.getElementById('btn-sound-defaults');
 
@@ -12916,9 +12911,6 @@
 
         if (btnOpenSoundSettings) {
           btnOpenSoundSettings.addEventListener('click', openSoundModalHandler);
-        }
-        if (btnAdvancedSoundSettings) {
-          btnAdvancedSoundSettings.addEventListener('click', openSoundModalHandler);
         }
 
         if (btnSoundModalClose) {
