@@ -6026,7 +6026,8 @@
       <div class="quick-rules-header">
         <div style="display: flex; align-items: center; gap: 8px;">
           <span style="font-size: 22px;">🀄</span>
-          <h2 class="modal-title" style="margin-bottom: 0; font-size: 19px; color: #123927; font-weight: 900;">한눈에 보는 핵심 가이드</h2>
+          <h2 class="modal-title" style="margin-bottom: 0; font-size: 19px; color: #123927; font-weight: 900;">한눈에 보는 핵심
+            가이드</h2>
         </div>
         <button class="quick-rules-close-icon" id="btn-quick-rules-close-x" aria-label="닫기">✕</button>
       </div>
@@ -6050,14 +6051,14 @@
             <span class="quick-card-icon">💡</span>
             <div class="quick-step-content">
               <strong>2. 막힐 땐 보조도구 터치!</strong>
-              <p><strong>[↩되돌리기 2회 / 💡힌트 2회 / 🔀셔플(패섞기) 1회]</strong>로 쉽게 풀어요.</p>
+              <p><strong>[↩되돌리기 2회 / 💡힌트 2회 / 🔀셔플(패섞기) 1회]</strong></p>
             </div>
           </div>
           <div class="quick-summary-item item-highlight">
             <span class="quick-card-icon">💔</span>
             <div class="quick-step-content">
-              <strong>3. 보관함 차면 하트 1개로 비우기!</strong>
-              <p>보관함이 꽉 차면 <strong>하트 1개로 2칸을 비우고</strong> 계속해요.</p>
+              <strong>3. 보관함이 꽉 차면 하트 1개로 비우기!</strong>
+              <p>보관함이 꽉 차면 <strong>하트 1개로 2칸을 비우기</strong></p>
             </div>
           </div>
         </div>
@@ -6119,7 +6120,8 @@
           <div class="rule-num">5</div>
           <div class="rule-text">
             <strong>보조 도구 사용 규칙</strong>
-            <p>• <strong>도구 제한:</strong> 판당 <strong>[↩ 되돌리기 2회]</strong>, <strong>[💡 힌트 2회]</strong>, <strong>[🔀 셔플(패섞기)
+            <p>• <strong>도구 제한:</strong> 판당 <strong>[↩ 되돌리기 2회]</strong>, <strong>[💡 힌트 2회]</strong>, <strong>[🔀
+                셔플(패섞기)
                 1회]</strong>가 제공됩니다.<br>
               • <strong>슬롯 터치 반환:</strong> 슬롯에 넣은 패를 터치해 보드로 되돌릴 때도 <strong>되돌리기 1회</strong>가 차감됩니다. (되돌리기 0회 시 반환 불가)
             </p>
@@ -14454,6 +14456,33 @@
           const getEffectiveTargetTile = (e) => {
             let targetTile = tile;
             if (e && e.clientX !== undefined && e.clientY !== undefined) {
+              // 1) 브라우저 3D 렌더링 환경에서 터치 좌표에 겹쳐있는 모든 타일 수집 및 상위 층 자유 패 최우선 승격
+              if (typeof document.elementsFromPoint === 'function') {
+                const els = document.elementsFromPoint(e.clientX, e.clientY);
+                const tileEls = els.map(el => (el && el.closest ? el.closest('.tile') : null)).filter(Boolean);
+                const seen = new Set();
+                const uniqueTileEls = [];
+                for (const el of tileEls) {
+                  if (!seen.has(el)) { seen.add(el); uniqueTileEls.push(el); }
+                }
+                const hoveredTiles = uniqueTileEls
+                  .map(el => this.tiles.find(t => t && t.id === el.id && !t.removed))
+                  .filter(Boolean);
+
+                if (hoveredTiles.length > 0) {
+                  // 상위 층(z) 내림차순 정렬
+                  hoveredTiles.sort((a, b) => b.z - a.z);
+                  // 터치 지점 타일들 중 선택 가능한 자유 패(isTileFree)가 있으면 무조건 최상위 자유 패 100% 우선 선택
+                  const topFree = hoveredTiles.find(t => this.isTileFree(t));
+                  if (topFree) {
+                    return topFree;
+                  }
+                  // 자유 패가 없더라도 3D 층고(z)가 가장 높은 상위 타일 우선
+                  return hoveredTiles[0];
+                }
+              }
+
+              // 2) 빗겨 맞은 터치 구제를 위한 스마트 스냅 후보 검색
               const freeCandidate = this.findBestFreeTileAtPoint(e.clientX, e.clientY);
               if (freeCandidate) {
                 if (!this.isTileFree(targetTile) || freeCandidate.z > targetTile.z) {
@@ -14680,8 +14709,8 @@
       /**
        * [터치 좌표 정밀 보정 엔진] 화면 절대 좌표(clientX, clientY) 기반 스마트 자석 스냅
        * 1. 가로 66px × 세로 88px 직사각형 외곽 테두리(Edge) 최단거리 정밀 측정
-       * 2. 감지 마진을 22px(하프 그리드 반 칸 약 65%)로 확장하여 지그재그 경계선 및 미스 터치 완벽 흡수
-       * 3. 상위 층(tile.z)에 16px 상당의 우선 흡착 가중치 부여 (아랫패 대신 윗패 자석 선택)
+       * 2. 감지 마진을 36px(지그재그 반 칸 33px 완전 포괄)로 확장하여 경계선 및 빗맞은 터치 완벽 흡수
+       * 3. 상위 층(tile.z)에 40px 상당의 우선 흡착 가중치 부여 (아랫패 대신 윗패 100% 우선 선택)
        */
       findBestFreeTileAtPoint(clientX, clientY) {
         if (clientX === undefined || clientY === undefined) return null;
@@ -14689,7 +14718,7 @@
         if (activeFreeTiles.length === 0) return null;
 
         const candidates = [];
-        const SNAP_MARGIN = 22; // 22px 스마트 스냅 반경
+        const SNAP_MARGIN = 36; // 36px 스마트 스냅 반경 (지그재그 하프 그리드 33px 초과 대응)
 
         for (const t of activeFreeTiles) {
           const rect = t.el.getBoundingClientRect();
@@ -14699,8 +14728,8 @@
           const edgeDist = Math.hypot(dx, dy);
 
           if (edgeDist <= SNAP_MARGIN) {
-            // 상위 층 타일에 16px 상당의 거리 우대 가중치 적용 (아랫패와 겹칠 때 윗패 100% 선택)
-            const weightedScore = edgeDist - (t.z * 16);
+            // 상위 층 타일에 40px 상당의 거리 우대 가중치 적용 (아랫패와 겹칠 때 윗패 100% 선택)
+            const weightedScore = edgeDist - (t.z * 40);
             candidates.push({ tile: t, z: t.z, edgeDist: edgeDist, score: weightedScore });
           }
         }
