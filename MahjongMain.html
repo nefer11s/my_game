@@ -5932,7 +5932,7 @@
             <button class="splash-btn-rank" id="btn-splash-rank" title="나의 최고기록">
               <span class="btn-icon">🏆</span> 나의 최고기록
             </button>
-            <button class="splash-btn-shortcut" id="btn-splash-shortcut" title="스마트폰 홈 화면이나 데스크톱에 바로가기 앱 추가 방법 설명">
+            <button class="splash-btn-shortcut" id="btn-splash-shortcut" title="스마트폰 홈 화면에 바로가기 앱 추가 방법 설명">
               <span class="btn-icon">📲</span> 홈화면 바로가기
             </button>
           </div>
@@ -12337,29 +12337,7 @@
                 </div>
               `;
             } else {
-              // [크롬(Chrome) 및 일반 데스크톱/안드로이드 설치 전용 가이드]
-              const isDesktop = !(/Android|iPhone|iPad|iPod/i.test(userAgent));
-
-              const downloadDesktopShortcut = () => {
-                try {
-                  const fullUrl = new URL('./MahjongMain.html?mode=app', location.href).href;
-                  const iconUrl = new URL('./assets/icon-192.png', location.href).href;
-                  const content = `[InternetShortcut]\r\nURL=${fullUrl}\r\nIconFile=${iconUrl}\r\nIconIndex=0\r\n`;
-                  const blob = new Blob([content], { type: 'application/octet-stream' });
-                  const link = document.createElement('a');
-                  link.href = URL.createObjectURL(blob);
-                  link.download = 'SY 그림맞추기.url';
-                  document.body.appendChild(link);
-                  link.click();
-                  setTimeout(() => {
-                    if (link.parentNode) link.parentNode.removeChild(link);
-                    URL.revokeObjectURL(link.href);
-                  }, 200);
-                } catch (err) {
-                  console.error('바탕화면 바로가기 생성 실패:', err);
-                }
-              };
-
+              // [크롬(Chrome) 및 일반 모바일 설치 전용 가이드]
               shortcutContent.innerHTML = `
                 <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 14px; padding: 14px; text-align: left; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(21, 128, 61, 0.08);">
                   <div style="font-weight: 800; color: #14532d; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
@@ -12375,36 +12353,12 @@
                   </div>
                 </div>
 
-                ${isDesktop ? `
-                  <div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 12px; padding: 12px; text-align: left; font-size: 12.5px; line-height: 1.55; color: #334155; margin-bottom: 12px;">
-                    <div style="font-weight: 800; color: #1e293b; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
-                      <span>💻 PC 윈도우 바탕화면 바로가기</span>
-                    </div>
-                    원클릭으로 바탕화면에 놓을 수 있는 바로가기 파일을 즉시 다운로드합니다.
-                    <button id="btn-download-pc-shortcut" style="width: 100%; height: 38px; margin-top: 8px; border-radius: 8px; border: 1px solid #94a3b8; background: #ffffff; color: #1e293b; font-size: 13.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                      📥 바탕화면 바로가기 파일(.url) 받기
-                    </button>
-                  </div>
-                ` : ''}
-
                 <div style="margin-top: 8px; text-align: center;">
                   <button id="btn-browser-continue" style="width: 100%; height: 42px; border-radius: 10px; border: 1px solid #cbd5e1; background: #ffffff; color: #475569; font-size: 14px; font-weight: 700; cursor: pointer;">
                     확인 완료 (창 닫기)
                   </button>
                 </div>
               `;
-
-              const setupInstallAction = () => {
-                const btnDownloadPc = document.getElementById('btn-download-pc-shortcut');
-                if (btnDownloadPc) {
-                  btnDownloadPc.onclick = () => {
-                    if (this.sound) this.sound.playSelect();
-                    downloadDesktopShortcut();
-                    alert('바탕화면 바로가기 파일(.url)이 다운로드되었습니다! 바탕화면에 끌어다 놓으시면 언제든 원클릭으로 게임이 실행됩니다.');
-                  };
-                }
-              };
-              setupInstallAction();
             }
 
             // 공통: 웹 브라우저에서 바로 게임하기 (닫기) 버튼 이벤트 바인딩
