@@ -6738,34 +6738,18 @@
         } catch (e) { }
       }
 
-      // 1. 타일 선택음 (Select): jade | real | wood | crystal | synth
+      // 1. 타일 선택음 (Select): 패 터치/슬롯 이동 시 경쾌한 픽업 탭음 (톡!)
       playSelect(overrideType = null) {
         this.init();
         if (!this.ctx) return;
         const type = overrideType || this.customSounds.select;
         const now = this.ctx.currentTime;
 
-        // 💎 실제 녹음된 실사 마작패 충돌음 (최우선 재생)
-        if (this.buffers && this.buffers.jade) {
-          this.playBuffer(this.buffers.jade, {
-            volume: 0.82,
-            rate: 0.98 + Math.random() * 0.04
-          });
-          return;
-        }
-        // Fallback: 버퍼 로딩 중일 때 절차적 쫀득 옥패 사운드
-        if ((type === 'jade' || type === 'real') && this.jadeClickBuffer) {
-          this.playBuffer(this.jadeClickBuffer, {
-            volume: 0.72,
-            rate: 0.98 + Math.random() * 0.05
-          });
-          return;
-        }
-
-        if (type === 'real' && this.buffers.click) {
+        // 경쾌하고 가벼운 마작패 터치 픽업음 (톡!)
+        if (this.buffers && this.buffers.click) {
           this.playBuffer(this.buffers.click, {
-            volume: 0.55,
-            rate: 0.97 + Math.random() * 0.06
+            volume: 0.62,
+            rate: 1.0 + Math.random() * 0.05
           });
           return;
         }
@@ -6808,67 +6792,45 @@
         osc.stop(now + 0.035);
       }
 
-      // 2. 짝 맞춤 타격음 (Match): real | ceramic | crystal | punch
+      // 2. 짝 맞춤 타격음 (Match): 짝 소리(실제 마작패 충돌) + 또로롱(바차임) 순차 연계
       playMatch(overrideType = null) {
         this.init();
         if (!this.ctx) return;
-        const type = overrideType || this.customSounds.match;
         const now = this.ctx.currentTime;
 
-        if (type === 'real' && this.buffers.tile) {
+        // [1단계: 짝 소리] 실제 마작패 충돌 실사 음원(마작패.mp3) 재생
+        if (this.buffers && this.buffers.jade) {
+          this.playBuffer(this.buffers.jade, {
+            volume: 0.88,
+            rate: 0.98 + Math.random() * 0.04
+          });
+        } else if (this.jadeClickBuffer) {
+          this.playBuffer(this.jadeClickBuffer, {
+            volume: 0.78,
+            rate: 0.98 + Math.random() * 0.04
+          });
+        } else if (this.buffers && this.buffers.tile) {
           this.playBuffer(this.buffers.tile, {
-            volume: 0.65,
+            volume: 0.70,
             rate: 0.98 + Math.random() * 0.04
           });
-        } else if (type === 'crystal' && this.crystalMatchBuffer) {
-          this.playBuffer(this.crystalMatchBuffer, {
-            volume: 0.62,
-            rate: 0.98 + Math.random() * 0.04
-          });
-        } else if (type === 'ceramic') {
-          // 도자기 맑은 딱! (고주파 크랙 + 도자기 링잉)
+        } else {
+          // 도자기 맑은 딱!
           const clickOsc = this.ctx.createOscillator();
           const clickGain = this.ctx.createGain();
           clickOsc.type = 'triangle';
           clickOsc.frequency.setValueAtTime(2800, now);
           clickOsc.frequency.exponentialRampToValueAtTime(620, now + 0.035);
-          clickGain.gain.setValueAtTime(0.35, now);
+          clickGain.gain.setValueAtTime(0.40, now);
           clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
           clickOsc.connect(clickGain);
           clickGain.connect(this.getDestination());
           clickOsc.start(now);
           clickOsc.stop(now + 0.05);
-
-          const ringOsc = this.ctx.createOscillator();
-          const ringGain = this.ctx.createGain();
-          ringOsc.type = 'sine';
-          ringOsc.frequency.setValueAtTime(1860, now + 0.005);
-          ringOsc.frequency.exponentialRampToValueAtTime(1420, now + 0.16);
-          ringGain.gain.setValueAtTime(0.24, now + 0.005);
-          ringGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
-          ringOsc.connect(ringGain);
-          ringGain.connect(this.getDestination());
-          ringOsc.start(now + 0.005);
-          ringOsc.stop(now + 0.20);
-        } else {
-          // punch (묵직한 펀치 챡!)
-          const punchOsc = this.ctx.createOscillator();
-          const punchGain = this.ctx.createGain();
-          punchOsc.type = 'triangle';
-          punchOsc.frequency.setValueAtTime(320, now);
-          punchOsc.frequency.exponentialRampToValueAtTime(55, now + 0.08);
-          punchGain.gain.setValueAtTime(0.42, now);
-          punchGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
-          punchOsc.connect(punchGain);
-          punchGain.connect(this.getDestination());
-          punchOsc.start(now);
-          punchOsc.stop(now + 0.1);
         }
 
-        // 인게임에서는 매칭 타격 후 0.04초 뒤 바차임 자동 연계
-        if (!overrideType) {
-          this.playWindChime(now + 0.04);
-        }
+        // [2단계: 또로롱 소리] 짝 소리(약 0.10s) 직후 순차적으로 풍경/바차임 연계 (0.12초 뒤)
+        this.playWindChime(now + 0.12);
       }
 
       // 슬롯 매칭 전용 팡! 폭죽/팝 소리 (통쾌한 타격음 + 크래커 노이즈 버스트 + 스파클)
@@ -15092,10 +15054,8 @@
               });
             }
 
-            // 사운드 연동: 한판 클리어 폭죽 소리 vs 클래식 뾰로롱 차임벨 소리
-            if (isFirework && this.sound && typeof this.sound.playFirework === 'function') {
-              this.sound.playFirework();
-            } else {
+            // 사운드 연동: 짝 소리(실제 마작패 충돌음) + 또로롱(바차임) 순차 연계 재생
+            if (this.sound && typeof this.sound.playMatch === 'function') {
               this.sound.playMatch();
             }
 
