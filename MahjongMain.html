@@ -6206,7 +6206,7 @@
             <button class="sound-test-btn" id="btn-test-sound-match" title="타격음 미리듣기">▶ 듣기</button>
           </div>
           <select class="diff-select sound-select" id="select-sound-match">
-            <option value="real_pair" selected>🀄 실제 마작패-짝 (실물 마작패 충돌음)</option>
+            <option value="real_pair" selected>🀄 실제 마작패-짝 (실물 마작패 충돌음 · 단독음)</option>
             <option value="ceramic">🏺 도자기 맑은 딱! (선명한 크랙)</option>
             <option value="real">🀄 리얼 마작 짝! (실물 강한 충돌)</option>
             <option value="crystal">🔔 크리스탈 벨 댕~ (깊은 공명)</option>
@@ -6900,24 +6900,23 @@
         osc.stop(now + 0.035);
       }
 
-      // 2. 짝 맞춤 타격음 (Match): 짝 소리 + 또로롱(바차임) 순차 연계
+      // 2. 짝 맞춤 타격음 (Match): temp 폴더의 마작패-짝 소리 단독 재생 (바차임 결합 없음)
       playMatch(overrideType = null) {
         this.init();
         if (!this.ctx) return;
         const type = overrideType || this.customSounds.match;
         const now = this.ctx.currentTime;
 
-        // [1단계: 짝 소리]
+        // 실제 마작패-짝 충돌 단독 타격음 (temp/마작패-짝소리.mp3)
         if (type === 'real_pair' || type === 'jade') {
-          // 실제 마작패-짝 충돌 실사 음원 재생
           if (this.buffers && this.buffers.jade) {
             this.playBuffer(this.buffers.jade, {
-              volume: 0.88,
-              rate: 0.98 + Math.random() * 0.04
+              volume: 0.92,
+              rate: 0.99 + Math.random() * 0.03
             });
           } else if (this.jadeClickBuffer) {
             this.playBuffer(this.jadeClickBuffer, {
-              volume: 0.78,
+              volume: 0.82,
               rate: 0.98 + Math.random() * 0.04
             });
           }
@@ -6970,9 +6969,6 @@
           clickOsc.start(now);
           clickOsc.stop(now + 0.05);
         }
-
-        // [2단계: 또로롱 소리] 짝 소리(약 0.10s) 직후 순차적으로 풍경/바차임 연계 (0.12초 뒤)
-        this.playWindChime(now + 0.12);
       }
 
       // 슬롯 매칭 전용 팡! 폭죽/팝 소리 (통쾌한 타격음 + 크래커 노이즈 버스트 + 스파클)
@@ -15303,7 +15299,7 @@
               });
             }
 
-            // 사운드 연동: 짝 소리(실제 마작패 충돌음) + 또로롱(바차임) 순차 연계 재생
+            // 사운드 연동: 마작패-짝 실사 단독 타격음 재생 (바차임 결합 없는 단독음)
             if (this.sound && typeof this.sound.playMatch === 'function') {
               this.sound.playMatch();
             }
