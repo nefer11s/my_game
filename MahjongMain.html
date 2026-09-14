@@ -5583,6 +5583,10 @@
               style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1.5px solid #86efac; color: #166534; font-weight: 800;">
               <span class="btn-icon">🚀</span> 레벨/판 직행 이동...
             </button>
+            <button class="btn settings-btn" id="btn-advanced-sound-settings" title="타일선택, 짝맞춤, 셔플 등 효과음 상세 지정"
+              style="margin-top: 6px; background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%); border: 1.5px solid #7dd3fc; color: #0369a1; font-weight: 800;">
+              <span class="btn-icon">🎵</span> 효과음 상세 소리 설정...
+            </button>
             <!-- 전통패 글자(라벨) 숨김 고급 옵션 -->
             <div class="settings-item"
               style="margin-top: 6px; padding-top: 8px; border-top: 1px dashed rgba(46, 167, 121, 0.3);">
@@ -6173,7 +6177,8 @@
             <button class="sound-test-btn" id="btn-test-sound-select" title="선택음 미리듣기">▶ 듣기</button>
           </div>
           <select class="diff-select sound-select" id="select-sound-select">
-            <option value="jade" selected>💎 쫀득한 옥조각 딱! (비취 옥패 부딪침)</option>
+            <option value="flip" selected>🀄 실제 마작패-선택(뒤집기) (실물 패 뒤집기·경쾌한 탭)</option>
+            <option value="jade">💎 쫀득한 옥조각 딱! (비취 옥패 부딪침)</option>
             <option value="real">🀄 리얼 마작패 톡 (실물 수지 접촉)</option>
             <option value="crystal">🔔 크리스탈 핑 (청아한 유리)</option>
             <option value="wood">🪵 단단한 우드블록 탁 (원목 타격)</option>
@@ -6188,7 +6193,8 @@
             <button class="sound-test-btn" id="btn-test-sound-match" title="타격음 미리듣기">▶ 듣기</button>
           </div>
           <select class="diff-select sound-select" id="select-sound-match">
-            <option value="ceramic" selected>🏺 도자기 맑은 딱! (선명한 크랙)</option>
+            <option value="real_pair" selected>🀄 실제 마작패-짝 (실물 마작패 충돌음)</option>
+            <option value="ceramic">🏺 도자기 맑은 딱! (선명한 크랙)</option>
             <option value="real">🀄 리얼 마작 짝! (실물 강한 충돌)</option>
             <option value="crystal">🔔 크리스탈 벨 댕~ (깊은 공명)</option>
             <option value="punch">⚡ 묵직한 펀치 챡! (강한 임팩트)</option>
@@ -6220,6 +6226,18 @@
             <option value="sparkle">✨ 화려한 스파크 파라락 (불꽃 연출)</option>
             <option value="real">💥 리얼 파열 폭죽 쾅! (실제 폭발음)</option>
             <option value="cannon">💣 묵직한 대포 쾅 (서브베이스 펀치)</option>
+          </select>
+        </div>
+
+        <!-- 5. 셔플 사운드 -->
+        <div class="sound-config-item">
+          <div class="sound-config-title">
+            <span>🔀 셔플 사운드 (Shuffle)</span>
+            <button class="sound-test-btn" id="btn-test-sound-shuffle" title="셔플음 미리듣기">▶ 듣기</button>
+          </div>
+          <select class="diff-select sound-select" id="select-sound-shuffle">
+            <option value="real_shuffle" selected>🀄 실제 마작패-섞기 (실물 마작패 촤르륵)</option>
+            <option value="synth">🎲 클래식 셔플 (디지털 사운드)</option>
           </select>
         </div>
       </div>
@@ -6445,17 +6463,21 @@
         this.compressor = null;
         this.muted = safeStorage.get('mahjong_sound_muted') === 'true';
 
-        // 각 사운드별 선택된 소리 (시연 기본 테마 디폴트: 쫀득한 옥조각 + 도자기맑은 + 첼레스타 + 축하팝)
-        // 기존 'real' 설정값도 쫀득한 옥조각('jade')으로 자동 승격
+        // 각 사운드별 선택된 소리 (디폴트: 실제 마작패-선택(뒤집기) + 실제 마작패-짝 + 첼레스타 + 축하팝 + 실제 마작패-섞기)
         const savedSelect = safeStorage.get('mahjong_sound_select');
-        const defaultSelect = (!savedSelect || savedSelect === 'real') ? 'jade' : savedSelect;
+        const defaultSelect = (!savedSelect || savedSelect === 'jade') ? 'flip' : savedSelect;
+        const savedMatch = safeStorage.get('mahjong_sound_match');
+        const defaultMatch = (!savedMatch || savedMatch === 'ceramic' || savedMatch === 'jade') ? 'real_pair' : savedMatch;
         this.customSounds = {
           select: defaultSelect,
-          match: safeStorage.get('mahjong_sound_match', 'ceramic'),
+          match: defaultMatch,
           chime: safeStorage.get('mahjong_sound_chime', 'celesta'),
-          firework: safeStorage.get('mahjong_sound_firework', 'cheer')
+          firework: safeStorage.get('mahjong_sound_firework', 'cheer'),
+          shuffle: safeStorage.get('mahjong_sound_shuffle', 'real_shuffle')
         };
         safeStorage.set('mahjong_sound_select', this.customSounds.select);
+        safeStorage.set('mahjong_sound_match', this.customSounds.match);
+        safeStorage.set('mahjong_sound_shuffle', this.customSounds.shuffle);
 
         this.buffers = {};
         this.chimeBuffer = null;
@@ -6478,42 +6500,48 @@
 
       setTheme(theme) {
         if (theme === 'default') {
-          this.setSoundOption('select', 'jade');
-          this.setSoundOption('match', 'ceramic');
+          this.setSoundOption('select', 'flip');
+          this.setSoundOption('match', 'real_pair');
           this.setSoundOption('chime', 'celesta');
           this.setSoundOption('firework', 'cheer');
+          this.setSoundOption('shuffle', 'real_shuffle');
         } else if (theme === 'crystal') {
           this.setSoundOption('select', 'crystal');
           this.setSoundOption('match', 'crystal');
           this.setSoundOption('chime', 'shimmer');
           this.setSoundOption('firework', 'cheer');
+          this.setSoundOption('shuffle', 'real_shuffle');
         } else if (theme === 'real') {
-          this.setSoundOption('select', 'real');
-          this.setSoundOption('match', 'real');
+          this.setSoundOption('select', 'flip');
+          this.setSoundOption('match', 'real_pair');
           this.setSoundOption('chime', 'lydian');
           this.setSoundOption('firework', 'real');
+          this.setSoundOption('shuffle', 'real_shuffle');
         } else if (theme === 'wood') {
           this.setSoundOption('select', 'wood');
           this.setSoundOption('match', 'ceramic');
           this.setSoundOption('chime', 'celesta');
           this.setSoundOption('firework', 'cheer');
+          this.setSoundOption('shuffle', 'real_shuffle');
         } else if (theme === 'synth') {
           this.setSoundOption('select', 'synth');
           this.setSoundOption('match', 'punch');
           this.setSoundOption('chime', 'retro');
           this.setSoundOption('firework', 'cannon');
+          this.setSoundOption('shuffle', 'synth');
         }
         safeStorage.set('mahjong_sound_theme', theme);
       }
 
       resetDefaults() {
         this.customSounds = {
-          select: 'jade',
-          match: 'ceramic',
+          select: 'flip',
+          match: 'real_pair',
           chime: 'celesta',
-          firework: 'cheer'
+          firework: 'cheer',
+          shuffle: 'real_shuffle'
         };
-        ['select', 'match', 'chime', 'firework'].forEach(k => {
+        ['select', 'match', 'chime', 'firework', 'shuffle'].forEach(k => {
           safeStorage.set('mahjong_sound_' + k, this.customSounds[k]);
         });
         safeStorage.set('mahjong_sound_theme', 'default');
@@ -6566,7 +6594,8 @@
         for (const [key, b64] of Object.entries(this.audioData)) {
           if (!b64 || this.buffers[key]) continue;
           try {
-            const binary = atob(b64);
+            const rawB64 = b64.includes(',') ? b64.split(',')[1] : b64;
+            const binary = atob(rawB64);
             const bytes = new Uint8Array(binary.length);
             for (let i = 0; i < binary.length; i++) {
               bytes[i] = binary.charCodeAt(i);
@@ -6740,20 +6769,51 @@
         } catch (e) { }
       }
 
-      // 1. 타일 선택음 (Select): 패 터치/슬롯 이동 시 경쾌한 픽업 탭음 (톡!)
+      // 1. 타일 선택음 (Select): 패 터치/선택/뒤집기/슬롯 이동 시 경쾌한 픽업 탭음
       playSelect(overrideType = null) {
         this.init();
         if (!this.ctx) return;
         const type = overrideType || this.customSounds.select;
         const now = this.ctx.currentTime;
 
-        // 경쾌하고 가벼운 마작패 터치 픽업음 (톡!)
-        if (this.buffers && this.buffers.click) {
-          this.playBuffer(this.buffers.click, {
-            volume: 0.62,
-            rate: 1.0 + Math.random() * 0.05
-          });
-          return;
+        // 실제 마작패-선택(뒤집기)
+        if (type === 'flip') {
+          if (this.buffers && this.buffers.flip) {
+            this.playBuffer(this.buffers.flip, {
+              volume: 0.85,
+              rate: 0.98 + Math.random() * 0.04
+            });
+            return;
+          }
+        }
+
+        // 쫀득한 옥조각 딱!
+        if (type === 'jade') {
+          if (this.jadeClickBuffer) {
+            this.playBuffer(this.jadeClickBuffer, {
+              volume: 0.75,
+              rate: 1.0 + Math.random() * 0.04
+            });
+            return;
+          }
+        }
+
+        // 리얼 마작패 톡
+        if (type === 'real') {
+          if (this.buffers && this.buffers.click) {
+            this.playBuffer(this.buffers.click, {
+              volume: 0.62,
+              rate: 1.0 + Math.random() * 0.05
+            });
+            return;
+          }
+          if (this.jadeClickBuffer) {
+            this.playBuffer(this.jadeClickBuffer, {
+              volume: 0.58,
+              rate: 1.08 + Math.random() * 0.04
+            });
+            return;
+          }
         }
 
         if (type === 'crystal' && this.crystalClickBuffer) {
@@ -6765,7 +6825,6 @@
         }
 
         if (type === 'wood') {
-          // 단단한 우드블록 탁! (우드 모달 공명)
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'triangle';
@@ -6794,30 +6853,64 @@
         osc.stop(now + 0.035);
       }
 
-      // 2. 짝 맞춤 타격음 (Match): 짝 소리(실제 마작패 충돌) + 또로롱(바차임) 순차 연계
+      // 2. 짝 맞춤 타격음 (Match): 짝 소리 + 또로롱(바차임) 순차 연계
       playMatch(overrideType = null) {
         this.init();
         if (!this.ctx) return;
+        const type = overrideType || this.customSounds.match;
         const now = this.ctx.currentTime;
 
-        // [1단계: 짝 소리] 실제 마작패 충돌 실사 음원(마작패.mp3) 재생
-        if (this.buffers && this.buffers.jade) {
-          this.playBuffer(this.buffers.jade, {
-            volume: 0.88,
-            rate: 0.98 + Math.random() * 0.04
-          });
-        } else if (this.jadeClickBuffer) {
-          this.playBuffer(this.jadeClickBuffer, {
-            volume: 0.78,
-            rate: 0.98 + Math.random() * 0.04
-          });
-        } else if (this.buffers && this.buffers.tile) {
-          this.playBuffer(this.buffers.tile, {
-            volume: 0.70,
-            rate: 0.98 + Math.random() * 0.04
-          });
+        // [1단계: 짝 소리]
+        if (type === 'real_pair' || type === 'jade') {
+          // 실제 마작패-짝 충돌 실사 음원 재생
+          if (this.buffers && this.buffers.jade) {
+            this.playBuffer(this.buffers.jade, {
+              volume: 0.88,
+              rate: 0.98 + Math.random() * 0.04
+            });
+          } else if (this.jadeClickBuffer) {
+            this.playBuffer(this.jadeClickBuffer, {
+              volume: 0.78,
+              rate: 0.98 + Math.random() * 0.04
+            });
+          }
+        } else if (type === 'crystal') {
+          if (this.crystalMatchBuffer) {
+            this.playBuffer(this.crystalMatchBuffer, { volume: 0.65 });
+          } else {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1760, now);
+            osc.frequency.exponentialRampToValueAtTime(880, now + 0.18);
+            gain.gain.setValueAtTime(0.35, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+            osc.connect(gain);
+            gain.connect(this.getDestination());
+            osc.start(now);
+            osc.stop(now + 0.26);
+          }
+        } else if (type === 'punch') {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(60, now + 0.08);
+          gain.gain.setValueAtTime(0.50, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+          osc.connect(gain);
+          gain.connect(this.getDestination());
+          osc.start(now);
+          osc.stop(now + 0.1);
+        } else if (type === 'real') {
+          if (this.jadeClickBuffer) {
+            this.playBuffer(this.jadeClickBuffer, {
+              volume: 0.82,
+              rate: 0.96 + Math.random() * 0.05
+            });
+          }
         } else {
-          // 도자기 맑은 딱!
+          // ceramic: 도자기 맑은 딱!
           const clickOsc = this.ctx.createOscillator();
           const clickGain = this.ctx.createGain();
           clickOsc.type = 'triangle';
@@ -7103,14 +7196,20 @@
         osc.stop(now + 0.055);
       }
 
-      playShuffle() {
+      playShuffle(overrideType = null) {
         this.init();
         if (!this.ctx) return;
-        // 실제 녹음된 마작패 섞는 소리 (마작패를 섞다.mp3) 우선 재생
-        if (this.buffers && this.buffers.shuffle) {
-          this.playBuffer(this.buffers.shuffle, { volume: 0.85 });
-          return;
+        const type = overrideType || this.customSounds.shuffle;
+
+        // 실제 마작패-섞기 (실제 녹음된 마작패 섞는 소리) 재생
+        if (type === 'real_shuffle' || type === 'real') {
+          if (this.buffers && this.buffers.shuffle) {
+            this.playBuffer(this.buffers.shuffle, { volume: 0.85 });
+            return;
+          }
         }
+
+        // 클래식 신디 셔플 사운드
         const now = this.ctx.currentTime;
         for (let i = 0; i < 5; i++) {
           const osc = this.ctx.createOscillator();
@@ -12616,6 +12715,7 @@
         // 사운드 개별 설정 모달 이벤트
         const soundModal = document.getElementById('sound-modal');
         const btnOpenSoundSettings = document.getElementById('btn-open-sound-settings');
+        const btnAdvancedSoundSettings = document.getElementById('btn-advanced-sound-settings');
         const btnSoundModalClose = document.getElementById('btn-sound-modal-close');
         const btnSoundDefaults = document.getElementById('btn-sound-defaults');
 
@@ -12623,25 +12723,32 @@
         const selectSoundMatch = document.getElementById('select-sound-match');
         const selectSoundChime = document.getElementById('select-sound-chime');
         const selectSoundFirework = document.getElementById('select-sound-firework');
+        const selectSoundShuffle = document.getElementById('select-sound-shuffle');
 
         const syncSoundModalUI = () => {
           if (selectSoundSelect) selectSoundSelect.value = this.sound.customSounds.select;
           if (selectSoundMatch) selectSoundMatch.value = this.sound.customSounds.match;
           if (selectSoundChime) selectSoundChime.value = this.sound.customSounds.chime;
           if (selectSoundFirework) selectSoundFirework.value = this.sound.customSounds.firework;
+          if (selectSoundShuffle) selectSoundShuffle.value = this.sound.customSounds.shuffle;
         };
         syncSoundModalUI();
 
+        const openSoundModalHandler = () => {
+          this.sound.playSelect();
+          if (settingsDropdown) {
+            settingsDropdown.classList.remove('active');
+            if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
+          }
+          syncSoundModalUI();
+          if (soundModal) soundModal.classList.add('active');
+        };
+
         if (btnOpenSoundSettings) {
-          btnOpenSoundSettings.addEventListener('click', () => {
-            this.sound.playSelect();
-            if (settingsDropdown) {
-              settingsDropdown.classList.remove('active');
-              if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
-            }
-            syncSoundModalUI();
-            if (soundModal) soundModal.classList.add('active');
-          });
+          btnOpenSoundSettings.addEventListener('click', openSoundModalHandler);
+        }
+        if (btnAdvancedSoundSettings) {
+          btnAdvancedSoundSettings.addEventListener('click', openSoundModalHandler);
         }
 
         if (btnSoundModalClose) {
@@ -12684,6 +12791,12 @@
             this.sound.playFirework(e.target.value);
           });
         }
+        if (selectSoundShuffle) {
+          selectSoundShuffle.addEventListener('change', (e) => {
+            this.sound.setSoundOption('shuffle', e.target.value);
+            this.sound.playShuffle(e.target.value);
+          });
+        }
 
         // 개별 미리듣기 버튼 리스너
         const btnTestSelect = document.getElementById('btn-test-sound-select');
@@ -12708,6 +12821,12 @@
         if (btnTestFirework) {
           btnTestFirework.addEventListener('click', () => {
             this.sound.playFirework(selectSoundFirework ? selectSoundFirework.value : null);
+          });
+        }
+        const btnTestShuffle = document.getElementById('btn-test-sound-shuffle');
+        if (btnTestShuffle) {
+          btnTestShuffle.addEventListener('click', () => {
+            this.sound.playShuffle(selectSoundShuffle ? selectSoundShuffle.value : null);
           });
         }
 
