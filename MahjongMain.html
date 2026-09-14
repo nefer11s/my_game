@@ -5728,7 +5728,7 @@
         <span class="btn-icon">💡</span><span class="btn-label" id="hint-label">힌트</span><span class="btn-dock-count"
           id="hint-count">2</span>
       </button>
-      <button class="btn btn-dock" id="btn-shuffle" title="패 섞기 (판당 1회)">
+      <button class="btn btn-dock" id="btn-shuffle" title="셔플(패섞기) (판당 1회)">
         <span class="btn-icon">🔀</span><span class="btn-label" id="shuffle-label">셔플</span><span class="btn-dock-count"
           id="shuffle-count">1</span>
       </button>
@@ -6050,7 +6050,7 @@
             <span class="quick-card-icon">💡</span>
             <div class="quick-step-content">
               <strong>2. 막힐 땐 보조도구 터치!</strong>
-              <p><strong>[↩되돌리기 2회 / 💡힌트 2회 / 🔀셔플 1회]</strong>로 쉽게 풀어요.</p>
+              <p><strong>[↩되돌리기 2회 / 💡힌트 2회 / 🔀셔플(패섞기) 1회]</strong>로 쉽게 풀어요.</p>
             </div>
           </div>
           <div class="quick-summary-item item-highlight">
@@ -6119,7 +6119,7 @@
           <div class="rule-num">5</div>
           <div class="rule-text">
             <strong>보조 도구 사용 규칙</strong>
-            <p>• <strong>도구 제한:</strong> 판당 <strong>[↩ 되돌리기 2회]</strong>, <strong>[💡 힌트 2회]</strong>, <strong>[🔀 셔플
+            <p>• <strong>도구 제한:</strong> 판당 <strong>[↩ 되돌리기 2회]</strong>, <strong>[💡 힌트 2회]</strong>, <strong>[🔀 셔플(패섞기)
                 1회]</strong>가 제공됩니다.<br>
               • <strong>슬롯 터치 반환:</strong> 슬롯에 넣은 패를 터치해 보드로 되돌릴 때도 <strong>되돌리기 1회</strong>가 차감됩니다. (되돌리기 0회 시 반환 불가)
             </p>
@@ -14618,13 +14618,13 @@
           setTimeout(() => {
             if (this.isDeadlocked() && !this.isClear && !this.isGameOver) {
               if (this.lives === 1 && !this.hasUsedLastChanceShuffle) {
-                if (confirm("더 이상 진행할 수 있는 수가 없습니다!\n(슬롯 가득 참 / 이동 가능한 패 없음)\n[마지막 기회 무료 셔플]을 사용하시겠습니까? (하트 소진 없음)")) {
+                if (confirm("더 이상 진행할 수 있는 수가 없습니다!\n(슬롯 가득 참 / 이동 가능한 패 없음)\n[마지막 기회 무료 셔플(패섞기)]을 사용하시겠습니까? (하트 소진 없음)")) {
                   this.shuffleRemain();
                 }
               } else if (this.lives === 1 && this.hasUsedLastChanceShuffle) {
-                alert("더 이상 진행할 수 있는 수가 없으며, 마지막 무료 셔플도 소진했습니다!\n되돌리기(Undo)를 사용하여 다른 수를 시도해 보세요.");
+                alert("더 이상 진행할 수 있는 수가 없으며, 마지막 무료 셔플(패섞기)도 소진했습니다!\n되돌리기(Undo)를 사용하여 다른 수를 시도해 보세요.");
               } else {
-                if (confirm("더 이상 진행할 수 있는 수가 없습니다!\n(슬롯 가득 참 / 이동 가능한 패 없음)\n패를 섞으시겠습니까? (하트 1개 소진)")) {
+                if (confirm("더 이상 진행할 수 있는 수가 없습니다!\n(슬롯 가득 참 / 이동 가능한 패 없음)\n셔플(패섞기)을 사용하시겠습니까? (하트 1개 소진)")) {
                   this.shuffleRemain();
                 }
               }
@@ -15306,7 +15306,7 @@
           if (shuffleLabel) shuffleLabel.textContent = '셔플';
           if (shuffleCount) shuffleCount.textContent = this.shuffleRemaining;
           btnShuffle.disabled = (this.shuffleRemaining <= 0);
-          btnShuffle.title = `패 섞기 (남은 횟수: ${this.shuffleRemaining}/1)`;
+          btnShuffle.title = `셔플(패섞기) (남은 횟수: ${this.shuffleRemaining}/1)`;
           btnShuffle.style.opacity = (this.shuffleRemaining <= 0) ? '0.45' : '1';
         }
       }
@@ -15362,7 +15362,7 @@
             }
             alert(`[힌트 사용 (남은 횟수: ${this.hintsRemaining}회)]\n현재 즉시 맞는 짝은 없지만 슬롯에 여유가 있습니다!\n빛나는 패를 슬롯에 담아 아래층 패를 열어보세요.`);
           } else {
-            alert("현재 진행할 수 있는 수가 없습니다. 패를 섞거나(셔플) 되돌리기를 사용하세요. (힌트 횟수는 차감되지 않았습니다)");
+            alert("현재 진행할 수 있는 수가 없습니다. 셔플(패섞기)이나 되돌리기를 사용하세요. (힌트 횟수는 차감되지 않았습니다)");
           }
         }
       }
@@ -15433,7 +15433,7 @@
 
         // [상용 룰] 셔플 판당 1회 한정 (하트 소진 없음)
         if (this.shuffleRemaining <= 0) {
-          this.showToast('⚠️ 이번 판의 셔플 기회(1회)를 모두 소진했습니다.');
+          this.showToast('⚠️ 이번 판의 셔플(패섞기) 기회(1회)를 모두 소진했습니다.');
           if (this.sound && this.sound.playMiss) this.sound.playMiss();
           return;
         }
