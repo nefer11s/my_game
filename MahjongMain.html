@@ -16386,19 +16386,23 @@
           setTimeout(() => {
             if (overlay.parentNode) overlay.remove();
 
-            if (celebration && !isPreview) {
-              // 30판 공식 정복: 먼저 성명(닉네임) 입력 모달 호출 -> 최고기록 저장 -> 인증서 출력
-              this.promptStage30CertificateName(celebration);
-            } else {
-              // 앞 화면 터치 완료 후: 폭죽 쇼 및 승리 모달 순차 개방
-              if (this.fireworks) {
-                if (this.fireworks.canvas) {
-                  this.fireworks.canvas.style.zIndex = '99998';
-                  this.fireworks.canvas.style.display = 'block';
+            try {
+              if (celebration) {
+                // 30판 공식 정복: 먼저 성명(닉네임) 입력 모달 호출 -> 최고기록 저장 -> 인증서 출력
+                this.promptStage30CertificateName(celebration);
+              } else {
+                // 앞 화면 터치 완료 후: 폭죽 쇼 및 승리 모달 순차 개방
+                if (this.fireworks) {
+                  if (this.fireworks.canvas) {
+                    this.fireworks.canvas.style.zIndex = '99998';
+                    this.fireworks.canvas.style.display = 'block';
+                  }
+                  this.fireworks.start(null, {});
                 }
-                const fwOpts = celebration ? { doubleIntensity: true, infinite: true } : {};
-                this.fireworks.start(celebration ? celebration.colors : null, fwOpts);
+                this.showVictoryModal();
               }
+            } catch (err) {
+              console.error("30판 축하 연출 전환 오류:", err);
               this.showVictoryModal();
             }
           }, 280);
@@ -16409,73 +16413,91 @@
       }
 
       promptStage30CertificateName(celebration) {
-        const nameModal = document.getElementById('cert-name-modal');
-        const inputEl = document.getElementById('cert-input-name');
-        const submitBtn = document.getElementById('btn-cert-name-submit');
-        if (!nameModal) {
-          this.showVictoryModal();
-          return;
-        }
-
-        // 기존 저장된 이름이 있으면 미리 채워둠
-        const savedName = localStorage.getItem('siyeon_mahjong_player_name') || '';
-        if (inputEl) {
-          inputEl.value = savedName;
-        }
-
-        nameModal.classList.add('active');
-        setTimeout(() => {
-          if (inputEl) {
-            inputEl.focus();
-            if (inputEl.select) inputEl.select();
+        try {
+          const nameModal = document.getElementById('cert-name-modal');
+          const inputEl = document.getElementById('cert-input-name');
+          const submitBtn = document.getElementById('btn-cert-name-submit');
+          if (!nameModal) {
+            this.showVictoryModal();
+            return;
           }
-        }, 150);
 
-        let handled = false;
-        const handleSubmit = () => {
-          if (handled) return;
-          handled = true;
-          this.sound.playSelect();
-          const enteredName = (inputEl && inputEl.value ? inputEl.value.trim() : '') || '시연 달인';
+          // 기존 저장된 이름이 있으면 미리 채워둠
+          let savedName = '';
           try {
-            localStorage.setItem('siyeon_mahjong_player_name', enteredName);
+            savedName = localStorage.getItem('siyeon_mahjong_player_name') || '';
           } catch (e) { }
-          this.lastCertPlayerName = enteredName;
-
-          // 1) 30판 정복 보너스 점수 미리 가산 및 하트 회복
-          const bonus = celebration ? celebration.bonus : 30000;
-          this.score += bonus;
-          if (this.lives < this.maxLives) {
-            this.lives++;
-            this.updateLivesUI();
+          if (inputEl) {
+            inputEl.value = savedName;
           }
-          this.scoreAlreadyAddedForStage30 = true;
 
-          // 2) 나의 최고기록(명예의 전당)에 자동 영구 저장!
-          this.saveScoreToHallOfFame(enteredName);
-
-          // 3) 모달 닫고 폭죽 쇼 시작 및 공식 정복 인증서 출력!
-          nameModal.classList.remove('active');
-          if (this.fireworks) {
-            if (this.fireworks.canvas) {
-              this.fireworks.canvas.style.zIndex = '99998';
-              this.fireworks.canvas.style.display = 'block';
+          nameModal.classList.add('active');
+          setTimeout(() => {
+            if (inputEl) {
+              inputEl.focus();
+              if (inputEl.select) inputEl.select();
             }
-            this.fireworks.start(celebration ? celebration.colors : null, { doubleIntensity: true, infinite: true });
-          }
-          this.showVictoryModal();
-        };
+          }, 150);
 
-        if (submitBtn) {
-          submitBtn.onclick = handleSubmit;
-        }
-        if (inputEl) {
-          inputEl.onkeydown = (e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              handleSubmit();
+          let handled = false;
+          const handleSubmit = () => {
+            if (handled) return;
+            handled = true;
+            try {
+              if (this.sound && this.sound.playSelect) this.sound.playSelect();
+              const enteredName = (inputEl && inputEl.value ? inputEl.value.trim() : '') || '시연 달인';
+              try {
+                localStorage.setItem('siyeon_mahjong_player_name', enteredName);
+              } catch (e) { }
+              this.lastCertPlayerName = enteredName;
+
+              // 1) 30판 정복 보너스 점수 미리 가산 및 하트 회복
+              const bonus = celebration ? celebration.bonus : 30000;
+              this.score += bonus;
+              if (this.lives < this.maxLives) {
+                this.lives++;
+                this.updateLivesUI();
+              }
+              this.scoreAlreadyAddedForStage30 = true;
+
+              // 2) 나의 최고기록(명예의 전당)에 자동 영구 저장!
+              try {
+                this.saveScoreToHallOfFame(enteredName);
+              } catch (e) {
+                console.error("saveScoreToHallOfFame 에러:", e);
+              }
+
+              // 3) 모달 닫고 폭죽 쇼 시작 및 공식 정복 인증서 출력!
+              nameModal.classList.remove('active');
+              if (this.fireworks) {
+                if (this.fireworks.canvas) {
+                  this.fireworks.canvas.style.zIndex = '99998';
+                  this.fireworks.canvas.style.display = 'block';
+                }
+                this.fireworks.start(celebration ? celebration.colors : null, { doubleIntensity: true, infinite: true });
+              }
+              this.showVictoryModal();
+            } catch (err) {
+              console.error("handleSubmit 오류:", err);
+              if (nameModal) nameModal.classList.remove('active');
+              this.showVictoryModal();
             }
           };
+
+          if (submitBtn) {
+            submitBtn.onclick = handleSubmit;
+          }
+          if (inputEl) {
+            inputEl.onkeydown = (e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleSubmit();
+              }
+            };
+          }
+        } catch (outerErr) {
+          console.error("promptStage30CertificateName 에러:", outerErr);
+          this.showVictoryModal();
         }
       }
 
