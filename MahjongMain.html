@@ -17145,13 +17145,17 @@
           const certNextRow = document.getElementById('cert-next-btn-row');
           if (certNextRow) certNextRow.style.display = 'flex';
 
-          // 난이도 업 버튼: targetDiff 기준
+          // 난이도 업 / 다음 판 버튼: targetDiff 기준
           const DIFF_ORDER = ['easy', 'normal', 'hard', 'master'];
           const curIdx = DIFF_ORDER.indexOf(targetDiff);
           const upgradeBtn = document.getElementById('cert-upgrade-btn');
           if (upgradeBtn) {
             if (curIdx >= DIFF_ORDER.length - 1) {
-              upgradeBtn.style.display = 'none';
+              // 달인 모드: 윗단계가 없으므로 다음판(31판) 진행 버튼으로 표시
+              const nextStageNum = (this.currentStage && this.currentStage >= 30) ? (this.currentStage + 1) : 31;
+              upgradeBtn.textContent = `다음판으로 (${nextStageNum}판) ➔`;
+              upgradeBtn.disabled = false;
+              upgradeBtn.style.display = '';
             } else {
               const nextDiff = DIFFICULTY_CONFIG[DIFF_ORDER[curIdx + 1]];
               upgradeBtn.textContent = `⬆️ ${nextDiff.name}단계로`;
