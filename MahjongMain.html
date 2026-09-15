@@ -15844,39 +15844,14 @@
 
         const tile = item.tile;
 
-        // 보드 타일 el의 좌표 캡처 (비행 도착점)
-        const targetRect = tile.el ? tile.el.getBoundingClientRect() : null;
-
-        // 즉시 이동 옵션이거나 좌표 캡처 실패 시 → 바로 복구
-        const canAnimate = durationMs > 0 && startRect && targetRect
-          && startRect.width > 0 && targetRect.width > 0;
-
         // 데이터 상태 즉시 반영 (슬롯 배열에서 제거)
         this.trayTiles.splice(trayIndex, 1);
         tile.removed = false;
         tile.isCovered = item.wasCovered;
         tile.isRevealed = !item.wasCovered;
 
-        if (!canAnimate) {
-          // 애니메이션 없이 즉시 표시
-          if (tile.el) {
-            this.showTileEl(tile.el);
-            if (tile.isCovered) {
-              tile.el.classList.add('face-down');
-              tile.el.classList.remove('revealed');
-            } else {
-              tile.el.classList.remove('face-down');
-              tile.el.classList.add('revealed');
-            }
-          }
-          this.sound.playSelect();
-          this.renderTray();
-          this.updateTileStates();
-          this.updateToolButtonsUI();
-          return;
-        }
-
-        // 비행 중 보드 타일은 투명하게 유지
+        // 보드 타일 el 표시 상태 복원 (display:'') 후 좌표 캡처
+        // → 숨겨진 채로 getBoundingClientRect()하면 width=0이라 애니 불가
         if (tile.el) {
           this.showTileEl(tile.el);
           if (tile.isCovered) {
@@ -15886,7 +15861,27 @@
             tile.el.classList.remove('face-down');
             tile.el.classList.add('revealed');
           }
-          tile.el.classList.add('fly-incoming'); // 도착 전까지 숨김
+        }
+
+        // 도착점 좌표 캡처 (el이 이미 보이는 상태)
+        const targetRect = tile.el ? tile.el.getBoundingClientRect() : null;
+
+        // 즉시 이동 옵션이거나 좌표 캡처 실패 시 → 바로 복구
+        const canAnimate = durationMs > 0 && startRect && targetRect
+          && startRect.width > 0 && targetRect.width > 0;
+
+        if (!canAnimate) {
+          // 애니메이션 없이 즉시 표시 (이미 el은 보임)
+          this.sound.playSelect();
+          this.renderTray();
+          this.updateTileStates();
+          this.updateToolButtonsUI();
+          return;
+        }
+
+        // 비행 중 보드 타일은 임시 투명 유지 (도착 후 해제)
+        if (tile.el) {
+          tile.el.classList.add('fly-incoming');
         }
 
         this.sound.playSelect();
