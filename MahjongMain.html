@@ -527,7 +527,7 @@
       color: #fff;
       transform: scale(0.92) translateY(12px);
       transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-word-break: keep-all;
+      word-break: keep-all;
     }
 
     .slot-escape-modal.active .slot-escape-card {
@@ -590,7 +590,7 @@ word-break: keep-all;
       color: #fff;
       border: none;
       box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
-transition: transform 0.15s ease, filter 0.15s ease;
+      transition: transform 0.15s ease, filter 0.15s ease;
     }
 
     .slot-escape-btn:active {
@@ -627,7 +627,7 @@ transition: transform 0.15s ease, filter 0.15s ease;
       font-size: 16px;
       font-weight: 700;
       color: #3b6b52;
-display: flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.18s ease;
@@ -673,7 +673,7 @@ display: flex;
       font-size: 18px;
       font-weight: 800;
       color: #2ea779;
-display: flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.15s ease;
@@ -713,7 +713,7 @@ display: flex;
       font-weight: 700;
       padding: 4px 10px;
       border-radius: 20px;
-transition: all 0.15s ease;
+      transition: all 0.15s ease;
     }
 
 
@@ -742,7 +742,7 @@ transition: all 0.15s ease;
       border-radius: 12px;
       font-size: 13px;
       font-weight: 700;
-}
+    }
 
     .warp-confirm-btn {
       flex: 2;
@@ -753,7 +753,7 @@ transition: all 0.15s ease;
       border-radius: 12px;
       font-size: 14px;
       font-weight: 800;
-box-shadow: 0 4px 14px rgba(46, 167, 121, 0.35);
+      box-shadow: 0 4px 14px rgba(46, 167, 121, 0.35);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -780,7 +780,7 @@ box-shadow: 0 4px 14px rgba(46, 167, 121, 0.35);
       font-weight: 700;
       color: #3b6b52;
       border-radius: 7px;
-transition: all 0.18s ease;
+      transition: all 0.18s ease;
       white-space: nowrap;
       text-align: center;
       display: flex;
@@ -874,7 +874,7 @@ transition: all 0.18s ease;
       background: rgba(244, 245, 245, 0.95);
       font-size: 13px;
       font-weight: 700;
-transition: all 0.18s ease;
+      transition: all 0.18s ease;
       white-space: nowrap;
       display: flex;
       align-items: center;
@@ -913,7 +913,7 @@ transition: all 0.18s ease;
       padding: 0 16px;
       border-radius: 14px;
       border: 1px solid rgba(255, 255, 255, 0.9);
-font-weight: 700;
+      font-weight: 700;
       font-size: 14px;
       color: #214e39;
       background: rgba(255, 255, 255, 0.92);
@@ -939,7 +939,7 @@ font-weight: 700;
       padding: 0 12px;
       border-radius: 14px;
       border: 1.5px solid rgba(255, 255, 255, 0.9);
-font-weight: 800;
+      font-weight: 800;
       font-size: 13px;
       color: #174232;
       background: rgba(255, 255, 255, 0.95);
@@ -982,10 +982,9 @@ font-weight: 800;
       overscroll-behavior: none;
       user-select: none;
       -webkit-user-select: none;
-}
+    }
 
-    .game-viewport.panning {
-}
+    .game-viewport.panning {}
 
     .game-board {
       position: absolute;
@@ -1002,7 +1001,7 @@ font-weight: 800;
       width: var(--tile-w);
       height: var(--tile-h);
       border-radius: var(--tile-radius);
-display: flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       touch-action: none !important;
@@ -1327,8 +1326,7 @@ display: flex;
     }
 
     /* 선택 가능 타일: 포인터 커서 */
-    .tile.free {
-}
+    .tile.free {}
 
     /* 자유 패: 인접 패 침범 방지(inset: 0) 및 은은한 개방 테두리 안내 */
     .tile.free::before {
@@ -1341,8 +1339,7 @@ display: flex;
       pointer-events: none;
     }
 
-    @media (hover: hover) {
-    }
+    @media (hover: hover) {}
 
     /* 잠긴 타일: 100% 완전 불투명(비침 방지) + 상위 패 그늘에 가려진 은은한 앰비언트 쉐이딩 */
     .tile.blocked {
@@ -1639,7 +1636,7 @@ display: flex;
       display: flex;
       align-items: center;
       justify-content: center;
-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
       transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
       padding: 0;
       line-height: 1;
@@ -1696,7 +1693,7 @@ box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
       background: linear-gradient(145deg, #ffffff 0%, #faf6ee 55%, #eae0ce 100%);
       border: 1px solid #dcd1be;
       box-shadow: 1px 1px 0 #ede5d4, 2px 2px 0 #dfd5bf, 2px 2px 0 #287756, 3px 3px 5px rgba(0, 0, 0, 0.32);
-display: flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
@@ -2086,7 +2083,7 @@ display: flex;
       font-size: 16px;
       font-weight: 800;
       border: none;
-box-shadow: 0 6px 18px rgba(32, 135, 92, 0.35);
+      box-shadow: 0 6px 18px rgba(32, 135, 92, 0.35);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
       display: inline-flex;
       align-items: center;
@@ -2131,7 +2128,7 @@ box-shadow: 0 6px 18px rgba(32, 135, 92, 0.35);
       font-size: 16px;
       font-weight: 800;
       border: none;
-display: flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
@@ -2233,7 +2230,7 @@ display: flex;
       border-radius: 20px;
       border: 1px solid rgba(255, 255, 255, 0.45);
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-display: flex;
+      display: flex;
       align-items: center;
       gap: 4px;
       transition: all 0.2s ease;
@@ -2305,7 +2302,7 @@ display: flex;
       font-size: 16px;
       font-weight: 800;
       border: none;
-display: flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
@@ -2323,7 +2320,7 @@ display: flex;
       font-size: 13px;
       font-weight: 800;
       border: 1.5px solid #d0e7d9;
-display: flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
@@ -2461,7 +2458,7 @@ display: flex;
       border: none;
       font-size: 20px;
       color: #7b9e8e;
-padding: 4px 8px;
+      padding: 4px 8px;
       border-radius: 8px;
       line-height: 1;
       transition: all 0.15s ease;
@@ -2573,7 +2570,7 @@ padding: 4px 8px;
       color: #ffffff;
       font-size: 15.5px;
       font-weight: 900;
-display: flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
@@ -2587,7 +2584,7 @@ display: flex;
       font-size: 12px;
       font-weight: 700;
       padding: 4px;
-text-decoration: underline;
+      text-decoration: underline;
       text-align: center;
     }
 
@@ -2621,7 +2618,7 @@ text-decoration: underline;
       font-weight: 700;
       padding: 3px 9px;
       border-radius: 8px;
-transition: all 0.15s ease;
+      transition: all 0.15s ease;
     }
 
 
@@ -2636,7 +2633,7 @@ transition: all 0.15s ease;
       color: #123927;
       padding: 0 8px;
       outline: none;
-}
+    }
 
     /* 목숨 표시 및 대미지 플래시 */
     .heart-icon {
@@ -2699,7 +2696,7 @@ transition: all 0.15s ease;
       font-size: 13px;
       font-weight: 800;
       border: 1.5px solid #f6e05e;
-display: flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
@@ -2717,7 +2714,7 @@ display: flex;
       font-size: 13px;
       font-weight: 800;
       border: 1.5px solid #86efac;
-display: flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
@@ -2730,7 +2727,7 @@ display: flex;
     /* 명예의 전당 보석 뱃지 및 인터랙션 */
     .rank-trophy-btn {
       font-size: 28px;
-user-select: none;
+      user-select: none;
       -webkit-tap-highlight-color: transparent;
       display: inline-flex;
       align-items: center;
@@ -2748,7 +2745,7 @@ user-select: none;
       justify-content: center;
       padding: 3px;
       border-radius: 50%;
-border: 2px solid transparent;
+      border: 2px solid transparent;
       transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s ease;
       vertical-align: middle;
       user-select: none;
@@ -2815,7 +2812,7 @@ border: 2px solid transparent;
       flex-direction: column;
       align-items: center;
       gap: 8px;
-transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, border-color 0.2s ease;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, border-color 0.2s ease;
       user-select: none;
     }
 
@@ -2957,7 +2954,7 @@ transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ea
       color: white;
       font-weight: 800;
       border: none;
-font-size: 14px;
+      font-size: 14px;
     }
 
     /* 화면 흔들림 및 판 파괴 애니메이션 */
@@ -3031,7 +3028,7 @@ font-size: 14px;
       justify-content: center !important;
       z-index: 99999 !important;
       pointer-events: auto !important;
-user-select: none !important;
+      user-select: none !important;
       -webkit-tap-highlight-color: transparent !important;
       animation: bigWinOverlayFadeIn 0.35s ease forwards;
     }
@@ -3061,7 +3058,7 @@ user-select: none !important;
         0 6px 24px rgba(0, 0, 0, 0.5);
       z-index: 100000;
       pointer-events: auto;
-opacity: 0;
+      opacity: 0;
       letter-spacing: 1px;
       animation: bigWinPop 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
       white-space: normal;
@@ -3126,7 +3123,7 @@ opacity: 0;
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 35px rgba(255, 215, 0, 0.5), inset 0 0 15px rgba(255, 215, 0, 0.2);
       z-index: 9500;
       pointer-events: auto;
-user-select: none;
+      user-select: none;
       -webkit-user-select: none;
       animation: allBlindBannerIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
       transition: opacity 0.5s ease, transform 0.5s ease;
@@ -4027,29 +4024,34 @@ user-select: none;
       gap: 8px;
       margin-top: 6px;
     }
+
     .cert-next-btn {
       flex: 1 !important;
       font-size: 13px !important;
       font-weight: 800 !important;
       padding: 10px 6px !important;
       border-radius: 22px !important;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.25) !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
       min-width: 0 !important;
     }
+
     #cert-retry-btn {
       background: linear-gradient(135deg, #15803d, #166534) !important;
       color: #fff !important;
     }
+
     #cert-upgrade-btn {
       background: linear-gradient(135deg, #b45309, #92400e) !important;
       color: #fff !important;
     }
+
     #cert-upgrade-btn:disabled {
       background: linear-gradient(135deg, #6b7280, #4b5563) !important;
       opacity: 0.55 !important;
       cursor: not-allowed !important;
       pointer-events: none !important;
     }
+
     #cert-home-btn {
       background: linear-gradient(135deg, #374151, #1f2937) !important;
       color: #e5e7eb !important;
@@ -4081,7 +4083,7 @@ user-select: none;
       align-items: center !important;
       justify-content: center !important;
       gap: 5px !important;
-transition: transform 0.15s ease, filter 0.15s ease !important;
+      transition: transform 0.15s ease, filter 0.15s ease !important;
     }
 
     .modal-card.certificate-modal-card .modal-share-btn:active {
@@ -4217,7 +4219,7 @@ transition: transform 0.15s ease, filter 0.15s ease !important;
       color: #557967;
       font-size: 16px;
       font-weight: bold;
-display: flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.15s ease;
@@ -4249,7 +4251,7 @@ display: flex;
       font-size: 12px;
       font-weight: 700;
       border: 1px solid #d8eadd;
-white-space: nowrap;
+      white-space: nowrap;
       transition: all 0.18s ease;
       flex-shrink: 0;
     }
@@ -4310,7 +4312,7 @@ white-space: nowrap;
       display: flex;
       flex-direction: column;
       align-items: center;
-padding: 6px 4px 4px;
+      padding: 6px 4px 4px;
       border-radius: 10px;
       background: #fbfdfc;
       border: 1px solid transparent;
@@ -4374,7 +4376,7 @@ padding: 6px 4px 4px;
       background: radial-gradient(circle at 50% 45%, rgba(10, 36, 25, 0.94) 0%, rgba(4, 15, 10, 0.98) 100%);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-}
+    }
 
     .lightbox-container {
       position: relative;
@@ -4386,7 +4388,7 @@ padding: 6px 4px 4px;
       align-items: center;
       justify-content: space-between;
       padding: 24px 20px 28px;
-/* 화면 터치/클릭 시 도감 복귀 */
+      /* 화면 터치/클릭 시 도감 복귀 */
     }
 
     .lightbox-top-bar {
@@ -4431,7 +4433,7 @@ padding: 6px 4px 4px;
       display: flex;
       align-items: center;
       justify-content: center;
-transition: all 0.18s ease;
+      transition: all 0.18s ease;
     }
 
 
@@ -4459,7 +4461,7 @@ transition: all 0.18s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-transition: all 0.2s cubic-bezier(0.2, 0.8, 0.3, 1);
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.3, 1);
       flex-shrink: 0;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
       pointer-events: auto;
@@ -4842,7 +4844,7 @@ transition: all 0.2s cubic-bezier(0.2, 0.8, 0.3, 1);
       color: #1a5638;
       font-size: 13px;
       font-weight: 800;
-display: flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
@@ -5139,34 +5141,51 @@ display: flex;
       justify-content: center;
       gap: 18px;
     }
-    #pause-overlay.active { display: flex; }
+
+    #pause-overlay.active {
+      display: flex;
+    }
 
     .pause-icon-ring {
-      width: 72px; height: 72px;
+      width: 72px;
+      height: 72px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.08);
-      border: 2px solid rgba(255,255,255,0.18);
-      display: flex; align-items: center; justify-content: center;
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 32px;
       animation: pausePulse 2.4s ease-in-out infinite;
     }
+
     @keyframes pausePulse {
-      0%,100% { box-shadow: 0 0 0 0 rgba(100,180,255,0.25); }
-      50%      { box-shadow: 0 0 0 14px rgba(100,180,255,0); }
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(100, 180, 255, 0.25);
+      }
+
+      50% {
+        box-shadow: 0 0 0 14px rgba(100, 180, 255, 0);
+      }
     }
+
     .pause-title {
       color: #e8f0fe;
       font-size: 22px;
       font-weight: 800;
       letter-spacing: 0.04em;
     }
+
     .pause-time-label {
-      color: rgba(200,220,255,0.55);
+      color: rgba(200, 220, 255, 0.55);
       font-size: 13px;
       font-weight: 600;
       letter-spacing: 0.06em;
       text-transform: uppercase;
     }
+
     #pause-time-display {
       color: #7ecfff;
       font-size: 38px;
@@ -5174,6 +5193,7 @@ display: flex;
       letter-spacing: 0.08em;
       font-variant-numeric: tabular-nums;
     }
+
     .pause-resume-btn {
       margin-top: 8px;
       padding: 14px 44px;
@@ -5184,13 +5204,14 @@ display: flex;
       font-size: 17px;
       font-weight: 800;
       letter-spacing: 0.04em;
-      box-shadow: 0 6px 20px rgba(46,167,121,0.38);
+      box-shadow: 0 6px 20px rgba(46, 167, 121, 0.38);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
       -webkit-tap-highlight-color: transparent;
     }
+
     .pause-resume-btn:active {
       transform: scale(0.95);
-      box-shadow: 0 2px 8px rgba(46,167,121,0.25);
+      box-shadow: 0 2px 8px rgba(46, 167, 121, 0.25);
     }
   </style>
 </head>
@@ -5789,16 +5810,19 @@ display: flex;
           title="인증서 이미지로 캡처하여 SNS 공유">
           <span class="btn-icon">📤</span> SNS 공유
         </button>
-        <button class="modal-btn modal-share-btn" id="modal-rank-btn" style="display: none; background: linear-gradient(135deg, #1d4ed8, #1e40af); color: #fff;"
+        <button class="modal-btn modal-share-btn" id="modal-rank-btn"
+          style="display: none; background: linear-gradient(135deg, #1d4ed8, #1e40af); color: #fff;"
           title="나의 최고기록 명예의 전당 확인">
           <span class="btn-icon">🏆</span> 나의 기록
         </button>
-        <button class="modal-btn" id="modal-confirm-btn" style="display: inline-flex; align-items: center; justify-content: center; text-align: center;">다음 판 시작 ➔</button>
+        <button class="modal-btn" id="modal-confirm-btn"
+          style="display: inline-flex; align-items: center; justify-content: center; text-align: center;">다음 판 시작
+          ➔</button>
         <!-- 30판 인증서 전용: 다음 도전 3-way 버튼 -->
         <div id="cert-next-btn-row" style="display: none; width: 100%; gap: 8px; margin-top: 6px;">
-          <button class="modal-btn cert-next-btn" id="cert-retry-btn">🔄 재도전</button>
-          <button class="modal-btn cert-next-btn" id="cert-upgrade-btn">⬆️ 난이도 업</button>
-          <button class="modal-btn cert-next-btn" id="cert-home-btn">🏠 처음으로</button>
+          <button class="modal-btn cert-next-btn" id="cert-retry-btn">🔄 현재판 다시</button>
+          <button class="modal-btn cert-next-btn" id="cert-upgrade-btn">⬆️ 난이도 올리기</button>
+          <button class="modal-btn cert-next-btn" id="cert-home-btn">🏠 홈화면으로</button>
         </div>
       </div>
     </div>
@@ -5814,8 +5838,7 @@ display: flex;
         <strong>수여자 성명(닉네임)</strong>을 입력해 주세요.
       </p>
       <div style="margin-bottom: 16px;">
-        <input type="text" id="cert-input-name" maxlength="8"
-          placeholder="성명/닉네임 입력 (최대 8자)"
+        <input type="text" id="cert-input-name" maxlength="8" placeholder="성명/닉네임 입력 (최대 8자)"
           style="width: 100%; height: 44px; padding: 0 14px; font-size: 15px; font-weight: 800; text-align: center; border: 2px solid #86efac; border-radius: 12px; outline: none; background: #f0fdf4; color: #14532d; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);">
       </div>
       <button class="modal-btn" id="btn-cert-name-submit"
@@ -5931,13 +5954,20 @@ display: flex;
       <div style="font-size: 13.5px; color: #2d3748; line-height: 1.65; margin-bottom: 16px;">
         <p style="margin: 0 0 8px 0; color: #1e3a2b; font-weight: 700; font-size: 13px;">업데이트 주요 내용:</p>
         <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #374151;">
-          <li style="margin-bottom: 6px;"><strong>🕊️ 하트 탈출 패 복원 속도 최적화:</strong> 슬롯에서 보드로 패가 복원될 때의 애니메이션 속도를 슬롯 진입 속도와 동일하게 일치시키고 부드러운 순차 비행 적용.</li>
-          <li style="margin-bottom: 6px;"><strong>💔 슬롯 만석 하트 탈출 안정화:</strong> 하트로 슬롯 패를 비울 때 더블 클릭/연타로 인한 하트 중복 차감(2개) 및 슬롯 패 중복 복귀(4개) 버그 완벽 수정.</li>
-          <li style="margin-bottom: 6px;"><strong>💔 하트 탈출 비행 애니메이션 개선:</strong> 하트 소진으로 슬롯을 비울 때 2개의 패가 순차적으로 보드로 날아가는 비행 애니메이션 완벽 연출.</li>
-          <li style="margin-bottom: 6px;"><strong>🐞 30판 정복 배너 및 인증서 연출 안정화:</strong> 30판 클리어 배너 터치 시 이름 입력 및 인증서 화면 전환 오류를 완벽히 해결.</li>
-          <li style="margin-bottom: 6px;"><strong>📖 환경설정 탭 순서 최적화:</strong> 안내 탭을 맨 뒤로 이동하여 게임·편의·소리·고급 설정 흐름을 직관적으로 정돈.</li>
-          <li style="margin-bottom: 6px;"><strong>🏆 30판 정복자 성명 입력 &amp; 최고기록 등재:</strong> 30판 클리어 시 성명을 입력받아 인증서에 인쇄하고 순위표에 자동 보존.</li>
-          <li style="margin-bottom: 6px;"><strong>📶 오프라인 리소스 최신화:</strong> 최신 게임 리소스가 기기에 저장되어 비행기 모드에서도 원활히 동작합니다.</li>
+          <li style="margin-bottom: 6px;"><strong>🕊️ 하트 탈출 패 복원 속도 최적화:</strong> 슬롯에서 보드로 패가 복원될 때의 애니메이션 속도를 슬롯 진입 속도와
+            동일하게 일치시키고 부드러운 순차 비행 적용.</li>
+          <li style="margin-bottom: 6px;"><strong>💔 슬롯 만석 하트 탈출 안정화:</strong> 하트로 슬롯 패를 비울 때 더블 클릭/연타로 인한 하트 중복 차감(2개)
+            및 슬롯 패 중복 복귀(4개) 버그 완벽 수정.</li>
+          <li style="margin-bottom: 6px;"><strong>💔 하트 탈출 비행 애니메이션 개선:</strong> 하트 소진으로 슬롯을 비울 때 2개의 패가 순차적으로 보드로 날아가는
+            비행 애니메이션 완벽 연출.</li>
+          <li style="margin-bottom: 6px;"><strong>🐞 30판 정복 배너 및 인증서 연출 안정화:</strong> 30판 클리어 배너 터치 시 이름 입력 및 인증서 화면 전환
+            오류를 완벽히 해결.</li>
+          <li style="margin-bottom: 6px;"><strong>📖 환경설정 탭 순서 최적화:</strong> 안내 탭을 맨 뒤로 이동하여 게임·편의·소리·고급 설정 흐름을 직관적으로
+            정돈.</li>
+          <li style="margin-bottom: 6px;"><strong>🏆 30판 정복자 성명 입력 &amp; 최고기록 등재:</strong> 30판 클리어 시 성명을 입력받아 인증서에 인쇄하고
+            순위표에 자동 보존.</li>
+          <li style="margin-bottom: 6px;"><strong>📶 오프라인 리소스 최신화:</strong> 최신 게임 리소스가 기기에 저장되어 비행기 모드에서도 원활히 동작합니다.
+          </li>
         </ul>
       </div>
       <button class="modal-btn" id="btn-offline-ready-close"
@@ -6131,7 +6161,9 @@ display: flex;
           </div>
         </div>
       </div>
-      <button class="modal-btn" id="btn-settings-guide-close" style="width: 100%; margin: 0; background: linear-gradient(135deg, #15803d, #166534); color: #fff;">확인 완료</button>
+      <button class="modal-btn" id="btn-settings-guide-close"
+        style="width: 100%; margin: 0; background: linear-gradient(135deg, #15803d, #166534); color: #fff;">확인
+        완료</button>
     </div>
   </div>
 
@@ -8441,7 +8473,7 @@ display: flex;
           }, { passive: true });
         }
 
-}
+      }
 
       // 테마 적용 (activeTheme 단일 소스 변경)
       _applyTheme(theme) {
@@ -11677,7 +11709,7 @@ display: flex;
         // 옵션 로컬 스토리지 불러오기 (기본값: 꺼짐/false, 사주패 기본값: 켜짐/true)
         try {
           const savedAutoBlind = localStorage.getItem('siyeon_mahjong_auto_blind_pair') || localStorage.getItem('autoBlindPairMatch');
-        this.autoBlindPairMatch = (savedAutoBlind === null || savedAutoBlind === undefined) ? true : (savedAutoBlind === '1');
+          this.autoBlindPairMatch = (savedAutoBlind === null || savedAutoBlind === undefined) ? true : (savedAutoBlind === '1');
           this.autoEndMatch = (localStorage.getItem('siyeon_mahjong_auto_end_match') || localStorage.getItem('autoEndMatch')) === '1';
           this.dynamicZoom = (localStorage.getItem('siyeon_mahjong_dynamic_zoom') || localStorage.getItem('dynamicZoom')) === '1';
           const savedZoomCols = parseInt(localStorage.getItem('siyeon_mahjong_dynamic_zoom_cols') || localStorage.getItem('dynamicZoomCols') || '5', 10);
@@ -17496,7 +17528,7 @@ display: flex;
         this.viewportEl.addEventListener('touchend', endTouch, { passive: true });
         this.viewportEl.addEventListener('touchcancel', endTouch, { passive: true });
 
-// [스마트 근접 터치 구제] 타일 사이 1~2px 틈새나 보드 배경을 찍었을 때 가장 가까운 자유 패 자동 구제
+        // [스마트 근접 터치 구제] 타일 사이 1~2px 틈새나 보드 배경을 찍었을 때 가장 가까운 자유 패 자동 구제
         if (this.boardEl) {
           this.boardEl.addEventListener('pointerdown', (e) => {
             if (e.button !== undefined && e.button !== 0) return;
