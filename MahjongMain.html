@@ -15583,25 +15583,32 @@ display: flex;
           this.loseLife();
           if (this.isGameOver) return;
 
-          // 2. 슬롯의 패 중 최대 2개를 안전하게 보드로 복귀 (시스템 무료)
-          let freedCount = 0;
-          for (let i = this.trayTiles.length - 1; i >= 0 && freedCount < 2; i--) {
-            if (!this.trayTiles[i].isMatching) {
-              this.returnTileFromTray(i, true);
-              freedCount++;
+          // 2. 슬롯의 패 중 최대 2개를 안전하게 보드로 복귀 (시스템 무료, 2개 모두 시차 비행 애니메이션 연출)
+          const returnTopTile = () => {
+            for (let i = this.trayTiles.length - 1; i >= 0; i--) {
+              if (!this.trayTiles[i].isMatching) {
+                this.returnTileFromTray(i, true, true);
+                if (this.undoStack.length > 0 && this.undoStack[this.undoStack.length - 1].type === 'toTray') {
+                  this.undoStack.pop();
+                }
+                return true;
+              }
             }
-          }
+            return false;
+          };
 
-          // 되돌리기 스택 정리
-          while (freedCount > 0 && this.undoStack.length > 0 && this.undoStack[this.undoStack.length - 1].type === 'toTray') {
-            this.undoStack.pop();
-            freedCount--;
-          }
-
-          this.renderTray();
-          this.updateTileStates();
+          // 첫 번째 패 복귀
+          const freedFirst = returnTopTile();
           this.updateHeaderUI();
-          this.updateToolButtonsUI();
+
+          // 두 번째 패는 120ms 후 시차 복귀하여 2개 패 모두 보드로 날아가는 애니메이션 연출
+          if (freedFirst) {
+            setTimeout(() => {
+              if (this.isGameOver || this.isClear) return;
+              returnTopTile();
+              this.updateHeaderUI();
+            }, 120);
+          }
           // 모달에서 이미 하트 소진을 확인했으므로 혼란을 주는 중복 토스트는 제거
         };
 
@@ -15640,10 +15647,12 @@ display: flex;
       /**
        * 슬롯의 패를 클릭했을 때 보드의 원래 위치로 반환
        */
-      returnTileFromTray(trayIndex, isSystemFree = false) {
+      returnTileFromTray(trayIndex, isSystemFree = false, skipCleanup = false) {
         if (this.isPaused && !isSystemFree) return;
         if (this.isGameOver || this.isAutoClearing || this.isDealing) return;
-        this.cleanupFlyingTiles();
+        if (!skipCleanup) {
+          this.cleanupFlyingTiles();
+        }
         const item = this.trayTiles[trayIndex];
         if (!item || item.isMatching) return;
 
