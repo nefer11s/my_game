@@ -5411,8 +5411,8 @@
               <span class="btn-icon" id="dynamic-zoom-icon">🔒</span> <span id="dynamic-zoom-text">동적확대: 꺼짐</span>
             </button>
             <button class="btn settings-btn" id="btn-auto-end-match" title="남은 타일 10개 이하 시 자동으로 매칭 진행">
-              <span class="btn-icon" id="auto-end-match-icon">🔒</span> <span id="auto-end-match-text">마지막10개 자동매칭:
-                꺼짐</span>
+              <span class="btn-icon" id="auto-end-match-icon">⚡</span> <span id="auto-end-match-text">마지막10개 자동매칭:
+                켜짐</span>
             </button>
             <button class="btn settings-btn" id="btn-auto-blind-pair" title="뒤집힌 패 뒤집은 후 같은 자유패 선택 시 두 패 자동 슬롯 이동">
               <span class="btn-icon" id="auto-blind-pair-icon">🔓</span> <span id="auto-blind-pair-text">짝선택 자동슬롯:
@@ -11710,7 +11710,8 @@
         try {
           const savedAutoBlind = localStorage.getItem('siyeon_mahjong_auto_blind_pair') || localStorage.getItem('autoBlindPairMatch');
           this.autoBlindPairMatch = (savedAutoBlind === null || savedAutoBlind === undefined) ? true : (savedAutoBlind === '1');
-          this.autoEndMatch = (localStorage.getItem('siyeon_mahjong_auto_end_match') || localStorage.getItem('autoEndMatch')) === '1';
+          const savedAutoEnd = localStorage.getItem('siyeon_mahjong_auto_end_match') || localStorage.getItem('autoEndMatch');
+          this.autoEndMatch = (savedAutoEnd === null || savedAutoEnd === undefined) ? true : (savedAutoEnd === '1');
           this.dynamicZoom = (localStorage.getItem('siyeon_mahjong_dynamic_zoom') || localStorage.getItem('dynamicZoom')) === '1';
           const savedZoomCols = parseInt(localStorage.getItem('siyeon_mahjong_dynamic_zoom_cols') || localStorage.getItem('dynamicZoomCols') || '5', 10);
           this.dynamicZoomCols = (!isNaN(savedZoomCols) && savedZoomCols >= 3 && savedZoomCols <= 10) ? savedZoomCols : 5;
@@ -11980,6 +11981,19 @@
         if (autoBlindIcon && autoBlindText) {
           autoBlindIcon.textContent = '🔓';
           autoBlindText.textContent = '짝선택 자동슬롯: 켜짐';
+        }
+
+        // 3-2. 마지막 10개 자동매칭: 켜짐 (true)
+        this.autoEndMatch = true;
+        try {
+          localStorage.setItem('siyeon_mahjong_auto_end_match', '1');
+          localStorage.setItem('autoEndMatch', '1');
+        } catch (e) { }
+        const autoEndIcon = document.getElementById('auto-end-match-icon');
+        const autoEndText = document.getElementById('auto-end-match-text');
+        if (autoEndIcon && autoEndText) {
+          autoEndIcon.textContent = '⚡';
+          autoEndText.textContent = '마지막10개 자동매칭: 켜짐';
         }
 
         // 4. 슬롯 이동 속도: 보통 (normal, 0.45초)
