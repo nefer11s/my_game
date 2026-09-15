@@ -5553,7 +5553,8 @@
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                 <span class="settings-label" style="margin-bottom: 0;">🎆 30판 클리어 폭죽 속도</span>
                 <span id="stage30-firework-speed-badge"
-                  style="font-size: 11px; color: #166534; font-weight: 700; background: #dcfce7; padding: 2px 7px; border-radius: 10px;">⚡ 빠름 (0.35초)</span>
+                  style="font-size: 11px; color: #166534; font-weight: 700; background: #dcfce7; padding: 2px 7px; border-radius: 10px;">⚡
+                  빠름 (0.35초)</span>
               </div>
               <select class="diff-select" id="select-stage30-firework-speed" title="30판 클리어 시 터지는 축하 폭죽의 연속 발사 간격 속도">
                 <option value="200">🚀 매우 빠름 (0.20초 간격)</option>
@@ -12431,7 +12432,7 @@
                     3. <strong>[바로가기 만들기]</strong>를 선택 후 추가
                   </div>
                   <div style="margin-top: 8px; font-size: 11.5px; color: #15803d; line-height: 1.5;">
-                    💡 바로가기로 접속하시면 <strong>인터넷이 안되어도</strong> 편안하게 게임을 즐기실 수 있습니다.
+                    💡 바로가기로 접속하시면 <strong>인터넷이 안돼도</strong> 플레이가 가능합니다.
                   </div>
                 </div>
 
@@ -14149,6 +14150,7 @@
           diffKey: this.difficulty,
           stage: this.currentStage,
           score: this.score,
+          time: this.formatTime(this.timerSeconds),
           gem: gemInfo ? gemInfo.name : null,
           date: new Date().toLocaleDateString('ko-KR')
         };
@@ -14160,7 +14162,7 @@
         this.renderHallOfFame();
       }
 
-      playCelebrationAnimation(diffKey, fromEasterModal = false, playerName = null) {
+      playCelebrationAnimation(diffKey, fromEasterModal = false, playerName = null, recordItem = null) {
         if (this.sound && this.sound.playClear) {
           this.sound.playClear();
         } else if (this.sound && this.sound.playWin) {
@@ -14229,7 +14231,7 @@
               }
               this.fireworks.start(celebration.colors, { doubleIntensity: true, infinite: true, interval: this.stage30FireworkSpeed });
             }
-            this.showVictoryModal(diffKey, fromEasterModal, playerName);
+            this.showVictoryModal(diffKey, fromEasterModal, playerName, recordItem);
           }, 280);
         };
 
@@ -14262,7 +14264,7 @@
               const gemInfo = this.getGemInfoByDiff(item.diffKey || diffName);
               if (gemInfo) {
                 diffCellHTML = `
-                  <span class="rank-gem-badge ${gemInfo.badgeClass}" data-gem-diff="${gemInfo.key}" data-player-name="${playerName}" title="[30판 정복: ${gemInfo.name}] 터치 시 축하 연출 감상">
+                  <span class="rank-gem-badge ${gemInfo.badgeClass}" data-gem-diff="${gemInfo.key}" data-player-name="${playerName}" data-rank-index="${idx}" title="[30판 정복: ${gemInfo.name}] 터치 시 축하 연출 감상">
                     <img src="${gemInfo.icon}" class="rank-gem-icon" alt="${gemInfo.name}" loading="lazy" decoding="async">
                   </span>
                 `;
@@ -14289,8 +14291,10 @@
               if (e && e.stopPropagation) e.stopPropagation();
               const diffKey = badge.dataset.gemDiff;
               const pName = badge.dataset.playerName;
+              const rankIdx = parseInt(badge.dataset.rankIndex, 10);
+              const recordItem = (!isNaN(rankIdx) && list[rankIdx]) ? list[rankIdx] : null;
               if (diffKey) {
-                this.playCelebrationAnimation(diffKey, false, pName);
+                this.playCelebrationAnimation(diffKey, false, pName, recordItem);
               }
             };
             badge.addEventListener('click', handleBadgeTap);
@@ -16845,11 +16849,12 @@
         }
       }
 
-      showVictoryModal(previewDiffKey = null, fromEasterModal = false, previewPlayerName = null) {
+      showVictoryModal(previewDiffKey = null, fromEasterModal = false, previewPlayerName = null, previewRecord = null) {
         const isPreview = Boolean(previewDiffKey);
         this.isCelebrationPreview = isPreview;
         this.celebrationFromEaster = Boolean(fromEasterModal);
         this.previewPlayerName = previewPlayerName || null;
+        this.previewRecord = previewRecord || null;
         const targetDiff = previewDiffKey || this.difficulty;
         const diffCfg = DIFFICULTY_CONFIG[targetDiff] || DIFFICULTY_CONFIG.normal;
         const confirmBtn = document.getElementById('modal-confirm-btn');
@@ -16910,8 +16915,33 @@
           const scoreEl = document.getElementById('cert-score');
           const dateEl = document.getElementById('cert-issue-date');
 
-          if (serialEl) serialEl.textContent = `NO. SY-2026-CERT-${celebration.diffCode || 'S30C'}`;
-          if (engTitleEl) engTitleEl.textContent = celebration.certEngTitle || 'CERTIFICATE OF MASTERY';
+          const now = new Date();
+          let pName = this.previewPlayerName || (previewRecord && previewRecord.name) || this.lastCertPlayerName || localStorage.getItem('siyeon_mahjong_player_name') || '시연 달인';
+          let certScoreStr = (previewRecord && previewRecord.score !== undefined) ? `${Number(previewRecord.score).toLocaleString()}점` : `${formattedScore}점`;
+          let certTimeStr = (previewRecord && previewRecord.time) ? previewRecord.time : formattedTime;
+          let certDateStr = (previewRecord && previewRecord.date) ? previewRecord.date : `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일`;
+
+          // 활성 인증서 컨텍스트에 보관 (Canvas 렌더링 및 SNS 공유 시 100% 동일 참조)
+          this.activeCertificateContext = {
+            diffKey: targetDiff,
+            diffName: diffCfg.name,
+            playerName: pName,
+            recipientTitle: celebration.recipientTitle,
+            scoreStr: certScoreStr,
+            timeStr: certTimeStr,
+            dateStr: certDateStr,
+            serialNo: `NO. SY-2026-CERT-${celebration.diffCode || 'S30C'}`,
+            certEngTitle: celebration.certEngTitle || 'CERTIFICATE OF MASTERY',
+            certTitleL1: celebration.certTitleL1 || '',
+            certTitleL2: celebration.certTitleL2 || '정복 인증서',
+            sealText: celebration.sealText || 'OFFICIAL SEAL',
+            imageSrc: celebration.imageSrc,
+            imageClass: celebration.imageClass,
+            certDesc: celebration.certDesc
+          };
+
+          if (serialEl) serialEl.textContent = this.activeCertificateContext.serialNo;
+          if (engTitleEl) engTitleEl.textContent = this.activeCertificateContext.certEngTitle;
           if (mainTitleEl) {
             mainTitleEl.innerHTML = `<span class="cert-title-l1">${celebration.certTitleL1 || ''}</span><span class="cert-title-l2">${celebration.certTitleL2 || '정복 인증서'}</span>`;
           }
@@ -16921,7 +16951,6 @@
           }
           if (sealBadge) sealBadge.textContent = celebration.sealText || 'OFFICIAL SEAL';
           if (recipNameEl) {
-            let pName = this.previewPlayerName || this.lastCertPlayerName || localStorage.getItem('siyeon_mahjong_player_name') || '시연 달인';
             recipNameEl.textContent = `${pName} 님`;
           }
           if (recipTitleEl) recipTitleEl.textContent = celebration.recipientTitle;
@@ -16930,13 +16959,9 @@
             diffNameEl.textContent = `${diffCfg.name} (30판)`;
             diffNameEl.className = `cert-record-val ${targetDiff}`;
           }
-          if (timeEl) timeEl.textContent = formattedTime;
-          if (scoreEl) scoreEl.textContent = `${formattedScore}점`;
-
-          if (dateEl) {
-            const now = new Date();
-            dateEl.textContent = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일`;
-          }
+          if (timeEl) timeEl.textContent = certTimeStr;
+          if (scoreEl) scoreEl.textContent = certScoreStr;
+          if (dateEl) dateEl.textContent = certDateStr;
 
           const shareBtn = document.getElementById('modal-share-btn');
           if (shareBtn) shareBtn.style.display = 'inline-flex';
@@ -17107,7 +17132,9 @@
         canvas.height = height;
         const ctx = canvas.getContext('2d');
 
-        const diffKey = this.difficulty || 'normal';
+        // 활성 인증서 컨텍스트 우선 참조, 없으면 현재 인스턴스 기준 폴백
+        const certCtx = this.activeCertificateContext || {};
+        const diffKey = certCtx.diffKey || this.difficulty || 'normal';
         const diffMap = { '쉬움': 'easy', '보통': 'normal', '어려움': 'hard', '달인': 'master' };
         const normDiff = diffMap[diffKey] || diffKey;
         const celebration = this.getStage30CelebrationData(normDiff) || {
@@ -17165,16 +17192,16 @@
         // 5. 헤더: 시리얼 넘버
         ctx.font = 'bold 15px "Courier New", Courier, monospace';
         ctx.fillStyle = '#8c734b';
-        ctx.fillText(`NO. SY-2026-CERT-${celebration.diffCode || 'S30C'}`, width / 2, 80);
+        ctx.fillText(certCtx.serialNo || `NO. SY-2026-CERT-${celebration.diffCode || 'S30C'}`, width / 2, 80);
 
         // 영문 제호
         ctx.font = 'bold 18px "Times New Roman", Georgia, serif';
         ctx.fillStyle = '#aa771c';
-        ctx.fillText(celebration.certEngTitle || 'CERTIFICATE OF MASTERY', width / 2, 110);
+        ctx.fillText(certCtx.certEngTitle || celebration.certEngTitle || 'CERTIFICATE OF MASTERY', width / 2, 110);
 
         // 한글 메인 제호 (두 줄 렌더링)
-        const titleL1 = celebration.certTitleL1 || '정 복';
-        const titleL2 = celebration.certTitleL2 || '인 증 서';
+        const titleL1 = certCtx.certTitleL1 !== undefined ? certCtx.certTitleL1 : (celebration.certTitleL1 || '정 복');
+        const titleL2 = certCtx.certTitleL2 || celebration.certTitleL2 || '인 증 서';
 
         ctx.font = '900 32px sans-serif';
         ctx.fillStyle = theme.title;
@@ -17255,25 +17282,30 @@
 
         ctx.fillStyle = '#ffffff';
         ctx.font = '900 13px sans-serif';
-        ctx.fillText(celebration.sealText || 'OFFICIAL SEAL', emblemCenterX, badgeY + badgeH / 2 + 1);
+        ctx.fillText(certCtx.sealText || celebration.sealText || 'OFFICIAL SEAL', emblemCenterX, badgeY + badgeH / 2 + 1);
 
         // 7. 수여 대상 및 칭호
-        ctx.font = 'bold 18px sans-serif';
+        ctx.font = 'bold 15px sans-serif';
         ctx.fillStyle = '#8c734b';
-        ctx.fillText('수 여 칭 호', width / 2, 455);
+        ctx.fillText('수 여 대 상 자', width / 2, 440);
 
-        ctx.font = '900 32px sans-serif';
+        const recipientName = (certCtx.playerName || this.previewPlayerName || this.lastCertPlayerName || '시연 달인');
+        ctx.font = '900 24px sans-serif';
+        ctx.fillStyle = '#1e293b';
+        ctx.fillText(`${recipientName} 님`, width / 2, 470);
+
+        ctx.font = 'bold 20px sans-serif';
         ctx.fillStyle = theme.title;
-        ctx.fillText(celebration.recipientTitle || '[공인 정복자]', width / 2, 500);
+        ctx.fillText(certCtx.recipientTitle || celebration.recipientTitle || '[공인 정복자]', width / 2, 502);
 
         // 8. 본문 공인 문구
         ctx.font = '600 20px sans-serif';
         ctx.fillStyle = '#453c2a';
-        const descText = celebration.certDesc || '위 사람은 『SY 그림맞추기 (그린빌라/오룡이 에디션)』 전 관문을 완파하여 본 칭호에 등극하였음을 공식 인증함.';
+        const descText = certCtx.certDesc || celebration.certDesc || '위 사람은 『SY 그림맞추기 (그린빌라/오룡이 에디션)』 전 관문을 완파하여 본 칭호에 등극하였음을 공식 인증함.';
         const maxLineWidth = 640;
         let words = descText.split(' ');
         let line = '';
-        let lineY = 560;
+        let lineY = 552;
         for (let n = 0; n < words.length; n++) {
           let testLine = line + words[n] + ' ';
           let metrics = ctx.measureText(testLine);
@@ -17314,7 +17346,7 @@
         ctx.lineTo(boxX + colW * 2, boxY + boxH - 15);
         ctx.stroke();
 
-        const diffCfg = (typeof DIFFICULTY_CONFIG !== 'undefined' && DIFFICULTY_CONFIG[diffKey]) ? DIFFICULTY_CONFIG[diffKey] : { name: '달인' };
+        const diffCfg = (typeof DIFFICULTY_CONFIG !== 'undefined' && DIFFICULTY_CONFIG[normDiff]) ? DIFFICULTY_CONFIG[normDiff] : { name: '달인' };
         ctx.font = 'bold 15px sans-serif';
         ctx.fillStyle = '#7d6b4f';
         ctx.fillText('정복 난이도', boxX + colW * 0.5, boxY + 40);
@@ -17327,14 +17359,16 @@
         ctx.fillText('최종 기록', boxX + colW * 1.5, boxY + 40);
         ctx.font = '900 22px sans-serif';
         ctx.fillStyle = '#1f1b13';
-        ctx.fillText(this.formatTime(this.timerSeconds), boxX + colW * 1.5, boxY + 78);
+        const displayTime = certCtx.timeStr || this.formatTime(this.timerSeconds);
+        ctx.fillText(displayTime, boxX + colW * 1.5, boxY + 78);
 
         ctx.font = 'bold 15px sans-serif';
         ctx.fillStyle = '#7d6b4f';
         ctx.fillText('공인 점수', boxX + colW * 2.5, boxY + 40);
         ctx.font = '900 22px sans-serif';
         ctx.fillStyle = '#d97706';
-        ctx.fillText(`${this.score.toLocaleString()}점`, boxX + colW * 2.5, boxY + 78);
+        const displayScore = certCtx.scoreStr || `${this.score.toLocaleString()}점`;
+        ctx.fillText(displayScore, boxX + colW * 2.5, boxY + 78);
 
         // 10. 하단 발급 정보 & 전통 직인
         const footerY = 850;
@@ -17346,11 +17380,11 @@
         ctx.stroke();
 
         const now = new Date();
-        const dateStr = `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일`;
+        const displayDate = certCtx.dateStr || `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일`;
         ctx.textAlign = 'left';
         ctx.font = 'bold 19px sans-serif';
         ctx.fillStyle = '#6e5e44';
-        ctx.fillText(dateStr, 100, footerY + 42);
+        ctx.fillText(displayDate, 100, footerY + 42);
 
         ctx.font = '900 23px sans-serif';
         ctx.fillStyle = '#2b2315';
@@ -17417,15 +17451,20 @@
             }, 'image/png', 0.95);
           });
 
-          const diffKey = this.difficulty || 'normal';
-          const diffCfg = (typeof DIFFICULTY_CONFIG !== 'undefined' && DIFFICULTY_CONFIG[diffKey]) ? DIFFICULTY_CONFIG[diffKey] : { name: '정복' };
+          const certCtx = this.activeCertificateContext || {};
+          const diffKey = certCtx.diffKey || this.difficulty || 'normal';
+          const diffMap = { '쉬움': 'easy', '보통': 'normal', '어려움': 'hard', '달인': 'master' };
+          const normDiff = diffMap[diffKey] || diffKey;
+          const diffCfg = (typeof DIFFICULTY_CONFIG !== 'undefined' && DIFFICULTY_CONFIG[normDiff]) ? DIFFICULTY_CONFIG[normDiff] : { name: '정복' };
           const now = new Date();
           const dateTag = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
-          const fileName = `시연이네그림맞추기_공인인증서_${dateTag}.png`;
+          const fileName = `시연이네그림맞추기_${diffCfg.name}_공인인증서_${dateTag}.png`;
           const file = new File([blob], fileName, { type: 'image/png' });
 
-          const shareTitle = `『SY 그림맞추기 (그린빌라/오룡이 에디션)』 ${diffCfg.name} 모드 공식 정복 인증서`;
-          const shareText = `『SY 그림맞추기 (그린빌라/오룡이 에디션)』 전 30개 관문 돌파! 공식 정복 인증서를 획득했습니다! 🏆✨\n#SY그림맞추기 #마작솔리테어 #정복인증서`;
+          const pName = certCtx.playerName ? `[${certCtx.playerName} 님]` : '';
+          const shareTitle = `『SY 그림맞추기 (그린빌라/오룡이 에디션)』 ${pName} ${diffCfg.name} 모드 공식 정복 인증서`;
+          const scoreText = certCtx.scoreStr ? ` (공인점수: ${certCtx.scoreStr})` : '';
+          const shareText = `『SY 그림맞추기 (그린빌라/오룡이 에디션)』 ${diffCfg.name} 모드 전 30개 관문 돌파! ${pName} 공식 정복 인증서를 획득했습니다!${scoreText} 🏆✨\n#SY그림맞추기 #마작솔리테어 #정복인증서 #${diffCfg.name}`;
 
           // 1. Web Share API 시도 (모바일 카카오톡, 인스타, X, 페이스북, 메시지 등으로 바로 이미지 전달)
           let sharedSuccess = false;
