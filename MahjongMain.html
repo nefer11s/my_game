@@ -5547,6 +5547,22 @@
                 <option value="8">8열까지 (최소 확대)</option>
               </select>
             </div>
+            <!-- 30판 클리어 폭죽 발사 속도 고급 옵션 -->
+            <div class="settings-item" id="stage30-firework-speed-wrapper"
+              style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span class="settings-label" style="margin-bottom: 0;">🎆 30판 클리어 폭죽 속도</span>
+                <span id="stage30-firework-speed-badge"
+                  style="font-size: 11px; color: #166534; font-weight: 700; background: #dcfce7; padding: 2px 7px; border-radius: 10px;">⚡ 빠름 (0.35초)</span>
+              </div>
+              <select class="diff-select" id="select-stage30-firework-speed" title="30판 클리어 시 터지는 축하 폭죽의 연속 발사 간격 속도">
+                <option value="200">🚀 매우 빠름 (0.20초 간격)</option>
+                <option value="350" selected>⚡ 빠름 (0.35초 간격 · 기본값)</option>
+                <option value="550">🌿 보통 (0.55초 간격)</option>
+                <option value="900">🕊️ 느긋함 (0.90초 간격)</option>
+                <option value="1400">🐢 여유로움 (1.40초 간격)</option>
+              </select>
+            </div>
             <button class="btn settings-btn btn-clear-cache" id="btn-clear-cache"
               title="브라우저 캐시를 완전히 비우고 최신 버전을 다시 받아옵니다" style="margin-top: 8px;">
               <span class="btn-icon">🔄</span> 캐시 완전 초기화 및 새로고침
@@ -6156,6 +6172,7 @@
             • <strong>레벨/판 직행 이동</strong>: 원하는 난이도와 1~30판 중 원하는 스테이지로 즉시 점프합니다.<br>
             • <strong>전통패 글자(라벨) 표시</strong>: 전통 마작패 모서리의 숫자·기호 및 하단 라벨 표시 여부를 선택합니다. (기본: 숨김)<br>
             • <strong>난이도별 상세 시간 제한</strong>: 초급, 보통, 고급 각 난이도의 제한 시간을 초 단위로 정밀 조절합니다.<br>
+            • <strong>30판 폭죽 발사 속도</strong>: 30판 클리어 축하 폭죽이 연속으로 터지는 주기(0.20초~1.40초)를 조절합니다.<br>
             • <strong>배경화면 테마</strong>: 명리 녹색, 오룡이 주황, 클래식 블루 테마를 선택합니다.<br>
             • <strong>모든 설정 기본값으로 복원</strong>: 모든 옵션을 최초 표준 상태로 되돌립니다.
           </div>
@@ -7575,6 +7592,11 @@
 
         const isDouble = Boolean(options && options.doubleIntensity);
         const isInfinite = Boolean(options && options.infinite);
+        this.isDouble = isDouble;
+
+        const defaultInterval = isDouble ? 350 : 700;
+        const intervalMs = (options && options.interval) ? Math.max(100, Number(options.interval)) : defaultInterval;
+        this.currentInterval = intervalMs;
 
         const w = this.canvas.width;
         const h = this.canvas.height;
@@ -7597,30 +7619,14 @@
             }
           }, 360);
 
-          // 2배 빠른 주기(350ms) + 매번 2곳 동시 버스트로 총 폭죽량 2배 이상 증가
-          if (this.autoLaunchTimer) clearInterval(this.autoLaunchTimer);
-          this.autoLaunchTimer = setInterval(() => {
-            if (!this.isRunning || this.isStopping) return;
-            const x1 = w * (0.12 + Math.random() * 0.38);
-            const y1 = h * (0.12 + Math.random() * 0.36);
-            const x2 = w * (0.50 + Math.random() * 0.38);
-            const y2 = h * (0.12 + Math.random() * 0.36);
-            this.burst(x1, y1, 60 + Math.floor(Math.random() * 30));
-            this.burst(x2, y2, 60 + Math.floor(Math.random() * 30));
-          }, 350);
+          this.setLaunchInterval(intervalMs);
         } else {
           // 일반 폭죽
           this.burst(w * 0.5, h * 0.32, 60);
           setTimeout(() => { if (this.isRunning && !this.isStopping) this.burst(w * 0.25, h * 0.38, 50); }, 200);
           setTimeout(() => { if (this.isRunning && !this.isStopping) this.burst(w * 0.75, h * 0.38, 50); }, 400);
 
-          if (this.autoLaunchTimer) clearInterval(this.autoLaunchTimer);
-          this.autoLaunchTimer = setInterval(() => {
-            if (!this.isRunning || this.isStopping) return;
-            const targetX = w * (0.15 + Math.random() * 0.7);
-            const targetY = h * (0.15 + Math.random() * 0.4);
-            this.burst(targetX, targetY, 40 + Math.floor(Math.random() * 25));
-          }, 700);
+          this.setLaunchInterval(intervalMs);
         }
 
         // [30판 클리어 특화] isInfinite 시 지속시간 제한 없이 무제한 지속, 아닐 경우 10초 후 정지
@@ -7645,6 +7651,36 @@
         }
 
         this.loop();
+      }
+
+      /**
+       * 폭죽 연속 발사 간격 속도 동적 변경
+       */
+      setLaunchInterval(intervalMs) {
+        this.currentInterval = Math.max(100, Number(intervalMs) || (this.isDouble ? 350 : 700));
+        if (this.autoLaunchTimer) {
+          clearInterval(this.autoLaunchTimer);
+          this.autoLaunchTimer = null;
+        }
+        if (!this.isRunning || this.isStopping) return;
+
+        this.autoLaunchTimer = setInterval(() => {
+          if (!this.isRunning || this.isStopping) return;
+          const w = this.canvas ? this.canvas.width : window.innerWidth;
+          const h = this.canvas ? this.canvas.height : window.innerHeight;
+          if (this.isDouble) {
+            const x1 = w * (0.12 + Math.random() * 0.38);
+            const y1 = h * (0.12 + Math.random() * 0.36);
+            const x2 = w * (0.50 + Math.random() * 0.38);
+            const y2 = h * (0.12 + Math.random() * 0.36);
+            this.burst(x1, y1, 60 + Math.floor(Math.random() * 30));
+            this.burst(x2, y2, 60 + Math.floor(Math.random() * 30));
+          } else {
+            const targetX = w * (0.15 + Math.random() * 0.7);
+            const targetY = h * (0.15 + Math.random() * 0.4);
+            this.burst(targetX, targetY, 40 + Math.floor(Math.random() * 25));
+          }
+        }, this.currentInterval);
       }
 
       burst(x, y, count = 55) {
@@ -11743,6 +11779,8 @@
           if (this.classicLabelMode === 'hide') {
             document.body.classList.add('hide-classic-labels');
           }
+          const savedFireworkSpeed = parseInt(localStorage.getItem('siyeon_mahjong_stage30_firework_speed') || '350', 10);
+          this.stage30FireworkSpeed = (!isNaN(savedFireworkSpeed) && savedFireworkSpeed >= 150 && savedFireworkSpeed <= 3000) ? savedFireworkSpeed : 350;
           // 테마 기본값: 무조건 '명리학'('saju')을 디폴트로 적용
           let savedTheme = localStorage.getItem('siyeon_mahjong_active_theme');
           const defaultThemeMigrated = localStorage.getItem('siyeon_mahjong_default_theme_v1478');
@@ -12065,6 +12103,18 @@
         if (selectSoundChime) selectSoundChime.value = 'celesta';
         if (selectSoundFirework) selectSoundFirework.value = 'cheer';
         if (selectSoundShuffle) selectSoundShuffle.value = 'real_shuffle';
+
+        // 10-2. 30판 클리어 폭죽 발사 속도: 350 (기본값)
+        this.stage30FireworkSpeed = 350;
+        try { localStorage.setItem('siyeon_mahjong_stage30_firework_speed', '350'); } catch (e) { }
+        const selectFireworkSpeedReset = document.getElementById('select-stage30-firework-speed');
+        if (selectFireworkSpeedReset) selectFireworkSpeedReset.value = '350';
+        const badgeFireworkSpeedReset = document.getElementById('stage30-firework-speed-badge');
+        if (badgeFireworkSpeedReset) {
+          badgeFireworkSpeedReset.textContent = '⚡ 빠름 (0.35초)';
+          badgeFireworkSpeedReset.style.background = '#dcfce7';
+          badgeFireworkSpeedReset.style.color = '#166534';
+        }
 
         // 11. 게임 화면 갱신 및 완료 알림
         this.updateHeaderUI();
@@ -13418,6 +13468,52 @@
           });
         }
 
+        // 30판 클리어 폭죽 속도 선택 이벤트 바인딩
+        const selectStage30FireworkSpeed = document.getElementById('select-stage30-firework-speed');
+        const badgeStage30FireworkSpeed = document.getElementById('stage30-firework-speed-badge');
+        const updateStage30FireworkSpeedUI = () => {
+          const spd = this.stage30FireworkSpeed || 350;
+          if (selectStage30FireworkSpeed) selectStage30FireworkSpeed.value = String(spd);
+          if (badgeStage30FireworkSpeed) {
+            if (spd <= 250) {
+              badgeStage30FireworkSpeed.textContent = '🚀 매우 빠름 (0.20초)';
+              badgeStage30FireworkSpeed.style.background = '#fee2e2';
+              badgeStage30FireworkSpeed.style.color = '#991b1b';
+            } else if (spd <= 400) {
+              badgeStage30FireworkSpeed.textContent = '⚡ 빠름 (0.35초)';
+              badgeStage30FireworkSpeed.style.background = '#dcfce7';
+              badgeStage30FireworkSpeed.style.color = '#166534';
+            } else if (spd <= 700) {
+              badgeStage30FireworkSpeed.textContent = '🌿 보통 (0.55초)';
+              badgeStage30FireworkSpeed.style.background = '#e0f2fe';
+              badgeStage30FireworkSpeed.style.color = '#075985';
+            } else if (spd <= 1100) {
+              badgeStage30FireworkSpeed.textContent = '🕊️ 느긋함 (0.90초)';
+              badgeStage30FireworkSpeed.style.background = '#fef3c7';
+              badgeStage30FireworkSpeed.style.color = '#92400e';
+            } else {
+              badgeStage30FireworkSpeed.textContent = '🐢 여유로움 (1.40초)';
+              badgeStage30FireworkSpeed.style.background = '#f3e8ff';
+              badgeStage30FireworkSpeed.style.color = '#6b21a8';
+            }
+          }
+        };
+        updateStage30FireworkSpeedUI();
+        if (selectStage30FireworkSpeed) {
+          selectStage30FireworkSpeed.addEventListener('change', (e) => {
+            const val = parseInt(e.target.value, 10) || 350;
+            this.stage30FireworkSpeed = val;
+            try {
+              localStorage.setItem('siyeon_mahjong_stage30_firework_speed', String(val));
+            } catch (err) { }
+            updateStage30FireworkSpeedUI();
+            if (this.fireworks && this.fireworks.isRunning && this.fireworks.isDouble) {
+              this.fireworks.setLaunchInterval(val);
+            }
+            this.showToast(`🎆 30판 폭죽 속도: ${badgeStage30FireworkSpeed ? badgeStage30FireworkSpeed.textContent : val + 'ms'}`);
+          });
+        }
+
         const selectSeniorMode = document.getElementById('select-senior-mode');
         if (selectSeniorMode) {
           selectSeniorMode.value = this.seniorMode || 'on';
@@ -13617,6 +13713,7 @@
           autoEndMatch: this.autoEndMatch,
           dynamicZoom: this.dynamicZoom,
           dynamicZoomCols: this.dynamicZoomCols,
+          stage30FireworkSpeed: this.stage30FireworkSpeed,
           seniorMode: this.seniorMode,
           activeTheme: this.activeTheme,
           savedAt: new Date().toLocaleString('ko-KR')
@@ -13721,6 +13818,15 @@
         const selectDynamicZoomCols = document.getElementById('select-dynamic-zoom-cols');
         if (selectDynamicZoomCols) {
           selectDynamicZoomCols.value = String(this.dynamicZoomCols || 5);
+        }
+        if (saved.stage30FireworkSpeed !== undefined) {
+          const spd = parseInt(saved.stage30FireworkSpeed, 10);
+          this.stage30FireworkSpeed = (!isNaN(spd) && spd >= 150 && spd <= 3000) ? spd : 350;
+          try {
+            localStorage.setItem('siyeon_mahjong_stage30_firework_speed', String(this.stage30FireworkSpeed));
+          } catch (e) { }
+          const selectFireworkSpeed = document.getElementById('select-stage30-firework-speed');
+          if (selectFireworkSpeed) selectFireworkSpeed.value = String(this.stage30FireworkSpeed);
         }
         if (saved.seniorMode !== undefined) {
           this.seniorMode = (saved.seniorMode === 'on' || saved.seniorMode === true || saved.seniorMode === 'longpress' || saved.seniorMode === 'hud') ? 'on' : 'off';
@@ -14121,7 +14227,7 @@
                 this.fireworks.canvas.style.zIndex = '99998';
                 this.fireworks.canvas.style.display = 'block';
               }
-              this.fireworks.start(celebration.colors, { doubleIntensity: true, infinite: true });
+              this.fireworks.start(celebration.colors, { doubleIntensity: true, infinite: true, interval: this.stage30FireworkSpeed });
             }
             this.showVictoryModal(diffKey, fromEasterModal, playerName);
           }, 280);
@@ -16712,7 +16818,7 @@
                   this.fireworks.canvas.style.zIndex = '99998';
                   this.fireworks.canvas.style.display = 'block';
                 }
-                this.fireworks.start(celebration ? celebration.colors : null, { doubleIntensity: true, infinite: true });
+                this.fireworks.start(celebration ? celebration.colors : null, { doubleIntensity: true, infinite: true, interval: this.stage30FireworkSpeed });
               }
               this.showVictoryModal();
             } catch (err) {
