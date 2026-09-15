@@ -5553,13 +5553,12 @@
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                 <span class="settings-label" style="margin-bottom: 0;">🎆 30판 클리어 폭죽 속도</span>
                 <span id="stage30-firework-speed-badge"
-                  style="font-size: 11px; color: #166534; font-weight: 700; background: #dcfce7; padding: 2px 7px; border-radius: 10px;">⚡
-                  빠름 (0.35초)</span>
+                  style="font-size: 11px; color: #075985; font-weight: 700; background: #e0f2fe; padding: 2px 7px; border-radius: 10px;">🌿 보통 (0.55초)</span>
               </div>
               <select class="diff-select" id="select-stage30-firework-speed" title="30판 클리어 시 터지는 축하 폭죽의 연속 발사 간격 속도">
                 <option value="200">🚀 매우 빠름 (0.20초 간격)</option>
-                <option value="350" selected>⚡ 빠름 (0.35초 간격 · 기본값)</option>
-                <option value="550">🌿 보통 (0.55초 간격)</option>
+                <option value="350">⚡ 빠름 (0.35초 간격)</option>
+                <option value="550" selected>🌿 보통 (0.55초 간격 · 기본값)</option>
                 <option value="900">🕊️ 느긋함 (0.90초 간격)</option>
                 <option value="1400">🐢 여유로움 (1.40초 간격)</option>
               </select>
@@ -11777,8 +11776,16 @@
           if (this.classicLabelMode === 'hide') {
             document.body.classList.add('hide-classic-labels');
           }
-          const savedFireworkSpeed = parseInt(localStorage.getItem('siyeon_mahjong_stage30_firework_speed') || '350', 10);
-          this.stage30FireworkSpeed = (!isNaN(savedFireworkSpeed) && savedFireworkSpeed >= 150 && savedFireworkSpeed <= 3000) ? savedFireworkSpeed : 350;
+          // 30판 클리어 폭죽 속도 기본값: 550(보통, 0.55초 간격)
+          const fireworkSpeedMigrated = localStorage.getItem('siyeon_mahjong_firework_speed_v1575');
+          if (!fireworkSpeedMigrated) {
+            if (localStorage.getItem('siyeon_mahjong_stage30_firework_speed') === '350') {
+              localStorage.setItem('siyeon_mahjong_stage30_firework_speed', '550');
+            }
+            localStorage.setItem('siyeon_mahjong_firework_speed_v1575', '1');
+          }
+          const savedFireworkSpeed = parseInt(localStorage.getItem('siyeon_mahjong_stage30_firework_speed') || '550', 10);
+          this.stage30FireworkSpeed = (!isNaN(savedFireworkSpeed) && savedFireworkSpeed >= 150 && savedFireworkSpeed <= 3000) ? savedFireworkSpeed : 550;
           // 테마 기본값: 무조건 '명리학'('saju')을 디폴트로 적용
           let savedTheme = localStorage.getItem('siyeon_mahjong_active_theme');
           const defaultThemeMigrated = localStorage.getItem('siyeon_mahjong_default_theme_v1478');
@@ -12102,16 +12109,16 @@
         if (selectSoundFirework) selectSoundFirework.value = 'cheer';
         if (selectSoundShuffle) selectSoundShuffle.value = 'real_shuffle';
 
-        // 10-2. 30판 클리어 폭죽 발사 속도: 350 (기본값)
-        this.stage30FireworkSpeed = 350;
-        try { localStorage.setItem('siyeon_mahjong_stage30_firework_speed', '350'); } catch (e) { }
+        // 10-2. 30판 클리어 폭죽 발사 속도: 550 (기본값 보통)
+        this.stage30FireworkSpeed = 550;
+        try { localStorage.setItem('siyeon_mahjong_stage30_firework_speed', '550'); } catch (e) { }
         const selectFireworkSpeedReset = document.getElementById('select-stage30-firework-speed');
-        if (selectFireworkSpeedReset) selectFireworkSpeedReset.value = '350';
+        if (selectFireworkSpeedReset) selectFireworkSpeedReset.value = '550';
         const badgeFireworkSpeedReset = document.getElementById('stage30-firework-speed-badge');
         if (badgeFireworkSpeedReset) {
-          badgeFireworkSpeedReset.textContent = '⚡ 빠름 (0.35초)';
-          badgeFireworkSpeedReset.style.background = '#dcfce7';
-          badgeFireworkSpeedReset.style.color = '#166534';
+          badgeFireworkSpeedReset.textContent = '🌿 보통 (0.55초)';
+          badgeFireworkSpeedReset.style.background = '#e0f2fe';
+          badgeFireworkSpeedReset.style.color = '#075985';
         }
 
         // 11. 게임 화면 갱신 및 완료 알림
@@ -13470,7 +13477,7 @@
         const selectStage30FireworkSpeed = document.getElementById('select-stage30-firework-speed');
         const badgeStage30FireworkSpeed = document.getElementById('stage30-firework-speed-badge');
         const updateStage30FireworkSpeedUI = () => {
-          const spd = this.stage30FireworkSpeed || 350;
+          const spd = this.stage30FireworkSpeed || 550;
           if (selectStage30FireworkSpeed) selectStage30FireworkSpeed.value = String(spd);
           if (badgeStage30FireworkSpeed) {
             if (spd <= 250) {
@@ -13499,7 +13506,7 @@
         updateStage30FireworkSpeedUI();
         if (selectStage30FireworkSpeed) {
           selectStage30FireworkSpeed.addEventListener('change', (e) => {
-            const val = parseInt(e.target.value, 10) || 350;
+            const val = parseInt(e.target.value, 10) || 550;
             this.stage30FireworkSpeed = val;
             try {
               localStorage.setItem('siyeon_mahjong_stage30_firework_speed', String(val));
@@ -13819,7 +13826,7 @@
         }
         if (saved.stage30FireworkSpeed !== undefined) {
           const spd = parseInt(saved.stage30FireworkSpeed, 10);
-          this.stage30FireworkSpeed = (!isNaN(spd) && spd >= 150 && spd <= 3000) ? spd : 350;
+          this.stage30FireworkSpeed = (!isNaN(spd) && spd >= 150 && spd <= 3000) ? spd : 550;
           try {
             localStorage.setItem('siyeon_mahjong_stage30_firework_speed', String(this.stage30FireworkSpeed));
           } catch (e) { }
