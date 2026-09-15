@@ -5825,10 +5825,10 @@
                 <div class="cert-issuer-name">SY 그림맞추기 명예의 전당</div>
                 <div class="cert-issuer-sub">SY MAHJONG SOLITAIRE</div>
               </div>
-              <div class="cert-stamp-box" title="시연공인 직인">
+              <div class="cert-stamp-box" title="SY공인 직인">
                 <div class="cert-stamp-inner">
-                  <div class="stamp-row"><span>時</span><span>演</span></div>
-                  <div class="stamp-row"><span>公</span><span>認</span></div>
+                  <div class="stamp-row"><span>S</span><span>Y</span></div>
+                  <div class="stamp-row"><span>공</span><span>인</span></div>
                 </div>
               </div>
             </div>
@@ -17425,7 +17425,7 @@
         ctx.fillStyle = '#9c8a6f';
         ctx.fillText('SY MAHJONG SOLITAIRE HALL OF FAME', 100, footerY + 104);
 
-        // 11. 우측 붉은 전통 직인 도장 (時演 / 公認)
+        // 11. 우측 붉은 직인 도장 (SY / 공인)
         const stampSize = 88;
         const stampX = width - 100 - stampSize;
         const stampY = footerY + 28;
@@ -17447,13 +17447,14 @@
         ctx.stroke();
 
         ctx.fillStyle = '#dc2626';
-        ctx.font = '900 28px serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('時', -20, -20);
-        ctx.fillText('演', 20, -20);
-        ctx.fillText('公', -20, 20);
-        ctx.fillText('認', 20, 20);
+        // 윗줄: SY
+        ctx.font = '900 32px sans-serif';
+        ctx.fillText('SY', 0, -18);
+        // 아랫줄: 공인
+        ctx.font = '900 26px serif';
+        ctx.fillText('공인', 0, 18);
         ctx.restore();
 
         return canvas;
