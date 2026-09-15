@@ -7633,20 +7633,24 @@
         const h = this.canvas.height;
 
         if (isDouble) {
-          // [30판 정복 특화] 오프닝에서도 시차를 두고 "팡~ 팡~ 팡~" 순차 폭발
+          // [30판 정복 특화] 오프닝에서도 랜덤 시차를 두고 "팡~ 팡~ 팡~" 순차 폭발
           this.burst(w * 0.5, h * 0.28, 95);
+          let opDelay = 200 + Math.floor(Math.random() * 120);
           setTimeout(() => {
-            if (this.isRunning && !this.isStopping) this.burst(w * 0.26, h * 0.25, 85);
-          }, 260);
+            if (this.isRunning && !this.isStopping) this.burst(w * (0.2 + Math.random() * 0.12), h * 0.25, 85);
+          }, opDelay);
+          opDelay += 200 + Math.floor(Math.random() * 140);
           setTimeout(() => {
-            if (this.isRunning && !this.isStopping) this.burst(w * 0.74, h * 0.25, 85);
-          }, 520);
+            if (this.isRunning && !this.isStopping) this.burst(w * (0.68 + Math.random() * 0.12), h * 0.25, 85);
+          }, opDelay);
+          opDelay += 180 + Math.floor(Math.random() * 140);
           setTimeout(() => {
-            if (this.isRunning && !this.isStopping) this.burst(w * 0.38, h * 0.34, 75);
-          }, 780);
+            if (this.isRunning && !this.isStopping) this.burst(w * (0.34 + Math.random() * 0.1), h * 0.34, 75);
+          }, opDelay);
+          opDelay += 180 + Math.floor(Math.random() * 140);
           setTimeout(() => {
-            if (this.isRunning && !this.isStopping) this.burst(w * 0.62, h * 0.34, 75);
-          }, 1040);
+            if (this.isRunning && !this.isStopping) this.burst(w * (0.56 + Math.random() * 0.1), h * 0.34, 75);
+          }, opDelay);
 
           this.setLaunchInterval(intervalMs, burstCount);
         } else {
@@ -7707,23 +7711,32 @@
             const targetY = h * (0.15 + Math.random() * 0.4);
             this.burst(targetX, targetY, 45 + Math.floor(Math.random() * 25));
           } else {
-            // "팡~ 팡~ 팡~" 리듬감 있는 시차 연쇄 폭발 (인터벌 간격에 비례하여 180~280ms 시차 부여)
+            // "팡~ 팡~ 팡~" 랜덤 시간차 및 무작위 발사 순서 연쇄 폭발
             const stepDelay = Math.max(100, Math.min(300, Math.floor((this.currentInterval * 0.65) / count)));
+            const order = Array.from({ length: count }, (_, idx) => idx).sort(() => Math.random() - 0.5);
+            let accumDelay = Math.floor(Math.random() * 40);
+
             for (let i = 0; i < count; i++) {
+              const segIdx = order[i];
               const segWidth = 0.78 / count;
-              const segStart = 0.11 + i * segWidth;
+              const segStart = 0.11 + segIdx * segWidth;
               const targetX = w * (segStart + Math.random() * segWidth);
               const targetY = h * (0.12 + Math.random() * 0.38);
-              const delay = i * stepDelay;
-              if (delay === 0) {
+              const burstDelay = accumDelay;
+
+              if (burstDelay === 0) {
                 this.burst(targetX, targetY, 55 + Math.floor(Math.random() * 30));
               } else {
                 setTimeout(() => {
                   if (this.isRunning && !this.isStopping) {
                     this.burst(targetX, targetY, 55 + Math.floor(Math.random() * 30));
                   }
-                }, delay);
+                }, burstDelay);
               }
+
+              // 다음 폭죽과의 시간차를 불규칙한 랜덤으로 부여 (자연스러운 축제 느낌)
+              const randomGap = Math.floor(stepDelay * (0.65 + Math.random() * 0.7));
+              accumDelay += randomGap;
             }
           }
         }, this.currentInterval);
