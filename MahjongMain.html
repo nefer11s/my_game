@@ -38,7 +38,7 @@
     });
 
     // PWA 필수 서비스 워커 등록 및 오프라인 상태 모니터링 (업데이트 시에만 알림)
-    const APP_VERSION = 'v1.5.71';
+    const APP_VERSION = 'v1.5.72';
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').then((reg) => {
@@ -5561,7 +5561,7 @@ display: flex;
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.5.71
+            Si-Yeon Mahjong Solitaire v1.5.72
           </div>
         </div>
       </div>
@@ -5834,7 +5834,7 @@ display: flex;
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.5.71</div>
+        <div class="splash-version-badge">v1.5.72</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">SY 그림맞추기</h1>
@@ -5885,7 +5885,7 @@ display: flex;
         aria-label="닫기">✕</button>
       <h3 style="margin: 2px 0 12px 0; font-size: 18px; font-weight: 800; color: #14532d; line-height: 1.35;">
         SY 그림맞추기 <span
-          style="display: inline-block; font-size: 11px; font-weight: 700; color: #15803d; background: #dcfce7; border: 1px solid #86efac; border-radius: 10px; padding: 2px 7px; vertical-align: middle;">v1.5.71</span><br>
+          style="display: inline-block; font-size: 11px; font-weight: 700; color: #15803d; background: #dcfce7; border: 1px solid #86efac; border-radius: 10px; padding: 2px 7px; vertical-align: middle;">v1.5.72</span><br>
         <span style="font-size: 13.5px; font-weight: 600; color: #166534;">(그린빌라/오룡이 에디션)</span><br>
       </h3>
       <div id="shortcut-guide-content">
@@ -5908,7 +5908,7 @@ display: flex;
           style="width: 100%; height: auto; max-height: 180px; object-fit: contain; display: block;">
         <div
           style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.65); color: #86efac; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2);">
-          v1.5.71</div>
+          v1.5.72</div>
       </div>
       <p
         style="font-size: 13px; color: #374151; line-height: 1.6; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 10px 12px; margin: 0 0 14px 0; text-align: left;">
@@ -5925,12 +5925,13 @@ display: flex;
         <span style="font-size: 28px;">🎉</span>
         <div>
           <h2 class="modal-title" style="margin: 0; font-size: 19px; color: #15803d;">최신 버전 업데이트 완료!</h2>
-          <div style="font-size: 12px; color: #64748b; font-weight: 700;">v1.5.71 (오프라인 캐시 적용)</div>
+          <div style="font-size: 12px; color: #64748b; font-weight: 700;">v1.5.72 (오프라인 캐시 적용)</div>
         </div>
       </div>
       <div style="font-size: 13.5px; color: #2d3748; line-height: 1.65; margin-bottom: 16px;">
         <p style="margin: 0 0 8px 0; color: #1e3a2b; font-weight: 700; font-size: 13px;">업데이트 주요 내용:</p>
         <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #374151;">
+          <li style="margin-bottom: 6px;"><strong>🕊️ 하트 탈출 패 복원 속도 최적화:</strong> 슬롯에서 보드로 패가 복원될 때의 애니메이션 속도를 슬롯 진입 속도와 동일하게 일치시키고 부드러운 순차 비행 적용.</li>
           <li style="margin-bottom: 6px;"><strong>💔 슬롯 만석 하트 탈출 안정화:</strong> 하트로 슬롯 패를 비울 때 더블 클릭/연타로 인한 하트 중복 차감(2개) 및 슬롯 패 중복 복귀(4개) 버그 완벽 수정.</li>
           <li style="margin-bottom: 6px;"><strong>💔 하트 탈출 비행 애니메이션 개선:</strong> 하트 소진으로 슬롯을 비울 때 2개의 패가 순차적으로 보드로 날아가는 비행 애니메이션 완벽 연출.</li>
           <li style="margin-bottom: 6px;"><strong>🐞 30판 정복 배너 및 인증서 연출 안정화:</strong> 30판 클리어 배너 터치 시 이름 입력 및 인증서 화면 전환 오류를 완벽히 해결.</li>
