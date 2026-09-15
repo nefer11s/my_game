@@ -7633,22 +7633,20 @@
         const h = this.canvas.height;
 
         if (isDouble) {
-          // [30판 정복 특화] 2배 더 풍성한 메가 폭죽 쇼 (동시 다발 대형 버스트)
-          this.burst(w * 0.5, h * 0.3, 100);
-          this.burst(w * 0.28, h * 0.25, 90);
-          this.burst(w * 0.72, h * 0.25, 90);
+          // [30판 정복 특화] 오프닝에서도 시차를 두고 "팡~ 팡~ 팡~" 순차 폭발
+          this.burst(w * 0.5, h * 0.28, 95);
           setTimeout(() => {
-            if (this.isRunning && !this.isStopping) {
-              this.burst(w * 0.2, h * 0.38, 85);
-              this.burst(w * 0.8, h * 0.38, 85);
-            }
-          }, 180);
+            if (this.isRunning && !this.isStopping) this.burst(w * 0.26, h * 0.25, 85);
+          }, 260);
           setTimeout(() => {
-            if (this.isRunning && !this.isStopping) {
-              this.burst(w * 0.4, h * 0.26, 95);
-              this.burst(w * 0.6, h * 0.26, 95);
-            }
-          }, 360);
+            if (this.isRunning && !this.isStopping) this.burst(w * 0.74, h * 0.25, 85);
+          }, 520);
+          setTimeout(() => {
+            if (this.isRunning && !this.isStopping) this.burst(w * 0.38, h * 0.34, 75);
+          }, 780);
+          setTimeout(() => {
+            if (this.isRunning && !this.isStopping) this.burst(w * 0.62, h * 0.34, 75);
+          }, 1040);
 
           this.setLaunchInterval(intervalMs, burstCount);
         } else {
@@ -7709,13 +7707,14 @@
             const targetY = h * (0.15 + Math.random() * 0.4);
             this.burst(targetX, targetY, 45 + Math.floor(Math.random() * 25));
           } else {
-            // 화면 좌우 영역을 count개 구간으로 균등 분할하여 겹치지 않게 고루 폭발
+            // "팡~ 팡~ 팡~" 리듬감 있는 시차 연쇄 폭발 (인터벌 간격에 비례하여 180~280ms 시차 부여)
+            const stepDelay = Math.max(100, Math.min(300, Math.floor((this.currentInterval * 0.65) / count)));
             for (let i = 0; i < count; i++) {
               const segWidth = 0.78 / count;
               const segStart = 0.11 + i * segWidth;
               const targetX = w * (segStart + Math.random() * segWidth);
               const targetY = h * (0.12 + Math.random() * 0.38);
-              const delay = i * 75 + Math.floor(Math.random() * 40);
+              const delay = i * stepDelay;
               if (delay === 0) {
                 this.burst(targetX, targetY, 55 + Math.floor(Math.random() * 30));
               } else {
