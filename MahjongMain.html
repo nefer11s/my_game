@@ -15828,12 +15828,55 @@
           }
         }
 
-        this.trayTiles.splice(trayIndex, 1);
+        // ── 슬롯 → 보드 역방향 비행 애니메이션 ──
+        // flyTileToTray와 동일한 speed 옵션값 공유
+        const speedConfig = (typeof SLOT_ANIM_SPEED_MAP !== 'undefined' && SLOT_ANIM_SPEED_MAP[this.slotAnimSpeed])
+          ? SLOT_ANIM_SPEED_MAP[this.slotAnimSpeed]
+          : { duration: 600 };
+        const durationMs = speedConfig.duration;
+
+        // 슬롯 박스의 현재 화면 좌표 캡처 (비행 시작점)
+        const slotsEl = document.getElementById('tray-slots');
+        const slotBoxes = slotsEl ? slotsEl.querySelectorAll('.tray-slot-box') : [];
+        const srcBox = slotBoxes[trayIndex];
+        const srcTileEl = srcBox ? srcBox.querySelector('.tray-tile') : null;
+        const startRect = srcTileEl ? srcTileEl.getBoundingClientRect() : null;
+
         const tile = item.tile;
+
+        // 보드 타일 el의 좌표 캡처 (비행 도착점)
+        const targetRect = tile.el ? tile.el.getBoundingClientRect() : null;
+
+        // 즉시 이동 옵션이거나 좌표 캡처 실패 시 → 바로 복구
+        const canAnimate = durationMs > 0 && startRect && targetRect
+          && startRect.width > 0 && targetRect.width > 0;
+
+        // 데이터 상태 즉시 반영 (슬롯 배열에서 제거)
+        this.trayTiles.splice(trayIndex, 1);
         tile.removed = false;
         tile.isCovered = item.wasCovered;
         tile.isRevealed = !item.wasCovered;
 
+        if (!canAnimate) {
+          // 애니메이션 없이 즉시 표시
+          if (tile.el) {
+            this.showTileEl(tile.el);
+            if (tile.isCovered) {
+              tile.el.classList.add('face-down');
+              tile.el.classList.remove('revealed');
+            } else {
+              tile.el.classList.remove('face-down');
+              tile.el.classList.add('revealed');
+            }
+          }
+          this.sound.playSelect();
+          this.renderTray();
+          this.updateTileStates();
+          this.updateToolButtonsUI();
+          return;
+        }
+
+        // 비행 중 보드 타일은 투명하게 유지
         if (tile.el) {
           this.showTileEl(tile.el);
           if (tile.isCovered) {
@@ -15843,12 +15886,56 @@
             tile.el.classList.remove('face-down');
             tile.el.classList.add('revealed');
           }
+          tile.el.classList.add('fly-incoming'); // 도착 전까지 숨김
         }
 
         this.sound.playSelect();
-        this.renderTray();
-        this.updateTileStates();
-        this.updateToolButtonsUI();
+        this.renderTray(); // 슬롯 UI 즉시 갱신 (빈 슬롯 표시)
+
+        // 날아가는 비행 타일 DOM 생성 (슬롯 위치에서 시작)
+        const tileDef = item.def;
+        const flyer = document.createElement('div');
+        const isSaju = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing', 'oryong', 'dragon_head', 'dragon_gold'].includes(tileDef.suit);
+        flyer.className = `flying-tile${isSaju ? ' saju-tile' : ''}`;
+        flyer.innerHTML = `
+          <span class="tile-corner-badge">${tileDef.badge || ''}</span>
+          <div class="tile-graphic-wrap">${tileDef.render ? tileDef.render() : ''}</div>
+          <span class="tile-sub-label">${tileDef.label || ''}</span>
+        `;
+
+        // 슬롯 위치에서 시작
+        flyer.style.left = `${startRect.left}px`;
+        flyer.style.top = `${startRect.top}px`;
+        flyer.style.width = `${startRect.width}px`;
+        flyer.style.height = `${startRect.height}px`;
+        document.body.appendChild(flyer);
+
+        const durationSec = (durationMs / 1000).toFixed(2);
+        requestAnimationFrame(() => {
+          const dx = targetRect.left - startRect.left;
+          const dy = targetRect.top - startRect.top;
+          const sx = targetRect.width / startRect.width;
+          const sy = targetRect.height / startRect.height;
+
+          flyer.style.transition = `transform ${durationSec}s cubic-bezier(0.22, 1, 0.36, 1), border-radius ${durationSec}s ease, box-shadow ${durationSec}s ease`;
+          flyer.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${sx}, ${sy})`;
+          flyer.style.borderRadius = '';
+          flyer.style.boxShadow = '';
+        });
+
+        // 비행 완료 후 처리
+        let finished = false;
+        const finish = () => {
+          if (finished) return;
+          finished = true;
+          if (flyer.parentNode) flyer.remove();
+          if (tile.el) tile.el.classList.remove('fly-incoming');
+          this.updateTileStates();
+          this.updateToolButtonsUI();
+        };
+
+        flyer.addEventListener('transitionend', finish, { once: true });
+        setTimeout(finish, durationMs + 40); // 동적 안전 타임아웃
       }
 
       /**
