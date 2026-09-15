@@ -4053,11 +4053,6 @@
       min-width: 0 !important;
     }
 
-    #cert-retry-btn {
-      background: linear-gradient(135deg, #15803d, #166534) !important;
-      color: #fff !important;
-    }
-
     #cert-upgrade-btn {
       background: linear-gradient(135deg, #b45309, #92400e) !important;
       color: #fff !important;
@@ -5854,7 +5849,6 @@
           ➔</button>
         <!-- 30판 인증서 전용: 다음 도전 3-way 버튼 -->
         <div id="cert-next-btn-row" style="display: none; width: 100%; gap: 8px; margin-top: 6px;">
-          <button class="modal-btn cert-next-btn" id="cert-retry-btn">🔄 현재판 다시</button>
           <button class="modal-btn cert-next-btn" id="cert-upgrade-btn">⬆️ 난이도 올리기</button>
           <button class="modal-btn cert-next-btn" id="cert-home-btn">🏠 홈화면으로</button>
         </div>
@@ -13669,20 +13663,6 @@
           this.saveProgress();
           this.startNewGame(true);
         });
-
-        // 30판 인증서 전용: 🔄 같은 난이도 재도전
-        const certRetryBtn = document.getElementById('cert-retry-btn');
-        if (certRetryBtn) {
-          certRetryBtn.addEventListener('click', () => {
-            if (this.sound) this.sound.playSelect();
-            if (this.fireworks) this.fireworks.stop();
-            document.getElementById('modal').classList.remove('active');
-            this.currentStage = 1;
-            this.hasStarted = true;
-            this.saveProgress();
-            this.startNewGame(true);
-          });
-        }
 
         // 30판 인증서 전용: ⬆️ 난이도 업
         const certUpgradeBtn = document.getElementById('cert-upgrade-btn');
