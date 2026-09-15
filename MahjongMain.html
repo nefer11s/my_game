@@ -38,7 +38,7 @@
     });
 
     // PWA 필수 서비스 워커 등록 및 오프라인 상태 모니터링 (업데이트 시에만 알림)
-    const APP_VERSION = 'v1.5.68';
+    const APP_VERSION = 'v1.5.69';
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').then((reg) => {
@@ -5113,6 +5113,74 @@ display: flex;
         transform: translate3d(var(--tx), var(--ty), calc(var(--tz) + 16px)) scale(1.10);
       }
     }
+
+    /* ── 일시정지 오버레이 ── */
+    #pause-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9500;
+      background: rgba(8, 14, 26, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+    }
+    #pause-overlay.active { display: flex; }
+
+    .pause-icon-ring {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 2px solid rgba(255,255,255,0.18);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px;
+      animation: pausePulse 2.4s ease-in-out infinite;
+    }
+    @keyframes pausePulse {
+      0%,100% { box-shadow: 0 0 0 0 rgba(100,180,255,0.25); }
+      50%      { box-shadow: 0 0 0 14px rgba(100,180,255,0); }
+    }
+    .pause-title {
+      color: #e8f0fe;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+    .pause-time-label {
+      color: rgba(200,220,255,0.55);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    #pause-time-display {
+      color: #7ecfff;
+      font-size: 38px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      font-variant-numeric: tabular-nums;
+    }
+    .pause-resume-btn {
+      margin-top: 8px;
+      padding: 14px 44px;
+      border-radius: 50px;
+      border: none;
+      background: linear-gradient(135deg, #2ea779, #1d7a55);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      box-shadow: 0 6px 20px rgba(46,167,121,0.38);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .pause-resume-btn:active {
+      transform: scale(0.95);
+      box-shadow: 0 2px 8px rgba(46,167,121,0.25);
+    }
   </style>
 </head>
 
@@ -5482,7 +5550,7 @@ display: flex;
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.5.68
+            Si-Yeon Mahjong Solitaire v1.5.69
           </div>
         </div>
       </div>
@@ -5529,9 +5597,21 @@ display: flex;
       <button class="btn btn-dock" id="btn-restart" title="현재 판 다시 시작">
         <span class="btn-icon">🔄</span><span class="btn-label"></span>
       </button>
+      <button class="btn btn-dock" id="btn-pause" title="일시정지">
+        <span class="btn-icon" id="pause-icon">⏸</span><span class="btn-label"></span>
+      </button>
 
     </div>
   </footer>
+
+  <!-- 일시정지 오버레이 -->
+  <div id="pause-overlay">
+    <div class="pause-icon-ring">⏸</div>
+    <div class="pause-title">일시정지</div>
+    <div class="pause-time-label">경과 시간</div>
+    <div id="pause-time-display">00:00</div>
+    <button class="pause-resume-btn" id="btn-pause-resume">▶ 계속하기</button>
+  </div>
 
   <!-- 레벨 & 판 직행 이동 모달 -->
   <div class="modal-overlay" id="stage-warp-modal">
@@ -5743,7 +5823,7 @@ display: flex;
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.5.68</div>
+        <div class="splash-version-badge">v1.5.69</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">SY 그림맞추기</h1>
@@ -5794,7 +5874,7 @@ display: flex;
         aria-label="닫기">✕</button>
       <h3 style="margin: 2px 0 12px 0; font-size: 18px; font-weight: 800; color: #14532d; line-height: 1.35;">
         SY 그림맞추기 <span
-          style="display: inline-block; font-size: 11px; font-weight: 700; color: #15803d; background: #dcfce7; border: 1px solid #86efac; border-radius: 10px; padding: 2px 7px; vertical-align: middle;">v1.5.68</span><br>
+          style="display: inline-block; font-size: 11px; font-weight: 700; color: #15803d; background: #dcfce7; border: 1px solid #86efac; border-radius: 10px; padding: 2px 7px; vertical-align: middle;">v1.5.69</span><br>
         <span style="font-size: 13.5px; font-weight: 600; color: #166534;">(그린빌라/오룡이 에디션)</span><br>
       </h3>
       <div id="shortcut-guide-content">
@@ -5817,7 +5897,7 @@ display: flex;
           style="width: 100%; height: auto; max-height: 180px; object-fit: contain; display: block;">
         <div
           style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.65); color: #86efac; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2);">
-          v1.5.68</div>
+          v1.5.69</div>
       </div>
       <p
         style="font-size: 13px; color: #374151; line-height: 1.6; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 10px 12px; margin: 0 0 14px 0; text-align: left;">
@@ -5834,7 +5914,7 @@ display: flex;
         <span style="font-size: 28px;">🎉</span>
         <div>
           <h2 class="modal-title" style="margin: 0; font-size: 19px; color: #15803d;">최신 버전 업데이트 완료!</h2>
-          <div style="font-size: 12px; color: #64748b; font-weight: 700;">v1.5.68 (오프라인 캐시 적용)</div>
+          <div style="font-size: 12px; color: #64748b; font-weight: 700;">v1.5.69 (오프라인 캐시 적용)</div>
         </div>
       </div>
       <div style="font-size: 13.5px; color: #2d3748; line-height: 1.65; margin-bottom: 16px;">
@@ -11575,6 +11655,7 @@ display: flex;
         this.lives = 4;
         this.initialLives = 4;
         this.isGameOver = false;
+        this.isPaused = false;
         this.blindMismatchCount = 0; // 뒤집기 3회 실패 카운터
         this.hasUsedLastChanceShuffle = false; // 하트 1개일 때 마지막 무료 셔플 사용 여부
         // 옵션 로컬 스토리지 불러오기 (기본값: 꺼짐/false, 사주패 기본값: 켜짐/true)
@@ -13320,6 +13401,8 @@ display: flex;
           this.hasStarted = true;
           this.restartCurrentGame();
         });
+        document.getElementById('btn-pause').addEventListener('click', () => this.togglePause());
+        document.getElementById('btn-pause-resume').addEventListener('click', () => this.togglePause());
 
         // 인증서 이미지 캡처 & SNS 공유 버튼 클릭 이벤트
         const modalShareBtn = document.getElementById('modal-share-btn');
@@ -13722,7 +13805,7 @@ display: flex;
       startTimer() {
         clearInterval(this.timerId);
         this.timerId = setInterval(() => {
-          if (this.isGameOver || this.isClear || !this.hasStarted) return;
+          if (this.isGameOver || this.isClear || !this.hasStarted || this.isPaused) return;
           this.timerSeconds++;
           if (this.isCountdown) {
             this.remainingSeconds--;
@@ -14031,6 +14114,9 @@ display: flex;
         this.isClear = false;
         this.isAutoClearing = false;
         this.isGameOver = false;
+        this.isPaused = false;
+        const _po = document.getElementById('pause-overlay'); if (_po) _po.classList.remove('active');
+        const _pi = document.getElementById('pause-icon'); if (_pi) _pi.textContent = '⏸';
         this.blindMismatchCount = 0;
 
 
@@ -14131,6 +14217,9 @@ display: flex;
         this.isClear = false;
         this.isAutoClearing = false;
         this.isGameOver = false;
+        this.isPaused = false;
+        const _po2 = document.getElementById('pause-overlay'); if (_po2) _po2.classList.remove('active');
+        const _pi2 = document.getElementById('pause-icon'); if (_pi2) _pi2.textContent = '⏸';
         this.blindMismatchCount = 0;
         this.lastFlippedBlindTile = null;
         this.hasUsedLastChanceShuffle = false;
@@ -15068,6 +15157,7 @@ display: flex;
        * 타일 클릭: 보드에서 빈 슬롯(트레이)으로 이동
        */
       handleTileClick(tile) {
+        if (this.isPaused) return;
         if (this.isGameOver || this.isAutoClearing || this.isDealing || tile.removed) {
           this.logTouch(`[차단] 게임상태(오버/피날레/딜링:${this.isDealing}/제거:${tile.removed})`, 'warn');
           return;
@@ -15551,6 +15641,7 @@ display: flex;
        * 슬롯의 패를 클릭했을 때 보드의 원래 위치로 반환
        */
       returnTileFromTray(trayIndex, isSystemFree = false) {
+        if (this.isPaused && !isSystemFree) return;
         if (this.isGameOver || this.isAutoClearing || this.isDealing) return;
         this.cleanupFlyingTiles();
         const item = this.trayTiles[trayIndex];
@@ -15676,6 +15767,48 @@ display: flex;
 
         flyer.addEventListener('transitionend', finish, { once: true });
         setTimeout(finish, durationMs + 40); // 동적 안전 타임아웃
+      }
+
+      /**
+       * 일시정지 토글
+       */
+      togglePause() {
+        if (this.isGameOver || this.isClear || !this.hasStarted) return;
+        if (this.isPaused) {
+          this.resumeGame();
+        } else {
+          this.pauseGame();
+        }
+      }
+
+      pauseGame() {
+        if (this.isGameOver || this.isClear || !this.hasStarted || this.isPaused) return;
+        this.isPaused = true;
+
+        // 오버레이 시간 표시 갱신
+        const timeEl = document.getElementById('pause-time-display');
+        if (timeEl) {
+          timeEl.textContent = this.isCountdown
+            ? this.formatTime(Math.max(0, this.remainingSeconds))
+            : this.formatTime(this.timerSeconds);
+        }
+
+        const overlay = document.getElementById('pause-overlay');
+        if (overlay) overlay.classList.add('active');
+
+        const icon = document.getElementById('pause-icon');
+        if (icon) icon.textContent = '▶';
+      }
+
+      resumeGame() {
+        if (!this.isPaused) return;
+        this.isPaused = false;
+
+        const overlay = document.getElementById('pause-overlay');
+        if (overlay) overlay.classList.remove('active');
+
+        const icon = document.getElementById('pause-icon');
+        if (icon) icon.textContent = '⏸';
       }
 
       /**
