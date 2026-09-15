@@ -6542,6 +6542,7 @@
         // 신규 또는 명리 기본 테마 미설정 시 기본값으로 'wood' 적용
         const defaultSelect = (!savedSelect || savedSelect === 'flip' || !savedTheme || savedTheme === 'myeongri' || savedTheme === 'default') ? 'wood' : savedSelect;
         const savedMatch = safeStorage.get('mahjong_sound_match');
+        const defaultMatch = (!savedMatch || savedMatch === 'ceramic' || savedMatch === 'jade') ? 'real_pair' : savedMatch;
         const fireworkMigrated = safeStorage.get('mahjong_sound_firework_v1581');
         let savedFirework = safeStorage.get('mahjong_sound_firework');
         if (!fireworkMigrated) {
