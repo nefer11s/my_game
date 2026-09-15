@@ -15584,32 +15584,33 @@ display: flex;
           this.loseLife();
           if (this.isGameOver) return;
 
-          // 2. 슬롯의 패 중 최대 2개를 안전하게 보드로 복귀 (시스템 무료, 2개 모두 시차 비행 애니메이션 연출)
-          const returnTopTile = () => {
+          // 2. 슬롯의 패 중 최대 2개를 안전하게 보드로 복귀 (하나씩 차례로 순차 복귀)
+          const returnTopTile = (onDone) => {
             for (let i = this.trayTiles.length - 1; i >= 0; i--) {
               if (!this.trayTiles[i].isMatching) {
-                this.returnTileFromTray(i, true, true);
+                this.returnTileFromTray(i, true, true, onDone);
                 if (this.undoStack.length > 0 && this.undoStack[this.undoStack.length - 1].type === 'toTray') {
                   this.undoStack.pop();
                 }
                 return true;
               }
             }
+            if (typeof onDone === 'function') onDone();
             return false;
           };
 
-          // 첫 번째 패 복귀
-          const freedFirst = returnTopTile();
+          // 첫 번째 패 복귀 -> 보드 도착 완료 후 두 번째 패를 차례로 복귀
           this.updateHeaderUI();
-
-          // 두 번째 패는 120ms 후 시차 복귀하여 2개 패 모두 보드로 날아가는 애니메이션 연출
-          if (freedFirst) {
+          returnTopTile(() => {
+            if (this.isGameOver || this.isClear) return;
+            // 첫 번째 패가 보드에 안착한 뒤 80ms 여운 후 두 번째 패 복귀 시작
             setTimeout(() => {
               if (this.isGameOver || this.isClear) return;
-              returnTopTile();
-              this.updateHeaderUI();
-            }, 120);
-          }
+              returnTopTile(() => {
+                this.updateHeaderUI();
+              });
+            }, 80);
+          });
           // 모달에서 이미 하트 소진을 확인했으므로 혼란을 주는 중복 토스트는 제거
         };
 
@@ -15648,20 +15649,30 @@ display: flex;
       /**
        * 슬롯의 패를 클릭했을 때 보드의 원래 위치로 반환
        */
-      returnTileFromTray(trayIndex, isSystemFree = false, skipCleanup = false) {
-        if (this.isPaused && !isSystemFree) return;
-        if (this.isGameOver || this.isAutoClearing || this.isDealing) return;
+      returnTileFromTray(trayIndex, isSystemFree = false, skipCleanup = false, onComplete = null) {
+        if (this.isPaused && !isSystemFree) {
+          if (typeof onComplete === 'function') onComplete();
+          return;
+        }
+        if (this.isGameOver || this.isAutoClearing || this.isDealing) {
+          if (typeof onComplete === 'function') onComplete();
+          return;
+        }
         if (!skipCleanup) {
           this.cleanupFlyingTiles();
         }
         const item = this.trayTiles[trayIndex];
-        if (!item || item.isMatching) return;
+        if (!item || item.isMatching) {
+          if (typeof onComplete === 'function') onComplete();
+          return;
+        }
 
         // 플레이어 직접 터치 반환 시 되돌리기 횟수(2회) 소진 연동
         if (!isSystemFree) {
           if (this.undoRemaining <= 0) {
             this.showToast('⚠️ 되돌리기 기회(0회)를 모두 소진하여 슬롯 패를 뺄 수 없습니다!');
             if (this.sound && this.sound.playMiss) this.sound.playMiss();
+            if (typeof onComplete === 'function') onComplete();
             return;
           }
           this.undoRemaining--;
@@ -15722,6 +15733,7 @@ display: flex;
           this.renderTray();
           this.updateTileStates();
           this.updateToolButtonsUI();
+          if (typeof onComplete === 'function') onComplete();
           return;
         }
 
@@ -15773,6 +15785,7 @@ display: flex;
           if (tile.el) tile.el.classList.remove('fly-incoming');
           this.updateTileStates();
           this.updateToolButtonsUI();
+          if (typeof onComplete === 'function') onComplete();
         };
 
         flyer.addEventListener('transitionend', finish, { once: true });
