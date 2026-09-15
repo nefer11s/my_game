@@ -5455,12 +5455,12 @@
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                 <span class="settings-label" style="margin-bottom: 0;">🀄 전통패 글자(라벨) 표시</span>
                 <span id="classic-label-badge"
-                  style="font-size: 11px; color: #166534; font-weight: 700; background: #dcfce7; padding: 2px 7px; border-radius: 10px;">글자
-                  표시</span>
+                  style="font-size: 11px; color: #b45309; font-weight: 700; background: #fef3c7; padding: 2px 7px; border-radius: 10px;">글자
+                  숨김</span>
               </div>
               <select class="diff-select" id="select-classic-label-mode" title="전통 마작 패의 모서리 숫자/기호 및 하단 라벨 글자 표시 여부">
-                <option value="show" selected>표시함 (숫자·보조 라벨 글자 표시 · 기본)</option>
-                <option value="hide">숨김 (글자 없이 순수 패 그림만 표시)</option>
+                <option value="hide" selected>숨김 (글자 없이 순수 패 그림만 표시 · 기본)</option>
+                <option value="show">표시함 (숫자·보조 라벨 글자 표시)</option>
               </select>
             </div>
             <!-- 난이도별 판당 시간 제한 상세 설정 -->
@@ -6154,7 +6154,7 @@
           </strong>
           <div style="font-size: 12.5px; color: #374151; line-height: 1.6; padding-left: 4px;">
             • <strong>레벨/판 직행 이동</strong>: 원하는 난이도와 1~30판 중 원하는 스테이지로 즉시 점프합니다.<br>
-            • <strong>전통패 글자(라벨) 표시</strong>: 전통 마작패 모서리의 숫자·기호 및 하단 라벨 표시 여부를 선택합니다.<br>
+            • <strong>전통패 글자(라벨) 표시</strong>: 전통 마작패 모서리의 숫자·기호 및 하단 라벨 표시 여부를 선택합니다. (기본: 숨김)<br>
             • <strong>난이도별 상세 시간 제한</strong>: 초급, 보통, 고급 각 난이도의 제한 시간을 초 단위로 정밀 조절합니다.<br>
             • <strong>배경화면 테마</strong>: 명리 녹색, 오룡이 주황, 클래식 블루 테마를 선택합니다.<br>
             • <strong>모든 설정 기본값으로 복원</strong>: 모든 옵션을 최초 표준 상태로 되돌립니다.
@@ -11729,8 +11729,16 @@
           this.slotAnimSpeed = (savedSlotSpeed && SLOT_ANIM_SPEED_MAP[savedSlotSpeed]) ? savedSlotSpeed : 'slow';
           const savedMatchEffect = localStorage.getItem('siyeon_mahjong_slot_match_effect');
           this.slotMatchEffect = (savedMatchEffect === 'classic') ? 'classic' : 'firework';
-          const savedClassicLabelMode = localStorage.getItem('siyeon_mahjong_classic_label_mode') || 'show';
-          this.classicLabelMode = (savedClassicLabelMode === 'hide') ? 'hide' : 'show';
+          const classicLabelMigrated = localStorage.getItem('siyeon_mahjong_classic_label_migrated_v1574');
+          let savedClassicLabelMode = localStorage.getItem('siyeon_mahjong_classic_label_mode');
+          if (!classicLabelMigrated) {
+            savedClassicLabelMode = 'hide';
+            try {
+              localStorage.setItem('siyeon_mahjong_classic_label_mode', 'hide');
+              localStorage.setItem('siyeon_mahjong_classic_label_migrated_v1574', '1');
+            } catch (e) { }
+          }
+          this.classicLabelMode = (savedClassicLabelMode === 'show') ? 'show' : 'hide';
           if (this.classicLabelMode === 'hide') {
             document.body.classList.add('hide-classic-labels');
           }
@@ -12002,17 +12010,18 @@
           soundToggleText.textContent = '소리 켜짐';
         }
 
-        // 7. 전통패 라벨 표시: show
-        this.classicLabelMode = 'show';
-        try { localStorage.setItem('siyeon_mahjong_classic_label_mode', 'show'); } catch (e) { }
+        // 7. 전통패 라벨 표시: hide (기본값)
+        this.classicLabelMode = 'hide';
+        try { localStorage.setItem('siyeon_mahjong_classic_label_mode', 'hide'); } catch (e) { }
         const selectClassicLabelModeEl = document.getElementById('select-classic-label-mode');
-        if (selectClassicLabelModeEl) selectClassicLabelModeEl.value = 'show';
+        if (selectClassicLabelModeEl) selectClassicLabelModeEl.value = 'hide';
         const badgeClassicLabelEl = document.getElementById('classic-label-badge');
         if (badgeClassicLabelEl) {
-          badgeClassicLabelEl.textContent = '글자 표시';
-          badgeClassicLabelEl.style.background = '#dcfce7';
-          badgeClassicLabelEl.style.color = '#166534';
+          badgeClassicLabelEl.textContent = '글자 숨김';
+          badgeClassicLabelEl.style.background = '#fef3c7';
+          badgeClassicLabelEl.style.color = '#b45309';
         }
+        document.body.classList.add('hide-classic-labels');
 
         // 8. 시간 제한 기본값 복원 (easy: 240, normal: 180, hard: 140, master: 100)
         try {
@@ -12515,6 +12524,7 @@
               wrapper.appendChild(settingsDropdown);
             }
           }
+          this.updateTimerDisplay();
         };
 
         // 초기화면의 설정 버튼 클릭 시 모달 모드로 설정창 팝업 (body 직속으로 탈출하여 Stacking Context 해결)
@@ -12602,6 +12612,7 @@
             }
             settingsDropdown.classList.add('active');
             btnSettings.setAttribute('aria-expanded', 'true');
+            this.updateTimerDisplay();
           });
 
           // 설정 드롭다운 내부 클릭 시 외부 닫기 이벤트 전파 방지
@@ -12688,6 +12699,7 @@
           if (warpStageInput) warpStageInput.value = this.currentStage;
           updateWarpInfoBadge();
           if (stageWarpModal) stageWarpModal.classList.add('active');
+          this.updateTimerDisplay();
         };
 
         if (btnOpenStageWarp) {
@@ -12717,6 +12729,7 @@
           if (e && e.stopPropagation) e.stopPropagation();
           this.sound.playSelect();
           if (stageWarpModal) stageWarpModal.classList.remove('active');
+          this.updateTimerDisplay();
         };
 
         if (btnStageWarpCloseX) {
@@ -12873,6 +12886,7 @@
               if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
             }
             if (settingsGuideModal) settingsGuideModal.classList.add('active');
+            this.updateTimerDisplay();
           });
         }
 
@@ -12920,6 +12934,7 @@
           btnSettingsGuideClose.addEventListener('click', () => {
             this.sound.playSelect();
             if (settingsGuideModal) settingsGuideModal.classList.remove('active');
+            this.updateTimerDisplay();
           });
         }
 
@@ -12927,6 +12942,7 @@
           ModalHelper.setupBackdropClose(settingsGuideModal, () => {
             this.sound.playSelect();
             settingsGuideModal.classList.remove('active');
+            this.updateTimerDisplay();
           });
         }
 
@@ -12968,6 +12984,7 @@
           }
           syncSoundModalUI();
           if (soundModal) soundModal.classList.add('active');
+          this.updateTimerDisplay();
         };
 
         if (btnOpenSoundSettings) {
@@ -12978,6 +12995,15 @@
           btnSoundModalClose.addEventListener('click', () => {
             this.sound.playSelect();
             if (soundModal) soundModal.classList.remove('active');
+            this.updateTimerDisplay();
+          });
+        }
+
+        if (soundModal) {
+          ModalHelper.setupBackdropClose(soundModal, () => {
+            this.sound.playSelect();
+            soundModal.classList.remove('active');
+            this.updateTimerDisplay();
           });
         }
 
@@ -13835,8 +13861,13 @@
         const timePill = document.getElementById('stat-time');
         if (!timePill) return;
         const parentPill = timePill.closest('.hud-pill');
+        const isSettingsPaused = this.isAnySettingsOpen();
         if (this.isCountdown) {
-          if (parentPill) parentPill.title = `남은 시간 (제한: ${this.formatTime(this.getTimeLimitForDiff(this.difficulty))})`;
+          if (parentPill) {
+            parentPill.title = isSettingsPaused
+              ? `남은 시간 (설정 화면으로 인해 시간 일시정지 중)`
+              : `남은 시간 (제한: ${this.formatTime(this.getTimeLimitForDiff(this.difficulty))})`;
+          }
           timePill.textContent = this.formatTime(Math.max(0, this.remainingSeconds));
           if (this.remainingSeconds <= 30 && this.remainingSeconds > 0) {
             timePill.classList.add('time-warning');
@@ -13844,7 +13875,11 @@
             timePill.classList.remove('time-warning');
           }
         } else {
-          if (parentPill) parentPill.title = '경과 시간 (무제한)';
+          if (parentPill) {
+            parentPill.title = isSettingsPaused
+              ? '경과 시간 (설정 화면으로 인해 시간 일시정지 중)'
+              : '경과 시간 (무제한)';
+          }
           timePill.classList.remove('time-warning');
           timePill.textContent = this.formatTime(this.timerSeconds);
         }
@@ -13853,7 +13888,7 @@
       startTimer() {
         clearInterval(this.timerId);
         this.timerId = setInterval(() => {
-          if (this.isGameOver || this.isClear || !this.hasStarted || this.isPaused) return;
+          if (this.isGameOver || this.isClear || !this.hasStarted || this.isPaused || this.isAnySettingsOpen()) return;
           this.timerSeconds++;
           if (this.isCountdown) {
             this.remainingSeconds--;
@@ -15219,7 +15254,7 @@
        * 타일 클릭: 보드에서 빈 슬롯(트레이)으로 이동
        */
       handleTileClick(tile) {
-        if (this.isPaused) return;
+        if (this.isPaused || this.isAnySettingsOpen()) return;
         if (this.isGameOver || this.isAutoClearing || this.isDealing || tile.removed) {
           this.logTouch(`[차단] 게임상태(오버/피날레/딜링:${this.isDealing}/제거:${tile.removed})`, 'warn');
           return;
@@ -15747,7 +15782,7 @@
        * 슬롯의 패를 클릭했을 때 보드의 원래 위치로 반환
        */
       returnTileFromTray(trayIndex, isSystemFree = false, skipCleanup = false, onComplete = null) {
-        if (this.isPaused && !isSystemFree) {
+        if ((this.isPaused || this.isAnySettingsOpen()) && !isSystemFree) {
           if (typeof onComplete === 'function') onComplete();
           return;
         }
@@ -15936,6 +15971,21 @@
 
         const icon = document.getElementById('pause-icon');
         if (icon) icon.textContent = '⏸';
+      }
+
+      /**
+       * 환경설정 드롭다운 또는 관련 설정 모달이 열려있는지 여부 반환 (게임 시간 잠시 중단용)
+       */
+      isAnySettingsOpen() {
+        const settingsDropdown = document.getElementById('settings-dropdown');
+        if (settingsDropdown && settingsDropdown.classList.contains('active')) return true;
+        const stageWarpModal = document.getElementById('stage-warp-modal');
+        if (stageWarpModal && stageWarpModal.classList.contains('active')) return true;
+        const soundModal = document.getElementById('sound-modal');
+        if (soundModal && soundModal.classList.contains('active')) return true;
+        const guideModal = document.getElementById('settings-guide-modal');
+        if (guideModal && guideModal.classList.contains('active')) return true;
+        return false;
       }
 
       /**
