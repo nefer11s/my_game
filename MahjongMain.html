@@ -15774,11 +15774,12 @@ display: flex;
 
         // 보드 타일 el 표시 상태 복원 (display:'') 후 좌표 캡처
         // → 숨겨진 채로 getBoundingClientRect()하면 width=0이라 애니 불가
-        // fly-incoming(opacity:0)을 showTileEl 호출 전에 먼저 추가하여
-        // 보드 위치에 타일이 순간 노출되는 이질감을 원천 차단
+        // 보드 타일은 .tray-tile이 아니므로 fly-incoming CSS가 적용 안 됨
+        // → 인라인 visibility:hidden으로 직접 숨긴 뒤 display만 복원하여 좌표 캡처
         if (tile.el) {
-          tile.el.classList.add('fly-incoming'); // 먼저 투명 처리
-          this.showTileEl(tile.el);              // 그 후 display 복원
+          tile.el.style.visibility = 'hidden'; // 먼저 투명 처리 (레이아웃은 유지)
+          this.showTileEl(tile.el);             // display 복원 (visibility는 덮어쓰지 않음)
+          tile.el.style.visibility = 'hidden'; // showTileEl이 visibility:visible로 덮을 수 있으므로 재적용
           if (tile.isCovered) {
             tile.el.classList.add('face-down');
             tile.el.classList.remove('revealed');
@@ -15788,7 +15789,7 @@ display: flex;
           }
         }
 
-        // 도착점 좌표 캡처 (el이 보이는 상태이나 투명 유지)
+        // 도착점 좌표 캡처 (display 복원 상태이나 visibility:hidden으로 안 보임)
         const targetRect = tile.el ? tile.el.getBoundingClientRect() : null;
 
         // 즉시 이동 옵션이거나 좌표 캡처 실패 시 → 바로 복구
@@ -15797,7 +15798,7 @@ display: flex;
 
         if (!canAnimate) {
           // 애니메이션 없이 즉시 표시
-          if (tile.el) tile.el.classList.remove('fly-incoming');
+          if (tile.el) tile.el.style.visibility = '';
           this.sound.playSelect();
           this.renderTray();
           this.updateTileStates();
@@ -15852,7 +15853,8 @@ display: flex;
           if (finished) return;
           finished = true;
           if (flyer.parentNode) flyer.remove();
-          if (tile.el) tile.el.classList.remove('fly-incoming');
+          // 비행 완료 후 보드 타일 보이기
+          if (tile.el) tile.el.style.visibility = '';
           this.updateTileStates();
           this.updateToolButtonsUI();
           if (typeof onComplete === 'function') onComplete();
