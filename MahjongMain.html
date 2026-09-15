@@ -11668,6 +11668,8 @@ display: flex;
         this.initialLives = 4;
         this.isGameOver = false;
         this.isPaused = false;
+        this.isSlotEscapeModalOpen = false;
+        this.isEscapingSlot = false;
         this.blindMismatchCount = 0; // 뒤집기 3회 실패 카운터
         this.hasUsedLastChanceShuffle = false; // 하트 1개일 때 마지막 무료 셔플 사용 여부
         // 옵션 로컬 스토리지 불러오기 (기본값: 꺼짐/false, 사주패 기본값: 켜짐/true)
@@ -13886,6 +13888,13 @@ display: flex;
 
       triggerGameOver() {
         this.isGameOver = true;
+        this.isSlotEscapeModalOpen = false;
+        this.isEscapingSlot = false;
+        const escModal = document.getElementById('slot-escape-modal');
+        if (escModal) {
+          escModal.classList.remove('active');
+          escModal.onclick = null;
+        }
         clearInterval(this.timerId);
         this.sound.playGameOver();
         this.clearHints();
@@ -14127,6 +14136,13 @@ display: flex;
         this.isAutoClearing = false;
         this.isGameOver = false;
         this.isPaused = false;
+        this.isSlotEscapeModalOpen = false;
+        this.isEscapingSlot = false;
+        const escModal = document.getElementById('slot-escape-modal');
+        if (escModal) {
+          escModal.classList.remove('active');
+          escModal.onclick = null;
+        }
         const _po = document.getElementById('pause-overlay'); if (_po) _po.classList.remove('active');
         const _pi = document.getElementById('pause-icon'); if (_pi) _pi.textContent = '⏸';
         this.blindMismatchCount = 0;
@@ -15525,6 +15541,7 @@ display: flex;
        * 슬롯이 꽉 찼을 때 (포화): 하트 1개 소모 슬롯 탈출 모달 발동 또는 게임오버
        */
       handleTrayNearFull(lastItem) {
+        if (this.isEscapingSlot || this.isSlotEscapeModalOpen) return;
         if (this.sound && this.sound.playMiss) this.sound.playMiss();
 
         const trayEl = document.getElementById('tray-container');
@@ -15549,6 +15566,9 @@ display: flex;
        * 슬롯 탈출 모달 표시 및 터치 시 슬롯 비우기 처리
        */
       showSlotEscapeModal() {
+        if (this.isEscapingSlot || this.isSlotEscapeModalOpen) return;
+        this.isSlotEscapeModalOpen = true;
+
         let modal = document.getElementById('slot-escape-modal');
         if (!modal) {
           modal = document.createElement('div');
@@ -15569,31 +15589,54 @@ display: flex;
           </div>
         `;
 
+        modal.style.pointerEvents = 'auto';
         modal.classList.add('active');
+
+        const btn = document.getElementById('btn-slot-escape-confirm');
+        const card = document.getElementById('slot-escape-card');
 
         // 타일 클릭(pointerdown) 시 발생한 잔여 pointerup/click 이벤트가 모달을 즉각 닫아버리는 현상 방지
         const enableTime = Date.now() + 350;
-        let isEscaping = false;
 
         const doEscape = (e) => {
-          if (Date.now() < enableTime || isEscaping) {
+          if (Date.now() < enableTime) {
             if (e) {
               e.preventDefault();
               e.stopPropagation();
             }
             return;
           }
-          isEscaping = true;
+          if (this.isEscapingSlot) {
+            if (e) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+            return;
+          }
+          this.isEscapingSlot = true;
+          this.isSlotEscapeModalOpen = false;
+
           if (e) {
             e.preventDefault();
             e.stopPropagation();
           }
+
+          // 클릭 즉시 버튼 및 모달 상호작용 원천 비활성화 (더블클릭/연타 방지)
+          if (btn) {
+            btn.disabled = true;
+            btn.style.pointerEvents = 'none';
+            btn.style.opacity = '0.5';
+          }
+          modal.style.pointerEvents = 'none';
+          modal.onclick = null;
           modal.classList.remove('active');
-          modal.removeEventListener('click', handleModalClick);
 
           // 1. 하트 1개 차감
           this.loseLife();
-          if (this.isGameOver) return;
+          if (this.isGameOver) {
+            this.isEscapingSlot = false;
+            return;
+          }
 
           // 2. 슬롯의 패 중 최대 2개를 안전하게 보드로 복귀 (하나씩 차례로 순차 복귀)
           const returnTopTile = (onDone) => {
@@ -15613,27 +15656,34 @@ display: flex;
           // 첫 번째 패 복귀 -> 보드 도착 완료 후 두 번째 패를 차례로 복귀
           this.updateHeaderUI();
           returnTopTile(() => {
-            if (this.isGameOver || this.isClear) return;
+            if (this.isGameOver || this.isClear) {
+              this.isEscapingSlot = false;
+              return;
+            }
             // 첫 번째 패가 보드에 안착한 뒤 80ms 여운 후 두 번째 패 복귀 시작
             setTimeout(() => {
-              if (this.isGameOver || this.isClear) return;
+              if (this.isGameOver || this.isClear) {
+                this.isEscapingSlot = false;
+                return;
+              }
               returnTopTile(() => {
                 this.updateHeaderUI();
+                // 두 번째 패 복귀 완료 후 탈출 상태 해제
+                setTimeout(() => {
+                  this.isEscapingSlot = false;
+                }, 120);
               });
             }, 80);
           });
           // 모달에서 이미 하트 소진을 확인했으므로 혼란을 주는 중복 토스트는 제거
         };
 
-        const handleModalClick = (e) => {
-          const btn = document.getElementById('btn-slot-escape-confirm');
-          const card = document.getElementById('slot-escape-card');
+        // onclick 단일 바인딩으로 중복 리스너 등록 원천 차단
+        modal.onclick = (e) => {
           if (e.target === btn || e.target === modal || (card && card.contains(e.target))) {
             doEscape(e);
           }
         };
-
-        modal.addEventListener('click', handleModalClick);
       }
 
       /**
