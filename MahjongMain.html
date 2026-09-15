@@ -5822,8 +5822,8 @@
             <div class="cert-footer-section">
               <div class="cert-issue-info">
                 <div class="cert-issue-date" id="cert-issue-date">2026년 9월 12일</div>
-                <div class="cert-issuer-name">시연 마작 솔리테어 명예의 전당</div>
-                <div class="cert-issuer-sub">SI-YEON MAHJONG SOLITAIRE</div>
+                <div class="cert-issuer-name">SY 그림맞추기 명예의 전당</div>
+                <div class="cert-issuer-sub">SY MAHJONG SOLITAIRE</div>
               </div>
               <div class="cert-stamp-box" title="시연공인 직인">
                 <div class="cert-stamp-inner">
@@ -5912,7 +5912,7 @@
               <span class="btn-icon">🏆</span> 나의 최고기록
             </button>
             <button class="splash-btn-shortcut" id="btn-splash-shortcut" title="스마트폰 홈 화면에 바로가기 앱 추가 방법 설명">
-              <span class="btn-icon">📲</span> 홈화면 바로가기
+              <span class="btn-icon">📲</span> 바로가기 만들기
             </button>
           </div>
         </div>
@@ -6017,7 +6017,7 @@
       <div class="quick-rules-body">
         <!-- 카드뉴스 메인 일러스트 이미지 (화면의 약 절반 크기) -->
         <div class="quick-rules-img-container">
-          <img src="assets/senior_guide_card.jpg" alt="시연 마작 짝맞추기 및 하트 규칙 카드뉴스 가이드" class="quick-rules-img">
+          <img src="assets/senior_guide_card.jpg" alt="SY 그림맞추기 및 하트 규칙 카드뉴스 가이드" class="quick-rules-img">
         </div>
 
         <!-- 시니어 맞춤형 3단 핵심 요약 (불필요한 설명 생략) -->
@@ -6048,7 +6048,7 @@
 
       <div class="quick-rules-footer">
         <button class="btn-quick-confirm" id="btn-quick-rules-close">
-          <span>🎮</span> <span>알겠어요! 게임 시작하기</span>
+          <span>🎮</span> <span>알겠어요!</span>
         </button>
         <button class="btn-detail-rules-link" id="btn-show-detail-rules">전체 상세 규칙(6대 기본 규칙) 보기</button>
       </div>
@@ -14137,7 +14137,7 @@
           // 기존 캐시 데이터에 30판 기록이 전혀 없다면, 30판 명예 보석 랭커 샘플을 자동 병합하여 보석 뱃지 활성화
           if (!list.some(item => (item.stage >= 30 || item.gem))) {
             const defaults = [
-              { name: '시연마스터', diff: '달인', diffKey: 'master', stage: 30, score: 98500, gem: '왕관', date: '2026.09.12' },
+              { name: 'SY 마스터', diff: '달인', diffKey: 'master', stage: 30, score: 98500, gem: '왕관', date: '2026.09.12' },
               { name: '진홍의루비', diff: '어려움', diffKey: 'hard', stage: 30, score: 76000, gem: '루비', date: '2026.09.11' },
               { name: '사파이어현자', diff: '보통', diffKey: 'normal', stage: 30, score: 57500, gem: '사파이어', date: '2026.09.10' },
               { name: '영롱비취', diff: '쉬움', diffKey: 'easy', stage: 30, score: 42000, gem: '비취', date: '2026.09.09' }
@@ -16997,17 +16997,18 @@
           if (shareBtn) shareBtn.style.display = 'inline-flex';
 
           const rankBtn = document.getElementById('modal-rank-btn');
-          if (rankBtn) rankBtn.style.display = 'inline-flex';
 
           if (isPreview) {
-            // 프리뷰 모드: 기존 confirmBtn 유지
+            // 프리뷰 모드: confirmBtn이 복귀 역할 → rankBtn 숨김 (중복 방지)
+            if (rankBtn) rankBtn.style.display = 'none';
             confirmBtn.style.display = 'inline-flex';
             confirmBtn.textContent = fromEasterModal ? '✨ 보석 축하 전당으로 복귀' : '🏆 나의 최고기록으로 복귀';
             confirmBtn.style.background = celebration.btnGrad;
             const certNextRow = document.getElementById('cert-next-btn-row');
             if (certNextRow) certNextRow.style.display = 'none';
           } else {
-            // 실제 30판 클리어: confirmBtn 숨기고 3-way 버튼 표시
+            // 실제 30판 클리어: confirmBtn 숨기고 3-way 버튼 표시, rankBtn 표시
+            if (rankBtn) rankBtn.style.display = 'inline-flex';
             confirmBtn.style.display = 'none';
             const certNextRow = document.getElementById('cert-next-btn-row');
             if (certNextRow) certNextRow.style.display = 'flex';
@@ -17418,11 +17419,11 @@
 
         ctx.font = '900 23px sans-serif';
         ctx.fillStyle = '#2b2315';
-        ctx.fillText('시연 마작 솔리테어 명예의 전당', 100, footerY + 80);
+        ctx.fillText('SY 그림맞추기 명예의 전당', 100, footerY + 80);
 
         ctx.font = 'bold 13px sans-serif';
         ctx.fillStyle = '#9c8a6f';
-        ctx.fillText('SI-YEON MAHJONG SOLITAIRE HALL OF FAME', 100, footerY + 104);
+        ctx.fillText('SY MAHJONG SOLITAIRE HALL OF FAME', 100, footerY + 104);
 
         // 11. 우측 붉은 전통 직인 도장 (時演 / 公認)
         const stampSize = 88;
