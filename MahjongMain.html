@@ -15654,28 +15654,30 @@ display: flex;
             return false;
           };
 
-          // 첫 번째 패 복귀 -> 보드 도착 완료 후 두 번째 패를 차례로 복귀
-          this.updateHeaderUI();
-          returnTopTile(() => {
-            if (this.isGameOver || this.isClear) {
-              this.isEscapingSlot = false;
-              return;
-            }
-            // 첫 번째 패가 보드에 안착한 뒤 80ms 여운 후 두 번째 패 복귀 시작
-            setTimeout(() => {
+          // 모달이 완전히 닫히고 화면이 정돈된 후 복원 비행 시작 (220ms 여운으로 겹침 현상 제거)
+          setTimeout(() => {
+            this.updateHeaderUI();
+            returnTopTile(() => {
               if (this.isGameOver || this.isClear) {
                 this.isEscapingSlot = false;
                 return;
               }
-              returnTopTile(() => {
-                this.updateHeaderUI();
-                // 두 번째 패 복귀 완료 후 탈출 상태 해제
-                setTimeout(() => {
+              // 첫 번째 패가 보드에 안착한 뒤 편안한 호흡(180ms) 후 두 번째 패 복귀 시작
+              setTimeout(() => {
+                if (this.isGameOver || this.isClear) {
                   this.isEscapingSlot = false;
-                }, 120);
-              });
-            }, 80);
-          });
+                  return;
+                }
+                returnTopTile(() => {
+                  this.updateHeaderUI();
+                  // 두 번째 패 복귀 완료 후 탈출 상태 해제
+                  setTimeout(() => {
+                    this.isEscapingSlot = false;
+                  }, 150);
+                });
+              }, 180);
+            });
+          }, 220);
           // 모달에서 이미 하트 소진을 확인했으므로 혼란을 주는 중복 토스트는 제거
         };
 
@@ -15818,12 +15820,17 @@ display: flex;
           <span class="tile-sub-label">${tileDef.label || ''}</span>
         `;
 
-        // 슬롯 위치에서 시작
+        // 슬롯 위치에서 시작 (초기 상태 명시적 고정)
         flyer.style.left = `${startRect.left}px`;
         flyer.style.top = `${startRect.top}px`;
         flyer.style.width = `${startRect.width}px`;
         flyer.style.height = `${startRect.height}px`;
+        flyer.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
+        flyer.style.transformOrigin = 'top left';
         document.body.appendChild(flyer);
+
+        // 강제 리플로우(Reflow)로 시작 위치를 GPU 렌더 트리에 즉시 각인하여 초기 프레임 스킵/급가속 방지
+        void flyer.offsetWidth;
 
         const durationSec = (durationMs / 1000).toFixed(2);
         requestAnimationFrame(() => {
@@ -15832,6 +15839,7 @@ display: flex;
           const sx = targetRect.width / startRect.width;
           const sy = targetRect.height / startRect.height;
 
+          // flyTileToTray와 동일한 durationSec 및 부드러운 감속 커브 적용
           flyer.style.transition = `transform ${durationSec}s cubic-bezier(0.22, 1, 0.36, 1), border-radius ${durationSec}s ease, box-shadow ${durationSec}s ease`;
           flyer.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${sx}, ${sy})`;
           flyer.style.borderRadius = '';
