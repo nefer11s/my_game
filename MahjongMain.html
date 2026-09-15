@@ -17174,9 +17174,12 @@
           const rankBtn = document.getElementById('modal-rank-btn');
           if (rankBtn) rankBtn.style.display = 'none';
 
-          // 일반 판(1~29판): 3-way 버튼 숨기고 confirmBtn 복구
+          // 일반 판(31판 포함, 1~29판): 3-way 버튼 숨기고 confirmBtn 복구
           const certNextRow = document.getElementById('cert-next-btn-row');
           if (certNextRow) certNextRow.style.display = 'none';
+          // cert-upgrade-btn 명시적 숨김 (달인 32판+ 등에서 노출 방지)
+          const upgradeBtnHide = document.getElementById('cert-upgrade-btn');
+          if (upgradeBtnHide) upgradeBtnHide.style.display = 'none';
           confirmBtn.style.display = 'inline-flex';
           confirmBtn.style.alignItems = 'center';
           confirmBtn.style.justifyContent = 'center';
