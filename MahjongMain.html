@@ -2957,6 +2957,24 @@
       font-size: 14px;
     }
 
+    .rank-row-highlight {
+      background: linear-gradient(90deg, rgba(254, 240, 138, 0.45) 0%, rgba(253, 224, 71, 0.8) 50%, rgba(254, 240, 138, 0.45) 100%) !important;
+      box-shadow: 0 0 14px rgba(234, 179, 8, 0.65) !important;
+      animation: rankPulse 1.4s ease-in-out infinite alternate !important;
+      border-radius: 6px;
+    }
+
+    @keyframes rankPulse {
+      0% {
+        background-color: rgba(254, 240, 138, 0.35);
+        transform: scale(1);
+      }
+      100% {
+        background-color: rgba(253, 224, 71, 0.85);
+        transform: scale(1.015);
+      }
+    }
+
     /* 화면 흔들림 및 판 파괴 애니메이션 */
     @keyframes screenShake {
 
@@ -13268,9 +13286,22 @@
           goSubmitRank.addEventListener('click', () => {
             const inputEl = document.getElementById('go-player-name');
             const name = inputEl ? inputEl.value : '';
-            this.saveScoreToHallOfFame(name);
+            if (this.sound && this.sound.playSelect) this.sound.playSelect();
+            const savedIdx = this.saveScoreToHallOfFame(name);
             if (gameoverModal) gameoverModal.classList.remove('active');
             if (rankModal) rankModal.classList.add('active');
+            // 등록된 행으로 스크롤 후 하이라이트 (비동기: DOM 갱신 대기)
+            setTimeout(() => {
+              const highlightRow = document.querySelector('#rank-table-body tr[data-highlight-row="true"]');
+              if (highlightRow) {
+                highlightRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // 3초 후 하이라이트 자동 제거
+                setTimeout(() => {
+                  highlightRow.classList.remove('rank-row-highlight');
+                  delete highlightRow.dataset.highlightRow;
+                }, 3000);
+              }
+            }, 180);
           });
         }
 
@@ -14162,8 +14193,16 @@
         list.push(record);
         list.sort((a, b) => b.score - a.score);
         const top10 = list.slice(0, 10);
+        // 저장 후 내 기록이 위치한 인덱스 계산 (top10 기준)
+        const savedIdx = top10.findIndex(r =>
+          r.name === record.name &&
+          r.score === record.score &&
+          r.diffKey === record.diffKey &&
+          r.stage === record.stage
+        );
         safeStorage.setJSON('siyeon_mahjong_hall_of_fame', top10);
-        this.renderHallOfFame();
+        this.renderHallOfFame(savedIdx >= 0 ? savedIdx : null);
+        return savedIdx;
       }
 
       playCelebrationAnimation(diffKey, fromEasterModal = false, playerName = null, recordItem = null) {
@@ -14243,7 +14282,7 @@
         document.body.appendChild(overlay);
       }
 
-      renderHallOfFame() {
+      renderHallOfFame(highlightIdx = null) {
         try {
           const list = this.getHallOfFame() || [];
           const tbody = document.getElementById('rank-table-body');
@@ -14282,6 +14321,11 @@
               <td>${stageNum}판</td>
               <td class="rank-score">${scoreNum.toLocaleString()}</td>
             `;
+            // 신규 등록 기록 행 하이라이트
+            if (highlightIdx !== null && idx === highlightIdx) {
+              tr.classList.add('rank-row-highlight');
+              tr.dataset.highlightRow = 'true';
+            }
             tbody.appendChild(tr);
           });
 
