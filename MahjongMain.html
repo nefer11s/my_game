@@ -6293,9 +6293,9 @@
             <button class="sound-test-btn" id="btn-test-sound-firework" title="폭죽음 미리듣기">▶ 듣기</button>
           </div>
           <select class="diff-select sound-select" id="select-sound-firework">
-            <option value="cheer" selected>🎉 축하 팝 & 팡파레 (경쾌한 축제)</option>
+            <option value="cheer">🎉 축하 팝 & 팡파레 (경쾌한 축제)</option>
             <option value="sparkle">✨ 화려한 스파크 파라락 (불꽃 연출)</option>
-            <option value="real">💥 리얼 파열 폭죽 쾅! (실제 폭발음)</option>
+            <option value="real" selected>💥 리얼 파열 폭죽 쾅! (실제 폭발음 · 기본값)</option>
             <option value="cannon">💣 묵직한 대포 쾅 (서브베이스 펀치)</option>
             <option value="none">🔇 소리 없음</option>
           </select>
@@ -6542,13 +6542,21 @@
         // 신규 또는 명리 기본 테마 미설정 시 기본값으로 'wood' 적용
         const defaultSelect = (!savedSelect || savedSelect === 'flip' || !savedTheme || savedTheme === 'myeongri' || savedTheme === 'default') ? 'wood' : savedSelect;
         const savedMatch = safeStorage.get('mahjong_sound_match');
-        const defaultMatch = (!savedMatch || savedMatch === 'ceramic' || savedMatch === 'jade') ? 'real_pair' : savedMatch;
+        const fireworkMigrated = safeStorage.get('mahjong_sound_firework_v1581');
+        let savedFirework = safeStorage.get('mahjong_sound_firework');
+        if (!fireworkMigrated) {
+          if (!savedFirework || savedFirework === 'cheer') {
+            savedFirework = 'real';
+            safeStorage.set('mahjong_sound_firework', 'real');
+          }
+          safeStorage.set('mahjong_sound_firework_v1581', '1');
+        }
         this.customSounds = {
           select: defaultSelect,
           flip: safeStorage.get('mahjong_sound_flip', 'real_flip'),
           match: defaultMatch,
           chime: safeStorage.get('mahjong_sound_chime', 'celesta'),
-          firework: safeStorage.get('mahjong_sound_firework', 'cheer'),
+          firework: savedFirework || 'real',
           shuffle: safeStorage.get('mahjong_sound_shuffle', 'real_shuffle')
         };
         this.theme = savedTheme || 'myeongri';
@@ -6556,6 +6564,7 @@
         safeStorage.set('mahjong_sound_select', this.customSounds.select);
         safeStorage.set('mahjong_sound_flip', this.customSounds.flip);
         safeStorage.set('mahjong_sound_match', this.customSounds.match);
+        safeStorage.set('mahjong_sound_firework', this.customSounds.firework);
         safeStorage.set('mahjong_sound_shuffle', this.customSounds.shuffle);
 
         this.buffers = {};
@@ -6581,12 +6590,12 @@
       setTheme(theme) {
         this.theme = theme;
         if (theme === 'myeongri' || theme === 'default') {
-          // 명리 기본 테마: 처음부터 단단한 우드블록 탁, 실제 마작패 뒤집기, 실제 마작패 짝, 첼레스타 오르골, 축하 팝, 실제 마작패 섞기
+          // 명리 기본 테마: 단단한 우드블록, 실제 마작패 뒤집기, 실제 마작패 짝, 첼레스타 오르골, 리얼 폭죽 쾅, 실제 마작패 섞기
           this.setSoundOption('select', 'wood');
           this.setSoundOption('flip', 'real_flip');
           this.setSoundOption('match', 'real_pair');
           this.setSoundOption('chime', 'celesta');
-          this.setSoundOption('firework', 'cheer');
+          this.setSoundOption('firework', 'real');
           this.setSoundOption('shuffle', 'real_shuffle');
         } else if (theme === 'jade') {
           // SY 옥조각 테마
@@ -6635,7 +6644,7 @@
           flip: 'real_flip',
           match: 'real_pair',
           chime: 'celesta',
-          firework: 'cheer',
+          firework: 'real',
           shuffle: 'real_shuffle'
         };
         ['select', 'flip', 'match', 'chime', 'firework', 'shuffle'].forEach(k => {
@@ -12182,8 +12191,11 @@
         if (selectSoundFlip) selectSoundFlip.value = 'real_flip';
         if (selectSoundMatch) selectSoundMatch.value = 'real_pair';
         if (selectSoundChime) selectSoundChime.value = 'celesta';
-        if (selectSoundFirework) selectSoundFirework.value = 'cheer';
+        if (selectSoundFirework) selectSoundFirework.value = 'real';
         if (selectSoundShuffle) selectSoundShuffle.value = 'real_shuffle';
+        if (this.sound && typeof this.sound.setSoundOption === 'function') {
+          this.sound.setSoundOption('firework', 'real');
+        }
 
         // 10-2. 30판 클리어 폭죽 발사 속도: 1400 (기본값 여유로움), 폭죽 개수: 3 (기본값)
         this.stage30FireworkSpeed = 1400;
