@@ -176,7 +176,7 @@
       justify-content: space-between;
       touch-action: manipulation;
       overscroll-behavior: none;
-      padding: 6px 12px 6px;
+      padding: 6px 12px max(6px, env(safe-area-inset-bottom));
     }
 
     /* 최상단 슬림 상태 바 (Game Top Bar) */
@@ -300,7 +300,7 @@
       border-radius: 18px;
       box-shadow: 0 6px 24px rgba(24, 60, 44, 0.12);
       border: 1.5px solid rgba(255, 255, 255, 0.95);
-      flex-shrink: 0;
+      flex-shrink: 0 !important;
     }
 
     .dock-stats {
@@ -969,8 +969,9 @@
     /* 게임 뷰포트 & 보드 */
     .game-viewport {
       position: relative;
-      flex: 1;
+      flex: 1 1 0;
       min-height: 0;
+      max-height: 100%;
       width: 100%;
       display: flex;
       align-items: center;
@@ -5965,20 +5966,25 @@
   <!-- 최신 버전 업데이트 완료 및 오프라인 준비 안내 모달 -->
   <div class="modal-overlay" id="offline-ready-modal" style="z-index: 10009;">
     <div class="modal-card"
-      style="max-width: 420px; width: 92%; max-height: 86vh; display: flex; flex-direction: column; text-align: left; padding: 22px 18px;">
+      style="max-width: 420px; width: 92%; max-height: min(85vh, 520px); display: flex; flex-direction: column; overflow: hidden; text-align: left; padding: 20px 18px 16px; position: relative;">
       <!-- 헤더 영역 (고정) -->
       <div
-        style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 10px; flex-shrink: 0;">
-        <span style="font-size: 28px;">🎉</span>
-        <div>
-          <h2 class="modal-title" style="margin: 0; font-size: 19px; color: #15803d;">최신 버전 업데이트 안내</h2>
-          <div style="font-size: 12px; color: #64748b; font-weight: 700;">v1.5.91 (오프라인 캐시 적용)</div>
+        style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 10px; flex-shrink: 0;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 26px;">🎉</span>
+          <div>
+            <h2 class="modal-title" style="margin: 0; font-size: 18px; color: #15803d; line-height: 1.2;">최신 버전 업데이트 안내</h2>
+            <div style="font-size: 11.5px; color: #64748b; font-weight: 700;">v1.5.91 (오프라인 캐시 적용)</div>
+          </div>
         </div>
+        <button id="btn-offline-ready-close-x"
+          style="background: none; border: none; font-size: 20px; color: #94a3b8; padding: 4px; line-height: 1; cursor: pointer;"
+          aria-label="닫기">✕</button>
       </div>
 
       <!-- 날짜별 스크롤 본문 영역 -->
       <div class="update-notes-scroll"
-        style="flex: 1; overflow-y: auto; max-height: 380px; padding-right: 6px; margin: 4px 0 16px 0; -webkit-overflow-scrolling: touch;">
+        style="flex: 1 1 auto; min-height: 0; overflow-y: auto; max-height: min(50vh, 320px); padding-right: 6px; margin: 4px 0 12px 0; -webkit-overflow-scrolling: touch;">
 
         <!-- 2026.09.17 -->
         <div style="margin-bottom: 14px;">
@@ -6037,7 +6043,7 @@
 
       <!-- 하단 확인 버튼 (고정) -->
       <button class="modal-btn" id="btn-offline-ready-close"
-        style="width: 100%; margin: 0; flex-shrink: 0; background: linear-gradient(135deg, #15803d, #166534); color: #fff;">확인 완료</button>
+        style="width: 100%; height: 42px; font-size: 15px; font-weight: 800; margin: 0; flex-shrink: 0; background: linear-gradient(135deg, #15803d, #166534); color: #fff; border-radius: 12px; border: none; cursor: pointer;">확인 완료</button>
     </div>
   </div>
 
@@ -12775,12 +12781,14 @@
         // 오프라인 실행 가능 안내 모달 관리
         const offlineModal = document.getElementById('offline-ready-modal');
         const btnOfflineClose = document.getElementById('btn-offline-ready-close');
+        const btnOfflineCloseX = document.getElementById('btn-offline-ready-close-x');
         const statusOfflineBadge = document.getElementById('splash-offline-status');
         const closeOfflineModal = () => {
           this.sound.playSelect();
           if (offlineModal) ModalHelper.close(offlineModal);
         };
         if (btnOfflineClose) btnOfflineClose.addEventListener('click', closeOfflineModal);
+        if (btnOfflineCloseX) btnOfflineCloseX.addEventListener('click', closeOfflineModal);
         if (offlineModal) ModalHelper.setupBackdropClose(offlineModal, closeOfflineModal);
         if (statusOfflineBadge) {
           statusOfflineBadge.addEventListener('click', () => {
