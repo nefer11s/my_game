@@ -1059,7 +1059,7 @@
       height: 100%;
       border-radius: var(--tile-radius);
       transform-style: preserve-3d;
-      transition: transform 0.36s cubic-bezier(0.2, 0.9, 0.35, 1.1);
+      transition: transform 0.22s cubic-bezier(0.2, 0.9, 0.35, 1.1);
     }
 
     /* 뒤집힌 패(Face-down) 기본 상태: 180도 회전하여 뒷면 노출 */
@@ -15468,7 +15468,7 @@
             const targetTile = getEffectiveTargetTile(e);
             this.handleTileClick(targetTile);
 
-            setTimeout(() => { isHandled = false; }, 140);
+            setTimeout(() => { isHandled = false; }, 70);
           };
 
           el.addEventListener('pointerdown', (e) => {
@@ -15587,18 +15587,11 @@
 
         activeTiles.forEach(tile => {
           const free = this.isTileFree(tile, activeTiles);
-          tile.free = free;
-          if (tile.el) {
-            tile.el.classList.toggle('free', free);
-            tile.el.classList.toggle('blocked', !free);
-            // 자연스러운 아이소메트릭 z-index: 우하단 패가 좌상단 패의 그림자를 덮어 평면 높이가 일치되도록 유지
-            const baseZ = tile.z * 2000 + tile.x * 33 + tile.y * 43;
-            tile.el.style.zIndex = baseZ;
-
-            // 모든 패의 높이를 동일하게 유지 (extraZ 돌출 없음)
-            if (tile.finalX !== undefined && tile.finalY !== undefined && tile.finalZ !== undefined) {
-              tile.el.style.setProperty('--tz', `${tile.finalZ}px`);
-              tile.el.style.transform = `translate3d(${tile.finalX}px, ${tile.finalY}px, ${tile.finalZ}px)`;
+          if (tile.free !== free) {
+            tile.free = free;
+            if (tile.el) {
+              tile.el.classList.toggle('free', free);
+              tile.el.classList.toggle('blocked', !free);
             }
           }
         });
@@ -15874,8 +15867,8 @@
         }
 
         // 3) 일반 자유 패(또는 이미 공개된 블라인드 패의 재클릭): 슬롯(트레이)으로 이동
-        // 동일 타일 초고속 중복 클릭(고스트 터치)만 140ms 차단하고, 다른 타일은 0ms 즉각 처리!
-        if (this.lastClickedTileId === tile.id && this.lastGlobalTileClickTime && (now - this.lastGlobalTileClickTime < 140)) {
+        // 동일 타일 초고속 중복 클릭(고스트 터치)만 70ms 차단하고, 다른 타일은 0ms 즉각 처리!
+        if (this.lastClickedTileId === tile.id && this.lastGlobalTileClickTime && (now - this.lastGlobalTileClickTime < 70)) {
           this.logTouch(`[중복 무시] '${tile.def.label}' 초고속 연타 차단`, 'warn');
           return;
         }
