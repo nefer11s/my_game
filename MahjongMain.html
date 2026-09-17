@@ -1009,24 +1009,16 @@
       -webkit-touch-callout: none !important;
       user-select: none;
       -webkit-user-select: none;
-      transition: transform 0.22s cubic-bezier(0.2, 0.9, 0.4, 1.1),
-        filter 0.22s ease, box-shadow 0.22s ease, opacity 0.22s ease;
-      will-change: transform, filter, box-shadow;
+      transition: filter 0.18s ease, opacity 0.18s ease;
       outline: none;
       perspective: 800px;
       transform-style: preserve-3d;
-      /* 정밀 3D 적층 두께: 1~3px 백색 상아 본체층 + 4~8px 에메랄드 비취 바닥층 */
+      /* 정밀 3D 적층 두께: 고성능 압축 입체 섀도우 (GPU 래스터라이저 대역폭 최적화) */
       box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.9),
-        inset -1px -1px 2px rgba(180, 160, 135, 0.2),
-        1px 1px 0 #ede5d4,
-        2px 2px 0 #dfd5bf,
-        3px 3px 0 #cfc2a8,
+        2px 2px 0 #ede5d4,
         4px 4px 0 #287756,
-        5px 5px 0 #206346,
-        6px 6px 0 #195239,
-        7px 7px 0 #123e2b,
-        8px 8px 0 #0d2c1e,
-        6px 10px 16px rgba(10, 35, 22, 0.26);
+        6px 6px 0 #123e2b,
+        4px 8px 12px rgba(10, 35, 22, 0.28);
     }
 
     /* 타일 내부 모든 자식 엘리먼트의 포인터 가로챔 원천 차단 (타일 본체로 단일 수신) */
@@ -1038,16 +1030,14 @@
     /* 자유 패: 밝고 선명하게 */
     .tile.free {
       filter: brightness(1.08);
-      transition: filter 0.25s ease, transform 0.22s cubic-bezier(0.2, 0.9, 0.4, 1.1),
-        box-shadow 0.22s ease, opacity 0.22s ease;
+      transition: filter 0.18s ease, opacity 0.18s ease;
     }
 
     /* 잠긴 패: 어둡게 (힌트처럼 보이지 않도록 살짝만 어둡게) */
     .tile.blocked {
       filter: brightness(0.72) saturate(0.7);
       cursor: default;
-      transition: filter 0.25s ease, transform 0.22s cubic-bezier(0.2, 0.9, 0.4, 1.1),
-        box-shadow 0.22s ease, opacity 0.22s ease;
+      transition: filter 0.18s ease, opacity 0.18s ease;
     }
 
 
@@ -1144,98 +1134,65 @@
     .tile-back-svg {
       width: 52px;
       height: 72px;
-      filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.45));
     }
 
-    /* 층(Layer 0, 1, 2)별 차등 입체감 및 높이 그림자 */
+    /* 층(Layer 0, 1, 2, 3, 4)별 고성능 압축 입체감 및 높이 그림자 */
     .tile.layer-0 {
       /* 바닥 기본 레이어 */
       box-shadow:
         inset 1px 1px 1px rgba(255, 255, 255, 0.9),
-        1px 1px 0 #ede5d4,
-        2px 2px 0 #dfd5bf,
-        3px 3px 0 #cfc2a8,
+        2px 2px 0 #ede5d4,
         4px 4px 0 #287756,
-        5px 5px 0 #206346,
-        6px 6px 0 #195239,
-        7px 7px 0 #123e2b,
-        5px 9px 14px rgba(10, 35, 22, 0.24);
+        6px 6px 0 #123e2b,
+        4px 8px 12px rgba(10, 35, 22, 0.24);
     }
 
     .tile.layer-1 {
-      /* 2단 중층 레이어: 아래 패 표면에 떨어지는 짙은 Contact Shadow */
+      /* 2단 중층 레이어: 아래 패 표면에 떨어지는 명확한 Contact Shadow */
       filter: brightness(1.02);
       box-shadow:
         inset 1px 1px 1px rgba(255, 255, 255, 0.95),
-        1px 1px 0 #eee7d7,
-        2px 2px 0 #dfd5bf,
-        3px 3px 0 #cfc2a8,
+        2px 2px 0 #eee7d7,
         4px 4px 0 #2c815d,
-        5px 5px 0 #226b4c,
-        6px 6px 0 #1a563c,
         7px 7px 0 #13422e,
-        8px 8px 0 #0d2e20,
-        3px 6px 8px rgba(0, 0, 0, 0.28),
-        8px 14px 22px rgba(10, 35, 22, 0.38);
+        6px 12px 18px rgba(10, 35, 22, 0.35);
     }
 
     .tile.layer-2 {
-      /* 3단 정상 피라미드 레이어: 최상단 하이라이트 + 깊은 Ambient Occlusion */
+      /* 3단 정상 피라미드 레이어 */
       filter: brightness(1.04);
       border-top: 1.8px solid #ffffff;
       box-shadow:
         inset 1px 1px 1.5px rgba(255, 255, 255, 1),
-        1px 1px 0 #f0e9dc,
-        2px 2px 0 #e2d9c5,
-        3px 3px 0 #d2c6af,
-        4px 4px 0 #318f67,
-        5px 5px 0 #267755,
-        6px 6px 0 #1d5f43,
-        7px 7px 0 #154832,
+        2px 2px 0 #f0e9dc,
+        5px 5px 0 #318f67,
         8px 8px 0 #0e3223,
-        9px 9px 0 #082016,
-        4px 8px 12px rgba(0, 0, 0, 0.35),
-        12px 20px 30px rgba(8, 30, 18, 0.48);
+        8px 16px 24px rgba(8, 30, 18, 0.42);
     }
 
     .tile.layer-3 {
-      /* 4단 상륜탑 레이어: 선명한 엣지 하이라이트 + 깊은 드리운 그림자 */
+      /* 4단 상륜탑 레이어 */
       filter: brightness(1.06);
       border-top: 2px solid #ffffff;
       box-shadow:
         inset 1px 1px 1.5px rgba(255, 255, 255, 1),
-        1px 1px 0 #f5ede0,
-        2px 2px 0 #e8dfcb,
-        3px 3px 0 #d9cbb2,
-        4px 4px 0 #369d72,
-        5px 5px 0 #2a835d,
-        6px 6px 0 #206a4b,
-        7px 7px 0 #18523a,
-        8px 8px 0 #113a29,
+        2px 2px 0 #f5ede0,
+        5px 5px 0 #369d72,
         9px 9px 0 #0a251a,
-        5px 10px 15px rgba(0, 0, 0, 0.4),
-        14px 24px 34px rgba(6, 26, 15, 0.52);
+        10px 20px 28px rgba(6, 26, 15, 0.48);
     }
 
     .tile.layer-4 {
-      /* 5단 최정상 보주 레이어: 궁극의 황금빛 테두리 & 입체감 */
+      /* 5단 최정상 보주 레이어 */
       filter: brightness(1.08);
       border-top: 2px solid #ffffff;
       outline: 1.5px solid rgba(243, 156, 18, 0.5);
       box-shadow:
         inset 1px 1px 2px rgba(255, 255, 255, 1),
-        1px 1px 0 #faf2e6,
-        2px 2px 0 #eee4d2,
-        3px 3px 0 #dfd1b8,
-        4px 4px 0 #3cb07f,
-        5px 5px 0 #30946b,
-        6px 6px 0 #247655,
-        7px 7px 0 #1b5b42,
-        8px 8px 0 #134330,
-        9px 9px 0 #0d2f22,
+        2px 2px 0 #faf2e6,
+        6px 6px 0 #3cb07f,
         10px 10px 0 #071c14,
-        6px 12px 18px rgba(0, 0, 0, 0.45),
-        16px 28px 40px rgba(5, 22, 13, 0.58);
+        12px 24px 34px rgba(5, 22, 13, 0.52);
     }
 
     /* 타일 상단 코너 배지 (숫자/기호) - 가독성 강화 */
@@ -15348,29 +15305,38 @@
         return !blockedLeft || !blockedRight;
       }
 
-      isTileFree(tile) {
-        if (tile.removed) return false;
-        const activeTiles = this.tiles.filter(t => !t.removed && t.id !== tile.id);
+      isTileFree(tile, prefilteredActiveTiles) {
+        if (!tile || tile.removed) return false;
+        const activeTiles = prefilteredActiveTiles || this.tiles.filter(t => !t.removed);
 
-        // 상위 층에 의해 덮여있는지 검사 (물리 접촉 임계값 1.99)
-        const covered = activeTiles.some(other => {
-          if (other.z <= tile.z) return false;
-          return Math.abs(other.x - tile.x) < 1.99 && Math.abs(other.y - tile.y) < 1.99;
-        });
-        if (covered) return false;
+        // 1) 상위 층에 의해 덮여있는지 검사 (z > tile.z만 고속 검사)
+        for (let i = 0; i < activeTiles.length; i++) {
+          const other = activeTiles[i];
+          if (other.id === tile.id || other.z <= tile.z) continue;
+          if (Math.abs(other.x - tile.x) < 1.99 && Math.abs(other.y - tile.y) < 1.99) {
+            return false;
+          }
+        }
 
-        // 좌측 또는 우측이 막혀있는지 검사
-        const blockedLeft = activeTiles.some(other => {
-          if (other.z !== tile.z) return false;
+        // 2) 좌측 또는 우측이 막혀있는지 검사 (동일 층 z === tile.z만 단일 패스 검사)
+        let blockedLeft = false;
+        let blockedRight = false;
+        for (let i = 0; i < activeTiles.length; i++) {
+          const other = activeTiles[i];
+          if (other.id === tile.id || other.z !== tile.z) continue;
+          if (Math.abs(other.y - tile.y) >= 1.95) continue;
+
           const dx = tile.x - other.x;
-          return (dx <= 2.05 && dx > 0.05) && Math.abs(other.y - tile.y) < 1.95;
-        });
-
-        const blockedRight = activeTiles.some(other => {
-          if (other.z !== tile.z) return false;
-          const dx = other.x - tile.x;
-          return (dx <= 2.05 && dx > 0.05) && Math.abs(other.y - tile.y) < 1.95;
-        });
+          if (dx <= 2.05 && dx > 0.05) {
+            blockedLeft = true;
+          } else {
+            const rdx = other.x - tile.x;
+            if (rdx <= 2.05 && rdx > 0.05) {
+              blockedRight = true;
+            }
+          }
+          if (blockedLeft && blockedRight) return false;
+        }
 
         return !blockedLeft || !blockedRight;
       }
@@ -15471,8 +15437,8 @@
                 if (hoveredTiles.length > 0) {
                   // 상위 층(z) 내림차순 정렬
                   hoveredTiles.sort((a, b) => b.z - a.z);
-                  // 터치 지점 타일들 중 선택 가능한 자유 패(isTileFree)가 있으면 무조건 최상위 자유 패 100% 우선 선택
-                  const topFree = hoveredTiles.find(t => this.isTileFree(t));
+                  // 터치 지점 타일들 중 선택 가능한 자유 패(cached free)가 있으면 무조건 최상위 자유 패 100% 우선 선택
+                  const topFree = hoveredTiles.find(t => (t.free !== undefined ? t.free : this.isTileFree(t)));
                   if (topFree) {
                     return topFree;
                   }
@@ -15484,7 +15450,8 @@
               // 2) 빗겨 맞은 터치 구제를 위한 스마트 스냅 후보 검색
               const freeCandidate = this.findBestFreeTileAtPoint(e.clientX, e.clientY);
               if (freeCandidate) {
-                if (!this.isTileFree(targetTile) || freeCandidate.z > targetTile.z) {
+                const isTargetFree = targetTile.free !== undefined ? targetTile.free : this.isTileFree(targetTile);
+                if (!isTargetFree || freeCandidate.z > targetTile.z) {
                   targetTile = freeCandidate;
                 }
               }
@@ -15589,12 +15556,12 @@
        * - 슬롯에 빈자리가 있다면, 플레이어가 자유 패를 슬롯에 담아 아래층 패를 열 수 있으므로 절대 교착이 아님!
        * - 슬롯이 꽉 찼을 때 보드의 자유 패 중 슬롯의 패와 즉시 매치되는 패가 0개이거나, 보드에 자유 패가 0개일 때만 교착.
        */
-      isDeadlocked() {
+      isDeadlocked(prefilteredActiveTiles) {
         if (this.isClear || this.isGameOver || this.isDealing || this.isAutoClearing) return false;
-        const activeTiles = this.tiles.filter(t => !t.removed);
+        const activeTiles = prefilteredActiveTiles || this.tiles.filter(t => !t.removed);
         if (activeTiles.length === 0) return false;
 
-        const freeTiles = activeTiles.filter(t => this.isTileFree(t));
+        const freeTiles = activeTiles.filter(t => (t.free !== undefined ? t.free : this.isTileFree(t, activeTiles)));
 
         // 1) 보드에 남은 패가 있는데 자유 패가 1개도 없는 비정상 고립 상태
         if (freeTiles.length === 0) return true;
@@ -15618,7 +15585,7 @@
         const activeTiles = this.tiles.filter(t => !t.removed);
 
         activeTiles.forEach(tile => {
-          const free = this.isTileFree(tile);
+          const free = this.isTileFree(tile, activeTiles);
           tile.free = free;
           if (tile.el) {
             tile.el.classList.toggle('free', free);
@@ -15635,14 +15602,14 @@
           }
         });
 
-        const availablePairs = this.getAvailablePairs();
+        const availablePairs = this.getAvailablePairs(activeTiles);
         document.getElementById('stat-moves').textContent = availablePairs.length;
         document.getElementById('stat-tiles').textContent = activeTiles.length;
         this.updateToolButtonsUI();
 
         // 슬롯이 비어있거나 여유가 있을 때는 절대로 팝업이 뜨지 않으며,
         // 슬롯이 꽉 차서 더 이상 둘 수 있는 수가 없는 진정한 교착 상태일 때만 셔플 확인
-        if (this.isDeadlocked()) {
+        if (this.isDeadlocked(activeTiles)) {
           setTimeout(() => {
             if (this.isDeadlocked() && !this.isClear && !this.isGameOver) {
               if (this.lives === 1 && !this.hasUsedLastChanceShuffle) {
@@ -15713,7 +15680,7 @@
        */
       findBestFreeTileAtPoint(clientX, clientY) {
         if (clientX === undefined || clientY === undefined) return null;
-        const activeFreeTiles = this.tiles.filter(t => !t.removed && this.isTileFree(t) && t.el);
+        const activeFreeTiles = this.tiles.filter(t => !t.removed && (t.free !== undefined ? t.free : this.isTileFree(t)) && t.el);
         if (activeFreeTiles.length === 0) return null;
 
         const candidates = [];
@@ -15754,7 +15721,8 @@
         const now = performance.now();
 
         // 클릭된 해당 타일이 잠겨있는 경우 흔들림 효과 및 미스 사운드
-        if (!this.isTileFree(tile)) {
+        const isFree = tile.free !== undefined ? tile.free : this.isTileFree(tile);
+        if (!isFree) {
           this.logTouch(`[잠김패] '${tile.def.label}' 선택 불가 (좌우 또는 위가 막힘)`, 'warn');
           if (this.sound && this.sound.playMiss) this.sound.playMiss();
           if (tile.el) {
@@ -16481,9 +16449,9 @@
       /**
        * 가능한 짝 조합 계산 (보드 자유패 쌍 및 [슬롯 패 ↔ 보드 자유패] 쌍)
        */
-      getAvailablePairs() {
-        const activeTiles = this.tiles.filter(t => !t.removed);
-        const freeTiles = activeTiles.filter(t => this.isTileFree(t));
+      getAvailablePairs(prefilteredActiveTiles) {
+        const activeTiles = prefilteredActiveTiles || this.tiles.filter(t => !t.removed);
+        const freeTiles = activeTiles.filter(t => (t.free !== undefined ? t.free : this.isTileFree(t, activeTiles)));
         const pairs = [];
 
         // 1) 보드의 자유 패끼리 매칭
@@ -16584,7 +16552,7 @@
         } else {
           // 즉시 매치되는 패가 없는 경우
           const activeTiles = this.tiles.filter(t => !t.removed);
-          const freeTiles = activeTiles.filter(t => this.isTileFree(t));
+          const freeTiles = activeTiles.filter(t => (t.free !== undefined ? t.free : this.isTileFree(t, activeTiles)));
 
           if (this.trayTiles.length < this.maxSlots && freeTiles.length > 0) {
             this.hintsRemaining--;
