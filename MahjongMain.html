@@ -15469,7 +15469,7 @@
             const targetTile = getEffectiveTargetTile(e);
             this.handleTileClick(targetTile);
 
-            setTimeout(() => { isHandled = false; }, 70);
+            setTimeout(() => { isHandled = false; }, 140);
           };
 
           el.addEventListener('pointerdown', (e) => {
@@ -15868,8 +15868,8 @@
         }
 
         // 3) 일반 자유 패(또는 이미 공개된 블라인드 패의 재클릭): 슬롯(트레이)으로 이동
-        // 동일 타일 초고속 중복 클릭(고스트 터치)만 70ms 차단하고, 다른 타일은 0ms 즉각 처리!
-        if (this.lastClickedTileId === tile.id && this.lastGlobalTileClickTime && (now - this.lastGlobalTileClickTime < 70)) {
+        // 동일 타일 초고속 중복 클릭(고스트 터치)만 140ms 차단하고, 다른 타일은 0ms 즉각 처리!
+        if (this.lastClickedTileId === tile.id && this.lastGlobalTileClickTime && (now - this.lastGlobalTileClickTime < 140)) {
           this.logTouch(`[중복 무시] '${tile.def.label}' 초고속 연타 차단`, 'warn');
           return;
         }
