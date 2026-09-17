@@ -6916,6 +6916,20 @@
         }
       }
 
+      // 오디오 노드 생명주기 관리: 재생 종료 즉시 오디오 그래프에서 완전히 분리하여 메모리/스레드 누수 원천 차단
+      autoDisconnect(node, ...connectedNodes) {
+        if (!node) return;
+        const cleanup = () => {
+          try { node.disconnect(); } catch (e) { }
+          connectedNodes.forEach(n => {
+            try { if (n && typeof n.disconnect === 'function') n.disconnect(); } catch (e) { }
+          });
+        };
+        if ('onended' in node) {
+          node.onended = cleanup;
+        }
+      }
+
       playBuffer(buffer, options = {}) {
         if (!this.ctx || !buffer) return;
         const { volume = 1.0, rate = 1.0, delay = 0, detune = 0, offset = 0, duration = null } = options;
@@ -6932,6 +6946,7 @@
 
           source.connect(gain);
           gain.connect(dest);
+          this.autoDisconnect(source, gain);
           const startTime = this.ctx.currentTime + delay;
 
           // duration 옵션 지정 시: 해당 시간 후 부드러운 페이드아웃과 함께 정지
@@ -12022,6 +12037,7 @@
         this.autoClearTimeouts = [];
         this.isDealing = false;
         this.dealAnimationTimeouts = [];
+        this.activeTimeouts = [];
         this.hasStarted = false; // 최초 스플래시 화면 대기 플래그
 
         // 레이아웃 동적 관리 및 화면 크기
@@ -12150,6 +12166,57 @@
         this.initViewportGestures();
         this.updateResumeButtonUI();
         // 스플래시 화면 대기 중 불필요한 백그라운드 144개 타일 DOM 렌더링 방지 (게임 시작 터치 시 1회 지연 생성)
+      }
+
+      /**
+       * 비동기 타이머 등록 헬퍼 (판 재시작 시 자동 일괄 취소 연동)
+       */
+      safeTimeout(fn, delay) {
+        const tid = setTimeout(() => {
+          const idx = this.activeTimeouts.indexOf(tid);
+          if (idx !== -1) this.activeTimeouts.splice(idx, 1);
+          fn();
+        }, delay);
+        this.activeTimeouts.push(tid);
+        return tid;
+      }
+
+      /**
+       * 이전 판에서 발화 대기 중인 모든 타이머(배너, 교착 체크, 딜레이 연출 등) 일괄 정리
+       */
+      clearAllTimeouts() {
+        if (this.activeTimeouts && this.activeTimeouts.length > 0) {
+          this.activeTimeouts.forEach(t => clearTimeout(t));
+          this.activeTimeouts = [];
+        }
+        if (this.autoClearTimeouts && this.autoClearTimeouts.length > 0) {
+          this.autoClearTimeouts.forEach(t => clearTimeout(t));
+          this.autoClearTimeouts = [];
+        }
+        if (this.dealAnimationTimeouts && this.dealAnimationTimeouts.length > 0) {
+          this.dealAnimationTimeouts.forEach(t => clearTimeout(t));
+          this.dealAnimationTimeouts = [];
+        }
+      }
+
+      /**
+       * 기존 보드의 모든 타일 DOM 엘리먼트 및 상호 참조를 안전하게 해제하여 Detached DOM 노드 누수 방지
+       */
+      cleanupBoard() {
+        if (this.tiles && this.tiles.length > 0) {
+          this.tiles.forEach(tile => {
+            if (tile && tile.el) {
+              tile.el.onclick = null;
+              tile.el.onpointerdown = null;
+              tile.el.onpointerup = null;
+              tile.el.onpointercancel = null;
+              tile.el = null;
+            }
+          });
+        }
+        if (this.boardEl) {
+          this.boardEl.innerHTML = '';
+        }
       }
 
       /**
@@ -14746,15 +14813,8 @@
         const goModal = document.getElementById('gameover-modal');
         if (goModal) goModal.classList.remove('active');
 
-        if (this.autoClearTimeouts) {
-          this.autoClearTimeouts.forEach(t => clearTimeout(t));
-        }
-        this.autoClearTimeouts = [];
-
-        if (this.dealAnimationTimeouts) {
-          this.dealAnimationTimeouts.forEach(t => clearTimeout(t));
-        }
-        this.dealAnimationTimeouts = [];
+        this.clearAllTimeouts();
+        this.cleanupBoard();
         this.isDealing = false;
 
         // 화면 효과 및 파편/배너/폭죽 초기화
@@ -14856,15 +14916,8 @@
         const goModal = document.getElementById('gameover-modal');
         if (goModal) goModal.classList.remove('active');
 
-        if (this.autoClearTimeouts) {
-          this.autoClearTimeouts.forEach(t => clearTimeout(t));
-        }
-        this.autoClearTimeouts = [];
-
-        if (this.dealAnimationTimeouts) {
-          this.dealAnimationTimeouts.forEach(t => clearTimeout(t));
-        }
-        this.dealAnimationTimeouts = [];
+        this.clearAllTimeouts();
+        this.cleanupBoard();
         this.isDealing = false;
 
         // 화면 효과 및 파편/배너/폭죽 초기화
@@ -15281,7 +15334,7 @@
 
         // 30판(각 난이도별 최대 블라인드 정점) 도달 시 고유 인정 배너 연출
         if (currentStageNum === 30) {
-          setTimeout(() => {
+          this.safeTimeout(() => {
             if (!this.isClear && !this.isGameOver) {
               const oldNotice = document.getElementById('all-blind-notice');
               if (oldNotice) {
@@ -15415,7 +15468,7 @@
        * 판 시작 시 패가 아래층부터 입체적으로 차곡차곡 쌓이는 3D 스택 애니메이션 적용
        */
       renderBoard() {
-        this.boardEl.innerHTML = '';
+        this.cleanupBoard();
         this.boardEl.style.width = `${this.currentLayoutWidth}px`;
         this.boardEl.style.height = `${this.currentLayoutHeight}px`;
 
@@ -15672,7 +15725,7 @@
         // 슬롯이 비어있거나 여유가 있을 때는 절대로 팝업이 뜨지 않으며,
         // 슬롯이 꽉 차서 더 이상 둘 수 있는 수가 없는 진정한 교착 상태일 때만 셔플 확인
         if (this.isDeadlocked(activeTiles)) {
-          setTimeout(() => {
+          this.safeTimeout(() => {
             if (this.isDeadlocked() && !this.isClear && !this.isGameOver) {
               if (this.lives === 1 && !this.hasUsedLastChanceShuffle) {
                 if (confirm("더 이상 진행할 수 있는 수가 없습니다!\n(슬롯 가득 참 / 이동 가능한 패 없음)\n[마지막 기회 무료 셔플(패섞기)]을 사용하시겠습니까? (하트 소진 없음)")) {
