@@ -14590,7 +14590,7 @@
         const flashEl = document.getElementById('damage-flash');
         if (flashEl) {
           flashEl.classList.add('active');
-          setTimeout(() => flashEl.classList.remove('active'), 280);
+          this.safeTimeout(() => flashEl.classList.remove('active'), 280);
         }
 
         // 하트 0개 도달 시 즉시 종료하지 않고 빈사 상태로 마지막 기회 부여 (슬롯 재포화 시 게임오버)
@@ -16219,11 +16219,12 @@
             this.updateHeaderUI();
             this.logTouch(`[매칭 성공] '${t1.def.label}' 짝 소멸! (+${bonus}점)`);
 
-            // 되돌리기 스택에 매칭 기록
+            // 되돌리기 스택에 매칭 기록 (최근 6개만 보관하여 이전 타일 객체 즉시 GC 허용)
             this.undoStack.push({
               type: 'match',
               tiles: [t1, t2]
             });
+            if (this.undoStack.length > 6) this.undoStack.shift();
             this.updateToolButtonsUI();
 
             setTimeout(() => {
@@ -16256,6 +16257,7 @@
               type: 'toTray',
               tileItem: newItem
             });
+            if (this.undoStack.length > 6) this.undoStack.shift();
             this.updateToolButtonsUI();
 
             const activeCount = this.trayTiles.filter(t => !t.isMatching).length;
@@ -16763,7 +16765,11 @@
             if (t2 && item.id === t2.id && trayTilesDom[idx]) trayTilesDom[idx].classList.add('hinted');
           });
 
-          setTimeout(() => this.clearHints(), 3200);
+          if (this.hintTimeout) {
+            clearTimeout(this.hintTimeout);
+            this.hintTimeout = null;
+          }
+          this.hintTimeout = setTimeout(() => this.clearHints(), 3200);
         } else {
           // 즉시 매치되는 패가 없는 경우
           const activeTiles = this.tiles.filter(t => !t.removed);
@@ -16780,7 +16786,11 @@
 
             if (candidate && candidate.el) {
               candidate.el.classList.add('hinted');
-              setTimeout(() => this.clearHints(), 3200);
+              if (this.hintTimeout) {
+                clearTimeout(this.hintTimeout);
+                this.hintTimeout = null;
+              }
+              this.hintTimeout = setTimeout(() => this.clearHints(), 3200);
             }
             alert(`[힌트 사용 (남은 횟수: ${this.hintsRemaining}회)]\n현재 즉시 맞는 짝은 없지만 슬롯에 여유가 있습니다!\n빛나는 패를 슬롯에 담아 아래층 패를 열어보세요.`);
           } else {
@@ -16790,6 +16800,10 @@
       }
 
       clearHints() {
+        if (this.hintTimeout) {
+          clearTimeout(this.hintTimeout);
+          this.hintTimeout = null;
+        }
         this.tiles.forEach(t => {
           if (t.el) t.el.classList.remove('hinted');
         });
@@ -17371,8 +17385,10 @@
                 console.error("saveScoreToHallOfFame 에러:", e);
               }
 
-              // 3) 모달 닫고 폭죽 쇼 시작 및 공식 정복 인증서 출력!
+              // 3) 모달 닫고 이벤트 핸들러 완전 소각 후 폭죽 쇼 시작 및 공식 정복 인증서 출력!
               nameModal.classList.remove('active');
+              if (submitBtn) submitBtn.onclick = null;
+              if (inputEl) inputEl.onkeydown = null;
               if (this.fireworks) {
                 if (this.fireworks.canvas) {
                   this.fireworks.canvas.style.zIndex = '99998';
@@ -17383,6 +17399,8 @@
               this.showVictoryModal();
             } catch (err) {
               console.error("handleSubmit 오류:", err);
+              if (submitBtn) submitBtn.onclick = null;
+              if (inputEl) inputEl.onkeydown = null;
               if (nameModal) nameModal.classList.remove('active');
               this.showVictoryModal();
             }
