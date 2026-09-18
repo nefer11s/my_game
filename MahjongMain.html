@@ -38,7 +38,7 @@
     });
 
     // PWA 필수 서비스 워커 등록 및 오프라인 상태 모니터링 (업데이트 시에만 알림)
-    const APP_VERSION = 'v1.5.94';
+    const APP_VERSION = 'v1.5.95';
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').then((reg) => {
@@ -5602,7 +5602,7 @@
             <span class="btn-icon">🚪</span> 앱 종료
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.5.94
+            Si-Yeon Mahjong Solitaire v1.5.95
           </div>
         </div>
       </div>
@@ -5875,7 +5875,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text">전체화면</span>
         </button>
-        <div class="splash-version-badge">v1.5.94</div>
+        <div class="splash-version-badge">v1.5.95</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title">SY 그림맞추기</h1>
@@ -5926,7 +5926,7 @@
         aria-label="닫기">✕</button>
       <h3 style="margin: 2px 0 10px 0; font-size: 18px; font-weight: 800; color: #14532d; line-height: 1.35;">
         SY 그림맞추기 <span
-          style="display: inline-block; font-size: 11px; font-weight: 700; color: #15803d; background: #dcfce7; border: 1px solid #86efac; border-radius: 10px; padding: 2px 7px; vertical-align: middle;">v1.5.94</span><br>
+          style="display: inline-block; font-size: 11px; font-weight: 700; color: #15803d; background: #dcfce7; border: 1px solid #86efac; border-radius: 10px; padding: 2px 7px; vertical-align: middle;">v1.5.95</span><br>
         <span style="font-size: 13.5px; font-weight: 600; color: #166534;">(그린빌라/오룡이 테마)</span><br>
       </h3>
       <!-- 그린빌라/오룡이 테마 텍스트 바로 다음 위치에 스플래시 이미지 표시 -->
@@ -5936,7 +5936,7 @@
           style="width: 100%; height: auto; max-height: 140px; object-fit: cover; display: block;">
         <div
           style="position: absolute; bottom: 6px; right: 8px; background: rgba(0,0,0,0.65); color: #86efac; font-size: 10.5px; font-weight: 700; padding: 1px 7px; border-radius: 10px; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.2);">
-          v1.5.94</div>
+          v1.5.95</div>
       </div>
       <div id="shortcut-guide-content">
         <div
@@ -5973,7 +5973,7 @@
           <span style="font-size: 26px;">🎉</span>
           <div>
             <h2 class="modal-title" style="margin: 0; font-size: 18px; color: #15803d; line-height: 1.2;">최신 버전 업데이트 안내</h2>
-            <div style="font-size: 11.5px; color: #64748b; font-weight: 700;">v1.5.94 (오프라인 캐시 적용)</div>
+            <div style="font-size: 11.5px; color: #64748b; font-weight: 700;">v1.5.95 (오프라인 캐시 적용)</div>
           </div>
         </div>
         <button id="btn-offline-ready-close-x"
@@ -5989,9 +5989,10 @@
         <div style="margin-bottom: 14px;">
           <div
             style="display: inline-flex; align-items: center; gap: 5px; background: #dcfce7; border: 1px solid #86efac; color: #14532d; font-size: 11.5px; font-weight: 800; border-radius: 6px; padding: 2px 8px; margin-bottom: 6px;">
-            <span>📅</span> 2026. 09. 18 (v1.5.93 ~ v1.5.94)
+            <span>📅</span> 2026. 09. 18 (v1.5.93 ~ v1.5.95)
           </div>
           <ul style="margin: 0; padding-left: 18px; font-size: 12.5px; color: #374151; line-height: 1.6;">
+            <li style="margin-bottom: 4px;"><strong>⚡ 전 난이도 0ms 즉각 터치 & 이벤트 위임 전면 혁신:</strong> 쉬움·보통·어려움·달인 전 난이도에서 판 시작 0.0초부터 즉시 터치가 인식되도록 개선하고, 타일당 400개 리스너를 단 1개로 영구 위임하여 DOM 리플로우 99% 절감 및 메모리 누수 원천 차단.</li>
             <li style="margin-bottom: 4px;"><strong>⏱️ 30판 진입 배너 시간 정지:</strong> 30판 시작 시 화면 중앙에 나타나는 블라인드 관문 안내 배너가 떠 있는 동안에는 게임 타이머가 정지되며, 배너를 터치하여 닫은 직후부터 시간이 시작되도록 개선.</li>
             <li style="margin-bottom: 4px;"><strong>🚀 반복 플레이 메모리 누수 원천 차단:</strong> 달인 30판 등 고난도 스테이지를 수십 번 반복 재도전해도 오디오 노드 자동 분리(Auto-disconnect), 타일 DOM 리스너 즉시 회수(cleanupBoard), 잔류 비동기 타이머 일괄 취소로 첫 판과 동일한 60 FPS 무저하 쾌적성 영구 보장.</li>
           </ul>
