@@ -15965,7 +15965,7 @@
             tile.el.classList.remove('wiggle');
             void tile.el.offsetWidth;
             tile.el.classList.add('wiggle');
-            setTimeout(() => { if (tile.el) tile.el.classList.remove('wiggle'); }, 300);
+            this.safeTimeout(() => { if (tile.el) tile.el.classList.remove('wiggle'); }, 300);
           }
           return;
         }
@@ -16033,7 +16033,7 @@
                   tile.el.classList.remove('wiggle');
                   void tile.el.offsetWidth;
                   tile.el.classList.add('wiggle');
-                  setTimeout(() => { if (tile.el) tile.el.classList.remove('wiggle'); }, 300);
+                  this.safeTimeout(() => { if (tile.el) tile.el.classList.remove('wiggle'); }, 300);
                 }
                 return;
               }
@@ -16234,7 +16234,7 @@
             }
 
             // 2단계: 슬롯 패가 번쩍인 뒤 화면에서 쏙 사라지는 시점(250ms)에 바차임 소멸음 재생
-            setTimeout(() => {
+            this.safeTimeout(() => {
               if (this.sound && typeof this.sound.playWindChime === 'function') {
                 this.sound.playWindChime();
               }
@@ -16254,7 +16254,7 @@
             if (this.undoStack.length > 6) this.undoStack.shift();
             this.updateToolButtonsUI();
 
-            setTimeout(() => {
+            this.safeTimeout(() => {
               // 트레이에서 두 패 제거
               this.trayTiles = this.trayTiles.filter(t => t.id !== t1.id && t.id !== t2.id);
               this.renderTray();
@@ -16292,7 +16292,7 @@
             // [슬롯 보호 시스템]
             // 슬롯이 1칸 남았을 때 마지막 칸을 채우려 시도했으나 짝이 없어 슬롯이 꽉 차게 된 경우 (activeCount >= this.maxSlots)
             if (activeCount >= this.maxSlots) {
-              setTimeout(() => {
+              this.safeTimeout(() => {
                 if (!this.isGameOver && !this.isClear) {
                   this.handleTrayNearFull(newItem);
                 }
@@ -16325,7 +16325,7 @@
         // [상용 룰] 하트 0개 빈사 상태에서 슬롯 재포화 시 최종 게임오버
         if (this.lives <= 0) {
           this.showToast('💥 슬롯이 가득 찼으나 남은 하트가 없습니다!');
-          setTimeout(() => this.triggerGameOver(), 450);
+          this.safeTimeout(() => this.triggerGameOver(), 450);
           return;
         }
 
@@ -17045,7 +17045,7 @@
             document.getElementById('stat-tiles').textContent = curActive;
             document.getElementById('stat-moves').textContent = Math.floor(curActive / 2);
 
-            setTimeout(() => {
+            this.safeTimeout(() => {
               if (t1 && t1.el) this.hideTileEl(t1.el);
               if (t2 && t2.el) this.hideTileEl(t2.el);
             }, 800);
@@ -17085,7 +17085,7 @@
         this.viewportEl.classList.remove('shaking');
         void this.viewportEl.offsetWidth;
         this.viewportEl.classList.add('shaking');
-        setTimeout(() => this.viewportEl.classList.remove('shaking'), 600);
+        this.safeTimeout(() => this.viewportEl.classList.remove('shaking'), 600);
 
         // 2) 판(보드) 파편 분할 및 사방 비산 연출
         const shatterContainer = document.createElement('div');
@@ -17142,7 +17142,7 @@
         });
 
         // 1.2초 후 비산이 완료된 파편 컨테이너 완전 소각 (Detached DOM 노드 방지)
-        setTimeout(() => {
+        this.safeTimeout(() => {
           if (shatterContainer && shatterContainer.parentNode) {
             shatterContainer.remove();
           }
