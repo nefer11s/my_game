@@ -8578,6 +8578,20 @@
       }
 
       init() {
+        // 도감 타일 카드 단일 이벤트 위임 (카드마다 리스너 생성 방지 및 테마 전환 시 누수 원천 차단)
+        if (this.galleryBody) {
+          this.galleryBody.addEventListener('click', (e) => {
+            const card = e.target.closest('.gallery-tile-item');
+            if (card && card.dataset.tileIndex !== undefined) {
+              const index = parseInt(card.dataset.tileIndex, 10);
+              if (!isNaN(index)) {
+                if (this.sound) this.sound.playSelect();
+                this.openLightbox(index);
+              }
+            }
+          });
+        }
+
         // 도감 모달 닫기 버튼
         if (this.btnCloseGallery) {
           this.btnCloseGallery.addEventListener('click', () => {
@@ -8794,12 +8808,6 @@
                 </div>
                 <div class="gallery-tile-caption">${def.label}</div>
               `;
-
-              card.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (this.sound) this.sound.playSelect();
-                this.openLightbox(index);
-              });
 
               gridEl.appendChild(card);
             });
@@ -16417,7 +16425,7 @@
           };
 
           // 모달이 완전히 닫히고 화면이 정돈된 후 복원 비행 시작 (220ms 여운으로 겹침 현상 제거)
-          setTimeout(() => {
+          this.safeTimeout(() => {
             this.updateHeaderUI();
             returnTopTile(() => {
               if (this.isGameOver || this.isClear) {
@@ -16425,7 +16433,7 @@
                 return;
               }
               // 첫 번째 패가 보드에 안착한 뒤 편안한 호흡(180ms) 후 두 번째 패 복귀 시작
-              setTimeout(() => {
+              this.safeTimeout(() => {
                 if (this.isGameOver || this.isClear) {
                   this.isEscapingSlot = false;
                   return;
@@ -16433,7 +16441,7 @@
                 returnTopTile(() => {
                   this.updateHeaderUI();
                   // 두 번째 패 복귀 완료 후 탈출 상태 해제
-                  setTimeout(() => {
+                  this.safeTimeout(() => {
                     this.isEscapingSlot = false;
                   }, 150);
                 });
@@ -16465,9 +16473,9 @@
 
         requestAnimationFrame(() => {
           toast.classList.add('active');
-          setTimeout(() => {
+          this.safeTimeout(() => {
             toast.classList.remove('active');
-            setTimeout(() => toast.remove(), 350);
+            this.safeTimeout(() => toast.remove(), 350);
           }, 2600);
         });
       }
@@ -16936,12 +16944,16 @@
 
           tile.el.style.transition = 'transform 0.25s ease';
           tile.el.style.transform += ' scale(0.92)';
-          setTimeout(() => {
+        });
+
+        // 84개 개별 타이머 대신 단 1개의 safeTimeout으로 일괄 원복 (메모리 누수 원천 차단)
+        this.safeTimeout(() => {
+          activeTiles.forEach(tile => {
             if (tile.el && !tile.removed) {
               tile.el.style.transform = tile.el.style.transform.replace(' scale(0.92)', '');
             }
-          }, 240);
-        });
+          });
+        }, 240);
 
         this.updateTileStates();
       }
