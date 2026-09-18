@@ -7484,6 +7484,7 @@
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
         osc.connect(gain);
         gain.connect(this.getDestination());
+        this.autoDisconnect(osc, gain);
         osc.start(now);
         osc.stop(now + 0.055);
       }
@@ -7516,6 +7517,7 @@
           gain.gain.exponentialRampToValueAtTime(0.001, time + 0.055);
           osc.connect(gain);
           gain.connect(this.getDestination());
+          this.autoDisconnect(osc, gain);
           osc.start(time);
           osc.stop(time + 0.065);
         }
@@ -7536,6 +7538,7 @@
           gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.75);
           osc.connect(gain);
           gain.connect(this.getDestination());
+          this.autoDisconnect(osc, gain);
           osc.start(t);
           osc.stop(t + 0.8);
         });
@@ -7561,6 +7564,7 @@
         subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.36);
         subOsc.connect(subGain);
         subGain.connect(this.ctx.destination);
+        this.autoDisconnect(subOsc, subGain);
         subOsc.start(now);
         subOsc.stop(now + 0.38);
 
@@ -7575,6 +7579,7 @@
           gain.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
+          this.autoDisconnect(osc, gain);
           osc.start(t);
           osc.stop(t + 0.18);
         }
@@ -7597,6 +7602,7 @@
 
         osc.connect(gain);
         gain.connect(this.ctx.destination);
+        this.autoDisconnect(osc, gain);
         osc.start(now);
         osc.stop(now + 0.19);
       }
@@ -7617,6 +7623,7 @@
           gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.5);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
+          this.autoDisconnect(osc, gain);
           osc.start(t);
           osc.stop(t + 0.55);
         });
@@ -15464,6 +15471,8 @@
                   if (e.preventDefault) e.preventDefault();
                 }
                 if (dismissTimer) clearTimeout(dismissTimer);
+                notice.removeEventListener('click', dismissNotice);
+                notice.removeEventListener('pointerdown', dismissNotice);
                 notice.classList.add('fade-out');
                 this.isNoticeActive = false;
                 this.updateTimerDisplay();
@@ -15475,7 +15484,7 @@
               notice.addEventListener('click', dismissNotice);
               notice.addEventListener('pointerdown', dismissNotice);
               document.body.appendChild(notice);
-              dismissTimer = setTimeout(() => {
+              dismissTimer = this.safeTimeout(() => {
                 dismissNotice();
               }, 7500);
             } else {
@@ -17638,7 +17647,7 @@
               fanWrap.appendChild(tileDiv);
 
               // 촤라락 부채꼴 전개 애니메이션 및 위아래 둥둥 부유 전환
-              setTimeout(() => {
+              this.safeTimeout(() => {
                 tileDiv.style.opacity = '1';
                 tileDiv.style.setProperty('--tx', `${xOffsets[i]}px`);
                 tileDiv.style.setProperty('--ty', `${Math.abs(angles[i]) * 0.7}px`);
@@ -17648,7 +17657,7 @@
                 tileDiv.style.transform = `translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(var(--scale))`;
 
                 // 전개 모션 완료 후 자연스럽게 부유(플로팅) & 광채 활성화
-                setTimeout(() => {
+                this.safeTimeout(() => {
                   tileDiv.classList.add('fan-floating');
                 }, 560);
               }, 120 + i * 75);
