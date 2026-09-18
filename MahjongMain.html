@@ -1460,22 +1460,21 @@
       }
     }
 
-    /* 게임 시작 시 타일 차곡차곡 쌓임(Stacking Deal) 애니메이션 */
+    /* 게임 시작 시 타일 차곡차곡 쌓임(Stacking Deal) 애니메이션 - 0ms 즉각 터치 허용 및 GPU 최적화 */
     .tile.dealing {
-      pointer-events: none !important;
-      animation: tileStackDrop 0.44s cubic-bezier(0.22, 1, 0.36, 1.15) both;
+      animation: tileStackDrop 0.28s cubic-bezier(0.22, 1, 0.36, 1.15) both;
     }
 
     @keyframes tileStackDrop {
       0% {
-        transform: translate3d(var(--tx), calc(var(--ty) - 110px), calc(var(--tz) + 140px)) scale(1.14);
+        transform: translate3d(var(--tx), calc(var(--ty) - 70px), calc(var(--tz) + 80px)) scale(1.08);
         opacity: 0;
-        box-shadow: 0 25px 35px rgba(10, 35, 22, 0.4);
+        box-shadow: 0 10px 18px rgba(10, 35, 22, 0.22);
       }
 
-      72% {
-        transform: translate3d(var(--tx), calc(var(--ty) + 2.5px), calc(var(--tz) + 4px)) scale(0.985);
-        opacity: 0.96;
+      75% {
+        transform: translate3d(var(--tx), calc(var(--ty) + 1.5px), calc(var(--tz) + 2px)) scale(0.99);
+        opacity: 0.98;
       }
 
       100% {
@@ -12218,11 +12217,7 @@
       cleanupBoard() {
         if (this.tiles && this.tiles.length > 0) {
           this.tiles.forEach(tile => {
-            if (tile && tile.el) {
-              tile.el.onclick = null;
-              tile.el.onpointerdown = null;
-              tile.el.onpointerup = null;
-              tile.el.onpointercancel = null;
+            if (tile) {
               tile.el = null;
             }
           });
@@ -12230,6 +12225,167 @@
         if (this.boardEl) {
           this.boardEl.innerHTML = '';
         }
+      }
+
+      /**
+       * 타일이 떨어지는 dealing 애니메이션 도중 탭 시 즉시 최종 바닥 좌표로 강제 동기화 (비행 왜곡 방지)
+       */
+      snapDealingTile(tile) {
+        if (tile && tile.el && tile.el.classList.contains('dealing')) {
+          tile.el.classList.remove('dealing');
+          tile.el.style.animation = 'none';
+          tile.el.style.transform = `translate3d(${tile.finalX}px, ${tile.finalY}px, ${tile.finalZ}px)`;
+          tile.el.style.opacity = '1';
+        }
+      }
+
+      /**
+       * SVG 전역 메모이제이션 캐시: 테마별/타일ID별 1회 생성 후 영구 재사용
+       */
+      getTileGraphicHtml(tile) {
+        if (!window.__MAHJONG_SVG_CACHE) window.__MAHJONG_SVG_CACHE = new Map();
+        const theme = this.activeTheme || 'saju';
+        const key = `${theme}_${tile.def.id}`;
+        let svg = window.__MAHJONG_SVG_CACHE.get(key);
+        if (!svg) {
+          svg = tile.def.render();
+          window.__MAHJONG_SVG_CACHE.set(key, svg);
+        }
+        return svg;
+      }
+
+      getTileBackHtml() {
+        if (!window.__MAHJONG_SVG_CACHE) window.__MAHJONG_SVG_CACHE = new Map();
+        let backSvg = window.__MAHJONG_SVG_CACHE.get('tile_back_svg');
+        if (!backSvg) {
+          backSvg = SvgFactory.tileBack();
+          window.__MAHJONG_SVG_CACHE.set('tile_back_svg', backSvg);
+        }
+        return backSvg;
+      }
+
+      /**
+       * 블라인드(Face-down) 패의 앞면 그래픽을 브라우저 유휴 시간(Idle)에 백그라운드로 프리로드
+       */
+      preloadCoveredTileGraphics() {
+        const fillGraphics = () => {
+          if (!this.tiles || this.isClear || this.isGameOver) return;
+          this.tiles.forEach(tile => {
+            if (tile && tile.el && !tile.removed) {
+              const wrap = tile.el.querySelector('.tile-graphic-wrap');
+              if (wrap && !wrap.hasChildNodes()) {
+                wrap.innerHTML = this.getTileGraphicHtml(tile);
+              }
+            }
+          });
+        };
+
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(fillGraphics, { timeout: 400 });
+        } else {
+          this.safeTimeout(fillGraphics, 120);
+        }
+      }
+
+      /**
+       * 보드 전체 단일 이벤트 위임(Event Delegation) 초기화: 400개 리스너를 단 1개 세트로 영구 통합
+       */
+      initBoardEvents() {
+        if (this._boardEventsInitialized || !this.boardEl) return;
+        this._boardEventsInitialized = true;
+
+        let pDownX = 0, pDownY = 0, pDownTime = 0;
+        let isHandled = false;
+
+        const getEffectiveTargetTileFromEvent = (e) => {
+          const tileEl = e.target && e.target.closest ? e.target.closest('.tile') : null;
+          if (!tileEl) return null;
+          let targetTile = this.tiles ? this.tiles.find(t => t && t.id === tileEl.id && !t.removed) : null;
+          if (!targetTile) return null;
+
+          if (e && e.clientX !== undefined && e.clientY !== undefined) {
+            // 1) 브라우저 3D 렌더링 환경에서 터치 좌표에 겹쳐있는 모든 타일 수집 및 상위 층 자유 패 최우선 승격
+            if (typeof document.elementsFromPoint === 'function') {
+              const els = document.elementsFromPoint(e.clientX, e.clientY);
+              const tileEls = els.map(el => (el && el.closest ? el.closest('.tile') : null)).filter(Boolean);
+              const seen = new Set();
+              const uniqueTileEls = [];
+              for (const el of tileEls) {
+                if (!seen.has(el)) { seen.add(el); uniqueTileEls.push(el); }
+              }
+              const hoveredTiles = uniqueTileEls
+                .map(el => this.tiles.find(t => t && t.id === el.id && !t.removed))
+                .filter(Boolean);
+
+              if (hoveredTiles.length > 0) {
+                hoveredTiles.sort((a, b) => b.z - a.z);
+                const topFree = hoveredTiles.find(t => (t.free !== undefined ? t.free : this.isTileFree(t)));
+                if (topFree) return topFree;
+                return hoveredTiles[0];
+              }
+            }
+
+            // 2) 빗겨 맞은 터치 구제를 위한 스마트 스냅 후보 검색
+            const freeCandidate = this.findBestFreeTileAtPoint(e.clientX, e.clientY);
+            if (freeCandidate) {
+              const isTargetFree = targetTile.free !== undefined ? targetTile.free : this.isTileFree(targetTile);
+              if (!isTargetFree || freeCandidate.z > targetTile.z) {
+                targetTile = freeCandidate;
+              }
+            }
+          }
+          return targetTile;
+        };
+
+        const executeTileActionFromEvent = (e) => {
+          if (isHandled) return;
+          const targetTile = getEffectiveTargetTileFromEvent(e);
+          if (!targetTile) return;
+
+          isHandled = true;
+          if (e && e.cancelable) e.preventDefault();
+
+          this.snapDealingTile(targetTile);
+          this.handleTileClick(targetTile);
+
+          setTimeout(() => { isHandled = false; }, 140);
+        };
+
+        this.boardEl.addEventListener('pointerdown', (e) => {
+          if (e.button !== undefined && e.button !== 0) return;
+          pDownX = e.clientX;
+          pDownY = e.clientY;
+          pDownTime = performance.now();
+          isHandled = false;
+
+          if (this.gestureCooldownUntil && Date.now() < this.gestureCooldownUntil) return;
+          executeTileActionFromEvent(e);
+        }, { passive: false });
+
+        this.boardEl.addEventListener('pointerup', (e) => {
+          if (e.button !== undefined && e.button !== 0) return;
+          if (isHandled) return;
+          const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
+          const duration = performance.now() - pDownTime;
+          if (dist < 35 && duration < 750) {
+            executeTileActionFromEvent(e);
+          }
+        });
+
+        this.boardEl.addEventListener('pointercancel', (e) => {
+          if (isHandled) return;
+          const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
+          if (dist < 20) {
+            executeTileActionFromEvent(e);
+          }
+        });
+
+        this.boardEl.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (isHandled && e.cancelable) {
+            e.preventDefault();
+          }
+        });
       }
 
       /**
@@ -12535,6 +12691,7 @@
       }
 
       bindEvents() {
+        this.initBoardEvents();
         window.addEventListener('resize', () => this.handleResize());
         window.addEventListener('orientationchange', () => {
           setTimeout(() => this.handleResize(), 150);
@@ -15496,6 +15653,7 @@
        */
       renderBoard() {
         this.cleanupBoard();
+        this.initBoardEvents();
         this.boardEl.style.width = `${this.currentLayoutWidth}px`;
         this.boardEl.style.height = `${this.currentLayoutHeight}px`;
 
@@ -15509,6 +15667,8 @@
 
         this.isDealing = true;
         let maxDelay = 0;
+        const fragment = document.createDocumentFragment();
+        const backSvgHtml = this.getTileBackHtml();
 
         sorted.forEach(tile => {
           const el = document.createElement('div');
@@ -15523,7 +15683,7 @@
           const posX = (tile.x - bounds.minX) * 33 + bounds.padX;
           const posY = (tile.y - bounds.minY) * 43 + bounds.padY;
 
-          // 층(z: 0~4)별 상단-좌측 시차 오프셋 (아이소메트릭 단차감 강조)
+          // 층(z: 0~5)별 상단-좌측 시차 오프셋 (아이소메트릭 단차감 강조)
           const zStep = 6;
           const finalX = posX - tile.z * zStep;
           const finalY = posY - tile.z * (zStep * 1.35);
@@ -15539,137 +15699,49 @@
           el.style.transform = `translate3d(${finalX}px, ${finalY}px, ${finalZ}px)`;
           el.style.zIndex = tile.z * 2000 + tile.x * 33 + tile.y * 43;
 
-          // 패가 층별로 차곡차곡 쌓여 올라가는 딜레이 (층별 130ms + 위치별 캐스케이드)
+          // 패가 층별로 경쾌하게 쌓여 올라가는 고속 캐스케이드 딜레이
           const relX = tile.x - bounds.minX;
           const relY = tile.y - bounds.minY;
-          const delay = tile.z * 130 + (relX + relY) * 8;
+          const delay = tile.z * 40 + (relX + relY) * 4;
           if (delay > maxDelay) maxDelay = delay;
           el.style.animationDelay = `${delay}ms`;
+
+          // 블라인드(Face-down) 패는 뒷면만 렌더링하고 앞면 그래픽은 지연 렌더링(Lazy DOM)
+          const isCoveredNotRevealed = tile.isCovered && !tile.isRevealed;
+          const frontGraphicHtml = isCoveredNotRevealed ? '' : this.getTileGraphicHtml(tile);
 
           el.innerHTML = `
             <div class="tile-inner">
               <div class="tile-front">
                 <span class="tile-corner-badge">${tile.def.badge}</span>
                 <div class="tile-graphic-wrap">
-                  ${tile.def.render()}
+                  ${frontGraphicHtml}
                 </div>
                 <span class="tile-sub-label">${tile.def.label}</span>
               </div>
               <div class="tile-back">
-                ${SvgFactory.tileBack()}
+                ${backSvgHtml}
               </div>
             </div>
           `;
 
-          // [모바일/S펜 초정밀 터치 엔진] 브라우저 3D 히트테스팅 오차 및 잠긴 패 가로챔 완벽 구제
-          let pDownX = 0, pDownY = 0, pDownTime = 0;
-          let isHandled = false;
-          let longPressTriggered = false;
-          let longPressTimer = null;
-
-          const getEffectiveTargetTile = (e) => {
-            let targetTile = tile;
-            if (e && e.clientX !== undefined && e.clientY !== undefined) {
-              // 1) 브라우저 3D 렌더링 환경에서 터치 좌표에 겹쳐있는 모든 타일 수집 및 상위 층 자유 패 최우선 승격
-              if (typeof document.elementsFromPoint === 'function') {
-                const els = document.elementsFromPoint(e.clientX, e.clientY);
-                const tileEls = els.map(el => (el && el.closest ? el.closest('.tile') : null)).filter(Boolean);
-                const seen = new Set();
-                const uniqueTileEls = [];
-                for (const el of tileEls) {
-                  if (!seen.has(el)) { seen.add(el); uniqueTileEls.push(el); }
-                }
-                const hoveredTiles = uniqueTileEls
-                  .map(el => this.tiles.find(t => t && t.id === el.id && !t.removed))
-                  .filter(Boolean);
-
-                if (hoveredTiles.length > 0) {
-                  // 상위 층(z) 내림차순 정렬
-                  hoveredTiles.sort((a, b) => b.z - a.z);
-                  // 터치 지점 타일들 중 선택 가능한 자유 패(cached free)가 있으면 무조건 최상위 자유 패 100% 우선 선택
-                  const topFree = hoveredTiles.find(t => (t.free !== undefined ? t.free : this.isTileFree(t)));
-                  if (topFree) {
-                    return topFree;
-                  }
-                  // 자유 패가 없더라도 3D 층고(z)가 가장 높은 상위 타일 우선
-                  return hoveredTiles[0];
-                }
-              }
-
-              // 2) 빗겨 맞은 터치 구제를 위한 스마트 스냅 후보 검색
-              const freeCandidate = this.findBestFreeTileAtPoint(e.clientX, e.clientY);
-              if (freeCandidate) {
-                const isTargetFree = targetTile.free !== undefined ? targetTile.free : this.isTileFree(targetTile);
-                if (!isTargetFree || freeCandidate.z > targetTile.z) {
-                  targetTile = freeCandidate;
-                }
-              }
-            }
-            return targetTile;
-          };
-
-          const executeTileAction = (e) => {
-            if (isHandled) return;
-            isHandled = true;
-            if (e && e.cancelable) e.preventDefault();
-
-            const targetTile = getEffectiveTargetTile(e);
-            this.handleTileClick(targetTile);
-
-            setTimeout(() => { isHandled = false; }, 140);
-          };
-
-          el.addEventListener('pointerdown', (e) => {
-            if (e.button !== undefined && e.button !== 0) return;
-            pDownX = e.clientX;
-            pDownY = e.clientY;
-            pDownTime = performance.now();
-            isHandled = false;
-
-            if (this.gestureCooldownUntil && Date.now() < this.gestureCooldownUntil) return;
-            executeTileAction(e);
-          }, { passive: false });
-
-          el.addEventListener('pointerup', (e) => {
-            if (e.button !== undefined && e.button !== 0) return;
-            if (isHandled) return;
-            const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
-            const duration = performance.now() - pDownTime;
-            if (dist < 35 && duration < 750) {
-              executeTileAction(e);
-            }
-          });
-
-          el.addEventListener('pointercancel', (e) => {
-            if (isHandled) return;
-            const dist = Math.hypot(e.clientX - pDownX, e.clientY - pDownY);
-            if (dist < 20) {
-              executeTileAction(e);
-            }
-          });
-
-          // 브라우저 기본 합성 click 이벤트의 중복 발화 및 버블링 차단
-          el.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (isHandled && e.cancelable) {
-              e.preventDefault();
-            }
-          });
-
-          this.boardEl.appendChild(el);
+          fragment.appendChild(el);
           tile.el = el;
         });
 
-        // 층별로 패가 안착할 때 도자기 마작 패 딱! 소리 연출
+        // 84~100개 타일을 단 1회 Reflow로 일괄 주입 (DocumentFragment)
+        this.boardEl.appendChild(fragment);
+
+        // 층별로 패가 안착할 때 도자기 마작 패 딱! 소리 연출 (경쾌한 고속 사운드 타이밍)
         const maxZ = bounds.maxZ !== undefined ? bounds.maxZ : 2;
         for (let z = 0; z <= maxZ; z++) {
           const sTimer = setTimeout(() => {
             if (this.sound) this.sound.playTileStack(z);
-          }, z * 130 + 120);
+          }, z * 40 + 40);
           this.dealAnimationTimeouts.push(sTimer);
         }
 
-        // 전체 쌓임 애니메이션 완료 후 dealing 정리 및 정상 인터랙션 복원
+        // 전체 쌓임 애니메이션 완료 후 dealing 정리
         const endTimer = setTimeout(() => {
           this.isDealing = false;
           this.tiles.forEach(t => {
@@ -15679,10 +15751,13 @@
             }
           });
           this.updateTileStates();
-        }, maxDelay + 440);
+        }, maxDelay + 240);
         this.dealAnimationTimeouts.push(endTimer);
 
         this.updateTileStates();
+
+        // 뒤집힌 블라인드 패들의 앞면 그래픽을 브라우저 유휴 시간(Idle)에 백그라운드 프리로드
+        this.preloadCoveredTileGraphics();
       }
 
       /**
@@ -15854,11 +15929,13 @@
        */
       handleTileClick(tile) {
         if (this.isPaused || this.isAnySettingsOpen()) return;
-        if (this.isGameOver || this.isAutoClearing || this.isDealing || tile.removed) {
-          this.logTouch(`[차단] 게임상태(오버/피날레/딜링:${this.isDealing}/제거:${tile.removed})`, 'warn');
+        if (this.isGameOver || this.isAutoClearing || tile.removed) {
+          this.logTouch(`[차단] 게임상태(오버/피날레/제거:${tile.removed})`, 'warn');
           return;
         }
-        // 핀치 제스처 쿨다운은 pointerdown 레벨에서 이미 차단하므로 여기서는 제거 (이중 차단 방지)
+
+        // 터치된 타일이 아직 떨어지는 중(dealing)이면 즉시 바닥으로 스냅하여 0ms 반응 보장
+        this.snapDealingTile(tile);
 
         const now = performance.now();
 
@@ -15882,6 +15959,12 @@
         //    무조건 보드 위에서 앞면만 뒤집혀 공개되어야 함 (절대 슬롯으로 자동 이동하지 않음)
         if (tile.isCovered && !tile.isRevealed) {
           this.logTouch(`[블라인드 오픈] '${tile.def.label}' 앞면 공개`);
+          if (tile.el) {
+            const wrap = tile.el.querySelector('.tile-graphic-wrap');
+            if (wrap && !wrap.hasChildNodes()) {
+              wrap.innerHTML = this.getTileGraphicHtml(tile);
+            }
+          }
 
           // 기존에 다른 뒤집힌 패가 열려있었다면
           const prevRevealed = this.tiles.find(t => t !== tile && t.isCovered && t.isRevealed && !t.removed);
