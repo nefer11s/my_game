@@ -12266,29 +12266,6 @@
       }
 
       /**
-       * 블라인드(Face-down) 패의 앞면 그래픽을 브라우저 유휴 시간(Idle)에 백그라운드로 프리로드
-       */
-      preloadCoveredTileGraphics() {
-        const fillGraphics = () => {
-          if (!this.tiles || this.isClear || this.isGameOver) return;
-          this.tiles.forEach(tile => {
-            if (tile && tile.el && !tile.removed) {
-              const wrap = tile.el.querySelector('.tile-graphic-wrap');
-              if (wrap && !wrap.hasChildNodes()) {
-                wrap.innerHTML = this.getTileGraphicHtml(tile);
-              }
-            }
-          });
-        };
-
-        if ('requestIdleCallback' in window) {
-          window.requestIdleCallback(fillGraphics, { timeout: 400 });
-        } else {
-          this.safeTimeout(fillGraphics, 120);
-        }
-      }
-
-      /**
        * 보드 전체 단일 이벤트 위임(Event Delegation) 초기화: 400개 리스너를 단 1개 세트로 영구 통합
        */
       initBoardEvents() {
@@ -15707,17 +15684,11 @@
           if (delay > maxDelay) maxDelay = delay;
           el.style.animationDelay = `${delay}ms`;
 
-          // 블라인드(Face-down) 패는 뒷면만 렌더링하고 앞면 그래픽은 지연 렌더링(Lazy DOM)
-          const isCoveredNotRevealed = tile.isCovered && !tile.isRevealed;
-          const frontGraphicHtml = isCoveredNotRevealed ? '' : this.getTileGraphicHtml(tile);
-
           el.innerHTML = `
             <div class="tile-inner">
               <div class="tile-front">
                 <span class="tile-corner-badge">${tile.def.badge}</span>
-                <div class="tile-graphic-wrap">
-                  ${frontGraphicHtml}
-                </div>
+                <div class="tile-graphic-wrap">${this.getTileGraphicHtml(tile)}</div>
                 <span class="tile-sub-label">${tile.def.label}</span>
               </div>
               <div class="tile-back">
@@ -15756,9 +15727,6 @@
         this.dealAnimationTimeouts.push(endTimer);
 
         this.updateTileStates();
-
-        // 뒤집힌 블라인드 패들의 앞면 그래픽을 브라우저 유휴 시간(Idle)에 백그라운드 프리로드
-        this.preloadCoveredTileGraphics();
       }
 
       /**
@@ -15962,7 +15930,7 @@
           this.logTouch(`[블라인드 오픈] '${tile.def.label}' 앞면 공개`);
           if (tile.el) {
             const wrap = tile.el.querySelector('.tile-graphic-wrap');
-            if (wrap && !wrap.hasChildNodes()) {
+            if (wrap && !wrap.querySelector('svg')) {
               wrap.innerHTML = this.getTileGraphicHtml(tile);
             }
           }
