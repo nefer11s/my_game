@@ -12049,6 +12049,7 @@
         this.isDealing = false;
         this.dealAnimationTimeouts = [];
         this.activeTimeouts = [];
+        this.isNoticeActive = false; // 30판 안내 알림 등 오버레이 표출 중 시간 정지 플래그
         this.hasStarted = false; // 최초 스플래시 화면 대기 플래그
 
         // 레이아웃 동적 관리 및 화면 크기
@@ -14440,10 +14441,13 @@
         if (!timePill) return;
         const parentPill = timePill.closest('.hud-pill');
         const isSettingsPaused = this.isAnySettingsOpen();
+        const isNoticePaused = !!(this.isNoticeActive || document.getElementById('all-blind-notice'));
+        const pauseReason = isNoticePaused ? '안내 알림 확인 중 (시간 정지)' : (isSettingsPaused ? '설정 화면 (시간 일시정지)' : null);
+
         if (this.isCountdown) {
           if (parentPill) {
-            parentPill.title = isSettingsPaused
-              ? `남은 시간 (설정 화면으로 인해 시간 일시정지 중)`
+            parentPill.title = pauseReason
+              ? `남은 시간 (${pauseReason})`
               : `남은 시간 (제한: ${this.formatTime(this.getTimeLimitForDiff(this.difficulty))})`;
           }
           timePill.textContent = this.formatTime(Math.max(0, this.remainingSeconds));
@@ -14454,8 +14458,8 @@
           }
         } else {
           if (parentPill) {
-            parentPill.title = isSettingsPaused
-              ? '경과 시간 (설정 화면으로 인해 시간 일시정지 중)'
+            parentPill.title = pauseReason
+              ? `경과 시간 (${pauseReason})`
               : '경과 시간 (무제한)';
           }
           timePill.classList.remove('time-warning');
@@ -14466,7 +14470,7 @@
       startTimer() {
         clearInterval(this.timerId);
         this.timerId = setInterval(() => {
-          if (this.isGameOver || this.isClear || !this.hasStarted || this.isPaused || this.isAnySettingsOpen()) return;
+          if (this.isGameOver || this.isClear || !this.hasStarted || this.isPaused || this.isAnySettingsOpen() || this.isNoticeActive || document.getElementById('all-blind-notice')) return;
           this.timerSeconds++;
           if (this.isCountdown) {
             this.remainingSeconds--;
@@ -14809,6 +14813,7 @@
         const _po = document.getElementById('pause-overlay'); if (_po) _po.classList.remove('active');
         const _pi = document.getElementById('pause-icon'); if (_pi) _pi.textContent = '⏸';
         this.blindMismatchCount = 0;
+        this.isNoticeActive = false;
 
 
         // 난이도에 따른 하트(목숨) 3~5개 설정 (쉬움:5, 보통:4, 어려움:3, 달인:3)
@@ -14905,6 +14910,7 @@
         const _po2 = document.getElementById('pause-overlay'); if (_po2) _po2.classList.remove('active');
         const _pi2 = document.getElementById('pause-icon'); if (_pi2) _pi2.textContent = '⏸';
         this.blindMismatchCount = 0;
+        this.isNoticeActive = false;
         this.lastFlippedBlindTile = null;
         this.hasUsedLastChanceShuffle = false;
         this.undoRemaining = 2;
@@ -15345,6 +15351,8 @@
 
         // 30판(각 난이도별 최대 블라인드 정점) 도달 시 고유 인정 배너 연출
         if (currentStageNum === 30) {
+          this.isNoticeActive = true;
+          this.updateTimerDisplay();
           this.safeTimeout(() => {
             if (!this.isClear && !this.isGameOver) {
               const oldNotice = document.getElementById('all-blind-notice');
@@ -15388,7 +15396,7 @@
                 <div class="all-blind-icon">${nData.icon}</div>
                 <div class="all-blind-title">${nData.title}</div>
                 <div class="all-blind-desc">${nData.desc}</div>
-                <div class="all-blind-touch">👆 화면 어디나 터치하면 바로 닫힙니다</div>
+                <div class="all-blind-touch">👆 화면 어디나 터치하면 닫히며 게임 시간이 시작됩니다</div>
               `;
               let dismissTimer = null;
               const dismissNotice = (e) => {
@@ -15398,6 +15406,8 @@
                 }
                 if (dismissTimer) clearTimeout(dismissTimer);
                 notice.classList.add('fade-out');
+                this.isNoticeActive = false;
+                this.updateTimerDisplay();
                 setTimeout(() => {
                   if (typeof notice.remove === 'function') notice.remove();
                   else if (notice.parentNode) notice.parentNode.removeChild(notice);
@@ -15409,8 +15419,13 @@
               dismissTimer = setTimeout(() => {
                 dismissNotice();
               }, 7500);
+            } else {
+              this.isNoticeActive = false;
+              this.updateTimerDisplay();
             }
           }, 500);
+        } else {
+          this.isNoticeActive = false;
         }
 
         this.tiles = resultTiles;
