@@ -4426,10 +4426,11 @@
       justify-content: center;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
       user-select: none;
       -webkit-user-select: none;
       -webkit-tap-highlight-color: transparent;
+      cursor: pointer;
     }
 
     .tile-lightbox-modal.active {
@@ -4440,9 +4441,9 @@
     .lightbox-backdrop {
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at 50% 45%, rgba(10, 36, 25, 0.94) 0%, rgba(4, 15, 10, 0.98) 100%);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: radial-gradient(circle at 50% 50%, rgba(10, 36, 25, 0.88) 0%, rgba(4, 15, 10, 0.95) 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
 
     .lightbox-container {
@@ -4451,94 +4452,52 @@
       width: 100%;
       height: 100%;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      justify-content: space-between;
-      padding: 24px 20px 28px;
-      /* 화면 터치/클릭 시 도감 복귀 */
+      justify-content: center;
+      padding: 16px;
+      box-sizing: border-box;
     }
 
-    .lightbox-top-bar {
-      width: 100%;
-      max-width: 600px;
+    .lightbox-popup-card {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
+      background: linear-gradient(160deg, rgba(16, 52, 36, 0.96) 0%, rgba(8, 28, 18, 0.98) 100%);
+      border: 1.5px solid rgba(80, 190, 145, 0.45);
+      border-radius: 26px;
+      padding: 22px 24px 18px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      max-width: min(90vw, 360px);
+      width: fit-content;
+      animation: lightboxPopCenter 0.28s cubic-bezier(0.18, 0.89, 0.32, 1.25);
+      text-align: center;
+      gap: 12px;
       pointer-events: auto;
-      flex-shrink: 0;
+    }
+
+    @keyframes lightboxPopCenter {
+      0% {
+        transform: scale(0.85);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     .lightbox-badge-info {
       background: rgba(46, 167, 121, 0.22);
       border: 1px solid rgba(46, 167, 121, 0.45);
       color: #7de8b8;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 800;
-      padding: 5px 14px;
-      border-radius: 16px;
+      padding: 3px 12px;
+      border-radius: 14px;
       letter-spacing: 0.5px;
-    }
-
-    .lightbox-hint {
-      color: #9cd4ba;
-      font-size: 12px;
-      font-weight: 600;
-      opacity: 0.85;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
-      animation: touchGuideBlink 1.5s infinite alternate ease-in-out;
-    }
-
-    .lightbox-close-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      color: #ffffff;
-      font-size: 18px;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.18s ease;
-    }
-
-
-    .lightbox-stage {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: clamp(16px, 5vw, 48px);
-      width: 100%;
-      max-width: 760px;
-      flex: 1;
-      min-height: 0;
-      position: relative;
-    }
-
-    .lightbox-nav-btn {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1.5px solid rgba(255, 255, 255, 0.3);
-      color: #ffffff;
-      font-size: 36px;
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.3, 1);
-      flex-shrink: 0;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-      pointer-events: auto;
-      user-select: none;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-
-    .lightbox-nav-btn:active {
-      transform: scale(0.92);
     }
 
     .lightbox-tile-wrap {
@@ -4546,13 +4505,14 @@
       align-items: center;
       justify-content: center;
       perspective: 1000px;
+      margin: 4px 0;
     }
 
-    /* 초대형 프리미엄 3D 마작 타일 */
+    /* 가로세로 정확히 3배 확대된 3D 마작 타일 (기본 66px x 88px -> 198px x 264px) */
     .lightbox-tile {
-      width: 210px !important;
-      height: 280px !important;
-      border-radius: 24px !important;
+      width: 198px !important;
+      height: 264px !important;
+      border-radius: 22px !important;
       box-shadow:
         inset 2px 2px 3px rgba(255, 255, 255, 0.95),
         inset -2px -2px 4px rgba(180, 160, 135, 0.25),
@@ -4564,7 +4524,7 @@
         12px 12px 0 #195239,
         14px 14px 0 #123e2b,
         16px 16px 0 #0d2c1e,
-        14px 22px 40px rgba(0, 0, 0, 0.65) !important;
+        14px 22px 36px rgba(0, 0, 0, 0.65) !important;
       transform: none !important;
       position: relative !important;
       animation: lightboxTilePop 0.28s cubic-bezier(0.18, 0.89, 0.32, 1.25) !important;
@@ -4572,10 +4532,9 @@
 
     @keyframes lightboxTilePop {
       0% {
-        transform: scale(0.85);
-        opacity: 0.6;
+        transform: scale(0.9);
+        opacity: 0.7;
       }
-
       100% {
         transform: scale(1);
         opacity: 1;
@@ -4583,24 +4542,24 @@
     }
 
     .lightbox-tile .tile-inner {
-      border-radius: 24px !important;
+      border-radius: 22px !important;
     }
 
     .lightbox-tile .tile-front {
-      border-radius: 20px !important;
-      padding: 12px !important;
+      border-radius: 18px !important;
+      padding: 10px !important;
     }
 
     .lightbox-tile .tile-corner-badge {
-      font-size: 26px !important;
-      top: 10px !important;
-      left: 12px !important;
+      font-size: 24px !important;
+      top: 8px !important;
+      left: 10px !important;
     }
 
     .lightbox-tile .tile-sub-label {
-      font-size: 19px !important;
-      bottom: 10px !important;
-      right: 12px !important;
+      font-size: 18px !important;
+      bottom: 8px !important;
+      right: 10px !important;
       letter-spacing: 1px !important;
     }
 
@@ -4612,31 +4571,37 @@
     /* 하단 설명 정보 바 */
     .lightbox-bottom-info {
       width: 100%;
-      max-width: 520px;
-      background: rgba(18, 54, 38, 0.85);
-      border: 1px solid rgba(80, 190, 145, 0.35);
-      border-radius: 18px;
-      padding: 12px 20px;
+      max-width: 280px;
       text-align: center;
       pointer-events: auto;
-      flex-shrink: 0;
-      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .lightbox-tile-title {
       font-size: 19px;
       font-weight: 900;
       color: #ffd700;
-      letter-spacing: 1px;
-      margin-bottom: 4px;
+      letter-spacing: 0.5px;
       text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
     }
 
     .lightbox-tile-desc {
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 600;
       color: #d1eee0;
       line-height: 1.4;
+      word-break: keep-all;
+    }
+
+    .lightbox-hint {
+      color: #88c7a6;
+      font-size: 11.5px;
+      font-weight: 600;
+      opacity: 0.85;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+      animation: touchGuideBlink 1.5s infinite alternate ease-in-out;
     }
 
     /* 모바일 반응형 최적화 (보드 영역 극대화 및 터치 조작 최적화) */
@@ -6005,7 +5970,7 @@
         <button class="splash-lang-btn" id="btn-splash-lang" title="Switch to English / 언어 전환">
           <span class="btn-icon">🌐</span> <span class="splash-lang-label">EN</span>
         </button>
-        <div class="splash-version-badge">v1.6.16</div>
+        <div class="splash-version-badge">v1.6.17</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title" data-i18n="app_title">SY 그림맞추기</h1>
@@ -6644,23 +6609,18 @@
     </div>
   </div>
 
-  <!-- 전체화면 타일 라이트박스 뷰어 -->
+  <!-- 전체화면 타일 라이트박스 뷰어 (가로세로 3배 확대 센터 팝업) -->
   <div class="tile-lightbox-modal" id="tile-lightbox-modal">
     <div class="lightbox-backdrop" id="lightbox-backdrop"></div>
     <div class="lightbox-container" id="lightbox-container">
-      <div class="lightbox-top-bar">
-        <div class="lightbox-badge-info" id="lightbox-badge-info">전체 89종</div>
-        <div class="lightbox-hint">화면을 터치하면 도감 표로 돌아갑니다</div>
-        <button class="lightbox-close-btn" id="btn-lightbox-close" title="도감으로 돌아가기">✕</button>
-      </div>
-      <div class="lightbox-stage" id="lightbox-stage">
-        <button class="lightbox-nav-btn lightbox-prev" id="btn-lightbox-prev" title="이전 타일 (◀)">‹</button>
+      <div class="lightbox-popup-card" id="lightbox-popup-card">
+        <div class="lightbox-badge-info" id="lightbox-badge-info">전체 109종</div>
         <div class="lightbox-tile-wrap" id="lightbox-tile-wrap"></div>
-        <button class="lightbox-nav-btn lightbox-next" id="btn-lightbox-next" title="다음 타일 (▶)">›</button>
-      </div>
-      <div class="lightbox-bottom-info" id="lightbox-bottom-info">
-        <div class="lightbox-tile-title" id="lightbox-tile-title">타일 이름</div>
-        <div class="lightbox-tile-desc" id="lightbox-tile-desc">타일 설명</div>
+        <div class="lightbox-bottom-info" id="lightbox-bottom-info">
+          <div class="lightbox-tile-title" id="lightbox-tile-title">타일 이름</div>
+          <div class="lightbox-tile-desc" id="lightbox-tile-desc">타일 설명</div>
+        </div>
+        <div class="lightbox-hint">터치하면 닫힙니다</div>
       </div>
     </div>
   </div>
@@ -10730,91 +10690,15 @@
           });
         }
 
-        // 라이트박스 닫기 버튼
-        if (this.btnCloseLightbox) {
-          this.btnCloseLightbox.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (this.sound) this.sound.playSelect();
-            this.closeLightbox();
-          });
-        }
-
-        // 이전/다음 네비게이션 버튼
-        if (this.btnPrev) {
-          this.btnPrev.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (this.sound) this.sound.playSelect();
-            this.prevTile();
-          });
-        }
-
-        if (this.btnNext) {
-          this.btnNext.addEventListener('click', (e) => {
-            e.stopPropagation();
-            if (this.sound) this.sound.playSelect();
-            this.nextTile();
-          });
-        }
-
-        // 라이트박스 전체 화면 터치/클릭 시 도감 표로 복귀
-        // (좌/우 화살표 버튼 클릭 제외)
+        // 라이트박스 전체 화면/팝업 터치/클릭 시 즉시 닫기
         if (this.lightboxModal) {
-          this.lightboxModal.addEventListener('click', (e) => {
-            if (e.target.closest('#btn-lightbox-prev') || e.target.closest('#btn-lightbox-next')) {
-              return;
-            }
+          const handleClose = (e) => {
+            if (e && e.cancelable) e.preventDefault();
             if (this.sound) this.sound.playSelect();
             this.closeLightbox();
-          });
-
-          // 모바일 터치 스와이프 (좌우 슬라이드 탐색) 및 탭 터치 시 도감 표 복귀
-          let isTouchSwipe = false;
-
-          this.lightboxModal.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) {
-              this.touchStartX = e.touches[0].clientX;
-              this.touchStartY = e.touches[0].clientY;
-              this.touchStartTime = Date.now();
-              isTouchSwipe = false;
-            }
-          }, { passive: true });
-
-          this.lightboxModal.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 1) {
-              const diffX = Math.abs(e.touches[0].clientX - this.touchStartX);
-              const diffY = Math.abs(e.touches[0].clientY - this.touchStartY);
-              if (diffX > 15 || diffY > 15) {
-                isTouchSwipe = true;
-              }
-            }
-          }, { passive: true });
-
-          this.lightboxModal.addEventListener('touchend', (e) => {
-            if (e.target.closest('#btn-lightbox-prev') || e.target.closest('#btn-lightbox-next')) {
-              return;
-            }
-            if (e.changedTouches.length === 1) {
-              const diffX = e.changedTouches[0].clientX - this.touchStartX;
-              const diffY = e.changedTouches[0].clientY - this.touchStartY;
-
-              // 수평 이동 35px 이상 시 스와이프로 타일 이전/다음 이동
-              if (Math.abs(diffX) > 35 && Math.abs(diffX) > Math.abs(diffY)) {
-                if (this.sound) this.sound.playSelect();
-                if (diffX < 0) {
-                  this.nextTile();
-                } else {
-                  this.prevTile();
-                }
-                return;
-              }
-
-              // 제자리 탭 (14px 미만 이동) 시 터치 즉시 도감 표로 복귀
-              if (!isTouchSwipe && Math.abs(diffX) < 14 && Math.abs(diffY) < 14) {
-                if (this.sound) this.sound.playSelect();
-                this.closeLightbox();
-              }
-            }
-          }, { passive: true });
+          };
+          this.lightboxModal.addEventListener('click', handleClose);
+          this.lightboxModal.addEventListener('touchend', handleClose, { passive: false });
         }
 
       }
