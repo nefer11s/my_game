@@ -904,6 +904,19 @@
       box-shadow: 0 1px 6px rgba(30, 136, 229, 0.18);
     }
 
+    .theme-radio-btn.active[data-theme="chuseok"] {
+      background: rgba(254, 243, 199, 0.95);
+      border-color: rgba(217, 119, 6, 0.7);
+      color: #b45309;
+      box-shadow: 0 1px 6px rgba(217, 119, 6, 0.18);
+    }
+
+    /* 타일 글자/라벨 끄기 (순수 그림 모드) */
+    body.hide-tile-labels .svg-badge,
+    body.hide-tile-labels .svg-bottom {
+      display: none !important;
+    }
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -5411,7 +5424,16 @@
                 <button class="theme-radio-btn" data-theme="classic" id="theme-btn-classic">🀄 전통</button>
                 <button class="theme-radio-btn active" data-theme="saju" id="theme-btn-saju">☯️ 명리학</button>
                 <button class="theme-radio-btn" data-theme="oryong" id="theme-btn-oryong">🐲 오룡이</button>
+                <button class="theme-radio-btn" data-theme="chuseok" id="theme-btn-chuseok" data-i18n="theme_chuseok">🌾 추석</button>
               </div>
+            </div>
+            <div class="settings-item" id="tile-text-wrapper"
+              style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
+              <span class="settings-label" data-i18n="settings_tile_text_label">🏷️ 타일 글자/라벨 표시</span>
+              <select class="diff-select" id="select-tile-text" title="타일의 배지·한글 명칭·낙관 텍스트 표시 여부 설정">
+                <option value="on" selected data-i18n="tile_text_on">켜짐 (글자·배지 표기 · 기본)</option>
+                <option value="off" data-i18n="tile_text_off">꺼짐 (순수 그림만 표시 · 클린 모드)</option>
+              </select>
             </div>
             <div class="settings-item" id="senior-mode-wrapper"
               style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
@@ -6692,6 +6714,10 @@
         theme_classic: '🀄 전통',
         theme_saju: '☯️ 명리학',
         theme_oryong: '🐲 오룡이',
+        theme_chuseok: '🌾 추석',
+        settings_tile_text_label: '🏷️ 타일 글자/라벨 표시',
+        tile_text_on: '켜짐 (글자·배지 표기 · 기본)',
+        tile_text_off: '꺼짐 (순수 그림만 표시 · 클린 모드)',
         settings_senior_label: '👓 시니어 모드 (5x7 대형 패)',
         opt_off: '꺼짐',
         opt_on_default: '켜짐 (5x7 대형 패 전용 · 기본)',
@@ -6797,6 +6823,10 @@
         theme_classic: '🀄 Classic',
         theme_saju: '☯️ Saju (Zodiac)',
         theme_oryong: '🐲 Oryongi',
+        theme_chuseok: '🌾 Chuseok',
+        settings_tile_text_label: '🏷️ Tile Text / Labels',
+        tile_text_on: 'On (Show Badges/Text · Default)',
+        tile_text_off: 'Off (Illustrations Only · Clean Mode)',
         settings_senior_label: '👓 Senior Mode (5x7 Large Tiles)',
         opt_off: 'Off',
         opt_on_default: 'On (5x7 Large Tiles · Default)',
@@ -8994,6 +9024,113 @@
             ${bottomSvg}
           </svg>
         `;
+      },
+
+      // 50종 추석 상징 고품질 벡터 일러스트 아이콘 렌더러
+      getChuseokIcon(id, color) {
+        const icons = {
+          cs_songpyeon: `<circle cx="120" cy="140" r="68" fill="#f0fdf4" opacity="0.6"/><path d="M72,165 Q115,110 168,165 Q120,195 72,165 Z" fill="#43a047"/><path d="M60,140 Q95,95 140,135 Q100,165 60,140 Z" fill="#ec407a" opacity="0.9"/><path d="M100,130 Q145,85 180,135 Q140,165 100,130 Z" fill="#fbc02d" opacity="0.95"/><path d="M65,185 Q120,170 175,185" stroke="#2e7d32" stroke-width="3" stroke-dasharray="4,4" fill="none"/>`,
+          cs_toranguk: `<ellipse cx="120" cy="175" rx="65" ry="24" fill="#5d4037"/><ellipse cx="120" cy="145" rx="65" ry="42" fill="#d7ccc8"/><ellipse cx="120" cy="140" rx="55" ry="32" fill="#fff8e1"/><circle cx="105" cy="138" r="14" fill="#a1887f"/><circle cx="135" cy="142" r="13" fill="#8d6e63"/><circle cx="120" cy="125" r="12" fill="#bcaaa4"/><path d="M110,110 Q120,95 130,110" stroke="#43a047" stroke-width="3" fill="none"/>`,
+          cs_namul: `<ellipse cx="120" cy="150" rx="68" ry="38" fill="#d4af37" stroke="#b78103" stroke-width="3"/><path d="M80,148 Q100,120 115,145" stroke="#5d4037" stroke-width="6" stroke-linecap="round" fill="none"/><path d="M125,145 Q140,120 160,145" stroke="#ffffff" stroke-width="5" stroke-linecap="round" fill="none"/><path d="M100,158 Q120,135 140,158" stroke="#2e7d32" stroke-width="6" stroke-linecap="round" fill="none"/>`,
+          cs_jeon: `<ellipse cx="120" cy="155" rx="72" ry="35" fill="#f5e6ca" stroke="#d7ccc8" stroke-width="2"/><circle cx="92" cy="148" r="22" fill="#fbc02d" stroke="#f57c00" stroke-width="2"/><circle cx="92" cy="148" r="14" fill="#ef6c00" opacity="0.3"/><rect x="120" y="132" width="38" height="28" rx="6" fill="#ffb74d" stroke="#e65100" stroke-width="2"/><circle cx="120" cy="162" r="18" fill="#c8e6c9" stroke="#388e3c" stroke-width="2"/>`,
+          cs_galbijjim: `<ellipse cx="120" cy="168" rx="68" ry="30" fill="#4e342e"/><ellipse cx="120" cy="148" rx="64" ry="36" fill="#3e2723"/><rect x="88" y="132" width="44" height="26" rx="8" fill="#5d4037" stroke="#8d6e63" stroke-width="2"/><rect x="118" y="142" width="42" height="24" rx="8" fill="#4e342e" stroke="#795548" stroke-width="2"/><circle cx="102" cy="130" r="8" fill="#d32f2f"/><circle cx="140" cy="135" r="9" fill="#fbc02d"/>`,
+          cs_gotgam: `<ellipse cx="120" cy="150" rx="36" ry="44" fill="#e65100"/><ellipse cx="120" cy="150" rx="30" ry="38" fill="#ff6d00"/><path d="M110,105 Q120,95 130,105 Q120,112 110,105 Z" fill="#3e2723"/><ellipse cx="120" cy="150" rx="20" ry="24" fill="#ffffff" opacity="0.25"/>`,
+          cs_daechu: `<g transform="translate(10, -5)"><ellipse cx="100" cy="142" rx="18" ry="26" fill="#880e4f" transform="rotate(-15 100 142)"/><ellipse cx="130" cy="148" rx="20" ry="28" fill="#b71c1c" transform="rotate(10 130 148)"/><ellipse cx="112" cy="162" rx="17" ry="24" fill="#990000" transform="rotate(25 112 162)"/><path d="M116,115 Q120,125 118,135" stroke="#4e342e" stroke-width="3" fill="none"/><path d="M116,115 Q100,105 92,118" stroke="#388e3c" stroke-width="3" fill="none"/></g>`,
+          cs_hangwa: `<rect x="75" y="130" width="38" height="52" rx="10" fill="#fff9c4" stroke="#fbc02d" stroke-width="3"/><rect x="125" y="125" width="40" height="56" rx="10" fill="#f8bbd0" stroke="#ec407a" stroke-width="3"/><circle cx="94" cy="156" r="3" fill="#f57f17"/><circle cx="145" cy="153" r="3" fill="#c2185b"/>`,
+          cs_sindoju: `<path d="M102,115 L138,115 L144,142 L158,168 L82,168 L96,142 Z" fill="#f5f5f5" stroke="#b0bec5" stroke-width="2"/><ellipse cx="120" cy="168" rx="38" ry="12" fill="#e0e0e0"/><ellipse cx="120" cy="115" rx="18" ry="6" fill="#fff" stroke="#90a4ae" stroke-width="2"/><ellipse cx="160" cy="165" rx="15" ry="9" fill="#ffd54f" stroke="#ffa000" stroke-width="2"/>`,
+          cs_sikhye: `<ellipse cx="120" cy="172" rx="60" ry="22" fill="#d4af37"/><ellipse cx="120" cy="148" rx="58" ry="32" fill="#ffe082"/><ellipse cx="120" cy="144" rx="52" ry="26" fill="#fffde7"/><ellipse cx="108" cy="142" rx="5" ry="2" fill="#fff" transform="rotate(20 108 142)"/><ellipse cx="128" cy="146" rx="5" ry="2" fill="#fff" transform="rotate(-15 128 146)"/><circle cx="118" cy="136" r="3" fill="#8d6e63"/>`,
+
+          cs_fullmoon: `<circle cx="120" cy="145" r="54" fill="#fff59d" stroke="#fbc02d" stroke-width="3"/><circle cx="120" cy="145" r="50" fill="#fff176"/><ellipse cx="105" cy="135" rx="18" ry="12" fill="#fff59d" opacity="0.7"/><ellipse cx="136" cy="152" rx="14" ry="10" fill="#fff59d" opacity="0.7"/><path d="M60,165 Q120,185 180,165 Q120,195 60,165 Z" fill="#ffffff" opacity="0.45"/>`,
+          cs_rice_ears: `<path d="M85,185 Q110,135 155,115" stroke="#f59e0b" stroke-width="4" fill="none"/><ellipse cx="150" cy="118" rx="8" ry="14" fill="#f59e0b" transform="rotate(45 150 118)"/><ellipse cx="138" cy="126" rx="8" ry="14" fill="#fbbf24" transform="rotate(35 138 126)"/><ellipse cx="125" cy="136" rx="8" ry="14" fill="#f59e0b" transform="rotate(25 125 136)"/><ellipse cx="112" cy="148" rx="8" ry="14" fill="#fbbf24" transform="rotate(15 112 148)"/><ellipse cx="100" cy="162" rx="8" ry="14" fill="#f59e0b" transform="rotate(5 100 162)"/>`,
+          cs_chestnut: `<ellipse cx="120" cy="146" rx="46" ry="48" fill="#4e342e"/><path d="M78,162 Q120,192 162,162 Q120,172 78,162 Z" fill="#bcaaa4"/><path d="M120,100 L120,92" stroke="#3e2723" stroke-width="4"/>`,
+          cs_apple: `<circle cx="106" cy="145" r="32" fill="#d32f2f"/><circle cx="134" cy="145" r="32" fill="#c62828"/><path d="M120,118 Q120,105 128,100" stroke="#4e342e" stroke-width="4" fill="none"/><ellipse cx="138" cy="104" rx="10" ry="6" fill="#388e3c" transform="rotate(-20 138 104)"/>`,
+          cs_pear: `<circle cx="120" cy="130" r="26" fill="#fbc02d"/><circle cx="120" cy="155" r="38" fill="#fbc02d"/><path d="M120,108 L120,98" stroke="#4e342e" stroke-width="3"/><circle cx="110" cy="148" r="1.5" fill="#f57f17"/><circle cx="132" cy="158" r="1.5" fill="#f57f17"/>`,
+          cs_grape: `<g transform="translate(15, -10)"><circle cx="105" cy="130" r="12" fill="#6a1b9a"/><circle cx="125" cy="130" r="12" fill="#4a148c"/><circle cx="95" cy="150" r="12" fill="#7b1fa2"/><circle cx="115" cy="150" r="12" fill="#6a1b9a"/><circle cx="135" cy="150" r="12" fill="#4a148c"/><circle cx="105" cy="170" r="12" fill="#8e24aa"/><circle cx="125" cy="170" r="12" fill="#6a1b9a"/><circle cx="115" cy="188" r="11" fill="#4a148c"/><path d="M115,118 L115,106 Q125,100 132,108" stroke="#33691e" stroke-width="3" fill="none"/></g>`,
+          cs_sorghum: `<path d="M120,185 L120,115" stroke="#5d4037" stroke-width="4"/><ellipse cx="120" cy="128" rx="20" ry="28" fill="#880e4f"/><ellipse cx="120" cy="124" rx="16" ry="24" fill="#ad1457"/><circle cx="114" cy="122" r="3" fill="#ff80ab"/><circle cx="126" cy="130" r="3" fill="#ff80ab"/>`,
+          cs_persimmon: `<ellipse cx="120" cy="150" rx="38" ry="32" fill="#ef6c00"/><path d="M106,122 Q120,126 134,122 Q120,114 106,122 Z" fill="#2e7d32"/><path d="M120,118 L120,108" stroke="#3e2723" stroke-width="3"/>`,
+
+          cs_ganggang: `<circle cx="120" cy="145" r="48" fill="none" stroke="#ffd54f" stroke-width="3" stroke-dasharray="8,6"/><circle cx="120" cy="98" r="10" fill="#ec407a"/><circle cx="165" cy="135" r="10" fill="#42a5f5"/><circle cx="148" cy="180" r="10" fill="#66bb6a"/><circle cx="92" cy="180" r="10" fill="#ffa726"/><circle cx="75" cy="135" r="10" fill="#ab47bc"/>`,
+          cs_ssireum: `<ellipse cx="120" cy="160" rx="60" ry="24" fill="#ffe082" stroke="#ffb300" stroke-width="3"/><circle cx="105" cy="135" r="18" fill="#e53935"/><circle cx="135" cy="135" r="18" fill="#1e88e5"/><path d="M98,145 Q120,158 142,145" stroke="#ffffff" stroke-width="5" fill="none"/>`,
+          cs_tugoofwar: `<path d="M60,145 Q120,120 180,145" stroke="#8d6e63" stroke-width="14" stroke-linecap="round" fill="none"/><path d="M60,145 Q120,120 180,145" stroke="#d7ccc8" stroke-width="3" stroke-dasharray="6,4" fill="none"/><rect x="114" y="126" width="12" height="18" fill="#d32f2f"/>`,
+          cs_sonori: `<ellipse cx="120" cy="150" rx="46" ry="34" fill="#a1887f"/><path d="M82,130 Q70,105 85,108" stroke="#5d4037" stroke-width="6" stroke-linecap="round" fill="none"/><path d="M158,130 Q170,105 155,108" stroke="#5d4037" stroke-width="6" stroke-linecap="round" fill="none"/><ellipse cx="120" cy="160" rx="22" ry="14" fill="#d7ccc8"/><circle cx="112" cy="160" r="3" fill="#3e2723"/><circle cx="128" cy="160" r="3" fill="#3e2723"/>`,
+          cs_gamassaum: `<rect x="85" y="118" width="70" height="54" rx="8" fill="#c2185b" stroke="#880e4f" stroke-width="3"/><polygon points="120,95 76,120 164,120" fill="#ffd54f" stroke="#ff8f00" stroke-width="2"/><line x1="55" y1="152" x2="185" y2="152" stroke="#5d4037" stroke-width="6" stroke-linecap="round"/>`,
+          cs_yutnori: `<g transform="translate(10, 0)"><rect x="75" y="115" width="14" height="64" rx="6" fill="#ffb74d" stroke="#e65100" stroke-width="2"/><rect x="95" y="115" width="14" height="64" rx="6" fill="#ffb74d" stroke="#e65100" stroke-width="2"/><rect x="115" y="115" width="14" height="64" rx="6" fill="#d7ccc8" stroke="#5d4037" stroke-width="2"/><rect x="135" y="115" width="14" height="64" rx="6" fill="#ffb74d" stroke="#e65100" stroke-width="2"/><circle cx="82" cy="132" r="2" fill="#b71c1c"/><circle cx="82" cy="162" r="2" fill="#b71c1c"/></g>`,
+          cs_neolttwigi: `<rect x="68" y="145" width="104" height="10" rx="3" fill="#8d6e63" transform="rotate(-15 120 150)"/><polygon points="120,150 106,174 134,174" fill="#a1887f"/><circle cx="78" cy="115" r="10" fill="#ec407a"/><circle cx="162" cy="155" r="10" fill="#42a5f5"/>`,
+          cs_sangmo: `<circle cx="120" cy="158" r="28" fill="#212121"/><path d="M120,132 Q150,110 170,128 Q185,150 150,165" stroke="#ffffff" stroke-width="5" stroke-linecap="round" fill="none"/><circle cx="120" cy="132" r="5" fill="#f44336"/>`,
+
+          cs_charyesang: `<rect x="70" y="140" width="100" height="24" rx="4" fill="#b78103" stroke="#8c6200" stroke-width="2"/><rect x="80" y="164" width="10" height="22" fill="#8c6200"/><rect x="150" y="164" width="10" height="22" fill="#8c6200"/><circle cx="95" cy="132" r="8" fill="#d32f2f"/><circle cx="120" cy="130" r="9" fill="#fbc02d"/><circle cx="145" cy="132" r="8" fill="#ffffff" stroke="#b0bec5"/>`,
+          cs_screen: `<g transform="translate(10, 0)"><rect x="65" y="112" width="26" height="68" fill="#e0f2f1" stroke="#004d40" stroke-width="2"/><rect x="95" y="112" width="26" height="68" fill="#e0f2f1" stroke="#004d40" stroke-width="2"/><rect x="125" y="112" width="26" height="68" fill="#e0f2f1" stroke="#004d40" stroke-width="2"/><circle cx="108" cy="130" r="7" fill="#d32f2f"/><path d="M78,165 Q90,140 108,155" stroke="#2e7d32" stroke-width="3" fill="none"/></g>`,
+          cs_brassyware: `<ellipse cx="120" cy="138" rx="46" ry="18" fill="#ffd54f" stroke="#b78103" stroke-width="3"/><path d="M78,142 Q86,170 120,172 Q154,170 162,142 Z" fill="#ffca28" stroke="#b78103" stroke-width="2"/><ellipse cx="120" cy="172" rx="24" ry="7" fill="#ffd54f" stroke="#b78103" stroke-width="2"/>`,
+          cs_incense: `<ellipse cx="120" cy="150" rx="36" ry="16" fill="#78909c" stroke="#455a64" stroke-width="2"/><path d="M88,152 Q94,175 120,175 Q146,175 152,152 Z" fill="#607d8b"/><line x1="102" y1="174" x2="96" y2="186" stroke="#455a64" stroke-width="4"/><line x1="138" y1="174" x2="144" y2="186" stroke="#455a64" stroke-width="4"/><line x1="120" y1="175" x2="120" y2="188" stroke="#455a64" stroke-width="4"/><path d="M120,140 Q112,118 128,105" stroke="#cfd8dc" stroke-width="3" stroke-linecap="round" fill="none"/>`,
+          cs_candlestick: `<rect x="116" y="125" width="8" height="52" fill="#cfd8dc" stroke="#90a4ae" stroke-width="2"/><ellipse cx="120" cy="176" rx="28" ry="8" fill="#b0bec5"/><ellipse cx="120" cy="125" rx="12" ry="4" fill="#90a4ae"/><path d="M120,118 Q126,104 120,95 Q114,104 120,118 Z" fill="#ff5722"/><circle cx="120" cy="110" r="4" fill="#ffeb3b"/>`,
+          cs_seongmyo: `<ellipse cx="120" cy="165" rx="65" ry="24" fill="#81c784"/><path d="M72,165 Q120,118 168,165 Z" fill="#4caf50" stroke="#388e3c" stroke-width="2"/><rect x="114" y="160" width="12" height="18" fill="#cfd8dc" stroke="#90a4ae" stroke-width="1.5"/>`,
+          cs_beolcho: `<path d="M95,168 L142,168" stroke="#5d4037" stroke-width="8" stroke-linecap="round"/><path d="M142,168 Q158,165 162,142 Q158,125 136,132" stroke="#78909c" stroke-width="7" stroke-linecap="round" fill="none"/>`,
+          cs_jibang: `<rect x="94" y="110" width="52" height="74" rx="4" fill="#fff" stroke="#37474f" stroke-width="2"/><path d="M94,118 L120,105 L146,118" stroke="#37474f" stroke-width="2" fill="none"/><line x1="120" y1="124" x2="120" y2="170" stroke="#212121" stroke-width="3" stroke-dasharray="5,4"/>`,
+
+          cs_saekdong: `<path d="M85,142 L120,125 L155,142 L146,172 L94,172 Z" fill="#f8bbd0"/><rect x="72" y="140" width="15" height="28" fill="#ff5252" transform="rotate(20 72 140)"/><rect x="67" y="152" width="15" height="28" fill="#ffd740" transform="rotate(20 67 152)"/><rect x="62" y="164" width="15" height="28" fill="#40c4ff" transform="rotate(20 62 164)"/><path d="M115,128 L110,165" stroke="#c2185b" stroke-width="4"/>`,
+          cs_durumagi: `<path d="M92,118 L120,112 L148,118 L158,185 L82,185 Z" fill="#e3f2fd" stroke="#90caf9" stroke-width="2"/><path d="M112,120 L128,145 L120,185" stroke="#1565c0" stroke-width="3" fill="none"/>`,
+          cs_kkotshin: `<path d="M78,155 Q95,140 142,142 Q165,144 165,155 Q160,168 120,168 Q80,168 78,155 Z" fill="#ec407a" stroke="#c2185b" stroke-width="2"/><circle cx="156" cy="148" r="5" fill="#fff"/><circle cx="156" cy="148" r="2.5" fill="#fbc02d"/>`,
+          cs_norigae: `<circle cx="120" cy="115" r="10" fill="#00bfa5"/><polygon points="120,126 108,145 132,145" fill="#ff5252"/><path d="M112,148 L112,185" stroke="#7b1fa2" stroke-width="3"/><path d="M120,148 L120,188" stroke="#d81b60" stroke-width="3"/><path d="M128,148 L128,185" stroke="#ff6f00" stroke-width="3"/>`,
+          cs_bokjumeoni: `<path d="M96,132 Q120,118 144,132 L152,168 Q120,185 88,168 Z" fill="#e91e63" stroke="#ad1457" stroke-width="2"/><path d="M102,132 Q120,138 138,132" stroke="#ffd54f" stroke-width="4" fill="none"/><circle cx="120" cy="155" r="10" fill="#ffd54f"/><text x="120" y="159" text-anchor="middle" font-size="10" font-weight="900" fill="#b71c1c">福</text>`,
+          cs_gat: `<ellipse cx="120" cy="165" rx="64" ry="16" fill="#212121"/><path d="M100,162 L106,120 L134,120 L140,162 Z" fill="#37474f"/><line x1="102" y1="165" x2="88" y2="188" stroke="#ffeb3b" stroke-width="2"/><line x1="138" y1="165" x2="152" y2="188" stroke="#ffeb3b" stroke-width="2"/>`,
+          cs_jokduri: `<polygon points="120,115 88,138 100,165 140,165 152,138" fill="#b71c1c" stroke="#d32f2f" stroke-width="2"/><circle cx="120" cy="138" r="6" fill="#ffeb3b"/><circle cx="106" cy="148" r="4" fill="#00e676"/><circle cx="134" cy="148" r="4" fill="#00e676"/>`,
+          cs_bojagi: `<polygon points="120,112 168,145 120,178 72,145" fill="#f44336"/><polygon points="120,112 144,128 120,145 96,128" fill="#ffeb3b"/><polygon points="144,128 168,145 144,162 120,145" fill="#4caf50"/><polygon points="120,145 144,162 120,178 96,162" fill="#2196f3"/><polygon points="96,128 120,145 96,162 72,145" fill="#ab47bc"/>`,
+
+          cs_rabbit: `<ellipse cx="120" cy="145" r="52" fill="#fff9c4"/><ellipse cx="120" cy="154" rx="20" ry="22" fill="#ffffff" stroke="#e0e0e0"/><circle cx="120" cy="134" r="14" fill="#ffffff" stroke="#e0e0e0"/><ellipse cx="114" cy="116" rx="4" ry="12" fill="#ffffff" transform="rotate(-15 114 116)"/><ellipse cx="126" cy="116" rx="4" ry="12" fill="#ffffff" transform="rotate(15 126 116)"/><rect x="136" y="152" width="16" height="20" fill="#b0bec5"/>`,
+          cs_jeolgu: `<path d="M92,132 L148,132 L140,175 L100,175 Z" fill="#78909c" stroke="#455a64" stroke-width="2"/><ellipse cx="120" cy="132" rx="28" ry="8" fill="#90a4ae"/><path d="M125,110 L155,142" stroke="#5d4037" stroke-width="6" stroke-linecap="round"/>`,
+          cs_laurel: `<circle cx="120" cy="145" r="50" fill="#fffde7"/><path d="M120,175 Q115,145 122,125" stroke="#5d4037" stroke-width="5" fill="none"/><circle cx="114" cy="125" r="16" fill="#33691e" opacity="0.8"/><circle cx="130" cy="120" r="14" fill="#558b2f" opacity="0.85"/>`,
+          cs_gwiseong: `<rect x="88" y="132" width="64" height="46" rx="10" fill="#ff9800" stroke="#f57c00" stroke-width="2"/><path d="M120,132 L120,178" stroke="#ffffff" stroke-width="4"/><path d="M88,155 L152,155" stroke="#ffffff" stroke-width="4"/><circle cx="120" cy="130" r="6" fill="#e53935"/>`,
+          cs_gohyang: `<path d="M75,145 Q120,120 165,145 L155,178 L85,178 Z" fill="#ffe0b2"/><path d="M70,145 Q120,115 170,145" stroke="#8d6e63" stroke-width="6" fill="none"/><ellipse cx="120" cy="136" rx="8" ry="6" fill="#c8e6c9"/>`,
+          cs_magpie: `<ellipse cx="120" cy="150" rx="32" ry="18" fill="#212121"/><circle cx="100" cy="142" r="10" fill="#212121"/><polygon points="92,142 84,144 92,146" fill="#ffb300"/><ellipse cx="125" cy="152" rx="14" ry="10" fill="#ffffff"/><path d="M148,154 L175,162" stroke="#1565c0" stroke-width="5" stroke-linecap="round"/>`,
+          cs_chorong: `<rect x="105" y="125" width="30" height="25" fill="#e53935"/><rect x="105" y="150" width="30" height="25" fill="#1e88e5"/><path d="M120,105 L120,125" stroke="#5d4037" stroke-width="3"/><path d="M120,175 L120,192" stroke="#ffeb3b" stroke-width="3"/>`,
+          cs_pungdeung: `<path d="M102,120 Q120,112 138,120 L144,162 Q120,170 96,162 Z" fill="#ff9800" stroke="#f57c00" stroke-width="2"/><ellipse cx="120" cy="162" rx="24" ry="6" fill="#ffeb3b"/><ellipse cx="120" cy="120" rx="18" ry="4" fill="#ffb74d"/>`
+        };
+
+        const defIcon = `<circle cx="120" cy="145" r="48" fill="${color}" opacity="0.18"/><circle cx="120" cy="145" r="40" fill="none" stroke="${color}" stroke-width="3"/><text x="120" y="154" text-anchor="middle" font-size="28" font-weight="900" fill="${color}">🌾</text>`;
+        return icons[id] || defIcon;
+      },
+
+      // 한국 한가위 추석 50종 하이브리드 타일 (고품질 일러스트 + 단청 배지 + 실시간 텍스트)
+      chuseokHybrid(id, badge, color, sub, seal) {
+        const sealBg = `color-mix(in srgb, ${color} 14%, #fcf9f2)`;
+        const badgeSvg = `
+          <g class="svg-badge">
+            <rect x="15" y="14" width="58" height="60" rx="12" ry="12" fill="rgba(0,0,0,0.35)" />
+            <rect x="14" y="12" width="58" height="60" rx="12" ry="12" fill="${color}" stroke="#FFD54F" stroke-width="2.5" />
+            <rect x="16.5" y="14.5" width="53" height="55" rx="10" ry="10" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+            <text x="43" y="55" text-anchor="middle" font-family="'Noto Serif KR', serif" font-weight="900" font-size="34" fill="#FFFFFF">${badge}</text>
+          </g>
+        `;
+
+        const bottomSvg = `
+          <g class="svg-bottom">
+            <text x="20" y="274" font-family="'Pretendard', -apple-system, sans-serif" font-weight="900" font-size="24" fill="rgba(255,255,255,0.95)" stroke="rgba(255,255,255,0.9)" stroke-width="4" stroke-linejoin="round">${sub}</text>
+            <text x="20" y="274" font-family="'Pretendard', -apple-system, sans-serif" font-weight="900" font-size="24" fill="${color}">${sub}</text>
+            <g transform="translate(142, 244)">
+              <rect x="1" y="2" width="82" height="40" rx="7" ry="7" fill="rgba(0,0,0,0.25)" />
+              <rect x="0" y="0" width="82" height="40" rx="7" ry="7" fill="${sealBg}" stroke="${color}" stroke-width="2.2" />
+              <rect x="3" y="3" width="76" height="34" rx="5" ry="5" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1" />
+              <text x="41" y="27" text-anchor="middle" font-family="'Noto Serif KR', serif" font-weight="900" font-size="19" fill="${color}" letter-spacing="1">${seal}</text>
+            </g>
+          </g>
+        `;
+
+        const iconSvg = SvgFactory.getChuseokIcon(id, color);
+
+        return `
+          <svg class="tile-svg chuseok-hybrid-svg" viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg">
+            <g class="tile-art-layer">
+              <!-- 1. 고품질 벡터 일러스트 그래픽 -->
+              ${iconSvg}
+              <!-- 2. 초고화질 실물 WebP 이미지 (에셋 존재 시 표출) -->
+              <image href="assets/tiles/chuseok/${id}.webp" x="12" y="15" width="216" height="270" preserveAspectRatio="xMidYMid meet" onerror="this.style.display='none'" />
+            </g>
+            <!-- 3. 좌상단 전통 단청 배지 -->
+            ${badgeSvg}
+            <!-- 4. 하단 실시간 텍스트 (한글 명칭 + 낙관) -->
+            ${bottomSvg}
+          </svg>
+        `;
       }
     };
 
@@ -9138,7 +9275,72 @@
       { id: 'dragon_gold_purple_tile', suit: 'dragon_gold', val: 'purple', label: '紫金龍', badge: '紫', render: () => SvgFactory.sajuHybrid('dragon_gold_purple_tile', '紫', '#8e24aa', '자금용두', '紫金龍') },
       { id: 'dragon_gold_blue_tile', suit: 'dragon_gold', val: 'blue', label: '靑金龍', badge: '靑', render: () => SvgFactory.sajuHybrid('dragon_gold_blue_tile', '靑', '#1e88e5', '청금용두', '靑金龍') },
       { id: 'dragon_gold_yellow_tile', suit: 'dragon_gold', val: 'yellow', label: '黃金龍', badge: '黃', render: () => SvgFactory.sajuHybrid('dragon_gold_yellow_tile', '黃', '#fbc02d', '황금용두', '黃金龍') },
-      { id: 'dragon_gold_green_tile', suit: 'dragon_gold', val: 'green', label: '綠金龍', badge: '綠', render: () => SvgFactory.sajuHybrid('dragon_gold_green_tile', '綠', '#43a047', '녹금용두', '綠金龍') }
+      { id: 'dragon_gold_green_tile', suit: 'dragon_gold', val: 'green', label: '綠金龍', badge: '綠', render: () => SvgFactory.sajuHybrid('dragon_gold_green_tile', '綠', '#43a047', '녹금용두', '綠金龍') },
+
+      // ==========================================
+      // 한국 한가위 추석 테마 패 50종 (suit: 'chuseok')
+      // ==========================================
+      // 1. 한가위 명절 음식 & 차림 (10종)
+      { id: 'cs_songpyeon', suit: 'chuseok', val: 'songpyeon', label: '오색송편', badge: '떡', render: () => SvgFactory.chuseokHybrid('cs_songpyeon', '떡', '#43a047', '오색송편', '松餠') },
+      { id: 'cs_toranguk', suit: 'chuseok', val: 'toranguk', label: '토란국', badge: '탕', render: () => SvgFactory.chuseokHybrid('cs_toranguk', '탕', '#8d6e63', '토란국', '土卵') },
+      { id: 'cs_namul', suit: 'chuseok', val: 'namul', label: '삼색나물', badge: '채', render: () => SvgFactory.chuseokHybrid('cs_namul', '채', '#2e7d32', '삼색나물', '三菜') },
+      { id: 'cs_jeon', suit: 'chuseok', val: 'jeon', label: '모둠전', badge: '전', render: () => SvgFactory.chuseokHybrid('cs_jeon', '전', '#f57c00', '모둠전', '煎油') },
+      { id: 'cs_galbijjim', suit: 'chuseok', val: 'galbijjim', label: '갈비찜', badge: '육', render: () => SvgFactory.chuseokHybrid('cs_galbijjim', '육', '#5d4037', '갈비찜', '蒸肉') },
+      { id: 'cs_gotgam', suit: 'chuseok', val: 'gotgam', label: '곶감', badge: '감', render: () => SvgFactory.chuseokHybrid('cs_gotgam', '감', '#e65100', '곶감', '乾枾') },
+      { id: 'cs_daechu', suit: 'chuseok', val: 'daechu', label: '붉은대추', badge: '조', render: () => SvgFactory.chuseokHybrid('cs_daechu', '조', '#b71c1c', '대추', '大棗') },
+      { id: 'cs_hangwa', suit: 'chuseok', val: 'hangwa', label: '한과유과', badge: '과', render: () => SvgFactory.chuseokHybrid('cs_hangwa', '과', '#fbc02d', '한과', '韓菓') },
+      { id: 'cs_sindoju', suit: 'chuseok', val: 'sindoju', label: '신도주', badge: '주', render: () => SvgFactory.chuseokHybrid('cs_sindoju', '주', '#ffb300', '신도주', '新酴') },
+      { id: 'cs_sikhye', suit: 'chuseok', val: 'sikhye', label: '식혜', badge: '음', render: () => SvgFactory.chuseokHybrid('cs_sikhye', '음', '#e0a96d', '식혜', '食醯') },
+
+      // 2. 가을 결실 & 자연 (8종)
+      { id: 'cs_fullmoon', suit: 'chuseok', val: 'fullmoon', label: '한가위보름달', badge: '달', render: () => SvgFactory.chuseokHybrid('cs_fullmoon', '달', '#ffd54f', '보름달', '滿月') },
+      { id: 'cs_rice_ears', suit: 'chuseok', val: 'rice_ears', label: '황금벼이삭', badge: '벼', render: () => SvgFactory.chuseokHybrid('cs_rice_ears', '벼', '#f59e0b', '벼이삭', '禾穀') },
+      { id: 'cs_chestnut', suit: 'chuseok', val: 'chestnut', label: '알밤', badge: '밤', render: () => SvgFactory.chuseokHybrid('cs_chestnut', '밤', '#795548', '알밤', '栗子') },
+      { id: 'cs_apple', suit: 'chuseok', val: 'apple', label: '홍로사과', badge: '사', render: () => SvgFactory.chuseokHybrid('cs_apple', '사', '#d32f2f', '사과', '蘋果') },
+      { id: 'cs_pear', suit: 'chuseok', val: 'pear', label: '황금배', badge: '배', render: () => SvgFactory.chuseokHybrid('cs_pear', '배', '#fbc02d', '황금배', '沙梨') },
+      { id: 'cs_grape', suit: 'chuseok', val: 'grape', label: '머루포도', badge: '포', render: () => SvgFactory.chuseokHybrid('cs_grape', '포', '#6a1b9a', '머루포도', '葡萄') },
+      { id: 'cs_sorghum', suit: 'chuseok', val: 'sorghum', label: '붉은수수', badge: '수', render: () => SvgFactory.chuseokHybrid('cs_sorghum', '수', '#ad1457', '수수', '蜀黍') },
+      { id: 'cs_persimmon', suit: 'chuseok', val: 'persimmon', label: '단감', badge: '감', render: () => SvgFactory.chuseokHybrid('cs_persimmon', '감', '#ef6c00', '단감', '丹枾') },
+
+      // 3. 민속놀이 & 한마당 (8종)
+      { id: 'cs_ganggang', suit: 'chuseok', val: 'ganggang', label: '강강술래', badge: '무', render: () => SvgFactory.chuseokHybrid('cs_ganggang', '무', '#0288d1', '강강술래', '圓舞') },
+      { id: 'cs_ssireum', suit: 'chuseok', val: 'ssireum', label: '씨름', badge: '씨', render: () => SvgFactory.chuseokHybrid('cs_ssireum', '씨', '#e53935', '씨름', '摔角') },
+      { id: 'cs_tugoofwar', suit: 'chuseok', val: 'tugoofwar', label: '줄다리기', badge: '줄', render: () => SvgFactory.chuseokHybrid('cs_tugoofwar', '줄', '#8d6e63', '줄다리기', '索戰') },
+      { id: 'cs_sonori', suit: 'chuseok', val: 'sonori', label: '소놀이', badge: '우', render: () => SvgFactory.chuseokHybrid('cs_sonori', '우', '#6d4c41', '소놀이', '牛戱') },
+      { id: 'cs_gamassaum', suit: 'chuseok', val: 'gamassaum', label: '가마싸움', badge: '여', render: () => SvgFactory.chuseokHybrid('cs_gamassaum', '여', '#c2185b', '가마싸움', '輿戰') },
+      { id: 'cs_yutnori', suit: 'chuseok', val: 'yutnori', label: '윷놀이', badge: '윷', render: () => SvgFactory.chuseokHybrid('cs_yutnori', '윷', '#ff8f00', '윷놀이', '柶戱') },
+      { id: 'cs_neolttwigi', suit: 'chuseok', val: 'neolttwigi', label: '널뛰기', badge: '널', render: () => SvgFactory.chuseokHybrid('cs_neolttwigi', '널', '#00897b', '널뛰기', '踏板') },
+      { id: 'cs_sangmo', suit: 'chuseok', val: 'sangmo', label: '풍물상모', badge: '악', render: () => SvgFactory.chuseokHybrid('cs_sangmo', '악', '#3949ab', '상모', '象毛') },
+
+      // 4. 차례 & 성묘 풍습 (8종)
+      { id: 'cs_charyesang', suit: 'chuseok', val: 'charyesang', label: '차례상', badge: '례', render: () => SvgFactory.chuseokHybrid('cs_charyesang', '례', '#b78103', '차례상', '祭禮') },
+      { id: 'cs_screen', suit: 'chuseok', val: 'screen', label: '십장생병풍', badge: '풍', render: () => SvgFactory.chuseokHybrid('cs_screen', '풍', '#00695c', '병풍', '屛風') },
+      { id: 'cs_brassyware', suit: 'chuseok', val: 'brassyware', label: '놋제기', badge: '기', render: () => SvgFactory.chuseokHybrid('cs_brassyware', '기', '#d4af37', '놋제기', '祭器') },
+      { id: 'cs_incense', suit: 'chuseok', val: 'incense', label: '향로향', badge: '향', render: () => SvgFactory.chuseokHybrid('cs_incense', '향', '#455a64', '향로', '香爐') },
+      { id: 'cs_candlestick', suit: 'chuseok', val: 'candlestick', label: '백동촛대', badge: '촉', render: () => SvgFactory.chuseokHybrid('cs_candlestick', '촉', '#c0392b', '촛대', '燭臺') },
+      { id: 'cs_seongmyo', suit: 'chuseok', val: 'seongmyo', label: '성묘', badge: '묘', render: () => SvgFactory.chuseokHybrid('cs_seongmyo', '묘', '#388e3c', '성묘', '省墓') },
+      { id: 'cs_beolcho', suit: 'chuseok', val: 'beolcho', label: '벌초낫', badge: '초', render: () => SvgFactory.chuseokHybrid('cs_beolcho', '초', '#546e7a', '벌초', '伐草') },
+      { id: 'cs_jibang', suit: 'chuseok', val: 'jibang', label: '신위지방', badge: '방', render: () => SvgFactory.chuseokHybrid('cs_jibang', '방', '#37474f', '지방', '紙榜') },
+
+      // 5. 한복 & 전통 소품 (8종)
+      { id: 'cs_saekdong', suit: 'chuseok', val: 'saekdong', label: '색동저고리', badge: '옷', render: () => SvgFactory.chuseokHybrid('cs_saekdong', '옷', '#ec407a', '색동옷', '彩衣') },
+      { id: 'cs_durumagi', suit: 'chuseok', val: 'durumagi', label: '도포두루마기', badge: '포', render: () => SvgFactory.chuseokHybrid('cs_durumagi', '포', '#1565c0', '두루마기', '道袍') },
+      { id: 'cs_kkotshin', suit: 'chuseok', val: 'kkotshin', label: '비단꽃신', badge: '신', render: () => SvgFactory.chuseokHybrid('cs_kkotshin', '신', '#e91e63', '꽃신', '花鞋') },
+      { id: 'cs_norigae', suit: 'chuseok', val: 'norigae', label: '삼작노리개', badge: '패', render: () => SvgFactory.chuseokHybrid('cs_norigae', '패', '#8e24aa', '노리개', '佩飾') },
+      { id: 'cs_bokjumeoni', suit: 'chuseok', val: 'bokjumeoni', label: '오색복주머니', badge: '복', render: () => SvgFactory.chuseokHybrid('cs_bokjumeoni', '복', '#d81b60', '복주머니', '福囊') },
+      { id: 'cs_gat', suit: 'chuseok', val: 'gat', label: '흑립선비갓', badge: '갓', render: () => SvgFactory.chuseokHybrid('cs_gat', '갓', '#212121', '선비갓', '黑笠') },
+      { id: 'cs_jokduri', suit: 'chuseok', val: 'jokduri', label: '칠보족두리', badge: '관', render: () => SvgFactory.chuseokHybrid('cs_jokduri', '관', '#b71c1c', '족두리', '簇頭') },
+      { id: 'cs_bojagi', suit: 'chuseok', val: 'bojagi', label: '조각보보자기', badge: '보', render: () => SvgFactory.chuseokHybrid('cs_bojagi', '보', '#00897b', '보자기', '褓袱') },
+
+      // 6. 달과 전설 & 고향의 정경 (8종)
+      { id: 'cs_rabbit', suit: 'chuseok', val: 'rabbit', label: '달토끼', badge: '토', render: () => SvgFactory.chuseokHybrid('cs_rabbit', '토', '#0288d1', '달토끼', '玉兎') },
+      { id: 'cs_jeolgu', suit: 'chuseok', val: 'jeolgu', label: '돌절구공이', badge: '구', render: () => SvgFactory.chuseokHybrid('cs_jeolgu', '구', '#78909c', '돌절구', '臼杵') },
+      { id: 'cs_laurel', suit: 'chuseok', val: 'laurel', label: '달속계수나무', badge: '계', render: () => SvgFactory.chuseokHybrid('cs_laurel', '계', '#4e342e', '계수나무', '桂樹') },
+      { id: 'cs_gwiseong', suit: 'chuseok', val: 'gwiseong', label: '귀성길보따리', badge: '행', render: () => SvgFactory.chuseokHybrid('cs_gwiseong', '행', '#ef6c00', '귀성길', '歸鄕') },
+      { id: 'cs_gohyang', suit: 'chuseok', val: 'gohyang', label: '시골초가집', badge: '가', render: () => SvgFactory.chuseokHybrid('cs_gohyang', '가', '#8d6e63', '고향집', '故鄕') },
+      { id: 'cs_magpie', suit: 'chuseok', val: 'magpie', label: '감나무까치', badge: '조', render: () => SvgFactory.chuseokHybrid('cs_magpie', '조', '#1e88e5', '길조까치', '吉鵲') },
+      { id: 'cs_chorong', suit: 'chuseok', val: 'chorong', label: '청사초롱', badge: '등', render: () => SvgFactory.chuseokHybrid('cs_chorong', '등', '#d32f2f', '청사초롱', '紗籠') },
+      { id: 'cs_pungdeung', suit: 'chuseok', val: 'pungdeung', label: '소원풍등', badge: '원', render: () => SvgFactory.chuseokHybrid('cs_pungdeung', '원', '#ff9800', '소원풍등', '風燈') }
     ];
 
     /**
@@ -9158,7 +9360,8 @@
       { id: 'zhi', name: '12지지 (12)' },
       { id: 'shin', name: '10십신 (10)' },
       { id: 'yinyang_wuxing', name: '음양·오행 (7)' },
-      { id: 'oryong', name: '오룡이·용두 (20)' }
+      { id: 'oryong', name: '오룡이·용두 (20)' },
+      { id: 'chuseok', name: '한가위 추석 (50)' }
     ];
 
     const TILE_SECTIONS = [
@@ -9172,7 +9375,8 @@
       { id: 'sec_zhi', title: '地支 사주 12지지 (12간지 수호동물 12종)', suits: ['zhi'] },
       { id: 'sec_shin', title: '十神 사주 10십신 (운명의 페르소나 10종)', suits: ['shin'] },
       { id: 'sec_yinyang_wuxing', title: '陰陽·五行 사주 음양 & 오행 수호신 (7종)', suits: ['yinyang', 'wuxing'] },
-      { id: 'sec_oryong', title: '五龍·金龍 오룡이 신수 & 황금용두 보물패 (20종)', suits: ['oryong', 'dragon_gold'] }
+      { id: 'sec_oryong', title: '五龍·金龍 오룡이 신수 & 황금용두 보물패 (20종)', suits: ['oryong', 'dragon_gold'] },
+      { id: 'sec_chuseok', title: '🌾 한가위 추석 테마 (음식·결실·민속·차례·한복 50종)', suits: ['chuseok'] }
     ];
 
     function getTileDetailInfo(def, index, totalCount) {
@@ -9258,6 +9462,11 @@
           cat = '황금용두 (金龍)';
           title = `${def.label} (황금용두)`;
           desc = `오룡 테마의 지고한 7색 황금용두 수호신 (${def.label})`;
+          break;
+        case 'chuseok':
+          cat = '한가위 추석패 (秋夕)';
+          title = `${def.label} (${def.badge})`;
+          desc = `한국 전통 한가위 추석 테마 패 · 풍요와 감사를 상징하는 ${def.label}`;
           break;
       }
 
@@ -9422,6 +9631,7 @@
         this.activeTheme = theme;
         this.useSajuTiles = theme === 'saju';
         this.useOryongTiles = theme === 'oryong';
+        this.useChuseokTiles = theme === 'chuseok';
         try { localStorage.setItem('siyeon_mahjong_active_theme', theme); } catch (e) { }
       }
 
@@ -9429,9 +9639,10 @@
         const theme = this.activeTheme || 'saju';
         const sajuSuits = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'];
         return TILE_DEFINITIONS.filter(d => {
-          if (theme === 'classic') return !sajuSuits.includes(d.suit) && d.suit !== 'oryong' && d.suit !== 'dragon_gold';
-          if (theme === 'saju') return !['oryong', 'dragon_gold'].includes(d.suit);
-          if (theme === 'oryong') return !sajuSuits.includes(d.suit);
+          if (theme === 'chuseok') return d.suit === 'chuseok';
+          if (theme === 'classic') return !sajuSuits.includes(d.suit) && d.suit !== 'oryong' && d.suit !== 'dragon_gold' && d.suit !== 'chuseok';
+          if (theme === 'saju') return !['oryong', 'dragon_gold', 'chuseok'].includes(d.suit);
+          if (theme === 'oryong') return !sajuSuits.includes(d.suit) && d.suit !== 'chuseok';
           return true;
         });
       }
@@ -9445,6 +9656,7 @@
         const theme = this.activeTheme || 'saju';
         const useSaju = theme === 'saju';
         const useOryong = theme === 'oryong';
+        const useChuseok = theme === 'chuseok';
         const sajuSuits = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'];
         const activeDefs = this.getActiveDefinitions();
 
@@ -9462,6 +9674,8 @@
         if (this.filterBar) {
           this.filterBar.innerHTML = '';
           const visibleCategories = TILE_CATEGORY_GROUPS.filter(cat => {
+            if (useChuseok) return cat.id === 'all' || cat.id === 'chuseok';
+            if (cat.id === 'chuseok') return false;
             if (!useSaju && ['gan', 'zhi', 'shin', 'yinyang_wuxing'].includes(cat.id)) return false;
             if (!useOryong && cat.id === 'oryong') return false;
             return true;
@@ -9484,6 +9698,8 @@
         if (this.galleryBody) {
           this.galleryBody.innerHTML = '';
           const visibleSections = TILE_SECTIONS.filter(sec => {
+            if (useChuseok) return sec.id === 'sec_chuseok';
+            if (sec.id === 'sec_chuseok') return false;
             if (!useSaju && sec.suits.some(s => sajuSuits.includes(s))) return false;
             if (!useOryong && sec.suits.includes('oryong')) return false;
             return true;
@@ -13042,6 +13258,7 @@
         this.activeTheme = theme;
         this.useSajuTiles = theme === 'saju';
         this.useOryongTiles = theme === 'oryong';
+        this.useChuseokTiles = theme === 'chuseok';
         try { localStorage.setItem('siyeon_mahjong_active_theme', theme); } catch (e) { }
         if (window.tileGalleryManager && typeof window.tileGalleryManager._applyTheme === 'function') {
           window.tileGalleryManager._applyTheme(theme);
@@ -13723,16 +13940,21 @@
           // 기본 베이스풀 (난이도 필터)
           let pool = TILE_DEFINITIONS.filter(diffCfg.filter);
           // 테마별 사주/오룡이 제외 및 추가
-          if (theme === 'classic') {
-            pool = pool.filter(d => !sajuSuits.includes(d.suit) && d.suit !== 'oryong' && d.suit !== 'dragon_gold');
+          if (theme === 'chuseok') {
+            if (difficulty === 'easy') return 16;
+            if (difficulty === 'normal') return 30;
+            if (difficulty === 'hard') return 42;
+            return 50;
+          } else if (theme === 'classic') {
+            pool = pool.filter(d => !sajuSuits.includes(d.suit) && d.suit !== 'oryong' && d.suit !== 'dragon_gold' && d.suit !== 'chuseok');
           } else if (theme === 'saju') {
-            pool = pool.filter(d => d.suit !== 'oryong' && d.suit !== 'dragon_gold');
+            pool = pool.filter(d => d.suit !== 'oryong' && d.suit !== 'dragon_gold' && d.suit !== 'chuseok');
             // 사주패 강제 포함 (easy처럼 필터에 없어도 추가)
             const sajuAll = TILE_DEFINITIONS.filter(d => sajuSuits.includes(d.suit));
             const ids = new Set(pool.map(d => d.id));
             sajuAll.forEach(d => { if (!ids.has(d.id)) pool.push(d); });
           } else if (theme === 'oryong') {
-            pool = pool.filter(d => !sajuSuits.includes(d.suit) && d.suit !== 'dragon_gold');
+            pool = pool.filter(d => !sajuSuits.includes(d.suit) && d.suit !== 'dragon_gold' && d.suit !== 'chuseok');
             // 오룡이 패 및 황금용두 강제 포함
             const oryongAll = TILE_DEFINITIONS.filter(d => d.suit === 'oryong' || d.suit === 'dragon_gold');
             const ids = new Set(pool.map(d => d.id));
@@ -13787,12 +14009,27 @@
             updateThemeRadioUI();
             updateDifficultySelectLabels();
             if (window.tileGalleryManager) window.tileGalleryManager.rebuildGallery();
-            const names = { classic: '🀄 전통 마작', saju: '☯️ 명리학', oryong: '🐲 오룡이' };
+            const names = { classic: '🀄 전통 마작', saju: '☯️ 명리학', oryong: '🐲 오룡이', chuseok: '🌾 한가위 추석' };
             this.showFloatingNotice(`${names[theme] || theme} 테마로 변경되었습니다.`);
             this.hasStarted = true;
             this.startNewGame(false);
           });
         });
+
+        // 타일 글자/라벨 표시 여부 옵션 바인딩
+        const selectTileText = document.getElementById('select-tile-text');
+        const isTileTextEnabled = safeStorage.get('mahjong_tile_text_enabled', 'true') !== 'false';
+        document.body.classList.toggle('hide-tile-labels', !isTileTextEnabled);
+        if (selectTileText) {
+          selectTileText.value = isTileTextEnabled ? 'on' : 'off';
+          selectTileText.addEventListener('change', (e) => {
+            const enabled = e.target.value === 'on';
+            document.body.classList.toggle('hide-tile-labels', !enabled);
+            safeStorage.set('mahjong_tile_text_enabled', enabled ? 'true' : 'false');
+            this.sound.playSelect();
+            this.showFloatingNotice(enabled ? '타일 글자·배지 표시가 켜졌습니다.' : '타일 글자 숨김 (순수 그림 모드)이 적용되었습니다.');
+          });
+        }
 
         // 톱니바퀴 설정 메뉴 토글 및 외부 클릭 처리
         const btnSettings = document.getElementById('btn-settings');
@@ -16011,19 +16248,29 @@
         const sajuSuits = ['gan', 'zhi', 'shin', 'yinyang', 'wuxing'];
         const theme = this.activeTheme || 'saju';
 
-        // 1) 난이도 베이스 풀 (전통 마작 계열만)
-        let availablePool = TILE_DEFINITIONS.filter(def =>
-          diffCfg.filter(def) && !sajuSuits.includes(def.suit) && def.suit !== 'oryong' && def.suit !== 'dragon_gold'
-        );
-        // 2) 테마 패 강제 추가
-        if (theme === 'saju') {
-          const sajuPool = TILE_DEFINITIONS.filter(def => sajuSuits.includes(def.suit));
-          const ids = new Set(availablePool.map(d => d.id));
-          sajuPool.forEach(d => { if (!ids.has(d.id)) availablePool.push(d); });
-        } else if (theme === 'oryong') {
-          const oryongPool = TILE_DEFINITIONS.filter(def => def.suit === 'oryong' || def.suit === 'dragon_gold');
-          const ids = new Set(availablePool.map(d => d.id));
-          oryongPool.forEach(d => { if (!ids.has(d.id)) availablePool.push(d); });
+        // 1) 난이도 베이스 풀
+        let availablePool;
+        if (theme === 'chuseok') {
+          // 추석 테마 전용 풀 (난이도별 패 수 슬라이스: 쉬움 16종 / 보통 30종 / 어려움 42종 / 달인 50종)
+          const chuseokAll = TILE_DEFINITIONS.filter(def => def.suit === 'chuseok');
+          const maxKinds = this.difficulty === 'easy' ? 16 :
+                           this.difficulty === 'normal' ? 30 :
+                           this.difficulty === 'hard' ? 42 : 50;
+          availablePool = chuseokAll.slice(0, maxKinds);
+        } else {
+          availablePool = TILE_DEFINITIONS.filter(def =>
+            diffCfg.filter(def) && !sajuSuits.includes(def.suit) && def.suit !== 'oryong' && def.suit !== 'dragon_gold' && def.suit !== 'chuseok'
+          );
+          // 2) 테마 패 강제 추가
+          if (theme === 'saju') {
+            const sajuPool = TILE_DEFINITIONS.filter(def => sajuSuits.includes(def.suit));
+            const ids = new Set(availablePool.map(d => d.id));
+            sajuPool.forEach(d => { if (!ids.has(d.id)) availablePool.push(d); });
+          } else if (theme === 'oryong') {
+            const oryongPool = TILE_DEFINITIONS.filter(def => def.suit === 'oryong' || def.suit === 'dragon_gold');
+            const ids = new Set(availablePool.map(d => d.id));
+            oryongPool.forEach(d => { if (!ids.has(d.id)) availablePool.push(d); });
+          }
         }
         // 3) 풀 부족 시 전체 테마 허용 풀로 fallback
         const baseAllowedPool = [...availablePool];
