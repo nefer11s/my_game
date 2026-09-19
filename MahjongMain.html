@@ -38,7 +38,7 @@
     });
 
     // PWA 필수 서비스 워커 등록 및 오프라인 상태 모니터링 (업데이트 시에만 알림)
-    const APP_VERSION = 'v1.6.04';
+    const APP_VERSION = 'v1.6.05';
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').then((reg) => {
@@ -5964,7 +5964,7 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환" data-i18n-title="fullscreen">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text" data-i18n="fullscreen">전체화면</span>
         </button>
-        <button class="splash-bgm-btn" id="btn-splash-bgm" title="배경음악 켜기/끄기 (아리랑)">
+        <button class="splash-bgm-btn" id="btn-splash-bgm" title="배경음악 켜기/끄기 (Over the Ridge)">
           <span class="btn-icon">🎵</span> <span class="splash-bgm-label">BGM</span>
         </button>
         <button class="splash-lang-btn" id="btn-splash-lang" title="Switch to English / 언어 전환">
@@ -6091,7 +6091,7 @@
             <span>📅</span> 2026. 09. 19 (v1.6.04)
           </div>
           <ul style="margin: 0; padding-left: 18px; font-size: 12.5px; color: #374151; line-height: 1.6;">
-            <li style="margin-bottom: 4px;"><strong>🎵 정통 본조 아리랑 BGM (세련된 K-Chill 모던 사운드) & 환영 음성 안내 탑재:</strong> Web Audio API 기반 대한민국 대표 정통 민요 '본조 아리랑'의 정확한 가락과 세련된 네오소울 코드 패드, 서브 베이스, 감각적인 세마치 칠 비트 사운드 탑재, 자동 오디오 덕킹 및 스플래시 화면 BGM ON/OFF 토글 지원.</li>
+            <li style="margin-bottom: 4px;"><strong>🎵 고품질 BGM (Over the Ridge) & 환영 음성 안내 탑재:</strong> 감미로운 Over the Ridge 배경음악과 음성 안내가 지원되며, 스플래시 화면 BGM 버튼으로 자유롭게 켜고 끌 수 있습니다.</li>
             <li style="margin-bottom: 4px;"><strong>🌐 한국어 / English 완전 다국어(i18n) 시스템 신규 탑재:</strong> 스플래시 화면 언어 원터치 토글 버튼 및 환경설정 언어 선택 메뉴를 통해 인게임 UI, 안내 모달, 툴팁이 완벽히 실시간 전환 지원.</li>
           </ul>
         </div>
@@ -6774,8 +6774,8 @@
         warp_target_stage: '🎯 목표 판 (Stage)',
         btn_warp_confirm: '해당 판으로 직행',
         btn_cancel: '취소',
-        bgm_on: '배경음악 끄기 (아리랑)',
-        bgm_off: '배경음악 켜기 (아리랑)',
+        bgm_on: '배경음악 끄기 (Over the Ridge)',
+        bgm_off: '배경음악 켜기 (Over the Ridge)',
         // 설정 탭 및 옵션 다국어 번역
         settings_tab_game_title: '게임 난이도 및 진행 설정',
         settings_tab_assist_title: '슬롯 연출 및 조작 편의',
@@ -7050,8 +7050,8 @@
         warp_target_stage: '🎯 Target Stage',
         btn_warp_confirm: 'Jump to Stage',
         btn_cancel: 'Cancel',
-        bgm_on: 'Turn Off BGM (Arirang)',
-        bgm_off: 'Turn On BGM (Arirang)',
+        bgm_on: 'Turn Off BGM (Over the Ridge)',
+        bgm_off: 'Turn On BGM (Over the Ridge)',
         // Settings translations
         settings_tab_game_title: 'Game difficulty & progress settings',
         settings_tab_assist_title: 'Slot visual FX & control assists',
@@ -7382,8 +7382,12 @@
         safeStorage.set('mahjong_sound_firework', this.customSounds.firework);
         safeStorage.set('mahjong_sound_shuffle', this.customSounds.shuffle);
 
-        // 잔잔한 아리랑 BGM 및 웰컴 음성 안내 엔진 상태
+        // 초기화면 BGM (Over the Ridge) 및 웰컴 음성 안내 엔진 상태
         this.bgmEnabled = safeStorage.get('mahjong_bgm_enabled') !== 'false';
+        this.isBgmPlaying = false;
+        this.bgmAudio = null;
+        this.bgmFadeTimer = null;
+        this.bgmTargetVolume = 0.45;
         this.isArirangPlaying = false;
         this.arirangLoopTimer = null;
         this.arirangMasterGain = null;
@@ -7480,6 +7484,16 @@
       toggleMute() {
         this.muted = !this.muted;
         safeStorage.set('mahjong_sound_muted', this.muted ? 'true' : 'false');
+        if (this.muted) {
+          if (this.bgmAudio) {
+            this.bgmAudio.pause();
+          }
+        } else {
+          if (this.bgmEnabled && this.isBgmPlaying && this.bgmAudio) {
+            this.bgmAudio.volume = this.bgmTargetVolume;
+            this.bgmAudio.play().catch(() => {});
+          }
+        }
         return this.muted;
       }
 
@@ -8621,333 +8635,125 @@
       }
 
       /**
-       * 초기화면 정통 한국 아리랑 (세련된 K-Chill Modern BGM) 루프 시퀀서
+       * 초기화면 BGM (Over the Ridge) 오디오 엘리먼트 초기화 및 이벤트 등록
        */
-      playArirangBGM(fadeDuration = 1.0) {
-        if (!this.bgmEnabled || this.muted) return;
-        this.init();
-        if (!this.ctx) return;
+      initBgmAudio() {
+        if (!this.bgmAudio) {
+          try {
+            this.bgmAudio = new Audio('assets/Over_the_Ridge.mp3');
+            this.bgmAudio.loop = true;
+            this.bgmAudio.preload = 'auto';
+            this.bgmAudio.volume = this.muted ? 0 : this.bgmTargetVolume;
 
-        if (this.isArirangPlaying) return;
-        this.isArirangPlaying = true;
-
-        if (this.ctx.state === 'suspended') {
-          this.ctx.resume().catch(() => {});
-        }
-
-        if (!this.arirangMasterGain) {
-          this.arirangMasterGain = this.ctx.createGain();
-          
-          // 듀얼 딜레이 리버브 네트워크 (스튜디오급 앰비언트 공간감)
-          const delay1 = this.ctx.createDelay();
-          delay1.delayTime.value = 0.24;
-          const delayGain1 = this.ctx.createGain();
-          delayGain1.gain.value = 0.22;
-          const filter1 = this.ctx.createBiquadFilter();
-          filter1.type = 'lowpass';
-          filter1.frequency.value = 1800;
-
-          const delay2 = this.ctx.createDelay();
-          delay2.delayTime.value = 0.48;
-          const delayGain2 = this.ctx.createGain();
-          delayGain2.gain.value = 0.14;
-          const filter2 = this.ctx.createBiquadFilter();
-          filter2.type = 'lowpass';
-          filter2.frequency.value = 1200;
-
-          this.arirangMasterGain.connect(this.getDestination());
-          this.arirangMasterGain.connect(delay1);
-          delay1.connect(filter1);
-          filter1.connect(delayGain1);
-          delayGain1.connect(this.getDestination());
-
-          this.arirangMasterGain.connect(delay2);
-          delay2.connect(filter2);
-          filter2.connect(delayGain2);
-          delayGain2.connect(this.getDestination());
-        }
-
-        const targetVol = 0.17;
-        const now = this.ctx.currentTime;
-        this.arirangMasterGain.gain.cancelScheduledValues(now);
-        this.arirangMasterGain.gain.setValueAtTime(0.0001, now);
-        this.arirangMasterGain.gain.linearRampToValueAtTime(targetVol, now + fadeDuration);
-
-        // 세마치 칠 템포 (분당 약 115박)
-        const beatSec = 0.52;
-        const NOTE = {
-          C2: 65.41, D2: 73.42, E2: 82.41, F2: 87.31, G2: 98.00, A2: 110.00, B2: 123.47,
-          C3: 130.81, D3: 146.83, E3: 164.81, F3: 174.61, G3: 196.00, A3: 220.00, B3: 246.94,
-          C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00, B4: 493.88,
-          C5: 523.25, D5: 587.33, E5: 659.25, G5: 783.99, A5: 880.00,
-          REST: 0
-        };
-
-        // 20마디 정통 본조 아리랑 + 모던 K-Chill 화성 구조 (3/4 박자 세마치)
-        const measures = [
-          // [Intro 2마디] 영롱한 감성 인트로
-          {
-            chord: [NOTE.C3, NOTE.G3, NOTE.B3, NOTE.E4], bass: NOTE.C2, snap: true,
-            notes: [
-              { f: NOTE.E4, b: 0.75 },
-              { f: NOTE.G4, b: 0.75 },
-              { f: NOTE.B4, b: 0.75 },
-              { f: NOTE.C5, b: 0.75, vib: true }
-            ]
-          },
-          {
-            chord: [NOTE.G3, NOTE.C4, NOTE.D4, NOTE.G4], bass: NOTE.G2, tick: true,
-            notes: [
-              { f: NOTE.D5, b: 1.0 },
-              { f: NOTE.C5, b: 1.0 },
-              { f: NOTE.A4, b: 0.5 },
-              { f: NOTE.G4, b: 0.5, vib: true }
-            ]
-          },
-
-          // [Section A: 8마디] "아리랑 아리랑 아라리요 / 아리랑 고개로 넘어간다"
-          // M1: 아 - 리 - 랑 -
-          {
-            chord: [NOTE.C3, NOTE.G3, NOTE.C4, NOTE.E4], bass: NOTE.C2, snap: true,
-            notes: [
-              { f: NOTE.G3, b: 1.0 },
-              { f: NOTE.A3, b: 1.0 },
-              { f: NOTE.C4, b: 1.0, tick: true }
-            ]
-          },
-          // M2: 아 - - 리 랑 -
-          {
-            chord: [NOTE.E3, NOTE.B3, NOTE.E4, NOTE.G4], bass: NOTE.E2, snap: true,
-            notes: [
-              { f: NOTE.D4, b: 1.5 },
-              { f: NOTE.E4, b: 0.5 },
-              { f: NOTE.D4, b: 1.0, tick: true, vib: true }
-            ]
-          },
-          // M3: 아 - 라 - 리 -
-          {
-            chord: [NOTE.F3, NOTE.C4, NOTE.E4, NOTE.A4], bass: NOTE.F2, snap: true,
-            notes: [
-              { f: NOTE.E4, b: 1.0 },
-              { f: NOTE.D4, b: 0.5 },
-              { f: NOTE.C4, b: 0.5 },
-              { f: NOTE.C4, b: 0.5 },
-              { f: NOTE.D4, b: 0.5, tick: true }
-            ]
-          },
-          // M4: 요 - - - - -
-          {
-            chord: [NOTE.G3, NOTE.D4, NOTE.F4, NOTE.B4], bass: NOTE.G2, snap: true,
-            notes: [
-              { f: NOTE.C4, b: 1.5, vib: true },
-              { f: NOTE.A3, b: 0.5 },
-              { f: NOTE.G3, b: 0.5 },
-              { f: NOTE.A3, b: 0.5, tick: true }
-            ]
-          },
-          // M5: 아 리 랑 - -
-          {
-            chord: [NOTE.A3, NOTE.E4, NOTE.G4, NOTE.C5], bass: NOTE.A2, snap: true,
-            notes: [
-              { f: NOTE.C4, b: 0.5 },
-              { f: NOTE.D4, b: 0.5 },
-              { f: NOTE.C4, b: 0.5 },
-              { f: NOTE.D4, b: 0.5 },
-              { f: NOTE.E4, b: 1.0, tick: true, vib: true }
-            ]
-          },
-          // M6: 고 - 개 - 로 -
-          {
-            chord: [NOTE.D3, NOTE.A3, NOTE.C4, NOTE.F4], bass: NOTE.D2, snap: true,
-            notes: [
-              { f: NOTE.D4, b: 1.0 },
-              { f: NOTE.C4, b: 1.0 },
-              { f: NOTE.A3, b: 0.5 },
-              { f: NOTE.G3, b: 0.5, tick: true }
-            ]
-          },
-          // M7: 넘 - 어 - 간 -
-          {
-            chord: [NOTE.G3, NOTE.D4, NOTE.F4, NOTE.B4], bass: NOTE.G2, snap: true,
-            notes: [
-              { f: NOTE.A3, b: 1.0 },
-              { f: NOTE.C4, b: 1.0 },
-              { f: NOTE.D4, b: 1.0, tick: true }
-            ]
-          },
-          // M8: 다 - - - - -
-          {
-            chord: [NOTE.C3, NOTE.G3, NOTE.D4, NOTE.E4], bass: NOTE.C2, snap: true,
-            notes: [
-              { f: NOTE.C4, b: 2.0, vib: true },
-              { f: NOTE.REST, b: 1.0, tick: true }
-            ]
-          },
-
-          // [Section B: 8마디] "나를 버리고 가시는 님은 / 십리도 못가서 발병난다"
-          // M9: 나 - 를 - 버 - (옥타브 도약)
-          {
-            chord: [NOTE.C3, NOTE.G3, NOTE.C4, NOTE.E4], bass: NOTE.C2, snap: true,
-            notes: [
-              { f: NOTE.G4, b: 1.0 },
-              { f: NOTE.G4, b: 1.0 },
-              { f: NOTE.G4, b: 1.0, tick: true }
-            ]
-          },
-          // M10: 리 - - 고 - -
-          {
-            chord: [NOTE.E3, NOTE.B3, NOTE.E4, NOTE.G4], bass: NOTE.E2, snap: true,
-            notes: [
-              { f: NOTE.E4, b: 1.5 },
-              { f: NOTE.D4, b: 0.5 },
-              { f: NOTE.E4, b: 1.0, tick: true, vib: true }
-            ]
-          },
-          // M11: 가 - 시 - 는 -
-          {
-            chord: [NOTE.F3, NOTE.C4, NOTE.E4, NOTE.A4], bass: NOTE.F2, snap: true,
-            notes: [
-              { f: NOTE.E4, b: 1.0 },
-              { f: NOTE.D4, b: 0.5 },
-              { f: NOTE.C4, b: 0.5 },
-              { f: NOTE.C4, b: 0.5 },
-              { f: NOTE.D4, b: 0.5, tick: true }
-            ]
-          },
-          // M12: 님 - 은 - - -
-          {
-            chord: [NOTE.G3, NOTE.D4, NOTE.F4, NOTE.B4], bass: NOTE.G2, snap: true,
-            notes: [
-              { f: NOTE.C4, b: 1.5, vib: true },
-              { f: NOTE.A3, b: 0.5 },
-              { f: NOTE.G3, b: 0.5 },
-              { f: NOTE.A3, b: 0.5, tick: true }
-            ]
-          },
-          // M13: 십 - 리 - 도 -
-          {
-            chord: [NOTE.A3, NOTE.E4, NOTE.G4, NOTE.C5], bass: NOTE.A2, snap: true,
-            notes: [
-              { f: NOTE.C4, b: 0.5 },
-              { f: NOTE.D4, b: 0.5 },
-              { f: NOTE.C4, b: 0.5 },
-              { f: NOTE.D4, b: 0.5 },
-              { f: NOTE.E4, b: 1.0, tick: true, vib: true }
-            ]
-          },
-          // M14: 못 - 가 - 서 -
-          {
-            chord: [NOTE.D3, NOTE.A3, NOTE.C4, NOTE.F4], bass: NOTE.D2, snap: true,
-            notes: [
-              { f: NOTE.D4, b: 1.0 },
-              { f: NOTE.C4, b: 1.0 },
-              { f: NOTE.A3, b: 0.5 },
-              { f: NOTE.G3, b: 0.5, tick: true }
-            ]
-          },
-          // M15: 발 - 병 - 난 -
-          {
-            chord: [NOTE.G3, NOTE.D4, NOTE.F4, NOTE.B4], bass: NOTE.G2, snap: true,
-            notes: [
-              { f: NOTE.A3, b: 1.0 },
-              { f: NOTE.C4, b: 1.0 },
-              { f: NOTE.D4, b: 1.0, tick: true }
-            ]
-          },
-          // M16: 다 - - - - -
-          {
-            chord: [NOTE.C3, NOTE.G3, NOTE.D4, NOTE.E4], bass: NOTE.C2, snap: true,
-            notes: [
-              { f: NOTE.C4, b: 2.0, vib: true },
-              { f: NOTE.REST, b: 1.0, tick: true }
-            ]
-          },
-
-          // [Outro: 2마디] 펜타토닉 하강 여운 & 루프 연결
-          {
-            chord: [NOTE.F3, NOTE.C4, NOTE.E4, NOTE.A4], bass: NOTE.F2, snap: true,
-            notes: [
-              { f: NOTE.E5, b: 0.75 },
-              { f: NOTE.D5, b: 0.75 },
-              { f: NOTE.C5, b: 0.75 },
-              { f: NOTE.A4, b: 0.75, tick: true }
-            ]
-          },
-          {
-            chord: [NOTE.C3, NOTE.G3, NOTE.B3, NOTE.E4], bass: NOTE.C2, snap: true,
-            notes: [
-              { f: NOTE.G4, b: 1.5, vib: true },
-              { f: NOTE.C4, b: 1.5, tick: true, vib: true }
-            ]
-          }
-        ];
-
-        const scheduleLoop = () => {
-          if (!this.isArirangPlaying || !this.bgmEnabled) return;
-          const startPlayTime = this.ctx.currentTime + 0.05;
-          let currentBeatOffset = 0;
-
-          for (const m of measures) {
-            const measureStartTime = startPlayTime + currentBeatOffset * beatSec;
-            const measureDuration = 3 * beatSec;
-
-            // 1. 배경 화음 패드
-            if (m.chord && m.chord.length) {
-              this.playAmbientChord(m.chord, measureStartTime, measureDuration * 1.05, 0.048);
-            }
-            // 2. 1박 서브 베이스
-            if (m.bass) {
-              this.playModernBass(m.bass, measureStartTime, measureDuration * 0.85, 0.15);
-            }
-            // 3. 세마치 그루브 탭 (1박 스냅)
-            if (m.snap) {
-              this.playChillTap('snap', measureStartTime, 0.032);
-            }
-
-            // 4. 마디 내 멜로디 연주
-            let noteOffset = 0;
-            for (const n of m.notes) {
-              const noteStartTime = measureStartTime + noteOffset * beatSec;
-              const noteDuration = n.b * beatSec * 1.35;
-
-              if (n.f && n.f > 0) {
-                this.playModernLead(n.f, noteStartTime, noteDuration, 0.23, !!n.vib);
+            // 모바일 및 브라우저에서 루프가 끊김 없이 계속 리플레이되도록 ended 안전 이벤트 추가
+            this.bgmAudio.addEventListener('ended', () => {
+              if (this.isBgmPlaying && this.bgmEnabled && !this.muted) {
+                this.bgmAudio.currentTime = 0;
+                this.bgmAudio.play().catch(() => {});
               }
-              if (n.tick) {
-                this.playChillTap('tick', noteStartTime, 0.025);
-              }
-              noteOffset += n.b;
-            }
-
-            currentBeatOffset += 3;
+            });
+          } catch (e) {
+            console.warn('[BGM] Audio init warning:', e);
           }
-
-          const totalLoopSec = currentBeatOffset * beatSec;
-          this.arirangLoopTimer = setTimeout(() => {
-            if (this.isArirangPlaying) {
-              scheduleLoop();
-            }
-          }, Math.max(1000, (totalLoopSec - 0.20) * 1000));
-        };
-
-        scheduleLoop();
+        }
+        return this.bgmAudio;
       }
 
       /**
-       * BGM 정지 (부드러운 페이드아웃)
+       * 볼륨 페이드 제어 헬퍼
        */
-      stopArirangBGM(fadeDuration = 0.8) {
-        if (!this.isArirangPlaying) return;
+      _fadeBgmVolume(fromVol, toVol, duration) {
+        if (this.bgmFadeTimer) {
+          clearInterval(this.bgmFadeTimer);
+          this.bgmFadeTimer = null;
+        }
+        if (!this.bgmAudio) return;
+        if (duration <= 0) {
+          this.bgmAudio.volume = Math.max(0, Math.min(1, toVol));
+          return;
+        }
+        const steps = 20;
+        const stepTime = (duration * 1000) / steps;
+        let curStep = 0;
+        this.bgmAudio.volume = Math.max(0, Math.min(1, fromVol));
+        this.bgmFadeTimer = setInterval(() => {
+          curStep++;
+          const progress = curStep / steps;
+          const current = fromVol + (toVol - fromVol) * progress;
+          if (this.bgmAudio) {
+            this.bgmAudio.volume = Math.max(0, Math.min(1, current));
+          }
+          if (curStep >= steps) {
+            if (this.bgmAudio) this.bgmAudio.volume = Math.max(0, Math.min(1, toVol));
+            clearInterval(this.bgmFadeTimer);
+            this.bgmFadeTimer = null;
+          }
+        }, stepTime);
+      }
+
+      /**
+       * 초기화면 BGM (Over the Ridge) 루프 재생 및 페이드인
+       */
+      playBGM(fadeDuration = 1.0) {
+        if (!this.bgmEnabled || this.muted) return;
+        const audio = this.initBgmAudio();
+        if (!audio) return;
+
+        this.isBgmPlaying = true;
+        this.isArirangPlaying = true;
+
+        const targetVol = this.bgmTargetVolume;
+        if (audio.paused) {
+          audio.volume = 0;
+          const playPromise = audio.play();
+          if (playPromise !== undefined) {
+            playPromise.then(() => {
+              this._fadeBgmVolume(0, targetVol, fadeDuration);
+            }).catch(err => {
+              console.log('[BGM] 자동재생 대기 중 (사용자 첫 상호작용 대기)');
+            });
+          }
+        } else {
+          this._fadeBgmVolume(audio.volume, targetVol, fadeDuration);
+        }
+      }
+
+      /**
+       * BGM 정지 (부드러운 페이드아웃 후 pause)
+       */
+      stopBGM(fadeDuration = 0.8) {
+        this.isBgmPlaying = false;
         this.isArirangPlaying = false;
-        if (this.arirangLoopTimer) {
-          clearTimeout(this.arirangLoopTimer);
-          this.arirangLoopTimer = null;
+        if (this.bgmFadeTimer) {
+          clearInterval(this.bgmFadeTimer);
+          this.bgmFadeTimer = null;
         }
-        if (this.ctx && this.arirangMasterGain) {
-          const now = this.ctx.currentTime;
-          this.arirangMasterGain.gain.cancelScheduledValues(now);
-          this.arirangMasterGain.gain.linearRampToValueAtTime(0.0001, now + fadeDuration);
+        if (!this.bgmAudio || this.bgmAudio.paused) return;
+
+        const audio = this.bgmAudio;
+        if (fadeDuration <= 0) {
+          audio.pause();
+          audio.currentTime = 0;
+          audio.volume = 0;
+          return;
         }
+
+        const startVol = audio.volume;
+        const steps = 16;
+        const stepTime = (fadeDuration * 1000) / steps;
+        let curStep = 0;
+
+        this.bgmFadeTimer = setInterval(() => {
+          curStep++;
+          const progress = 1 - (curStep / steps);
+          audio.volume = Math.max(0, startVol * progress);
+          if (curStep >= steps) {
+            audio.pause();
+            audio.currentTime = 0;
+            clearInterval(this.bgmFadeTimer);
+            this.bgmFadeTimer = null;
+          }
+        }, stepTime);
       }
 
       /**
@@ -8957,9 +8763,9 @@
         this.bgmEnabled = !this.bgmEnabled;
         safeStorage.set('mahjong_bgm_enabled', this.bgmEnabled ? 'true' : 'false');
         if (this.bgmEnabled) {
-          this.playArirangBGM(0.8);
+          this.playBGM(0.8);
         } else {
-          this.stopArirangBGM(0.5);
+          this.stopBGM(0.5);
         }
         return this.bgmEnabled;
       }
@@ -8967,15 +8773,30 @@
       /**
        * 웰컴 음성 출력 중 BGM 볼륨 덕킹 (Audio Ducking)
        */
-      duckArirangBGM(duckVolume = 0.04, duration = 3.2) {
-        if (!this.isArirangPlaying || !this.arirangMasterGain || !this.ctx) return;
-        const now = this.ctx.currentTime;
-        this.arirangMasterGain.gain.cancelScheduledValues(now);
-        this.arirangMasterGain.gain.linearRampToValueAtTime(duckVolume, now + 0.25);
-        this.arirangMasterGain.gain.setValueAtTime(duckVolume, now + duration - 0.8);
-        this.arirangMasterGain.gain.linearRampToValueAtTime(0.16, now + duration);
+      duckBGM(duckVolume = 0.12, duration = 3.2) {
+        if (!this.isBgmPlaying || !this.bgmAudio || this.muted) return;
+        const originalVol = this.bgmTargetVolume;
+        this._fadeBgmVolume(this.bgmAudio.volume, duckVolume, 0.25);
+        setTimeout(() => {
+          if (this.isBgmPlaying && !this.muted && this.bgmAudio) {
+            this._fadeBgmVolume(this.bgmAudio.volume, originalVol, 0.8);
+          }
+        }, Math.max(500, (duration - 0.8) * 1000));
       }
 
+      // 기존 메서드 및 속성 하위 호환성 래퍼
+      playArirangBGM(fadeDuration = 1.0) {
+        this.playBGM(fadeDuration);
+      }
+
+      stopArirangBGM(fadeDuration = 0.8) {
+        this.stopBGM(fadeDuration);
+      }
+
+      duckArirangBGM(duckVolume = 0.12, duration = 3.2) {
+        this.duckBGM(duckVolume, duration);
+      }
+      
       /**
        * 페이지 로딩 완료 후 환영 음성 안내 ("환영합니다. 즐거운 시간 되세요~")
        */
@@ -9023,15 +8844,10 @@
 
         this.init();
         if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume().then(() => {
-            if (this.bgmEnabled && !this.isArirangPlaying) {
-              this.playArirangBGM(0.8);
-            }
-          }).catch(() => {});
-        } else {
-          if (this.bgmEnabled && !this.isArirangPlaying) {
-            this.playArirangBGM(0.8);
-          }
+          this.ctx.resume().catch(() => {});
+        }
+        if (this.bgmEnabled && !this.isBgmPlaying) {
+          this.playBGM(0.8);
         }
 
         if (!this.welcomeVoicePlayed) {
@@ -20756,11 +20572,11 @@
         if (enabled) {
           btnSplashBgm.classList.remove('muted');
           btnSplashBgm.innerHTML = '<span class="btn-icon">🎵</span> <span class="splash-bgm-label">BGM</span>';
-          btnSplashBgm.title = I18nManager.t('bgm_on', '배경음악 끄기 (아리랑)');
+          btnSplashBgm.title = I18nManager.t('bgm_on', '배경음악 끄기 (Over the Ridge)');
         } else {
           btnSplashBgm.classList.add('muted');
           btnSplashBgm.innerHTML = '<span class="btn-icon">🔇</span> <span class="splash-bgm-label">BGM</span>';
-          btnSplashBgm.title = I18nManager.t('bgm_off', '배경음악 켜기 (아리랑)');
+          btnSplashBgm.title = I18nManager.t('bgm_off', '배경음악 켜기 (Over the Ridge)');
         }
       };
 

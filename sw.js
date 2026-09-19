@@ -1,5 +1,5 @@
 // SY 그림맞추기 (그린빌라/오룡이 에디션) PWA 서비스 워커 (오프라인 완전 지원 및 캐시 무효화)
-const CACHE_NAME = 'siyeon-mahjong-v1.6.04';
+const CACHE_NAME = 'siyeon-mahjong-v1.6.05';
 
 // 최초 구동 시 오프라인 실행을 위해 필수 사전 다운로드(Pre-cache)할 리소스 목록
 const PRECACHE_URLS = [
@@ -9,6 +9,7 @@ const PRECACHE_URLS = [
   './assets/icon-192.png',
   './assets/icon-512.png',
   './assets/mahjong_splash.jpg',
+  './assets/Over_the_Ridge.mp3',
   './assets/quick_rules_guide.jpg',
   './assets/senior_guide_card.jpg',
   './assets/tiles/g_bing.webp',
