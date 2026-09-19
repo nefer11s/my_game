@@ -38,7 +38,7 @@
     });
 
     // PWA 필수 서비스 워커 등록 및 오프라인 상태 모니터링 (업데이트 시에만 알림)
-    const APP_VERSION = 'v1.6.13';
+    const APP_VERSION = 'v1.6.14';
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').then((reg) => {
@@ -5716,7 +5716,7 @@
             <span class="btn-icon">🚪</span> <span data-i18n="btn_exit_app">앱 종료</span>
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
-            Si-Yeon Mahjong Solitaire v1.6.13
+            Si-Yeon Mahjong Solitaire v1.6.14
           </div>
         </div>
       </div>
@@ -5995,7 +5995,7 @@
         <button class="splash-lang-btn" id="btn-splash-lang" title="Switch to English / 언어 전환">
           <span class="btn-icon">🌐</span> <span class="splash-lang-label">EN</span>
         </button>
-        <div class="splash-version-badge">v1.6.13</div>
+        <div class="splash-version-badge">v1.6.14</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title" data-i18n="app_title">SY 그림맞추기</h1>
@@ -8691,21 +8691,22 @@
       }
 
       /**
-       * Promise 레이스 컨디션을 방지하는 안전한 오디오 play 래퍼
+       * Promise 레이스 컨디션을 방지하는 안전한 오디오 play 래퍼 (성공 여부 boolean Promise 반환)
        */
       _safePlayAudio(audio) {
-        if (!audio) return Promise.resolve();
+        if (!audio) return Promise.resolve(false);
         try {
           const p = audio.play();
           if (p !== undefined) {
-            return p.catch(err => {
+            return p.then(() => true).catch(err => {
               if (err.name !== 'AbortError') {
-                console.log('[BGM] 재생 대기 중 (사용자 상호작용 필요)');
+                console.log('[BGM] 브라우저 자동재생 대기 (화면 터치/클릭 시 재생)');
               }
+              return false;
             });
           }
         } catch (e) {}
-        return Promise.resolve();
+        return Promise.resolve(false);
       }
 
       _safePlayBgm() {
@@ -8761,9 +8762,9 @@
           incoming.volume = 0;
         } catch (e) {}
 
-        this._safePlayAudio(incoming).then(() => {
-          if (!this.isBgmPlaying) {
-            incoming.pause();
+        this._safePlayAudio(incoming).then((started) => {
+          if (!started || !this.isBgmPlaying) {
+            try { incoming.pause(); } catch (e) {}
             this.isCrossfading = false;
             return;
           }
@@ -8864,20 +8865,29 @@
         const active = this.bgmTracks[this.activeTrackIdx];
         if (!active) return;
 
-        this.isBgmPlaying = true;
-        this.isArirangPlaying = true;
-
-        this._startBgmLoopWatcher();
-
         const targetVol = this.bgmTargetVolume;
+
         if (active.paused) {
-          active.volume = 0;
-          this._safePlayAudio(active).then(() => {
-            if (this.isBgmPlaying && !this.muted) {
-              this._fadeAudioVolume(active, 0, targetVol, fadeDuration);
+          // 음소거 상태가 아니면 기본 볼륨을 먼저 할당해 무음 위험 방지
+          active.volume = targetVol;
+          this._safePlayAudio(active).then((success) => {
+            if (success) {
+              this.isBgmPlaying = true;
+              this.isArirangPlaying = true;
+              this._startBgmLoopWatcher();
+              if (fadeDuration > 0) {
+                this._fadeAudioVolume(active, 0, targetVol, fadeDuration);
+              }
+            } else {
+              // 브라우저 자동재생 차단 시 플래그를 false로 유지하여 첫 터치 시 재생되도록 보장
+              this.isBgmPlaying = false;
+              this.isArirangPlaying = false;
             }
           });
         } else {
+          this.isBgmPlaying = true;
+          this.isArirangPlaying = true;
+          this._startBgmLoopWatcher();
           this._fadeAudioVolume(active, active.volume, targetVol, fadeDuration);
         }
       }
@@ -9087,15 +9097,16 @@
        * 브라우저 자동재생 제한(Autoplay Policy) 극복을 위한 사용자 제스처 언락
        */
       unlockAudioAndPlayWelcome() {
-        if (this.hasUserInteracted) return;
-        this.hasUserInteracted = true;
-
         this.init();
         if (this.ctx && this.ctx.state === 'suspended') {
           this.ctx.resume().catch(() => {});
         }
-        if (this.bgmEnabled && !this.isBgmPlaying) {
-          this.playBGM(0.8);
+
+        const active = this.bgmTracks[this.activeTrackIdx] || this.bgmAudio;
+        const needsPlay = !this.isBgmPlaying || (active && active.paused);
+
+        if (this.bgmEnabled && !this.muted && needsPlay) {
+          this.playBGM(0.6);
         }
 
         if (!this.welcomeVoicePlayed) {
@@ -16845,16 +16856,18 @@
 
         const splashEl = document.getElementById('splash-screen');
         const isSplashActive = !this.hasStarted || (splashEl && splashEl.classList.contains('active'));
+        const active = this.sound.bgmTracks[this.sound.activeTrackIdx] || this.sound.bgmAudio;
+        const isActuallyPaused = !this.sound.isBgmPlaying || (active && active.paused);
 
         if (isSplashActive) {
           // 초기화면에서는 상시 재생
-          if (!this.sound.isBgmPlaying) {
-            this.sound.playBGM(0.8);
+          if (isActuallyPaused) {
+            this.sound.playBGM(0.6);
           }
         } else {
           // 인게임에서는 타이머가 흐르고 있을 때만 재생, 멈추면 BGM도 멈춤
           if (this.isTimerTicking()) {
-            if (!this.sound.isBgmPlaying) {
+            if (isActuallyPaused) {
               this.sound.playBGM(0.4);
             }
           } else {
@@ -20989,16 +21002,18 @@
 
       // 6. 브라우저 Autoplay Policy 차단 대응: 사용자 첫 인터랙션 시 즉시 언락
       const onFirstUserGesture = () => {
-        if (window.gameInstance && window.gameInstance.sound) {
-          window.gameInstance.sound.unlockAudioAndPlayWelcome();
+        const soundEngine = (window.gameInstance && window.gameInstance.sound) || (typeof game !== 'undefined' && game.sound);
+        if (soundEngine) {
+          soundEngine.unlockAudioAndPlayWelcome();
         }
-        window.removeEventListener('pointerdown', onFirstUserGesture, true);
-        window.removeEventListener('touchstart', onFirstUserGesture, true);
-        window.removeEventListener('keydown', onFirstUserGesture, true);
+        if (window.gameInstance && typeof window.gameInstance.syncBgmWithTimer === 'function') {
+          window.gameInstance.syncBgmWithTimer();
+        }
       };
-      window.addEventListener('pointerdown', onFirstUserGesture, true);
-      window.addEventListener('touchstart', onFirstUserGesture, true);
-      window.addEventListener('keydown', onFirstUserGesture, true);
+      ['pointerdown', 'touchstart', 'click', 'keydown'].forEach(evt => {
+        window.addEventListener(evt, onFirstUserGesture, { capture: true, once: true });
+        document.addEventListener(evt, onFirstUserGesture, { capture: true, once: true });
+      });
 
       // 7. 초기화면(#splash-screen) 전환 감시: 초기화면 진입 시 BGM 재생, 게임 진입 시 BGM 즉시 정지
       const splashScreenEl = document.getElementById('splash-screen');
