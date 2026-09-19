@@ -38,7 +38,7 @@
     });
 
     // PWA 필수 서비스 워커 등록 및 오프라인 상태 모니터링 (업데이트 시에만 알림)
-    const APP_VERSION = 'v1.6.05';
+    const APP_VERSION = 'v1.6.06';
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').then((reg) => {
@@ -5970,7 +5970,7 @@
         <button class="splash-lang-btn" id="btn-splash-lang" title="Switch to English / 언어 전환">
           <span class="btn-icon">🌐</span> <span class="splash-lang-label">EN</span>
         </button>
-        <div class="splash-version-badge">v1.6.04</div>
+        <div class="splash-version-badge">v1.6.06</div>
       </div>
       <div class="splash-content">
         <h1 class="splash-title" data-i18n="app_title">SY 그림맞추기</h1>
@@ -8635,7 +8635,7 @@
       }
 
       /**
-       * 초기화면 BGM (Over the Ridge) 오디오 엘리먼트 초기화 및 이벤트 등록
+       * 초기화면 BGM (Over the Ridge) 오디오 엘리먼트 초기화 (싱글턴 & 누수 차단)
        */
       initBgmAudio() {
         if (!this.bgmAudio) {
@@ -8645,13 +8645,21 @@
             this.bgmAudio.preload = 'auto';
             this.bgmAudio.volume = this.muted ? 0 : this.bgmTargetVolume;
 
-            // 모바일 및 브라우저에서 루프가 끊김 없이 계속 리플레이되도록 ended 안전 이벤트 추가
-            this.bgmAudio.addEventListener('ended', () => {
-              if (this.isBgmPlaying && this.bgmEnabled && !this.muted) {
-                this.bgmAudio.currentTime = 0;
-                this.bgmAudio.play().catch(() => {});
-              }
-            });
+            if (!this._bgmEventsBound) {
+              this._bgmEventsBound = true;
+              this._onBgmEnded = () => {
+                // 초기화면(#splash-screen.active)에 머물러 있는 경우에만 리플레이
+                const splash = document.getElementById('splash-screen');
+                const isSplashActive = splash && splash.classList.contains('active');
+                if (this.isBgmPlaying && this.bgmEnabled && !this.muted && isSplashActive) {
+                  this.bgmAudio.currentTime = 0;
+                  this._safePlayBgm();
+                } else {
+                  this.stopBGM(0);
+                }
+              };
+              this.bgmAudio.addEventListener('ended', this._onBgmEnded);
+            }
           } catch (e) {
             console.warn('[BGM] Audio init warning:', e);
           }
@@ -8660,7 +8668,25 @@
       }
 
       /**
-       * 볼륨 페이드 제어 헬퍼
+       * Promise 레이스 컨디션을 방지하는 안전한 오디오 play 래퍼
+       */
+      _safePlayBgm() {
+        if (!this.bgmAudio) return Promise.resolve();
+        try {
+          this._bgmPlayPromise = this.bgmAudio.play();
+          if (this._bgmPlayPromise !== undefined) {
+            return this._bgmPlayPromise.catch(err => {
+              if (err.name !== 'AbortError') {
+                console.log('[BGM] 자동재생 대기 중 (사용자 첫 상호작용 필요)');
+              }
+            });
+          }
+        } catch (e) {}
+        return Promise.resolve();
+      }
+
+      /**
+       * 볼륨 페이드 제어 헬퍼 (타이머 누수 방지)
        */
       _fadeBgmVolume(fromVol, toVol, duration) {
         if (this.bgmFadeTimer) {
@@ -8668,14 +8694,17 @@
           this.bgmFadeTimer = null;
         }
         if (!this.bgmAudio) return;
+
         if (duration <= 0) {
           this.bgmAudio.volume = Math.max(0, Math.min(1, toVol));
           return;
         }
-        const steps = 20;
-        const stepTime = (duration * 1000) / steps;
+
+        const steps = 16;
+        const stepTime = Math.max(16, (duration * 1000) / steps);
         let curStep = 0;
         this.bgmAudio.volume = Math.max(0, Math.min(1, fromVol));
+
         this.bgmFadeTimer = setInterval(() => {
           curStep++;
           const progress = curStep / steps;
@@ -8684,7 +8713,9 @@
             this.bgmAudio.volume = Math.max(0, Math.min(1, current));
           }
           if (curStep >= steps) {
-            if (this.bgmAudio) this.bgmAudio.volume = Math.max(0, Math.min(1, toVol));
+            if (this.bgmAudio) {
+              this.bgmAudio.volume = Math.max(0, Math.min(1, toVol));
+            }
             clearInterval(this.bgmFadeTimer);
             this.bgmFadeTimer = null;
           }
@@ -8696,6 +8727,14 @@
        */
       playBGM(fadeDuration = 1.0) {
         if (!this.bgmEnabled || this.muted) return;
+
+        // 초기화면이 활성화되어 있지 않다면 즉시 차단 (화면 이탈 시 BGM 재생 절대 불가)
+        const splash = document.getElementById('splash-screen');
+        if (splash && !splash.classList.contains('active')) {
+          this.stopBGM(0);
+          return;
+        }
+
         const audio = this.initBgmAudio();
         if (!audio) return;
 
@@ -8705,53 +8744,72 @@
         const targetVol = this.bgmTargetVolume;
         if (audio.paused) {
           audio.volume = 0;
-          const playPromise = audio.play();
-          if (playPromise !== undefined) {
-            playPromise.then(() => {
-              this._fadeBgmVolume(0, targetVol, fadeDuration);
-            }).catch(err => {
-              console.log('[BGM] 자동재생 대기 중 (사용자 첫 상호작용 대기)');
-            });
-          }
+          this._safePlayBgm().then(() => {
+            // 재생 시작 비동기 완료 후에도 여전히 스플래시 화면인지 재확인
+            const s = document.getElementById('splash-screen');
+            if (s && !s.classList.contains('active')) {
+              this.stopBGM(0);
+              return;
+            }
+            this._fadeBgmVolume(0, targetVol, fadeDuration);
+          });
         } else {
           this._fadeBgmVolume(audio.volume, targetVol, fadeDuration);
         }
       }
 
       /**
-       * BGM 정지 (부드러운 페이드아웃 후 pause)
+       * BGM 정지 (부드러운 페이드아웃 후 pause 및 메모리 누수 방지 리셋)
        */
-      stopBGM(fadeDuration = 0.8) {
+      stopBGM(fadeDuration = 0.5) {
         this.isBgmPlaying = false;
         this.isArirangPlaying = false;
+
         if (this.bgmFadeTimer) {
           clearInterval(this.bgmFadeTimer);
           this.bgmFadeTimer = null;
         }
-        if (!this.bgmAudio || this.bgmAudio.paused) return;
+
+        if (!this.bgmAudio) return;
 
         const audio = this.bgmAudio;
-        if (fadeDuration <= 0) {
-          audio.pause();
-          audio.currentTime = 0;
-          audio.volume = 0;
+        const doPauseAndReset = () => {
+          if (!audio) return;
+          const finalize = () => {
+            try {
+              audio.pause();
+              audio.currentTime = 0;
+              audio.volume = 0;
+            } catch (e) {}
+          };
+
+          if (this._bgmPlayPromise) {
+            this._bgmPlayPromise.finally(() => finalize()).catch(() => finalize());
+          } else {
+            finalize();
+          }
+        };
+
+        if (fadeDuration <= 0 || audio.paused) {
+          doPauseAndReset();
           return;
         }
 
         const startVol = audio.volume;
-        const steps = 16;
-        const stepTime = (fadeDuration * 1000) / steps;
+        const steps = 12;
+        const stepTime = Math.max(16, (fadeDuration * 1000) / steps);
         let curStep = 0;
 
         this.bgmFadeTimer = setInterval(() => {
           curStep++;
           const progress = 1 - (curStep / steps);
-          audio.volume = Math.max(0, startVol * progress);
+          if (audio) {
+            audio.volume = Math.max(0, startVol * progress);
+          }
           if (curStep >= steps) {
-            audio.pause();
-            audio.currentTime = 0;
             clearInterval(this.bgmFadeTimer);
             this.bgmFadeTimer = null;
+            doPauseAndReset();
           }
         }, stepTime);
       }
@@ -8765,7 +8823,7 @@
         if (this.bgmEnabled) {
           this.playBGM(0.8);
         } else {
-          this.stopBGM(0.5);
+          this.stopBGM(0.4);
         }
         return this.bgmEnabled;
       }
@@ -8784,12 +8842,36 @@
         }, Math.max(500, (duration - 0.8) * 1000));
       }
 
-      // 기존 메서드 및 속성 하위 호환성 래퍼
+      /**
+       * BGM 인스턴스 및 리소스 완전 해제 (메모리 누수 방지용)
+       */
+      destroyBGM() {
+        this.stopBGM(0);
+        if (this.bgmAudio) {
+          if (this._onBgmEnded) {
+            this.bgmAudio.removeEventListener('ended', this._onBgmEnded);
+            this._onBgmEnded = null;
+          }
+          try {
+            this.bgmAudio.pause();
+            this.bgmAudio.removeAttribute('src');
+            this.bgmAudio.load();
+          } catch (e) {}
+          this.bgmAudio = null;
+        }
+        this._bgmEventsBound = false;
+        if (this.bgmFadeTimer) {
+          clearInterval(this.bgmFadeTimer);
+          this.bgmFadeTimer = null;
+        }
+      }
+
+      // 하위 호환성 래퍼
       playArirangBGM(fadeDuration = 1.0) {
         this.playBGM(fadeDuration);
       }
 
-      stopArirangBGM(fadeDuration = 0.8) {
+      stopArirangBGM(fadeDuration = 0.5) {
         this.stopBGM(fadeDuration);
       }
 
@@ -20625,6 +20707,49 @@
       window.addEventListener('pointerdown', onFirstUserGesture, true);
       window.addEventListener('touchstart', onFirstUserGesture, true);
       window.addEventListener('keydown', onFirstUserGesture, true);
+
+      // 7. 초기화면(#splash-screen) 이탈 즉시 BGM 정지 및 메모리 누수 방지 감시
+      const splashScreenEl = document.getElementById('splash-screen');
+      if (splashScreenEl && window.MutationObserver) {
+        const splashObserver = new MutationObserver((mutations) => {
+          for (const m of mutations) {
+            if (m.type === 'attributes' && m.attributeName === 'class') {
+              const isActive = splashScreenEl.classList.contains('active');
+              if (!isActive) {
+                // 초기화면을 벗어나면 지체 없이 BGM 정지 및 버퍼 리셋
+                if (window.gameInstance && window.gameInstance.sound) {
+                  window.gameInstance.sound.stopBGM(0.4);
+                } else if (game && game.sound) {
+                  game.sound.stopBGM(0.4);
+                }
+              }
+            }
+          }
+        });
+        splashObserver.observe(splashScreenEl, { attributes: true, attributeFilter: ['class'] });
+      }
+
+      // 8. 탭 백그라운드 전환 및 브라우저 이탈 시 소리 누수/메모리 낭비 원천 차단
+      document.addEventListener('visibilitychange', () => {
+        const soundEngine = (window.gameInstance && window.gameInstance.sound) || (typeof game !== 'undefined' && game.sound);
+        if (!soundEngine) return;
+        if (document.hidden) {
+          soundEngine.stopBGM(0);
+        } else {
+          const s = document.getElementById('splash-screen');
+          if (s && s.classList.contains('active') && soundEngine.bgmEnabled) {
+            soundEngine.playBGM(0.8);
+          }
+        }
+      });
+
+      // 9. 페이지 언로드 시 오디오 리소스 완전 해제
+      window.addEventListener('pagehide', () => {
+        const soundEngine = (window.gameInstance && window.gameInstance.sound) || (typeof game !== 'undefined' && game.sound);
+        if (soundEngine && typeof soundEngine.destroyBGM === 'function') {
+          soundEngine.destroyBGM();
+        }
+      });
     });
   </script>
 </body>
