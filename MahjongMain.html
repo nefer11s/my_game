@@ -5474,7 +5474,7 @@
           <!-- 3. 사운드 & 화면 모드 탭 -->
           <div class="settings-tab-panel" data-tab="sound" role="tabpanel">
             <button class="btn settings-btn" id="btn-sound-toggle" title="효과음 켜기/끄기" data-i18n-title="btn_sound_toggle_title">
-              <span class="btn-icon" id="sound-toggle-icon">🔊</span> <span id="sound-toggle-text">소리 켜짐</span>
+              <span class="btn-icon" id="sound-toggle-icon">🔊</span> <span id="sound-toggle-text">효과음 켜짐</span>
             </button>
             <button class="btn settings-btn" id="btn-bgm-toggle" title="배경음악(숲속 시냇물 & 새소리) 켜기/끄기" style="margin-top: 6px;">
               <span class="btn-icon" id="bgm-toggle-icon">🎵</span> <span id="bgm-toggle-text">배경음악 켜짐</span>
@@ -5495,11 +5495,11 @@
             <div class="settings-item" id="bgm-volume-wrapper" style="margin-top: 6px; padding: 7px 10px; background: rgba(46, 167, 121, 0.08); border: 1px solid rgba(46, 167, 121, 0.22); border-radius: 12px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                 <span class="settings-label" style="margin-bottom: 0; font-weight: 800; color: #166534;">🔊 배경음악 볼륨 크기</span>
-                <span id="bgm-volume-badge" style="font-size: 11.5px; color: #166534; font-weight: 900; background: #dcfce7; padding: 2px 9px; border-radius: 12px; border: 1px solid #86efac;">45%</span>
+                <span id="bgm-volume-badge" style="font-size: 11.5px; color: #166534; font-weight: 900; background: #dcfce7; padding: 2px 9px; border-radius: 12px; border: 1px solid #86efac;">10%</span>
               </div>
               <div style="display: flex; align-items: center; gap: 8px;">
                 <span style="font-size: 13px; opacity: 0.7;">🔈</span>
-                <input type="range" id="slider-bgm-volume" min="0" max="100" step="5" value="45" style="flex: 1; accent-color: #16a34a; cursor: pointer; height: 6px;" title="배경음악 음량 조절">
+                <input type="range" id="slider-bgm-volume" min="0" max="100" step="5" value="10" style="flex: 1; accent-color: #16a34a; cursor: pointer; height: 6px;" title="배경음악 음량 조절">
                 <span style="font-size: 13px; opacity: 0.7;">🔊</span>
               </div>
             </div>
@@ -5514,7 +5514,7 @@
               </select>
             </div>
             <button class="btn settings-btn" id="btn-open-sound-settings" title="타일선택, 매칭, 바차임, 폭죽 소리 개별 변경" data-i18n-title="btn_sound_detail_title">
-              <span class="btn-icon">🎛️</span> <span data-i18n="btn_sound_detail">효과음 상세 소리 설정...</span>
+              <span class="btn-icon">🎛️</span> <span data-i18n="btn_sound_detail">효과음 상세 설정...</span>
             </button>
             <button class="btn settings-btn" id="btn-fullscreen" title="전체화면 모드 토글" data-i18n-title="btn_fullscreen_title">
               <span class="btn-icon">⛶</span> <span id="btn-fs-text" data-i18n="fullscreen">전체화면</span>
@@ -6820,8 +6820,8 @@
         auto_blind_on: '짝선택 자동슬롯: 켜짐',
         auto_blind_off: '짝선택 자동슬롯: 꺼짐',
         btn_sound_toggle_title: '효과음 켜기/끄기',
-        sound_on: '소리 켜짐',
-        sound_off: '소리 꺼짐 (음소거)',
+        sound_on: '효과음 켜짐',
+        sound_off: '효과음 꺼짐 (음소거)',
         settings_sound_theme_label: '🎵 효과음 테마',
         sound_theme_select_title: '효과음 테마 선택',
         sound_theme_opt_myeongri: '🀄 명리 기본 테마 (우드블록 · 리얼 마작)',
@@ -6829,7 +6829,7 @@
         sound_theme_opt_real: '🀄 리얼 마작패 (실물 타격·바차임)',
         sound_theme_opt_wood: '🪵 자연의 원목 (우드 & 오르골)',
         sound_theme_opt_synth: '🎮 클래식 신디 (경쾌한 전자음)',
-        btn_sound_detail: '효과음 상세 소리 설정...',
+        btn_sound_detail: '효과음 상세 설정...',
         btn_sound_detail_title: '타일선택, 매칭, 바차임, 폭죽 소리 개별 변경',
         btn_fullscreen_title: '전체화면 모드 토글',
         btn_warp_modal_title: '원하는 난이도와 판(Stage)으로 직행',
@@ -7096,8 +7096,8 @@
         auto_blind_on: 'Auto Slot Pair: On',
         auto_blind_off: 'Auto Slot Pair: Off',
         btn_sound_toggle_title: 'Toggle sound effects On/Off',
-        sound_on: 'Sound On',
-        sound_off: 'Sound Off (Muted)',
+        sound_on: 'SFX On',
+        sound_off: 'SFX Off (Muted)',
         settings_sound_theme_label: '🎵 Sound Theme',
         sound_theme_select_title: 'Select sound effects theme',
         sound_theme_opt_myeongri: '🀄 Saju Default (Woodblock · Real Mahjong)',
@@ -7394,7 +7394,7 @@
         this.bgmLoopCheckTimer = null;
         this.bgmAudio = null;
         const savedBgmVol = safeStorage.get('mahjong_bgm_volume');
-        this.bgmTargetVolume = savedBgmVol !== null ? Math.max(0, Math.min(1, parseFloat(savedBgmVol))) : 0.45;
+        this.bgmTargetVolume = savedBgmVol !== null ? Math.max(0, Math.min(1, parseFloat(savedBgmVol))) : 0.10;
         this.isArirangPlaying = false;
         this.arirangLoopTimer = null;
         this.arirangMasterGain = null;
@@ -14482,7 +14482,7 @@
           settingsDropdown.classList.remove('active');
           if (btnSettings) btnSettings.setAttribute('aria-expanded', 'false');
         }
-        if (!confirm('모든 게임 환경설정(난이도 보통, 명리 기본 효과음, 짝선택 자동슬롯 켜짐 등)을 기본값으로 복원하시겠습니까?')) {
+        if (!confirm('모든 게임 환경설정(난이도 보통, 효과음 70%, 배경음악 10%, 짝선택 자동슬롯 켜짐 등)을 기본값으로 복원하시겠습니까?')) {
           return;
         }
 
@@ -14526,13 +14526,13 @@
           autoEndText.textContent = '마지막10개 자동매칭: 켜짐';
         }
 
-        // 4. 슬롯 이동 속도: 보통 (normal, 0.45초)
-        this.slotAnimSpeed = 'normal';
-        safeStorage.set('slot_anim_speed', 'normal');
+        // 4. 슬롯 이동 속도: 느림 (slow, 0.6초 · 기본)
+        this.slotAnimSpeed = 'slow';
+        safeStorage.set('slot_anim_speed', 'slow');
         const slotSpeedSelect = document.getElementById('select-slot-anim-speed');
-        if (slotSpeedSelect) slotSpeedSelect.value = 'normal';
+        if (slotSpeedSelect) slotSpeedSelect.value = 'slow';
         const slotSpeedBadge = document.getElementById('slot-anim-speed-badge');
-        if (slotSpeedBadge) slotSpeedBadge.textContent = '🌿 보통 (0.45초)';
+        if (slotSpeedBadge) slotSpeedBadge.textContent = '🦥 느림 (0.6초)';
 
         // 5. 슬롯 매칭 효과: 축제 폭죽 (firework)
         safeStorage.set('slot_match_effect', 'firework');
@@ -14551,8 +14551,60 @@
         const soundToggleText = document.getElementById('sound-toggle-text');
         if (soundToggleIcon && soundToggleText) {
           soundToggleIcon.textContent = '🔊';
-          soundToggleText.textContent = '소리 켜짐';
+          soundToggleText.textContent = I18nManager.t('sound_on', '효과음 켜짐');
         }
+
+        // 6-2. 효과음 볼륨 크기 기본값: 70% (0.70)
+        if (this.sound && typeof this.sound.setSFXVolume === 'function') {
+          this.sound.setSFXVolume(0.70);
+        }
+        safeStorage.set('mahjong_sfx_volume', '70');
+        const sliderSfxVol = document.getElementById('slider-sfx-volume');
+        const badgeSfxVol = document.getElementById('sfx-volume-badge');
+        if (sliderSfxVol) sliderSfxVol.value = '70';
+        if (badgeSfxVol) badgeSfxVol.textContent = '70%';
+
+        // 6-3. 배경음악 볼륨 크기 기본값: 10% (0.10) & 배경음악 켜짐
+        if (this.sound) {
+          this.sound.bgmEnabled = true;
+          safeStorage.set('mahjong_bgm_enabled', 'true');
+          if (typeof this.sound.setBGMVolume === 'function') {
+            this.sound.setBGMVolume(0.10);
+          }
+        }
+        safeStorage.set('mahjong_bgm_volume', '0.1');
+        const sliderBgmVol = document.getElementById('slider-bgm-volume');
+        const badgeBgmVol = document.getElementById('bgm-volume-badge');
+        if (sliderBgmVol) sliderBgmVol.value = '10';
+        if (badgeBgmVol) badgeBgmVol.textContent = '10%';
+        if (typeof updateInGameBgmUI === 'function') updateInGameBgmUI(true);
+        if (typeof window.updateBgmBtnUI === 'function') window.updateBgmBtnUI(true);
+
+        // 6-4. 타일 글자/라벨 표시: 켜짐 (on · 기본값)
+        try { localStorage.setItem('siyeon_mahjong_tile_text', 'on'); } catch (e) { }
+        const selectTileText = document.getElementById('select-tile-text');
+        if (selectTileText) selectTileText.value = 'on';
+        document.body.classList.remove('hide-tile-text');
+
+        // 6-5. 동적 확대: 꺼짐 (false) & 동적 확대 열 수: 5열 (기본값)
+        this.dynamicZoom = false;
+        try {
+          localStorage.setItem('dynamicZoom', '0');
+          localStorage.setItem('siyeon_mahjong_dynamic_zoom', '0');
+        } catch (e) { }
+        const dynamicZoomIcon = document.getElementById('dynamic-zoom-icon');
+        const dynamicZoomText = document.getElementById('dynamic-zoom-text');
+        if (dynamicZoomIcon && dynamicZoomText) {
+          dynamicZoomIcon.textContent = '🔒';
+          dynamicZoomText.textContent = I18nManager.t('zoom_off', '동적확대: 꺼짐');
+        }
+        this.dynamicZoomCols = 5;
+        try {
+          localStorage.setItem('dynamicZoomCols', '5');
+          localStorage.setItem('siyeon_mahjong_dynamic_zoom_cols', '5');
+        } catch (e) { }
+        const selectDynamicZoomCols = document.getElementById('select-dynamic-zoom-cols');
+        if (selectDynamicZoomCols) selectDynamicZoomCols.value = '5';
 
         // 7. 전통패 라벨 표시: hide (기본값)
         this.classicLabelMode = 'hide';
@@ -14628,7 +14680,7 @@
         this.renderTiles();
         if (this.sound && this.sound.playWin) this.sound.playWin();
 
-        this.showFloatingNotice('⚙️ 모든 환경설정이 기본값(난이도 보통, 명리 사운드 등)으로 복원되었습니다!');
+        this.showFloatingNotice('⚙️ 모든 환경설정이 기본값(난이도 보통, 효과음 70%, BGM 10% 등)으로 복원되었습니다!');
       }
 
       bindEvents() {
@@ -15922,14 +15974,14 @@
         };
         updateTimeLimitOptionsLanguage();
 
-        // 소리 On / Off 토글 버튼 이벤트
+        // 효과음 On / Off 토글 버튼 이벤트
         const btnSound = document.getElementById('btn-sound-toggle');
         const updateSoundUI = () => {
           const icon = document.getElementById('sound-toggle-icon');
           const text = document.getElementById('sound-toggle-text');
           if (icon && text) {
             icon.textContent = this.sound.muted ? '🔇' : '🔊';
-            text.textContent = this.sound.muted ? I18nManager.t('sound_off', '소리 꺼짐 (음소거)') : I18nManager.t('sound_on', '소리 켜짐');
+            text.textContent = this.sound.muted ? I18nManager.t('sound_off', '효과음 꺼짐 (음소거)') : I18nManager.t('sound_on', '효과음 켜짐');
           }
         };
         updateSoundUI();
