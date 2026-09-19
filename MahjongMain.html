@@ -2251,7 +2251,7 @@
     .splash-lang-btn {
       position: absolute;
       top: 12px;
-      right: 76px;
+      left: 76px;
       background: rgba(14, 38, 26, 0.78);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
@@ -2277,7 +2277,7 @@
     .splash-bgm-btn {
       position: absolute;
       top: 12px;
-      right: 140px;
+      left: 12px;
       background: rgba(14, 38, 26, 0.78);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
@@ -5986,10 +5986,7 @@
       <div class="splash-img-wrap">
         <img src="assets/mahjong_splash.jpg" alt="SY 그림맞추기 (그린빌라/오룡이 테마)" class="splash-hero-img" decoding="sync"
           fetchpriority="high">
-        <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환" data-i18n-title="fullscreen">
-          <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text" data-i18n="fullscreen">전체화면</span>
-        </button>
-        <button class="splash-bgm-btn" id="btn-splash-bgm" title="배경음악 켜기/끄기 (자연의 소리 (숲속 시냇물 & 새소리))">
+        <button class="splash-bgm-btn" id="btn-splash-bgm" title="BGM 볼륨 설정">
           <span class="btn-icon">🎵</span> <span class="splash-bgm-label">BGM</span>
         </button>
         <button class="splash-lang-btn" id="btn-splash-lang" title="Switch to English / 언어 전환">
@@ -20968,10 +20965,18 @@
         updateBgmBtnUI(game.sound.bgmEnabled);
         btnSplashBgm.addEventListener('click', (e) => {
           if (e && e.stopPropagation) e.stopPropagation();
-          const nextState = game.sound.toggleBGM();
-          updateBgmBtnUI(nextState);
-          if (typeof window.updateInGameBgmUI === 'function') {
-            window.updateInGameBgmUI(nextState);
+          // BGM 버튼 → 설정창 소리 탭 열기 (볼륨 조절)
+          const settingsDropdown = document.getElementById('settings-dropdown');
+          if (settingsDropdown) {
+            document.body.appendChild(settingsDropdown);
+            settingsDropdown.classList.add('modal-mode');
+            settingsDropdown.classList.add('active');
+            // 소리 탭으로 이동
+            const tabBtns = document.querySelectorAll('.settings-tab-btn');
+            const tabPanels = document.querySelectorAll('.settings-tab-panel');
+            tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === 'sound'));
+            tabPanels.forEach(p => p.classList.toggle('active', p.dataset.tab === 'sound'));
+            if (game.sound && typeof game.sound.playSelect === 'function') game.sound.playSelect();
           }
         });
       }
