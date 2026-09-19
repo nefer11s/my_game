@@ -2254,6 +2254,38 @@
       background: rgba(46, 167, 121, 0.9);
     }
 
+    .splash-bgm-btn {
+      position: absolute;
+      top: 12px;
+      right: 140px;
+      background: rgba(14, 38, 26, 0.78);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 9px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 2;
+    }
+    .splash-bgm-btn:active {
+      transform: scale(0.94);
+      background: rgba(46, 167, 121, 0.9);
+    }
+    .splash-bgm-btn.muted {
+      color: #94a3b8;
+      border-color: rgba(148, 163, 184, 0.4);
+      background: rgba(30, 41, 59, 0.85);
+      opacity: 0.8;
+    }
+
     .splash-content {
       padding: 12px 18px 16px;
     }
@@ -5910,6 +5942,9 @@
         <button class="splash-fs-btn" id="btn-splash-fs" title="전체화면 모드 전환" data-i18n-title="fullscreen">
           <span class="btn-icon">⛶</span> <span id="btn-splash-fs-text" data-i18n="fullscreen">전체화면</span>
         </button>
+        <button class="splash-bgm-btn" id="btn-splash-bgm" title="배경음악 켜기/끄기 (아리랑)">
+          <span class="btn-icon">🎵</span> <span class="splash-bgm-label">BGM</span>
+        </button>
         <button class="splash-lang-btn" id="btn-splash-lang" title="Switch to English / 언어 전환">
           <span class="btn-icon">🌐</span> <span class="splash-lang-label">EN</span>
         </button>
@@ -6711,7 +6746,9 @@
         warp_target_diff: '🎮 목표 난이도',
         warp_target_stage: '🎯 목표 판 (Stage)',
         btn_warp_confirm: '해당 판으로 직행',
-        btn_cancel: '취소'
+        btn_cancel: '취소',
+        bgm_on: '배경음악 끄기 (아리랑)',
+        bgm_off: '배경음악 켜기 (아리랑)'
       },
       en: {
         app_title: 'SY Tile Match',
@@ -6814,7 +6851,9 @@
         warp_target_diff: '🎮 Target Difficulty',
         warp_target_stage: '🎯 Target Stage',
         btn_warp_confirm: 'Jump to Stage',
-        btn_cancel: 'Cancel'
+        btn_cancel: 'Cancel',
+        bgm_on: 'Turn Off BGM (Arirang)',
+        bgm_off: 'Turn On BGM (Arirang)'
       }
     };
 
@@ -6974,6 +7013,15 @@
         safeStorage.set('mahjong_sound_match', this.customSounds.match);
         safeStorage.set('mahjong_sound_firework', this.customSounds.firework);
         safeStorage.set('mahjong_sound_shuffle', this.customSounds.shuffle);
+
+        // 잔잔한 아리랑 BGM 및 웰컴 음성 안내 엔진 상태
+        this.bgmEnabled = safeStorage.get('mahjong_bgm_enabled') !== 'false';
+        this.isArirangPlaying = false;
+        this.arirangLoopTimer = null;
+        this.arirangMasterGain = null;
+        this.isVoicePlaying = false;
+        this.welcomeVoicePlayed = false;
+        this.hasUserInteracted = false;
 
         this.buffers = {};
         this.chimeBuffer = null;
@@ -8002,6 +8050,328 @@
 
       playChime(startTime = null, overrideType = null) {
         this.playWindChime(startTime, overrideType);
+      }
+
+      /**
+       * 가야금(Gayageum) 명주실 뜯는 소리(Pluck) 합성기
+       */
+      playGayageumPluck(freq, startTime, duration = 1.8, velocity = 0.22, withVibrato = false) {
+        if (!this.ctx || this.muted || !this.bgmEnabled || !freq) return;
+        const now = Math.max(this.ctx.currentTime, startTime || this.ctx.currentTime);
+        const masterOut = this.arirangMasterGain || this.getDestination();
+
+        // 1. 메인 발현 오실레이터 (삼각파 - 명주실 따뜻한 바디감)
+        const oscMain = this.ctx.createOscillator();
+        oscMain.type = 'triangle';
+        oscMain.frequency.setValueAtTime(freq, now);
+
+        // 2. 배음 서브 오실레이터 (사인파 2배음 - 맑은 청아함)
+        const oscHarmonic = this.ctx.createOscillator();
+        oscHarmonic.type = 'sine';
+        oscHarmonic.frequency.setValueAtTime(freq * 2, now);
+
+        // 미세 농현(Vibrato LFO) - 0.35초 후 은은하게 흔들림
+        let lfo = null, lfoGain = null;
+        if (withVibrato) {
+          lfo = this.ctx.createOscillator();
+          lfoGain = this.ctx.createGain();
+          lfo.frequency.setValueAtTime(4.2, now);
+          lfoGain.gain.setValueAtTime(0, now);
+          lfoGain.gain.setValueAtTime(0, now + 0.3);
+          lfoGain.gain.linearRampToValueAtTime(freq * 0.025, now + 0.7);
+          lfo.connect(lfoGain);
+          lfoGain.connect(oscMain.frequency);
+          lfo.start(now);
+          lfo.stop(now + duration);
+        }
+
+        // 3. 로우패스 필터 (현의 초기 어택 고음이 빠르게 닫히며 깊은 잔향 형성)
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        const cutoffStart = Math.min(3800, freq * 5.5);
+        const cutoffEnd = Math.min(800, freq * 1.8);
+        filter.frequency.setValueAtTime(cutoffStart, now);
+        filter.frequency.exponentialRampToValueAtTime(cutoffEnd, now + Math.min(duration, 0.45));
+        filter.Q.setValueAtTime(2.2, now);
+
+        // 4. 게인 엔벨로프 (현 뜯는 타격 어택 0.004s -> 초기 감쇠 -> 부드러운 롱 서스테인 릴리즈)
+        const noteGain = this.ctx.createGain();
+        const peakGain = Math.min(0.35, velocity * 1.0);
+        noteGain.gain.setValueAtTime(0.0001, now);
+        noteGain.gain.linearRampToValueAtTime(peakGain, now + 0.005);
+        noteGain.gain.exponentialRampToValueAtTime(peakGain * 0.55, now + 0.12);
+        noteGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+        const harmGain = this.ctx.createGain();
+        harmGain.gain.setValueAtTime(0.35, now);
+
+        // 노드 결합
+        oscMain.connect(filter);
+        oscHarmonic.connect(harmGain);
+        harmGain.connect(filter);
+        filter.connect(noteGain);
+        noteGain.connect(masterOut);
+
+        oscMain.start(now);
+        oscMain.stop(now + duration + 0.05);
+        oscHarmonic.start(now);
+        oscHarmonic.stop(now + duration + 0.05);
+
+        if (lfo && lfoGain) {
+          this.autoDisconnect(oscMain, oscHarmonic, filter, noteGain, harmGain, lfo, lfoGain);
+        } else {
+          this.autoDisconnect(oscMain, oscHarmonic, filter, noteGain, harmGain);
+        }
+      }
+
+      /**
+       * 초기화면 잔잔한 아리랑 BGM 루프 시퀀서 시작
+       */
+      playArirangBGM(fadeDuration = 1.0) {
+        if (!this.bgmEnabled || this.muted) return;
+        this.init();
+        if (!this.ctx) return;
+
+        if (this.isArirangPlaying) return;
+        this.isArirangPlaying = true;
+
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume().catch(() => {});
+        }
+
+        if (!this.arirangMasterGain) {
+          this.arirangMasterGain = this.ctx.createGain();
+          
+          const delayNode = this.ctx.createDelay();
+          delayNode.delayTime.value = 0.28;
+          const delayGain = this.ctx.createGain();
+          delayGain.gain.value = 0.20;
+          const delayFilter = this.ctx.createBiquadFilter();
+          delayFilter.type = 'lowpass';
+          delayFilter.frequency.value = 1600;
+
+          this.arirangMasterGain.connect(this.getDestination());
+          this.arirangMasterGain.connect(delayNode);
+          delayNode.connect(delayFilter);
+          delayFilter.connect(delayGain);
+          delayGain.connect(this.getDestination());
+        }
+
+        const targetVol = 0.16;
+        const now = this.ctx.currentTime;
+        this.arirangMasterGain.gain.cancelScheduledValues(now);
+        this.arirangMasterGain.gain.setValueAtTime(0.0001, now);
+        this.arirangMasterGain.gain.linearRampToValueAtTime(targetVol, now + fadeDuration);
+
+        const beatSec = 0.68;
+        const NOTE = {
+          D3: 146.83, G3: 196.00, A3: 220.00,
+          D4: 293.66, E4: 329.63, G4: 392.00, A4: 440.00, B4: 493.88,
+          C5: 523.25, D5: 587.33, E5: 659.25, G5: 783.99, A5: 880.00,
+          REST: 0
+        };
+
+        const score = [
+          // 1~4마디: 아리랑 아리랑 아라리요
+          { f: NOTE.D4, b: 1.5, bass: NOTE.G3 },
+          { f: NOTE.E4, b: 0.5 },
+          { f: NOTE.G4, b: 2.0, vib: true },
+
+          { f: NOTE.G4, b: 1.5, bass: NOTE.D3 },
+          { f: NOTE.A4, b: 0.5 },
+          { f: NOTE.G4, b: 1.0 },
+          { f: NOTE.E4, b: 1.0 },
+
+          { f: NOTE.D4, b: 1.5, bass: NOTE.G3 },
+          { f: NOTE.E4, b: 0.5 },
+          { f: NOTE.G4, b: 1.0 },
+          { f: NOTE.A4, b: 0.5 },
+          { f: NOTE.G4, b: 1.5, vib: true },
+
+          { f: NOTE.A4, b: 1.5, bass: NOTE.D3 },
+          { f: NOTE.C5, b: 0.5 },
+          { f: NOTE.D5, b: 2.0, vib: true },
+
+          // 5~7마디: 아리랑 고개로 넘어간다
+          { f: NOTE.E5, b: 1.5, bass: NOTE.G3 },
+          { f: NOTE.D5, b: 0.5 },
+          { f: NOTE.C5, b: 1.0 },
+          { f: NOTE.D5, b: 1.0 },
+
+          { f: NOTE.E5, b: 1.0, bass: NOTE.D3 },
+          { f: NOTE.D5, b: 1.0 },
+          { f: NOTE.C5, b: 1.0 },
+          { f: NOTE.A4, b: 1.0 },
+
+          { f: NOTE.G4, b: 3.5, bass: NOTE.G3, vib: true },
+
+          // 8~11마디: 나를 버리고 가시는 님은
+          { f: NOTE.D4, b: 1.5, bass: NOTE.G3 },
+          { f: NOTE.E4, b: 0.5 },
+          { f: NOTE.G4, b: 1.0 },
+          { f: NOTE.A4, b: 0.5 },
+          { f: NOTE.G4, b: 1.0 },
+          { f: NOTE.E4, b: 0.5 },
+
+          { f: NOTE.D4, b: 1.5, bass: NOTE.D3 },
+          { f: NOTE.E4, b: 0.5 },
+          { f: NOTE.G4, b: 1.0 },
+          { f: NOTE.A4, b: 0.5 },
+          { f: NOTE.G4, b: 2.0, vib: true },
+
+          // 12~14마디: 십리도 못가서 발병난다
+          { f: NOTE.A4, b: 1.5, bass: NOTE.G3 },
+          { f: NOTE.C5, b: 0.5 },
+          { f: NOTE.D5, b: 1.0 },
+          { f: NOTE.E5, b: 0.5 },
+          { f: NOTE.D5, b: 1.0 },
+          { f: NOTE.C5, b: 0.5 },
+
+          { f: NOTE.D5, b: 1.0, bass: NOTE.D3 },
+          { f: NOTE.C5, b: 0.5 },
+          { f: NOTE.A4, b: 1.0 },
+          { f: NOTE.G4, b: 0.5 },
+
+          { f: NOTE.G4, b: 4.0, bass: NOTE.G3, vib: true }
+        ];
+
+        const scheduleLoop = () => {
+          if (!this.isArirangPlaying || !this.bgmEnabled) return;
+          const startPlayTime = this.ctx.currentTime + 0.05;
+          let currentBeatOffset = 0;
+
+          for (const item of score) {
+            const noteStartTime = startPlayTime + currentBeatOffset * beatSec;
+            const noteDuration = item.b * beatSec * 1.35;
+
+            if (item.f) {
+              this.playGayageumPluck(item.f, noteStartTime, noteDuration, 0.22, !!item.vib);
+            }
+            if (item.bass) {
+              this.playGayageumPluck(item.bass, noteStartTime, noteDuration * 1.2, 0.18, true);
+            }
+
+            currentBeatOffset += item.b;
+          }
+
+          const totalLoopSec = currentBeatOffset * beatSec;
+          this.arirangLoopTimer = setTimeout(() => {
+            if (this.isArirangPlaying) {
+              scheduleLoop();
+            }
+          }, Math.max(1000, (totalLoopSec - 0.25) * 1000));
+        };
+
+        scheduleLoop();
+      }
+
+      /**
+       * BGM 정지 (부드러운 페이드아웃)
+       */
+      stopArirangBGM(fadeDuration = 0.8) {
+        if (!this.isArirangPlaying) return;
+        this.isArirangPlaying = false;
+        if (this.arirangLoopTimer) {
+          clearTimeout(this.arirangLoopTimer);
+          this.arirangLoopTimer = null;
+        }
+        if (this.ctx && this.arirangMasterGain) {
+          const now = this.ctx.currentTime;
+          this.arirangMasterGain.gain.cancelScheduledValues(now);
+          this.arirangMasterGain.gain.linearRampToValueAtTime(0.0001, now + fadeDuration);
+        }
+      }
+
+      /**
+       * BGM 켜기/끄기 토글
+       */
+      toggleBGM() {
+        this.bgmEnabled = !this.bgmEnabled;
+        safeStorage.set('mahjong_bgm_enabled', this.bgmEnabled ? 'true' : 'false');
+        if (this.bgmEnabled) {
+          this.playArirangBGM(0.8);
+        } else {
+          this.stopArirangBGM(0.5);
+        }
+        return this.bgmEnabled;
+      }
+
+      /**
+       * 웰컴 음성 출력 중 BGM 볼륨 덕킹 (Audio Ducking)
+       */
+      duckArirangBGM(duckVolume = 0.04, duration = 3.2) {
+        if (!this.isArirangPlaying || !this.arirangMasterGain || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        this.arirangMasterGain.gain.cancelScheduledValues(now);
+        this.arirangMasterGain.gain.linearRampToValueAtTime(duckVolume, now + 0.25);
+        this.arirangMasterGain.gain.setValueAtTime(duckVolume, now + duration - 0.8);
+        this.arirangMasterGain.gain.linearRampToValueAtTime(0.16, now + duration);
+      }
+
+      /**
+       * 페이지 로딩 완료 후 환영 음성 안내 ("환영합니다. 즐거운 시간 되세요~")
+       */
+      playWelcomeVoice() {
+        if (this.muted || !('speechSynthesis' in window)) return;
+        try {
+          window.speechSynthesis.cancel();
+
+          const isEn = (typeof I18nManager !== 'undefined' && I18nManager.currentLang === 'en');
+          const text = isEn ? "Welcome! Have a wonderful time." : "환영합니다. 즐거운 시간 되세요~";
+          const utter = new SpeechSynthesisUtterance(text);
+          utter.lang = isEn ? 'en-US' : 'ko-KR';
+          utter.rate = 0.93;
+          utter.pitch = 1.05;
+          utter.volume = 1.0;
+
+          const voices = window.speechSynthesis.getVoices();
+          if (voices && voices.length > 0) {
+            const preferred = voices.find(v => (isEn ? v.lang.startsWith('en') : v.lang.startsWith('ko')));
+            if (preferred) utter.voice = preferred;
+          }
+
+          this.duckArirangBGM(0.04, 3.2);
+
+          utter.onend = () => {
+            this.isVoicePlaying = false;
+          };
+          utter.onerror = () => {
+            this.isVoicePlaying = false;
+          };
+
+          this.isVoicePlaying = true;
+          window.speechSynthesis.speak(utter);
+        } catch (e) {
+          console.warn('[WelcomeVoice] TTS warning:', e);
+        }
+      }
+
+      /**
+       * 브라우저 자동재생 제한(Autoplay Policy) 극복을 위한 사용자 제스처 언락
+       */
+      unlockAudioAndPlayWelcome() {
+        if (this.hasUserInteracted) return;
+        this.hasUserInteracted = true;
+
+        this.init();
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume().then(() => {
+            if (this.bgmEnabled && !this.isArirangPlaying) {
+              this.playArirangBGM(0.8);
+            }
+          }).catch(() => {});
+        } else {
+          if (this.bgmEnabled && !this.isArirangPlaying) {
+            this.playArirangBGM(0.8);
+          }
+        }
+
+        if (!this.welcomeVoicePlayed) {
+          this.welcomeVoicePlayed = true;
+          setTimeout(() => {
+            this.playWelcomeVoice();
+          }, 350);
+        }
       }
     }
 
@@ -13010,6 +13380,7 @@
         if (btnSplashResume) {
           btnSplashResume.addEventListener('click', () => {
             this.sound.playSelect();
+            if (this.sound) this.sound.stopArirangBGM(0.8);
             this.enterFullscreen();
             if (splashEl) splashEl.classList.remove('active');
             setTimeout(() => {
@@ -13021,6 +13392,7 @@
         if (btnSplashStart) {
           btnSplashStart.addEventListener('click', () => {
             this.sound.playSelect();
+            if (this.sound) this.sound.stopArirangBGM(0.8);
             const saved = this.getSavedProgress();
             if (saved && saved.stage > 1) {
               if (!confirm(`이미 진행 중인 제 ${saved.stage}판 기록이 있습니다.\n기존 진행 기록을 지우고 1판부터 새로 시작하시겠습니까?`)) {
@@ -14794,6 +15166,9 @@
         if (splashEl) {
           splashEl.classList.add('active');
           this.updateResumeButtonUI();
+          if (this.sound && this.sound.bgmEnabled) {
+            this.sound.playArirangBGM(1.2);
+          }
         }
       }
 
@@ -14804,6 +15179,9 @@
         const splashEl = document.getElementById('splash-screen');
         if (splashEl) {
           splashEl.classList.remove('active');
+          if (this.sound) {
+            this.sound.stopArirangBGM(0.8);
+          }
         }
       }
 
@@ -18932,6 +19310,67 @@
       if (typeof window.tileGalleryManager._applyTheme === 'function') {
         window.tileGalleryManager._applyTheme(game.activeTheme);
       }
+
+      // 4. 스플래시 화면 BGM 토글 버튼 바인딩
+      const btnSplashBgm = document.getElementById('btn-splash-bgm');
+      const updateBgmBtnUI = (enabled) => {
+        if (!btnSplashBgm) return;
+        if (enabled) {
+          btnSplashBgm.classList.remove('muted');
+          btnSplashBgm.innerHTML = '<span class="btn-icon">🎵</span> <span class="splash-bgm-label">BGM</span>';
+          btnSplashBgm.title = I18nManager.t('bgm_on', '배경음악 끄기 (아리랑)');
+        } else {
+          btnSplashBgm.classList.add('muted');
+          btnSplashBgm.innerHTML = '<span class="btn-icon">🔇</span> <span class="splash-bgm-label">BGM</span>';
+          btnSplashBgm.title = I18nManager.t('bgm_off', '배경음악 켜기 (아리랑)');
+        }
+      };
+
+      if (btnSplashBgm) {
+        updateBgmBtnUI(game.sound.bgmEnabled);
+        btnSplashBgm.addEventListener('click', (e) => {
+          if (e && e.stopPropagation) e.stopPropagation();
+          const nextState = game.sound.toggleBGM();
+          updateBgmBtnUI(nextState);
+        });
+      }
+
+      // 5. 페이지 로딩 완료 후 환영 음성 안내 및 아리랑 BGM 재생 시도
+      const startIntroAudio = () => {
+        if (!game.hasStarted) {
+          game.sound.init();
+          if (game.sound.bgmEnabled) {
+            game.sound.playArirangBGM(1.2);
+          }
+          if (!game.sound.welcomeVoicePlayed) {
+            game.sound.welcomeVoicePlayed = true;
+            setTimeout(() => {
+              game.sound.playWelcomeVoice();
+            }, 450);
+          }
+        }
+      };
+
+      if (document.readyState === 'complete') {
+        setTimeout(startIntroAudio, 300);
+      } else {
+        window.addEventListener('load', () => {
+          setTimeout(startIntroAudio, 400);
+        });
+      }
+
+      // 6. 브라우저 Autoplay Policy 차단 대응: 사용자 첫 인터랙션 시 즉시 언락
+      const onFirstUserGesture = () => {
+        if (window.gameInstance && window.gameInstance.sound) {
+          window.gameInstance.sound.unlockAudioAndPlayWelcome();
+        }
+        window.removeEventListener('pointerdown', onFirstUserGesture, true);
+        window.removeEventListener('touchstart', onFirstUserGesture, true);
+        window.removeEventListener('keydown', onFirstUserGesture, true);
+      };
+      window.addEventListener('pointerdown', onFirstUserGesture, true);
+      window.addEventListener('touchstart', onFirstUserGesture, true);
+      window.addEventListener('keydown', onFirstUserGesture, true);
     });
   </script>
 </body>
