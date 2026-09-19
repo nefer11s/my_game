@@ -9757,10 +9757,12 @@
         return `
           <svg class="tile-svg chuseok-hybrid-svg" viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg">
             <g class="tile-art-layer">
-              <!-- 1. 고품질 벡터 일러스트 그래픽 -->
-              ${iconSvg}
-              <!-- 2. 초고화질 실물 WebP 이미지 (에셋 존재 시 표출) -->
-              <image href="assets/tiles/chuseok/${id}.webp" x="12" y="15" width="216" height="270" preserveAspectRatio="xMidYMid meet" onerror="this.style.display='none'" />
+              <!-- 1. 고품질 벡터 일러스트 그래픽 (실물 이미지 미탑재 시 폴백) -->
+              <g class="chuseok-svg-icon" id="svg-fb-${id}">
+                ${iconSvg}
+              </g>
+              <!-- 2. 초고화질 제미나이 3D WebP 이미지 (에셋 존재 시 최우선 표출) -->
+              <image href="assets/tiles/chuseok/${id}.webp" x="4" y="6" width="232" height="288" preserveAspectRatio="xMidYMid meet" onload="var fb=this.previousElementSibling;if(fb)fb.style.display='none';" onerror="this.style.display='none';" />
             </g>
             <!-- 3. 좌상단 전통 단청 배지 -->
             ${badgeSvg}
