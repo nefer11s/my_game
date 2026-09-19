@@ -10204,22 +10204,21 @@
           </g>
         `,
           cs_gwiseong: `
-          <defs>
-            <linearGradient id="gw_bag" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffb74d"/><stop offset="100%" stop-color="#e65100"/></linearGradient>
-            <linearGradient id="gw_rib" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#ffcdd2"/></linearGradient>
-            <filter id="gw_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
-          </defs>
-          <ellipse cx="120" cy="184" rx="55" ry="12" fill="rgba(0,0,0,0.2)"/>
-          <g filter="url(#gw_sh)">
-            <!-- 풍성한 귀성길 보따리 가방 -->
-            <rect x="78" y="130" width="84" height="50" rx="14" fill="url(#gw_bag)" stroke="#bf360c" stroke-width="2"/>
-            <!-- 십자 묶음 비단 리본 띠 -->
-            <rect x="114" y="130" width="12" height="50" fill="url(#gw_rib)"/>
-            <rect x="78" y="150" width="84" height="10" fill="url(#gw_rib)"/>
-            <!-- 상단 손잡이 매듭 -->
-            <path d="M106,130 Q120,114 134,130" stroke="#d50000" stroke-width="5" stroke-linecap="round" fill="none"/>
-            <circle cx="120" cy="130" r="5" fill="#d50000"/>
-          </g>
+          <!-- 한국 전통 제기차기 (엽전 + 오색 비단 술) -->
+          <ellipse cx="120" cy="188" rx="42" ry="10" fill="rgba(0,0,0,0.18)"/>
+          <!-- 하단 황동 엽전 -->
+          <circle cx="120" cy="172" r="24" fill="#d4af37" stroke="#b78103" stroke-width="2.5"/>
+          <circle cx="120" cy="172" r="18" fill="#ffd54f"/>
+          <rect x="113" y="165" width="14" height="14" fill="#8d6e63" stroke="#b78103" stroke-width="1.5"/>
+          <!-- 한지/색동 천 매듭 -->
+          <path d="M102,168 Q120,154 138,168 L134,142 Q120,138 106,142 Z" fill="#fff9c4" stroke="#fbc02d" stroke-width="1.5"/>
+          <rect x="105" y="146" width="30" height="7" rx="3" fill="#e53935"/>
+          <!-- 하늘로 뻗은 화려한 오색 비단 술 (파랑, 빨강, 노랑, 초록) -->
+          <path d="M112,142 Q96,115 88,88 Q100,105 114,138" fill="#1e88e5"/>
+          <path d="M116,140 Q108,105 110,80 Q118,105 120,138" fill="#e53935"/>
+          <path d="M122,140 Q124,102 132,82 Q128,108 124,138" fill="#fdd835"/>
+          <path d="M126,142 Q138,110 152,88 Q142,108 128,138" fill="#43a047"/>
+          <path d="M120,140 Q118,112 120,84" stroke="#ab47bc" stroke-width="3" stroke-linecap="round"/>
         `,
           cs_gohyang: `
           <defs>
@@ -10313,14 +10312,9 @@
 
         return `
           <svg class="tile-svg chuseok-hybrid-svg" viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:100%;display:block;border-radius:6px;overflow:hidden;">
-            <defs>
-              <clipPath id="cs-card-clip-${id}">
-                <rect x="0" y="0" width="240" height="300" rx="10" ry="10" />
-              </clipPath>
-            </defs>
-            <g class="tile-art-layer" clip-path="url(#cs-card-clip-${id})">
+            <g class="tile-art-layer">
               <!-- 1. 고품질 벡터 일러스트 그래픽 (실물 이미지 미탑재 시 폴백 - 중앙 확대 배치) -->
-              <g class="chuseok-svg-icon" id="svg-fb-${id}" transform="translate(120, 150) scale(1.35) translate(-120, -150)">
+              <g class="chuseok-svg-icon" transform="translate(120, 150) scale(1.35) translate(-120, -150)">
                 ${iconSvg}
               </g>
               <!-- 2. 초고화질 3D 실물 WebP 이미지: 카드 전면(240x300)을 1.10배 스케일로 빈틈없이 꽉 채움 -->
@@ -10535,7 +10529,7 @@
       { id: 'cs_rabbit', suit: 'chuseok', val: 'rabbit', label: '달토끼', badge: '토', render: () => SvgFactory.chuseokHybrid('cs_rabbit', '토', '#0288d1', '달토끼', '玉兎') },
       { id: 'cs_jeolgu', suit: 'chuseok', val: 'jeolgu', label: '돌절구공이', badge: '구', render: () => SvgFactory.chuseokHybrid('cs_jeolgu', '구', '#78909c', '돌절구', '臼杵') },
       { id: 'cs_laurel', suit: 'chuseok', val: 'laurel', label: '달속계수나무', badge: '계', render: () => SvgFactory.chuseokHybrid('cs_laurel', '계', '#4e342e', '계수나무', '桂樹') },
-      { id: 'cs_gwiseong', suit: 'chuseok', val: 'gwiseong', label: '귀성길보따리', badge: '행', render: () => SvgFactory.chuseokHybrid('cs_gwiseong', '행', '#ef6c00', '귀성길', '歸鄕') },
+      { id: 'cs_gwiseong', suit: 'chuseok', val: 'gwiseong', label: '전통제기차기', badge: '제', render: () => SvgFactory.chuseokHybrid('cs_gwiseong', '제', '#1565c0', '제기차기', '毱戱') },
       { id: 'cs_gohyang', suit: 'chuseok', val: 'gohyang', label: '시골초가집', badge: '가', render: () => SvgFactory.chuseokHybrid('cs_gohyang', '가', '#8d6e63', '고향집', '故鄕') },
       { id: 'cs_magpie', suit: 'chuseok', val: 'magpie', label: '감나무까치', badge: '조', render: () => SvgFactory.chuseokHybrid('cs_magpie', '조', '#1e88e5', '길조까치', '吉鵲') },
       { id: 'cs_chorong', suit: 'chuseok', val: 'chorong', label: '청사초롱', badge: '등', render: () => SvgFactory.chuseokHybrid('cs_chorong', '등', '#d32f2f', '청사초롱', '紗籠') },
