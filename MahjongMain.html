@@ -5397,7 +5397,7 @@
               <span>🕹️</span> <span data-i18n="settings_tab_assist">편의</span>
             </button>
             <button class="settings-tab-btn" data-tab="sound" role="tab" title="효과음 및 화면 모드" data-i18n-title="settings_tab_sound_title">
-              <span>🎵</span> <span data-i18n="settings_tab_sound">소리/화면</span>
+              <span>🎵</span> <span data-i18n="settings_tab_sound">효과음/화면</span>
             </button>
             <button class="settings-tab-btn" data-tab="advanced" role="tab" title="고급 설정 및 관리자 기능" data-i18n-title="settings_tab_advanced_title">
               <span>🛠️</span> <span data-i18n="settings_tab_advanced">고급</span>
@@ -5514,6 +5514,19 @@
             <button class="btn settings-btn" id="btn-bgm-toggle" title="배경음악(숲속 시냇물 & 새소리) 켜기/끄기" style="margin-top: 6px;">
               <span class="btn-icon" id="bgm-toggle-icon">🎵</span> <span id="bgm-toggle-text">배경음악 켜짐</span>
             </button>
+            <!-- 효과음 볼륨 슬라이더 -->
+            <div class="settings-item" id="sfx-volume-wrapper" style="margin-top: 6px; padding: 7px 10px; background: rgba(46, 120, 167, 0.08); border: 1px solid rgba(46, 120, 167, 0.22); border-radius: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                <span class="settings-label" style="margin-bottom: 0; font-weight: 800; color: #1e4163;">🎵 효과음 볼륨 크기</span>
+                <span id="sfx-volume-badge" style="font-size: 11.5px; color: #1e4163; font-weight: 900; background: #dbeafe; padding: 2px 9px; border-radius: 12px; border: 1px solid #93c5fd;">70%</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 13px; opacity: 0.7;">🔈</span>
+                <input type="range" id="slider-sfx-volume" min="0" max="100" step="5" value="70" style="flex: 1; accent-color: #2563eb; cursor: pointer; height: 6px;" title="효과음 음량 조절">
+                <span style="font-size: 13px; opacity: 0.7;">🔊</span>
+              </div>
+            </div>
+            <!-- BGM 볼륨 슬라이더 -->
             <div class="settings-item" id="bgm-volume-wrapper" style="margin-top: 6px; padding: 7px 10px; background: rgba(46, 167, 121, 0.08); border: 1px solid rgba(46, 167, 121, 0.22); border-radius: 12px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                 <span class="settings-label" style="margin-bottom: 0; font-weight: 800; color: #166534;">🔊 배경음악 볼륨 크기</span>
@@ -6730,7 +6743,7 @@
         settings_title: '⚙️ 게임 환경 설정',
         settings_tab_game: '게임',
         settings_tab_assist: '편의',
-        settings_tab_sound: '소리/화면',
+        settings_tab_sound: '효과음/화면',
         settings_tab_advanced: '고급',
         settings_tab_info: '안내',
         settings_lang_label: '🌐 언어 / Language',
@@ -7006,7 +7019,7 @@
         settings_title: '⚙️ Game Settings',
         settings_tab_game: 'Game',
         settings_tab_assist: 'Controls',
-        settings_tab_sound: 'Audio/Screen',
+        settings_tab_sound: 'FX/Screen',
         settings_tab_advanced: 'Advanced',
         settings_tab_info: 'Info',
         settings_lang_label: '🌐 Language / 언어',
@@ -7374,6 +7387,9 @@
         this.masterGain = null;
         this.compressor = null;
         this.muted = safeStorage.get('mahjong_sound_muted') === 'true';
+        // 효과음(SFX) 마스터 볼륨 (0.0 ~ 1.0, 기본 0.70)
+        const savedSfxVol = safeStorage.get('mahjong_sfx_volume');
+        this.sfxVolume = savedSfxVol !== null ? Math.max(0, Math.min(1, parseFloat(savedSfxVol))) : 0.70;
 
         // 사운드별 선택된 소리 (명리 기본 테마: 단단한 우드블록 탁 + 실제 마작패 뒤집기 + 실제 마작패 짝 + 첼레스타 오르골 + 축하 팝 + 실제 마작패 섞기)
         const savedTheme = safeStorage.get('mahjong_sound_theme');
@@ -7544,7 +7560,7 @@
             this.compressor.release.setValueAtTime(0.15, this.ctx.currentTime);
 
             this.masterGain = this.ctx.createGain();
-            this.masterGain.gain.setValueAtTime(0.70, this.ctx.currentTime);
+            this.masterGain.gain.setValueAtTime(this.sfxVolume, this.ctx.currentTime);
 
             this.masterGain.connect(this.compressor);
             this.compressor.connect(this.ctx.destination);
@@ -8952,6 +8968,19 @@
             doPause(active);
           }
         }, stepTime);
+      }
+
+      /**
+       * 효과음(SFX) masterGain 볼륨 직접 조절 (0.0 ~ 1.0)
+       */
+      setSFXVolume(vol) {
+        const clamped = Math.max(0, Math.min(1, parseFloat(vol) || 0));
+        this.sfxVolume = clamped;
+        safeStorage.set('mahjong_sfx_volume', clamped.toString());
+        if (this.masterGain && this.ctx) {
+          this.masterGain.gain.setValueAtTime(clamped, this.ctx.currentTime);
+        }
+        return clamped;
       }
 
       /**
@@ -16026,6 +16055,26 @@
           }
         };
         updateSoundUI();
+
+        // 🎵 효과음(SFX) 볼륨 슬라이더 이벤트 및 실시간 UI 동기화
+        const sliderSfxVol = document.getElementById('slider-sfx-volume');
+        const badgeSfxVol = document.getElementById('sfx-volume-badge');
+        const updateSfxVolumeUI = (volPercent) => {
+          if (badgeSfxVol) badgeSfxVol.textContent = `${volPercent}%`;
+          if (sliderSfxVol) sliderSfxVol.value = String(volPercent);
+        };
+        if (this.sound) {
+          updateSfxVolumeUI(Math.round(this.sound.sfxVolume * 100));
+        }
+        if (sliderSfxVol) {
+          const onSfxVolumeChange = (e) => {
+            const percent = Math.max(0, Math.min(100, parseInt(e.target.value, 10) || 0));
+            if (badgeSfxVol) badgeSfxVol.textContent = `${percent}%`;
+            if (this.sound) this.sound.setSFXVolume(percent / 100);
+          };
+          sliderSfxVol.addEventListener('input', onSfxVolumeChange);
+          sliderSfxVol.addEventListener('change', onSfxVolumeChange);
+        }
 
         // 🔊 배경음악 볼륨 크기 슬라이더 이벤트 및 실시간 UI 동기화
         const sliderBgmVol = document.getElementById('slider-bgm-volume');
