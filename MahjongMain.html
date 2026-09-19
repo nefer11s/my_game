@@ -5369,7 +5369,7 @@
       <div class="tray-count-badge" id="tray-count-badge">0 / 4</div>
       <!-- 톱니바퀴 설정 메뉴 (하단 바로 이동) -->
       <div class="settings-wrapper" id="settings-wrapper">
-        <button class="tray-settings-btn" id="btn-settings" title="환경 설정 (난이도, 규칙, 랭킹, 화면)" aria-haspopup="true"
+        <button class="tray-settings-btn" id="btn-settings" title="환경 설정 (난이도, 규칙, 랭킹, 화면)" data-i18n-title="btn_settings_title" aria-haspopup="true"
           aria-expanded="false">
           <span class="btn-icon">⚙️</span>
         </button>
@@ -5383,19 +5383,19 @@
           </div>
           <!-- 기능별 카테고리 탭 헤더 (5개 탭) -->
           <div class="settings-tabs" role="tablist">
-            <button class="settings-tab-btn active" data-tab="game" role="tab" title="게임 난이도 및 진행 설정">
+            <button class="settings-tab-btn active" data-tab="game" role="tab" title="게임 난이도 및 진행 설정" data-i18n-title="settings_tab_game_title">
               <span>🎮</span> <span data-i18n="settings_tab_game">게임</span>
             </button>
-            <button class="settings-tab-btn" data-tab="assist" role="tab" title="슬롯 연출 및 조작 편의">
+            <button class="settings-tab-btn" data-tab="assist" role="tab" title="슬롯 연출 및 조작 편의" data-i18n-title="settings_tab_assist_title">
               <span>🕹️</span> <span data-i18n="settings_tab_assist">편의</span>
             </button>
-            <button class="settings-tab-btn" data-tab="sound" role="tab" title="효과음 및 화면 모드">
+            <button class="settings-tab-btn" data-tab="sound" role="tab" title="효과음 및 화면 모드" data-i18n-title="settings_tab_sound_title">
               <span>🎵</span> <span data-i18n="settings_tab_sound">소리/화면</span>
             </button>
-            <button class="settings-tab-btn" data-tab="advanced" role="tab" title="고급 설정 및 관리자 기능">
+            <button class="settings-tab-btn" data-tab="advanced" role="tab" title="고급 설정 및 관리자 기능" data-i18n-title="settings_tab_advanced_title">
               <span>🛠️</span> <span data-i18n="settings_tab_advanced">고급</span>
             </button>
-            <button class="settings-tab-btn" data-tab="info" role="tab" title="게임 규칙, 랭킹 및 타일 도감">
+            <button class="settings-tab-btn" data-tab="info" role="tab" title="게임 규칙, 랭킹 및 타일 도감" data-i18n-title="settings_tab_info_title">
               <span>📖</span> <span data-i18n="settings_tab_info">안내</span>
             </button>
           </div>
@@ -5405,49 +5405,49 @@
             <div class="settings-item">
               <span class="settings-label" data-i18n="settings_lang_label">🌐 언어 / Language</span>
               <select class="diff-select" id="select-language" title="언어 선택 / Language">
-                <option value="ko" selected>🇰🇷 한국어 (기본)</option>
-                <option value="en">🇺🇸 English</option>
+                <option value="ko" selected data-i18n="lang_opt_ko">🇰🇷 한국어 (기본)</option>
+                <option value="en" data-i18n="lang_opt_en">🇺🇸 English</option>
               </select>
             </div>
             <div class="settings-item">
               <span class="settings-label" data-i18n="settings_diff_label">🎮 난이도 선택</span>
-              <select class="diff-select" id="select-difficulty" title="난이도 선택">
-                <option value="easy" id="diff-opt-easy">🌱 쉬움 (14종 · 슬롯 5개 · 블라인드 0%➔70%)</option>
-                <option value="normal" id="diff-opt-normal" selected>🌿 보통 (39종 · 슬롯 4개 · 블라인드 10%➔80% · 기본)</option>
-                <option value="hard" id="diff-opt-hard">🔥 어려움 (63종 · 슬롯 4개 · 블라인드 20%➔90%)</option>
-                <option value="master" id="diff-opt-master">👑 달인 (89종 · 슬롯 3개 · 블라인드 30%➔100% 올 블라인드)</option>
+              <select class="diff-select" id="select-difficulty" title="난이도 선택" data-i18n-title="settings_diff_select_title">
+                <option value="easy" id="diff-opt-easy" data-i18n="diff_opt_easy">🌱 쉬움 (14종 · 슬롯 5개 · 블라인드 0%➔70%)</option>
+                <option value="normal" id="diff-opt-normal" selected data-i18n="diff_opt_normal">🌿 보통 (39종 · 슬롯 4개 · 블라인드 10%➔80% · 기본)</option>
+                <option value="hard" id="diff-opt-hard" data-i18n="diff_opt_hard">🔥 어려움 (63종 · 슬롯 4개 · 블라인드 20%➔90%)</option>
+                <option value="master" id="diff-opt-master" data-i18n="diff_opt_master">👑 달인 (89종 · 슬롯 3개 · 블라인드 30%➔100% 올 블라인드)</option>
               </select>
             </div>
             <div class="settings-item">
-              <span class="settings-label">🎨 테마 패 선택</span>
+              <span class="settings-label" data-i18n="settings_theme_label">🎨 테마 패 선택</span>
               <div class="theme-radio-group" id="theme-radio-group">
-                <button class="theme-radio-btn" data-theme="classic" id="theme-btn-classic">🀄 전통</button>
-                <button class="theme-radio-btn active" data-theme="saju" id="theme-btn-saju">☯️ 명리학</button>
-                <button class="theme-radio-btn" data-theme="oryong" id="theme-btn-oryong">🐲 오룡이</button>
+                <button class="theme-radio-btn" data-theme="classic" id="theme-btn-classic" data-i18n="theme_classic">🀄 전통</button>
+                <button class="theme-radio-btn active" data-theme="saju" id="theme-btn-saju" data-i18n="theme_saju">☯️ 명리학</button>
+                <button class="theme-radio-btn" data-theme="oryong" id="theme-btn-oryong" data-i18n="theme_oryong">🐲 오룡이</button>
                 <button class="theme-radio-btn" data-theme="chuseok" id="theme-btn-chuseok" data-i18n="theme_chuseok">🌾 추석</button>
               </div>
             </div>
             <div class="settings-item" id="tile-text-wrapper"
               style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
               <span class="settings-label" data-i18n="settings_tile_text_label">🏷️ 타일 글자/라벨 표시</span>
-              <select class="diff-select" id="select-tile-text" title="타일의 배지·한글 명칭·낙관 텍스트 표시 여부 설정">
+              <select class="diff-select" id="select-tile-text" title="타일의 배지·한글 명칭·낙관 텍스트 표시 여부 설정" data-i18n-title="settings_tile_text_select_title">
                 <option value="on" selected data-i18n="tile_text_on">켜짐 (글자·배지 표기 · 기본)</option>
                 <option value="off" data-i18n="tile_text_off">꺼짐 (순수 그림만 표시 · 클린 모드)</option>
               </select>
             </div>
             <div class="settings-item" id="senior-mode-wrapper"
               style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
-              <span class="settings-label">👓 시니어 모드 (5x7 대형 패)</span>
-              <select class="diff-select" id="select-senior-mode" title="시니어 및 저시력자를 위한 5열 7행 특화 대형 패 모드">
-                <option value="off">꺼짐</option>
-                <option value="on" selected>켜짐 (5x7 대형 패 전용 · 기본)</option>
+              <span class="settings-label" data-i18n="settings_senior_label">👓 시니어 모드 (5x7 대형 패)</span>
+              <select class="diff-select" id="select-senior-mode" title="시니어 및 저시력자를 위한 5열 7행 특화 대형 패 모드" data-i18n-title="settings_senior_select_title">
+                <option value="off" data-i18n="opt_off">꺼짐</option>
+                <option value="on" selected data-i18n="opt_on_default">켜짐 (5x7 대형 패 전용 · 기본)</option>
               </select>
             </div>
-            <button class="btn settings-btn" id="btn-save-progress" title="현재 진행 상태 저장">
-              <span class="btn-icon">💾</span> 현재 판 진행 저장
+            <button class="btn settings-btn" id="btn-save-progress" title="현재 진행 상태 저장" data-i18n-title="btn_save_progress_title">
+              <span class="btn-icon">💾</span> <span data-i18n="btn_save_progress">현재 판 진행 저장</span>
             </button>
-            <button class="btn settings-btn" id="btn-reset-stage" title="진행 초기화 후 1판부터 시작">
-              <span class="btn-icon">🔄</span> 1판부터 새로하기
+            <button class="btn settings-btn" id="btn-reset-stage" title="진행 초기화 후 1판부터 시작" data-i18n-title="btn_reset_stage_title">
+              <span class="btn-icon">🔄</span> <span data-i18n="btn_reset_stage">1판부터 새로하기</span>
             </button>
           </div>
 
@@ -5456,41 +5456,41 @@
             <!-- 슬롯 매칭 소멸 효과 옵션 -->
             <div class="settings-item" id="slot-match-effect-wrapper">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                <span class="settings-label" style="margin-bottom: 0;">💥 슬롯 매칭 효과</span>
+                <span class="settings-label" style="margin-bottom: 0;" data-i18n="settings_slot_effect_label">💥 슬롯 매칭 효과</span>
                 <span id="slot-match-effect-badge"
                   style="font-size: 11px; color: #b45309; font-weight: 700; background: #fef3c7; padding: 2px 7px; border-radius: 10px;">축제
                   폭죽</span>
               </div>
-              <select class="diff-select" id="select-slot-match-effect" title="슬롯에서 짝이 맞아 없어질 때의 연출 및 사운드 효과">
-                <option value="firework" selected>🎆 축제 폭죽 (팡! 폭죽 애니메이션 & 폭죽 소리 · 기본)</option>
-                <option value="classic">✨ 클래식 마법 (은은하게 뾰로롱 소멸 & 차임벨 소리)</option>
+              <select class="diff-select" id="select-slot-match-effect" title="슬롯에서 짝이 맞아 없어질 때의 연출 및 사운드 효과" data-i18n-title="slot_effect_select_title">
+                <option value="firework" selected data-i18n="slot_effect_opt_firework">🎆 축제 폭죽 (팡! 폭죽 애니메이션 & 폭죽 소리 · 기본)</option>
+                <option value="classic" data-i18n="slot_effect_opt_classic">✨ 클래식 마법 (은은하게 뾰로롱 소멸 & 차임벨 소리)</option>
               </select>
             </div>
             <!-- 슬롯 이동 속도 조절 옵션 -->
             <div class="settings-item" id="slot-anim-speed-wrapper"
               style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                <span class="settings-label" style="margin-bottom: 0;">✈️ 슬롯 이동 속도</span>
+                <span class="settings-label" style="margin-bottom: 0;" data-i18n="settings_slot_speed_label">✈️ 슬롯 이동 속도</span>
                 <span id="slot-anim-speed-badge"
                   style="font-size: 11px; color: #166534; font-weight: 700; background: #dcfce7; padding: 2px 7px; border-radius: 10px;">느림
                   (0.6초)</span>
               </div>
-              <select class="diff-select" id="select-slot-anim-speed" title="패가 슬롯으로 날아가는 애니메이션 속도 조절">
-                <option value="very_slow">🐢 아주 느림 (0.8초)</option>
-                <option value="slow" selected>🦥 느림 (0.6초 · 기본)</option>
-                <option value="normal">🌿 보통 (0.45초)</option>
-                <option value="fast">⚡ 빠름 (0.3초)</option>
-                <option value="instant">🚀 즉시 이동 (0초 · 애니메이션 끄기)</option>
+              <select class="diff-select" id="select-slot-anim-speed" title="패가 슬롯으로 날아가는 애니메이션 속도 조절" data-i18n-title="slot_speed_select_title">
+                <option value="very_slow" data-i18n="slot_speed_opt_very_slow">🐢 아주 느림 (0.8초)</option>
+                <option value="slow" selected data-i18n="slot_speed_opt_slow">🦥 느림 (0.6초 · 기본)</option>
+                <option value="normal" data-i18n="slot_speed_opt_normal">🌿 보통 (0.45초)</option>
+                <option value="fast" data-i18n="slot_speed_opt_fast">⚡ 빠름 (0.3초)</option>
+                <option value="instant" data-i18n="slot_speed_opt_instant">🚀 즉시 이동 (0초 · 애니메이션 끄기)</option>
               </select>
             </div>
-            <button class="btn settings-btn" id="btn-dynamic-zoom" title="남은 패에 맞춰 화면을 자동으로 꽉 채우는 동적 확대">
+            <button class="btn settings-btn" id="btn-dynamic-zoom" title="남은 패에 맞춰 화면을 자동으로 꽉 채우는 동적 확대" data-i18n-title="dynamic_zoom_title">
               <span class="btn-icon" id="dynamic-zoom-icon">🔒</span> <span id="dynamic-zoom-text">동적확대: 꺼짐</span>
             </button>
-            <button class="btn settings-btn" id="btn-auto-end-match" title="남은 타일 10개 이하 시 자동으로 매칭 진행">
+            <button class="btn settings-btn" id="btn-auto-end-match" title="남은 타일 10개 이하 시 자동으로 매칭 진행" data-i18n-title="auto_end_match_title">
               <span class="btn-icon" id="auto-end-match-icon">⚡</span> <span id="auto-end-match-text">마지막10개 자동매칭:
                 켜짐</span>
             </button>
-            <button class="btn settings-btn" id="btn-auto-blind-pair" title="뒤집힌 패 뒤집은 후 같은 자유패 선택 시 두 패 자동 슬롯 이동">
+            <button class="btn settings-btn" id="btn-auto-blind-pair" title="뒤집힌 패 뒤집은 후 같은 자유패 선택 시 두 패 자동 슬롯 이동" data-i18n-title="auto_blind_pair_title">
               <span class="btn-icon" id="auto-blind-pair-icon">🔓</span> <span id="auto-blind-pair-text">짝선택 자동슬롯:
                 켜짐</span>
             </button>
@@ -5498,59 +5498,59 @@
 
           <!-- 3. 사운드 & 화면 모드 탭 -->
           <div class="settings-tab-panel" data-tab="sound" role="tabpanel">
-            <button class="btn settings-btn" id="btn-sound-toggle" title="효과음 켜기/끄기">
+            <button class="btn settings-btn" id="btn-sound-toggle" title="효과음 켜기/끄기" data-i18n-title="btn_sound_toggle_title">
               <span class="btn-icon" id="sound-toggle-icon">🔊</span> <span id="sound-toggle-text">소리 켜짐</span>
             </button>
             <div class="settings-item">
-              <span class="settings-label">🎵 효과음 테마</span>
-              <select class="diff-select" id="select-sound-theme" title="효과음 테마 선택">
-                <option value="myeongri" selected>🀄 명리 기본 테마 (우드블록 · 리얼 마작)</option>
-                <option value="jade">💎 SY 옥조각 (비취 옥패 · 리얼 마작)</option>
-                <option value="real">🀄 리얼 마작패 (실물 타격·바차임)</option>
-                <option value="wood">🪵 자연의 원목 (우드 & 오르골)</option>
-                <option value="synth">🎮 클래식 신디 (경쾌한 전자음)</option>
+              <span class="settings-label" data-i18n="settings_sound_theme_label">🎵 효과음 테마</span>
+              <select class="diff-select" id="select-sound-theme" title="효과음 테마 선택" data-i18n-title="sound_theme_select_title">
+                <option value="myeongri" selected data-i18n="sound_theme_opt_myeongri">🀄 명리 기본 테마 (우드블록 · 리얼 마작)</option>
+                <option value="jade" data-i18n="sound_theme_opt_jade">💎 SY 옥조각 (비취 옥패 · 리얼 마작)</option>
+                <option value="real" data-i18n="sound_theme_opt_real">🀄 리얼 마작패 (실물 타격·바차임)</option>
+                <option value="wood" data-i18n="sound_theme_opt_wood">🪵 자연의 원목 (우드 & 오르골)</option>
+                <option value="synth" data-i18n="sound_theme_opt_synth">🎮 클래식 신디 (경쾌한 전자음)</option>
               </select>
             </div>
-            <button class="btn settings-btn" id="btn-open-sound-settings" title="타일선택, 매칭, 바차임, 폭죽 소리 개별 변경">
-              <span class="btn-icon">🎛️</span> 효과음 상세 소리 설정...
+            <button class="btn settings-btn" id="btn-open-sound-settings" title="타일선택, 매칭, 바차임, 폭죽 소리 개별 변경" data-i18n-title="btn_sound_detail_title">
+              <span class="btn-icon">🎛️</span> <span data-i18n="btn_sound_detail">효과음 상세 소리 설정...</span>
             </button>
-            <button class="btn settings-btn" id="btn-fullscreen" title="전체화면 모드 토글">
-              <span class="btn-icon">⛶</span> <span id="btn-fs-text">전체화면</span>
+            <button class="btn settings-btn" id="btn-fullscreen" title="전체화면 모드 토글" data-i18n-title="btn_fullscreen_title">
+              <span class="btn-icon">⛶</span> <span id="btn-fs-text" data-i18n="fullscreen">전체화면</span>
             </button>
           </div>
 
           <!-- 4. 고급 설정 탭 (관리자 / 디버그 / 세부 파라미터) -->
           <div class="settings-tab-panel" data-tab="advanced" role="tabpanel">
-            <button class="btn settings-btn" id="btn-open-stage-warp" title="원하는 난이도와 판(Stage)으로 직행"
+            <button class="btn settings-btn" id="btn-open-stage-warp" title="원하는 난이도와 판(Stage)으로 직행" data-i18n-title="btn_warp_modal_title"
               style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1.5px solid #86efac; color: #166534; font-weight: 800;">
-              <span class="btn-icon">🚀</span> 레벨/판 직행 이동...
+              <span class="btn-icon">🚀</span> <span data-i18n="btn_warp_modal">레벨/판 직행 이동...</span>
             </button>
             <!-- 전통패 글자(라벨) 숨김 고급 옵션 -->
             <div class="settings-item"
               style="margin-top: 6px; padding-top: 8px; border-top: 1px dashed rgba(46, 167, 121, 0.3);">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                <span class="settings-label" style="margin-bottom: 0;">🀄 전통패 글자(라벨) 표시</span>
+                <span class="settings-label" style="margin-bottom: 0;" data-i18n="settings_classic_label_mode">🀄 전통패 글자(라벨) 표시</span>
                 <span id="classic-label-badge"
                   style="font-size: 11px; color: #b45309; font-weight: 700; background: #fef3c7; padding: 2px 7px; border-radius: 10px;">글자
                   숨김</span>
               </div>
-              <select class="diff-select" id="select-classic-label-mode" title="전통 마작 패의 모서리 숫자/기호 및 하단 라벨 글자 표시 여부">
-                <option value="hide" selected>숨김 (글자 없이 순수 패 그림만 표시 · 기본)</option>
-                <option value="show">표시함 (숫자·보조 라벨 글자 표시)</option>
+              <select class="diff-select" id="select-classic-label-mode" title="전통 마작 패의 모서리 숫자/기호 및 하단 라벨 글자 표시 여부" data-i18n-title="classic_label_select_title">
+                <option value="hide" selected data-i18n="classic_label_opt_hide">숨김 (글자 없이 순수 패 그림만 표시 · 기본)</option>
+                <option value="show" data-i18n="classic_label_opt_show">표시함 (숫자·보조 라벨 글자 표시)</option>
               </select>
             </div>
             <!-- 난이도별 판당 시간 제한 상세 설정 -->
             <div class="settings-item"
               style="margin-top: 6px; padding-top: 8px; border-top: 1px dashed rgba(46, 167, 121, 0.3);">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                <span class="settings-label" style="margin-bottom: 0;">⏱️ 난이도별 상세 시간 제한</span>
+                <span class="settings-label" style="margin-bottom: 0;" data-i18n="settings_time_limit_label">⏱️ 난이도별 상세 시간 제한</span>
                 <span id="time-limit-badge"
                   style="font-size: 11px; color: #166534; font-weight: 700; background: #dcfce7; padding: 2px 7px; border-radius: 10px;"></span>
               </div>
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
                 <div>
                   <label for="select-time-easy"
-                    style="font-size: 11px; color: #4a5568; display: block; margin-bottom: 2px; font-weight: 600;">🌱
+                    style="font-size: 11px; color: #4a5568; display: block; margin-bottom: 2px; font-weight: 600;" data-i18n="time_limit_label_easy">🌱
                     쉬움</label>
                   <select class="diff-select" id="select-time-easy"
                     style="width: 100%; font-size: 12px; padding: 4px 6px;">
@@ -5566,7 +5566,7 @@
                 </div>
                 <div>
                   <label for="select-time-normal"
-                    style="font-size: 11px; color: #4a5568; display: block; margin-bottom: 2px; font-weight: 600;">🌿
+                    style="font-size: 11px; color: #4a5568; display: block; margin-bottom: 2px; font-weight: 600;" data-i18n="time_limit_label_normal">🌿
                     보통</label>
                   <select class="diff-select" id="select-time-normal"
                     style="width: 100%; font-size: 12px; padding: 4px 6px;">
@@ -5581,7 +5581,7 @@
                 </div>
                 <div>
                   <label for="select-time-hard"
-                    style="font-size: 11px; color: #4a5568; display: block; margin-bottom: 2px; font-weight: 600;">🔥
+                    style="font-size: 11px; color: #4a5568; display: block; margin-bottom: 2px; font-weight: 600;" data-i18n="time_limit_label_hard">🔥
                     어려움</label>
                   <select class="diff-select" id="select-time-hard"
                     style="width: 100%; font-size: 12px; padding: 4px 6px;">
@@ -5596,7 +5596,7 @@
                 </div>
                 <div>
                   <label for="select-time-master"
-                    style="font-size: 11px; color: #4a5568; display: block; margin-bottom: 2px; font-weight: 600;">👑
+                    style="font-size: 11px; color: #4a5568; display: block; margin-bottom: 2px; font-weight: 600;" data-i18n="time_limit_label_master">👑
                     달인</label>
                   <select class="diff-select" id="select-time-master"
                     style="width: 100%; font-size: 12px; padding: 4px 6px;">
@@ -5613,83 +5613,83 @@
             </div>
             <div class="settings-item" id="dynamic-zoom-cols-wrapper"
               style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
-              <span class="settings-label">🔍 동적확대 최대 배율 (열 수 제한)</span>
-              <select class="diff-select" id="select-dynamic-zoom-cols" title="동적 확대 시 최대 확대 한도(기준 열 수)">
-                <option value="3">3열까지 (최대 확대: 매우 큼)</option>
-                <option value="4">4열까지 (최대 확대: 큼)</option>
-                <option value="5" selected>5열까지 (기본값: 적당함)</option>
-                <option value="6">6열까지 (완만한 확대)</option>
-                <option value="7">7열까지 (약간 확대)</option>
-                <option value="8">8열까지 (최소 확대)</option>
+              <span class="settings-label" data-i18n="settings_dynamic_zoom_cols_label">🔍 동적확대 최대 배율 (열 수 제한)</span>
+              <select class="diff-select" id="select-dynamic-zoom-cols" title="동적 확대 시 최대 확대 한도(기준 열 수)" data-i18n-title="dynamic_zoom_cols_title">
+                <option value="3" data-i18n="zoom_cols_opt_3">3열까지 (최대 확대: 매우 큼)</option>
+                <option value="4" data-i18n="zoom_cols_opt_4">4열까지 (최대 확대: 큼)</option>
+                <option value="5" selected data-i18n="zoom_cols_opt_5">5열까지 (기본값: 적당함)</option>
+                <option value="6" data-i18n="zoom_cols_opt_6">6열까지 (완만한 확대)</option>
+                <option value="7" data-i18n="zoom_cols_opt_7">7열까지 (약간 확대)</option>
+                <option value="8" data-i18n="zoom_cols_opt_8">8열까지 (최소 확대)</option>
               </select>
             </div>
             <!-- 30판 클리어 폭죽 발사 속도 고급 옵션 -->
             <div class="settings-item" id="stage30-firework-speed-wrapper"
               style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                <span class="settings-label" style="margin-bottom: 0;">🎆 30판 클리어 폭죽 속도</span>
+                <span class="settings-label" style="margin-bottom: 0;" data-i18n="settings_stage30_firework_speed_label">🎆 30판 클리어 폭죽 속도</span>
                 <span id="stage30-firework-speed-badge"
                   style="font-size: 11px; color: #6b21a8; font-weight: 700; background: #f3e8ff; padding: 2px 7px; border-radius: 10px;">🐢
                   여유로움 (1.40초)</span>
               </div>
-              <select class="diff-select" id="select-stage30-firework-speed" title="30판 클리어 시 터지는 축하 폭죽의 연속 발사 간격 속도">
-                <option value="200">🚀 매우 빠름 (0.20초 간격)</option>
-                <option value="350">⚡ 빠름 (0.35초 간격)</option>
-                <option value="550">🌿 보통 (0.55초 간격)</option>
-                <option value="900">🕊️ 느긋함 (0.90초 간격)</option>
-                <option value="1400" selected>🐢 여유로움 (1.40초 간격 · 기본값)</option>
+              <select class="diff-select" id="select-stage30-firework-speed" title="30판 클리어 시 터지는 축하 폭죽의 연속 발사 간격 속도" data-i18n-title="stage30_firework_speed_title">
+                <option value="200" data-i18n="firework_spd_opt_200">🚀 매우 빠름 (0.20초 간격)</option>
+                <option value="350" data-i18n="firework_spd_opt_350">⚡ 빠름 (0.35초 간격)</option>
+                <option value="550" data-i18n="firework_spd_opt_550">🌿 보통 (0.55초 간격)</option>
+                <option value="900" data-i18n="firework_spd_opt_900">🕊️ 느긋함 (0.90초 간격)</option>
+                <option value="1400" selected data-i18n="firework_spd_opt_1400">🐢 여유로움 (1.40초 간격 · 기본값)</option>
               </select>
             </div>
             <!-- 30판 클리어 폭죽 동시 폭발 개수 옵션 -->
             <div class="settings-item" id="stage30-firework-count-wrapper"
               style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed rgba(46, 167, 121, 0.25);">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-                <span class="settings-label" style="margin-bottom: 0;">✨ 30판 폭죽 동시 폭발 개수</span>
+                <span class="settings-label" style="margin-bottom: 0;" data-i18n="settings_stage30_firework_count_label">✨ 30판 폭죽 동시 폭발 개수</span>
                 <span id="stage30-firework-count-badge"
                   style="font-size: 11px; color: #15803d; font-weight: 700; background: #dcfce7; padding: 2px 7px; border-radius: 10px;">🎉
                   3개 (기본값)</span>
               </div>
-              <select class="diff-select" id="select-stage30-firework-count" title="30판 클리어 시 한 번에 동시에 터지는 축하 폭죽의 개수">
-                <option value="1">🌱 1개 (단아함)</option>
-                <option value="2">🌿 2개 (경쾌함)</option>
-                <option value="3" selected>🎉 3개 (풍성함 · 기본값)</option>
-                <option value="4">🎆 4개 (축제 분위기)</option>
-                <option value="5">👑 5개 (초호화 불꽃쇼)</option>
+              <select class="diff-select" id="select-stage30-firework-count" title="30판 클리어 시 한 번에 동시에 터지는 축하 폭죽의 개수" data-i18n-title="stage30_firework_count_title">
+                <option value="1" data-i18n="firework_cnt_opt_1">🌱 1개 (단아함)</option>
+                <option value="2" data-i18n="firework_cnt_opt_2">🌿 2개 (경쾌함)</option>
+                <option value="3" selected data-i18n="firework_cnt_opt_3">🎉 3개 (풍성함 · 기본값)</option>
+                <option value="4" data-i18n="firework_cnt_opt_4">🎆 4개 (축제 분위기)</option>
+                <option value="5" data-i18n="firework_cnt_opt_5">👑 5개 (초호화 불꽃쇼)</option>
               </select>
             </div>
             <button class="btn settings-btn btn-clear-cache" id="btn-clear-cache"
-              title="브라우저 캐시를 완전히 비우고 최신 버전을 다시 받아옵니다" style="margin-top: 8px;">
-              <span class="btn-icon">🔄</span> 캐시 완전 초기화 및 새로고침
+              title="브라우저 캐시를 완전히 비우고 최신 버전을 다시 받아옵니다" data-i18n-title="btn_clear_cache_title" style="margin-top: 8px;">
+              <span class="btn-icon">🔄</span> <span data-i18n="btn_clear_cache">캐시 완전 초기화 및 새로고침</span>
             </button>
             <button class="btn settings-btn btn-trigger-reset-all" id="btn-reset-all-settings"
-              title="모든 게임 환경설정(난이도 보통, 명리 테마, 짝선택 자동슬롯 켜짐 등)을 기본값으로 되돌립니다"
+              title="모든 게임 환경설정(난이도 보통, 명리 테마, 짝선택 자동슬롯 켜짐 등)을 기본값으로 되돌립니다" data-i18n-title="btn_reset_all_settings_title"
               style="margin-top: 6px; background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); border: 1.5px solid #f87171; color: #b91c1c; font-weight: 800; box-shadow: 0 2px 6px rgba(220, 38, 38, 0.15);">
-              <span class="btn-icon">⚙️</span> 전체 환경설정 기본값 복원
+              <span class="btn-icon">⚙️</span> <span data-i18n="btn_reset_all_settings">전체 환경설정 기본값 복원</span>
             </button>
           </div>
 
           <!-- 5. 게임 안내 & 도감 탭 -->
           <div class="settings-tab-panel" data-tab="info" role="tabpanel">
-            <button class="btn settings-btn" id="btn-rules-header" title="한눈에 보는 핵심 가이드 (카드뉴스)">
-              <span class="btn-icon">💡</span> 한눈에 보는 핵심 가이드
+            <button class="btn settings-btn" id="btn-rules-header" title="한눈에 보는 핵심 가이드 (카드뉴스)" data-i18n-title="settings_btn_rules_title">
+              <span class="btn-icon">💡</span> <span data-i18n="settings_btn_rules">한눈에 보는 핵심 가이드</span>
             </button>
-            <button class="btn settings-btn" id="btn-detail-rules-header" title="게임 전체 상세규칙 (6대 규칙)">
-              <span class="btn-icon">📜</span> 게임 전체 상세규칙
+            <button class="btn settings-btn" id="btn-detail-rules-header" title="게임 전체 상세규칙 (6대 규칙)" data-i18n-title="settings_btn_detail_rules_title">
+              <span class="btn-icon">📜</span> <span data-i18n="settings_btn_detail_rules">게임 전체 상세규칙</span>
             </button>
-            <button class="btn settings-btn" id="btn-settings-guide-header" title="게임 환경설정 옵션 설명">
-              <span class="btn-icon">⚙️</span> 게임 환경설정 옵션 설명
+            <button class="btn settings-btn" id="btn-settings-guide-header" title="게임 환경설정 옵션 설명" data-i18n-title="settings_btn_settings_guide_title">
+              <span class="btn-icon">⚙️</span> <span data-i18n="settings_btn_settings_guide">게임 환경설정 옵션 설명</span>
             </button>
-            <button class="btn settings-btn" id="btn-rank-header" title="나의 최고기록">
-              <span class="btn-icon">🏆</span> 나의 최고기록
+            <button class="btn settings-btn" id="btn-rank-header" title="나의 최고기록" data-i18n-title="settings_btn_rank_title">
+              <span class="btn-icon">🏆</span> <span data-i18n="settings_btn_rank">나의 최고기록</span>
             </button>
-            <button class="btn settings-btn" id="btn-tile-gallery" title="전체 타일 도감">
-              <span class="btn-icon">🀄</span> 전체 타일 도감
+            <button class="btn settings-btn" id="btn-tile-gallery" title="전체 타일 도감" data-i18n-title="settings_btn_tile_gallery_title">
+              <span class="btn-icon">🀄</span> <span data-i18n="settings_btn_tile_gallery">전체 타일 도감</span>
             </button>
           </div>
 
           <div class="settings-divider"></div>
-          <button class="btn settings-btn btn-exit-app" id="btn-exit-app" title="게임을 종료하고 브라우저 창을 닫습니다">
-            <span class="btn-icon">🚪</span> 앱 종료
+          <button class="btn settings-btn btn-exit-app" id="btn-exit-app" title="게임을 종료하고 브라우저 창을 닫습니다" data-i18n-title="btn_exit_app_title">
+            <span class="btn-icon">🚪</span> <span data-i18n="btn_exit_app">앱 종료</span>
           </button>
           <div style="font-size: 11px; text-align: center; color: #7a9c8b; padding-top: 2px;">
             Si-Yeon Mahjong Solitaire v1.6.04
@@ -6311,17 +6311,17 @@
       <div class="rules-header">
         <span style="font-size: 26px;">⚙️</span>
         <div>
-          <h2 class="modal-title" style="margin-bottom: 0; font-size: 20px; color: #14532d;">게임 환경설정 옵션 설명</h2>
-          <div style="font-size: 12px; color: #5a7d6d; font-weight: 600;">각 설정 탭별 옵션 기능과 추천 활용 팁</div>
+          <h2 class="modal-title" style="margin-bottom: 0; font-size: 20px; color: #14532d;" data-i18n="guide_modal_title">게임 환경설정 옵션 설명</h2>
+          <div style="font-size: 12px; color: #5a7d6d; font-weight: 600;" data-i18n="guide_modal_subtitle">각 설정 탭별 옵션 기능과 추천 활용 팁</div>
         </div>
       </div>
       <div class="rules-body" style="max-height: 56vh; gap: 10px;">
         <!-- 1. 게임 난이도 & 진행 옵션 -->
         <div class="rule-item" style="flex-direction: column; gap: 6px;">
           <strong style="font-size: 14px; color: #14532d; display: flex; align-items: center; gap: 6px;">
-            <span>🎮</span> [게임] 난이도 &amp; 진행 옵션
+            <span>🎮</span> <span data-i18n="guide_tab_game_title">[게임] 난이도 &amp; 진행 옵션</span>
           </strong>
-          <div style="font-size: 12.5px; color: #374151; line-height: 1.6; padding-left: 4px;">
+          <div style="font-size: 12.5px; color: #374151; line-height: 1.6; padding-left: 4px;" data-i18n-html="guide_tab_game_desc">
             • <strong>게임 난이도</strong>: 초급(슬롯 5칸/180초), 보통(4칸/150초), 고급(3칸/120초) 중 선택합니다.<br>
             • <strong>판당 시간 제한</strong>: On/Off 가능. 시간 만료 시 하트 1개를 소진하여 60초가 자동 연장됩니다.<br>
             • <strong>슬롯 만석 탈출(💔)</strong>: 슬롯이 다 찼을 때 하트 1개를 사용하여 패 2개를 보드로 되돌려 게임 오버를 모면합니다.<br>
@@ -6333,9 +6333,9 @@
         <!-- 2. 보조 연출 & 조작 편의 옵션 -->
         <div class="rule-item" style="flex-direction: column; gap: 6px;">
           <strong style="font-size: 14px; color: #14532d; display: flex; align-items: center; gap: 6px;">
-            <span>⚡</span> [보조] 연출 &amp; 조작 편의 옵션
+            <span>⚡</span> <span data-i18n="guide_tab_assist_title">[보조] 연출 &amp; 조작 편의 옵션</span>
           </strong>
-          <div style="font-size: 12.5px; color: #374151; line-height: 1.6; padding-left: 4px;">
+          <div style="font-size: 12.5px; color: #374151; line-height: 1.6; padding-left: 4px;" data-i18n-html="guide_tab_assist_desc">
             • <strong>짝선택 자동슬롯</strong>: 블라인드 패 확인 중 보드의 짝을 누르면 두 패가 동시에 슬롯으로 이동해 즉시 매칭되는 빠른 조작 기능입니다.<br>
             • <strong>마지막 10개 자동매칭</strong>: 남은 패가 10개 이하가 되면 자동으로 짝을 맞추며 신속하게 클리어합니다.<br>
             • <strong>블라인드 물음표 패</strong>: 뒷면 패를 자유롭게 터치하여 앞면을 살짝 엿볼 수 있는 흥미 요소입니다.<br>
@@ -6348,9 +6348,9 @@
         <!-- 3. 효과음 & 화면 모드 옵션 -->
         <div class="rule-item" style="flex-direction: column; gap: 6px;">
           <strong style="font-size: 14px; color: #14532d; display: flex; align-items: center; gap: 6px;">
-            <span>🎵</span> [소리] 효과음 &amp; 화면 옵션
+            <span>🎵</span> <span data-i18n="guide_tab_sound_title">[소리] 효과음 &amp; 화면 옵션</span>
           </strong>
-          <div style="font-size: 12.5px; color: #374151; line-height: 1.6; padding-left: 4px;">
+          <div style="font-size: 12.5px; color: #374151; line-height: 1.6; padding-left: 4px;" data-i18n-html="guide_tab_sound_desc">
             • <strong>효과음 켜기/끄기</strong>: 게임의 전체 효과음을 On/Off 전환합니다.<br>
             • <strong>효과음 테마</strong>: 명리 기본, 리얼 마작패, 크리스탈 벨, 클래식 신디 등 사운드 프리셋을 적용합니다.<br>
             • <strong>효과음 상세 소리 설정</strong>: 선택, 뒤집기, 짝맞춤, 알림, 폭죽, 셔플 등 6가지 효과음을 취향대로 개별 지정합니다.<br>
@@ -6361,9 +6361,9 @@
         <!-- 4. 고급 관리 & 테마 옵션 -->
         <div class="rule-item" style="flex-direction: column; gap: 6px;">
           <strong style="font-size: 14px; color: #14532d; display: flex; align-items: center; gap: 6px;">
-            <span>🛠️</span> [고급] 관리 &amp; 테마 옵션
+            <span>🛠️</span> <span data-i18n="guide_tab_advanced_title">[고급] 관리 &amp; 테마 옵션</span>
           </strong>
-          <div style="font-size: 12.5px; color: #374151; line-height: 1.6; padding-left: 4px;">
+          <div style="font-size: 12.5px; color: #374151; line-height: 1.6; padding-left: 4px;" data-i18n-html="guide_tab_advanced_desc">
             • <strong>레벨/판 직행 이동</strong>: 원하는 난이도와 1~30판 중 원하는 스테이지로 즉시 점프합니다.<br>
             • <strong>전통패 글자(라벨) 표시</strong>: 전통 마작패 모서리의 숫자·기호 및 하단 라벨 표시 여부를 선택합니다. (기본: 숨김)<br>
             • <strong>난이도별 상세 시간 제한</strong>: 초급, 보통, 고급 각 난이도의 제한 시간을 초 단위로 정밀 조절합니다.<br>
@@ -6374,7 +6374,7 @@
         </div>
       </div>
       <button class="modal-btn" id="btn-settings-guide-close"
-        style="width: 100%; margin: 0; background: linear-gradient(135deg, #15803d, #166534); color: #fff;">확인
+        style="width: 100%; margin: 0; background: linear-gradient(135deg, #15803d, #166534); color: #fff;" data-i18n="guide_btn_close">확인
         완료</button>
     </div>
   </div>
@@ -6385,108 +6385,108 @@
     <div class="modal-card rules-card" style="max-width: 480px;">
       <div class="rules-header">
         <span style="font-size: 24px;">🎵</span>
-        <h2 style="font-size: 19px; font-weight: 800; color: #123927; margin: 0;">효과음 개별 소리 선택</h2>
+        <h2 style="font-size: 19px; font-weight: 800; color: #123927; margin: 0;" data-i18n="sound_modal_title">효과음 개별 소리 선택</h2>
       </div>
-      <p style="font-size: 12.5px; color: #5a7d6d; margin-top: -8px; margin-bottom: 14px;">
+      <p style="font-size: 12.5px; color: #5a7d6d; margin-top: -8px; margin-bottom: 14px;" data-i18n="sound_modal_desc">
         각 상황별 원하는 소리를 직접 선택해 보세요. 소리를 변경하면 즉시 미리듣기가 재생됩니다.
       </p>
       <div class="rules-body" style="max-height: 54vh;">
         <!-- 1. 타일 선택음 -->
         <div class="sound-config-item">
           <div class="sound-config-title">
-            <span>👆 패선택/슬롯에 넣는음 (Select)</span>
-            <button class="sound-test-btn" id="btn-test-sound-select" title="선택음 미리듣기">▶ 듣기</button>
+            <span data-i18n="sound_title_select">👆 패선택/슬롯에 넣는음 (Select)</span>
+            <button class="sound-test-btn" id="btn-test-sound-select" title="선택음 미리듣기" data-i18n="btn_sound_test" data-i18n-title="btn_sound_test_title">▶ 듣기</button>
           </div>
           <select class="diff-select sound-select" id="select-sound-select">
-            <option value="wood" selected>🪵 단단한 우드블록 탁 (원목 타격 · 명리 기본)</option>
-            <option value="jade">💎 쫀득한 옥조각 딱! (비취 옥패 부딪침)</option>
-            <option value="real">🀄 리얼 마작패 톡 (실물 수지 접촉)</option>
-            <option value="crystal">🔔 크리스탈 핑 (청아한 유리)</option>
-            <option value="synth">✨ 클래식 뾱 (경쾌한 전자음)</option>
-            <option value="none">🔇 소리 없음</option>
+            <option value="wood" selected data-i18n="snd_opt_wood_select">🪵 단단한 우드블록 탁 (원목 타격 · 명리 기본)</option>
+            <option value="jade" data-i18n="snd_opt_jade_select">💎 쫀득한 옥조각 딱! (비취 옥패 부딪침)</option>
+            <option value="real" data-i18n="snd_opt_real_select">🀄 리얼 마작패 톡 (실물 수지 접촉)</option>
+            <option value="crystal" data-i18n="snd_opt_crystal_select">🔔 크리스탈 핑 (청아한 유리)</option>
+            <option value="synth" data-i18n="snd_opt_synth_select">✨ 클래식 뾱 (경쾌한 전자음)</option>
+            <option value="none" data-i18n="sound_none">🔇 소리 없음</option>
           </select>
         </div>
 
         <!-- 2. 패 뒤집기음 (블라인드 패) -->
         <div class="sound-config-item">
           <div class="sound-config-title">
-            <span>🔄 패 뒤집기음 (Flip)</span>
-            <button class="sound-test-btn" id="btn-test-sound-flip" title="뒤집기음 미리듣기">▶ 듣기</button>
+            <span data-i18n="sound_title_flip">🔄 패 뒤집기음 (Flip)</span>
+            <button class="sound-test-btn" id="btn-test-sound-flip" title="뒤집기음 미리듣기" data-i18n="btn_sound_test" data-i18n-title="btn_sound_test_title">▶ 듣기</button>
           </div>
           <select class="diff-select sound-select" id="select-sound-flip">
-            <option value="real_flip" selected>🀄 실제 마작패-뒤집기 (실물 패 뒤집기 · 추천)</option>
-            <option value="crystal">🔔 크리스탈 핑 (청아한 유리)</option>
-            <option value="wood">🪵 우드 톡 (경쾌한 목재음)</option>
-            <option value="synth">✨ 클래식 뾱 (전자음)</option>
-            <option value="none">🔇 소리 없음</option>
+            <option value="real_flip" selected data-i18n="snd_opt_real_flip">🀄 실제 마작패-뒤집기 (실물 패 뒤집기 · 추천)</option>
+            <option value="crystal" data-i18n="snd_opt_crystal_flip">🔔 크리스탈 핑 (청아한 유리)</option>
+            <option value="wood" data-i18n="snd_opt_wood_flip">🪵 우드 톡 (경쾌한 목재음)</option>
+            <option value="synth" data-i18n="snd_opt_synth_flip">✨ 클래식 뾱 (전자음)</option>
+            <option value="none" data-i18n="sound_none">🔇 소리 없음</option>
           </select>
         </div>
 
         <!-- 3. 짝 맞춤 타격음 -->
         <div class="sound-config-item">
           <div class="sound-config-title">
-            <span>💥 짝 맞춤 타격음 (Match Impact)</span>
-            <button class="sound-test-btn" id="btn-test-sound-match" title="타격음 미리듣기">▶ 듣기</button>
+            <span data-i18n="sound_title_match">💥 짝 맞춤 타격음 (Match Impact)</span>
+            <button class="sound-test-btn" id="btn-test-sound-match" title="타격음 미리듣기" data-i18n="btn_sound_test" data-i18n-title="btn_sound_test_title">▶ 듣기</button>
           </div>
           <select class="diff-select sound-select" id="select-sound-match">
-            <option value="real_pair" selected>🀄 실제 마작패-짝 (실물 마작패 충돌음 · 단독음)</option>
-            <option value="ceramic">🏺 도자기 맑은 딱! (선명한 크랙)</option>
-            <option value="real">🀄 리얼 마작 짝! (실물 강한 충돌)</option>
-            <option value="crystal">🔔 크리스탈 벨 댕~ (깊은 공명)</option>
-            <option value="punch">⚡ 묵직한 펀치 챡! (강한 임팩트)</option>
-            <option value="none">🔇 소리 없음</option>
+            <option value="real_pair" selected data-i18n="snd_opt_real_pair">🀄 실제 마작패-짝 (실물 마작패 충돌음 · 단독음)</option>
+            <option value="ceramic" data-i18n="snd_opt_ceramic_match">🏺 도자기 맑은 딱! (선명한 크랙)</option>
+            <option value="real" data-i18n="snd_opt_real_match">🀄 리얼 마작 짝! (실물 강한 충돌)</option>
+            <option value="crystal" data-i18n="snd_opt_crystal_match">🔔 크리스탈 벨 댕~ (깊은 공명)</option>
+            <option value="punch" data-i18n="snd_opt_punch_match">⚡ 묵직한 펀치 챡! (강한 임팩트)</option>
+            <option value="none" data-i18n="sound_none">🔇 소리 없음</option>
           </select>
         </div>
 
         <!-- 4. 짝 소멸 바차임 -->
         <div class="sound-config-item">
           <div class="sound-config-title">
-            <span>✨ 짝 소멸 바차임 (Chime)</span>
-            <button class="sound-test-btn" id="btn-test-sound-chime" title="바차임 미리듣기">▶ 듣기</button>
+            <span data-i18n="sound_title_chime">✨ 짝 소멸 바차임 (Chime)</span>
+            <button class="sound-test-btn" id="btn-test-sound-chime" title="바차임 미리듣기" data-i18n="btn_sound_test" data-i18n-title="btn_sound_test_title">▶ 듣기</button>
           </div>
           <select class="diff-select sound-select" id="select-sound-chime">
-            <option value="celesta" selected>⭐ 첼레스타 오르골 (따뜻한 벨)</option>
-            <option value="lydian">🎶 메탈 바차임 뾰로로롱 (12음 글리산도)</option>
-            <option value="shimmer">✨ 반짝이는 크리스탈 쉬머 (고음 하모닉)</option>
-            <option value="retro">🎮 아케이드 스타 (8비트 징글)</option>
-            <option value="none">🔇 소리 없음</option>
+            <option value="celesta" selected data-i18n="snd_opt_celesta_chime">⭐ 첼레스타 오르골 (따뜻한 벨)</option>
+            <option value="lydian" data-i18n="snd_opt_lydian_chime">🎶 메탈 바차임 뾰로로롱 (12음 글리산도)</option>
+            <option value="shimmer" data-i18n="snd_opt_shimmer_chime">✨ 반짝이는 크리스탈 쉬머 (고음 하모닉)</option>
+            <option value="retro" data-i18n="snd_opt_retro_chime">🎮 아케이드 스타 (8비트 징글)</option>
+            <option value="none" data-i18n="sound_none">🔇 소리 없음</option>
           </select>
         </div>
 
         <!-- 5. 축하 폭죽 소리 -->
         <div class="sound-config-item">
           <div class="sound-config-title">
-            <span>🎆 축하 폭죽 소리 (Firework)</span>
-            <button class="sound-test-btn" id="btn-test-sound-firework" title="폭죽음 미리듣기">▶ 듣기</button>
+            <span data-i18n="sound_title_firework">🎆 축하 폭죽 소리 (Firework)</span>
+            <button class="sound-test-btn" id="btn-test-sound-firework" title="폭죽음 미리듣기" data-i18n="btn_sound_test" data-i18n-title="btn_sound_test_title">▶ 듣기</button>
           </div>
           <select class="diff-select sound-select" id="select-sound-firework">
-            <option value="cheer">🎉 축하 팝 & 팡파레 (경쾌한 축제)</option>
-            <option value="sparkle">✨ 화려한 스파크 파라락 (불꽃 연출)</option>
-            <option value="real" selected>💥 리얼 파열 폭죽 쾅! (실제 폭발음 · 기본값)</option>
-            <option value="cannon">💣 묵직한 대포 쾅 (서브베이스 펀치)</option>
-            <option value="none">🔇 소리 없음</option>
+            <option value="cheer" data-i18n="snd_opt_cheer_firework">🎉 축하 팝 & 팡파레 (경쾌한 축제)</option>
+            <option value="sparkle" data-i18n="snd_opt_sparkle_firework">✨ 화려한 스파크 파라락 (불꽃 연출)</option>
+            <option value="real" selected data-i18n="snd_opt_real_firework">💥 리얼 파열 폭죽 쾅! (실제 폭발음 · 기본값)</option>
+            <option value="cannon" data-i18n="snd_opt_cannon_firework">💣 묵직한 대포 쾅 (서브베이스 펀치)</option>
+            <option value="none" data-i18n="sound_none">🔇 소리 없음</option>
           </select>
         </div>
 
         <!-- 6. 셔플 사운드 -->
         <div class="sound-config-item">
           <div class="sound-config-title">
-            <span>🔀 셔플 사운드 (Shuffle)</span>
-            <button class="sound-test-btn" id="btn-test-sound-shuffle" title="셔플음 미리듣기">▶ 듣기</button>
+            <span data-i18n="sound_title_shuffle">🔀 셔플 사운드 (Shuffle)</span>
+            <button class="sound-test-btn" id="btn-test-sound-shuffle" title="셔플음 미리듣기" data-i18n="btn_sound_test" data-i18n-title="btn_sound_test_title">▶ 듣기</button>
           </div>
           <select class="diff-select sound-select" id="select-sound-shuffle">
-            <option value="real_shuffle" selected>🀄 실제 마작패-섞기 (실물 마작패 촤르륵)</option>
-            <option value="synth">🎲 클래식 셔플 (디지털 사운드)</option>
-            <option value="none">🔇 소리 없음</option>
+            <option value="real_shuffle" selected data-i18n="snd_opt_real_shuffle">🀄 실제 마작패-섞기 (실물 마작패 촤르륵)</option>
+            <option value="synth" data-i18n="snd_opt_synth_shuffle">🎲 클래식 셔플 (디지털 사운드)</option>
+            <option value="none" data-i18n="sound_none">🔇 소리 없음</option>
           </select>
         </div>
       </div>
       <div style="display: flex; gap: 10px; margin-top: 10px;">
         <button class="btn settings-btn" id="btn-sound-defaults"
-          style="flex: 1; border: 1px solid #d4e6db; border-radius: 12px; height: 42px; background: #fff; color: #436e59; font-weight: 700;">
+          style="flex: 1; border: 1px solid #d4e6db; border-radius: 12px; height: 42px; background: #fff; color: #436e59; font-weight: 700;" data-i18n="sound_btn_defaults">
           ↺ 기본값 복원
         </button>
-        <button class="modal-btn" id="btn-sound-modal-close" style="flex: 1.5; margin: 0; height: 42px;">확인 완료</button>
+        <button class="modal-btn" id="btn-sound-modal-close" style="flex: 1.5; margin: 0; height: 42px;" data-i18n="sound_btn_close">확인 완료</button>
       </div>
     </div>
   </div>
@@ -6775,7 +6775,174 @@
         btn_warp_confirm: '해당 판으로 직행',
         btn_cancel: '취소',
         bgm_on: '배경음악 끄기 (아리랑)',
-        bgm_off: '배경음악 켜기 (아리랑)'
+        bgm_off: '배경음악 켜기 (아리랑)',
+        // 설정 탭 및 옵션 다국어 번역
+        settings_tab_game_title: '게임 난이도 및 진행 설정',
+        settings_tab_assist_title: '슬롯 연출 및 조작 편의',
+        settings_tab_sound_title: '효과음 및 화면 모드',
+        settings_tab_advanced_title: '고급 설정 및 관리자 기능',
+        settings_tab_info_title: '게임 규칙, 랭킹 및 타일 도감',
+        lang_opt_ko: '🇰🇷 한국어 (기본)',
+        lang_opt_en: '🇺🇸 English',
+        settings_diff_select_title: '난이도 선택',
+        diff_opt_easy: '🌱 쉬움 (14종 · 슬롯 5개 · 블라인드 0%➔70%)',
+        diff_opt_normal: '🌿 보통 (39종 · 슬롯 4개 · 블라인드 10%➔80% · 기본)',
+        diff_opt_hard: '🔥 어려움 (63종 · 슬롯 4개 · 블라인드 20%➔90%)',
+        diff_opt_master: '👑 달인 (89종 · 슬롯 3개 · 블라인드 30%➔100% 올 블라인드)',
+        settings_tile_text_select_title: '타일의 배지·한글 명칭·낙관 텍스트 표시 여부 설정',
+        settings_senior_select_title: '시니어 및 저시력자를 위한 5열 7행 특화 대형 패 모드',
+        btn_save_progress_title: '현재 진행 상태 저장',
+        btn_reset_stage: '1판부터 새로하기',
+        btn_reset_stage_title: '진행 초기화 후 1판부터 시작',
+        settings_slot_effect_label: '💥 슬롯 매칭 효과',
+        slot_effect_badge_firework: '축제 폭죽',
+        slot_effect_badge_classic: '클래식 마법',
+        slot_effect_select_title: '슬롯에서 짝이 맞아 없어질 때의 연출 및 사운드 효과',
+        slot_effect_opt_firework: '🎆 축제 폭죽 (팡! 폭죽 애니메이션 & 폭죽 소리 · 기본)',
+        slot_effect_opt_classic: '✨ 클래식 마법 (은은하게 뾰로롱 소멸 & 차임벨 소리)',
+        settings_slot_speed_label: '✈️ 슬롯 이동 속도',
+        slot_speed_select_title: '패가 슬롯으로 날아가는 애니메이션 속도 조절',
+        slot_speed_opt_very_slow: '🐢 아주 느림 (0.8초)',
+        slot_speed_opt_slow: '🦥 느림 (0.6초 · 기본)',
+        slot_speed_opt_normal: '🌿 보통 (0.45초)',
+        slot_speed_opt_fast: '⚡ 빠름 (0.3초)',
+        slot_speed_opt_instant: '🚀 즉시 이동 (0초 · 애니메이션 끄기)',
+        slot_speed_badge_very_slow: '🐢 아주 느림 (0.8초)',
+        slot_speed_badge_slow: '🦥 느림 (0.6초)',
+        slot_speed_badge_normal: '🌿 보통 (0.45초)',
+        slot_speed_badge_fast: '⚡ 빠름 (0.3초)',
+        slot_speed_badge_instant: '🚀 즉시 이동 (0초)',
+        dynamic_zoom_title: '남은 패에 맞춰 화면을 자동으로 꽉 채우는 동적 확대',
+        zoom_on: '동적확대: 켜짐',
+        zoom_off: '동적확대: 꺼짐',
+        auto_end_match_title: '남은 타일 10개 이하 시 자동으로 매칭 진행',
+        auto_end_on: '마지막10개 자동매칭: 켜짐',
+        auto_end_off: '마지막10개 자동매칭: 꺼짐',
+        auto_blind_pair_title: '뒤집힌 패 뒤집은 후 같은 자유패 선택 시 두 패 자동 슬롯 이동',
+        auto_blind_on: '짝선택 자동슬롯: 켜짐',
+        auto_blind_off: '짝선택 자동슬롯: 꺼짐',
+        btn_sound_toggle_title: '효과음 켜기/끄기',
+        sound_on: '소리 켜짐',
+        sound_off: '소리 꺼짐 (음소거)',
+        settings_sound_theme_label: '🎵 효과음 테마',
+        sound_theme_select_title: '효과음 테마 선택',
+        sound_theme_opt_myeongri: '🀄 명리 기본 테마 (우드블록 · 리얼 마작)',
+        sound_theme_opt_jade: '💎 SY 옥조각 (비취 옥패 · 리얼 마작)',
+        sound_theme_opt_real: '🀄 리얼 마작패 (실물 타격·바차임)',
+        sound_theme_opt_wood: '🪵 자연의 원목 (우드 & 오르골)',
+        sound_theme_opt_synth: '🎮 클래식 신디 (경쾌한 전자음)',
+        btn_sound_detail: '효과음 상세 소리 설정...',
+        btn_sound_detail_title: '타일선택, 매칭, 바차임, 폭죽 소리 개별 변경',
+        btn_fullscreen_title: '전체화면 모드 토글',
+        btn_warp_modal_title: '원하는 난이도와 판(Stage)으로 직행',
+        settings_classic_label_mode: '🀄 전통패 글자(라벨) 표시',
+        classic_label_badge_hide: '글자 숨김',
+        classic_label_badge_show: '글자 표시',
+        classic_label_select_title: '전통 마작 패의 모서리 숫자/기호 및 하단 라벨 글자 표시 여부',
+        classic_label_opt_hide: '숨김 (글자 없이 순수 패 그림만 표시 · 기본)',
+        classic_label_opt_show: '표시함 (숫자·보조 라벨 글자 표시)',
+        settings_time_limit_label: '⏱️ 난이도별 상세 시간 제한',
+        time_limit_label_easy: '🌱 쉬움',
+        time_limit_label_normal: '🌿 보통',
+        time_limit_label_hard: '🔥 어려움',
+        time_limit_label_master: '👑 달인',
+        unlimited: '무제한',
+        time_opt_unlimited: '무제한 (0초)',
+        settings_dynamic_zoom_cols_label: '🔍 동적확대 최대 배율 (열 수 제한)',
+        dynamic_zoom_cols_title: '동적 확대 시 최대 확대 한도(기준 열 수)',
+        zoom_cols_opt_3: '3열까지 (최대 확대: 매우 큼)',
+        zoom_cols_opt_4: '4열까지 (최대 확대: 큼)',
+        zoom_cols_opt_5: '5열까지 (기본값: 적당함)',
+        zoom_cols_opt_6: '6열까지 (완만한 확대)',
+        zoom_cols_opt_7: '7열까지 (약간 확대)',
+        zoom_cols_opt_8: '8열까지 (최소 확대)',
+        settings_stage30_firework_speed_label: '🎆 30판 클리어 폭죽 속도',
+        stage30_firework_speed_title: '30판 클리어 시 터지는 축하 폭죽의 연속 발사 간격 속도',
+        firework_spd_opt_200: '🚀 매우 빠름 (0.20초 간격)',
+        firework_spd_opt_350: '⚡ 빠름 (0.35초 간격)',
+        firework_spd_opt_550: '🌿 보통 (0.55초 간격)',
+        firework_spd_opt_900: '🕊️ 느긋함 (0.90초 간격)',
+        firework_spd_opt_1400: '🐢 여유로움 (1.40초 간격 · 기본값)',
+        stage30_firework_speed_badge_200: '🚀 매우 빠름 (0.20초)',
+        stage30_firework_speed_badge_350: '⚡ 빠름 (0.35초)',
+        stage30_firework_speed_badge_550: '🌿 보통 (0.55초)',
+        stage30_firework_speed_badge_900: '🕊️ 느긋함 (0.90초)',
+        stage30_firework_speed_badge_1400: '🐢 여유로움 (1.40초)',
+        settings_stage30_firework_count_label: '✨ 30판 폭죽 동시 폭발 개수',
+        stage30_firework_count_title: '30판 클리어 시 한 번에 동시에 터지는 축하 폭죽의 개수',
+        firework_cnt_opt_1: '🌱 1개 (단아함)',
+        firework_cnt_opt_2: '🌿 2개 (경쾌함)',
+        firework_cnt_opt_3: '🎉 3개 (풍성함 · 기본값)',
+        firework_cnt_opt_4: '🎆 4개 (축제 분위기)',
+        firework_cnt_opt_5: '👑 5개 (초호화 불꽃쇼)',
+        stage30_firework_count_badge_1: '🌱 1개 (단아함)',
+        stage30_firework_count_badge_2: '🌿 2개 (경쾌함)',
+        stage30_firework_count_badge_3: '🎉 3개 (기본값)',
+        stage30_firework_count_badge_4: '🎆 4개 (축제)',
+        stage30_firework_count_badge_5: '👑 5개 (초호화)',
+        btn_clear_cache: '캐시 완전 초기화 및 새로고침',
+        btn_clear_cache_title: '브라우저 캐시를 완전히 비우고 최신 버전을 다시 받아옵니다',
+        btn_reset_all_settings: '전체 환경설정 기본값 복원',
+        btn_reset_all_settings_title: '모든 게임 환경설정(난이도 보통, 명리 테마, 짝선택 자동슬롯 켜짐 등)을 기본값으로 되돌립니다',
+        settings_btn_rules: '한눈에 보는 핵심 가이드',
+        settings_btn_rules_title: '한눈에 보는 핵심 가이드 (카드뉴스)',
+        settings_btn_detail_rules: '게임 전체 상세규칙',
+        settings_btn_detail_rules_title: '게임 전체 상세규칙 (6대 규칙)',
+        settings_btn_settings_guide: '게임 환경설정 옵션 설명',
+        settings_btn_settings_guide_title: '게임 환경설정 옵션 설명',
+        settings_btn_rank: '나의 최고기록',
+        settings_btn_rank_title: '나의 최고기록',
+        settings_btn_tile_gallery: '전체 타일 도감',
+        settings_btn_tile_gallery_title: '전체 타일 도감',
+        btn_exit_app_title: '게임을 종료하고 브라우저 창을 닫습니다',
+        sound_modal_title: '효과음 개별 소리 선택',
+        sound_modal_desc: '각 상황별 원하는 소리를 직접 선택해 보세요. 소리를 변경하면 즉시 미리듣기가 재생됩니다.',
+        sound_title_select: '👆 패선택/슬롯에 넣는음 (Select)',
+        sound_title_flip: '🔄 패 뒤집기음 (Flip)',
+        sound_title_match: '💥 짝 맞춤 타격음 (Match Impact)',
+        sound_title_chime: '✨ 짝 소멸 바차임 (Chime)',
+        sound_title_firework: '🎆 축하 폭죽 소리 (Firework)',
+        sound_title_shuffle: '🔀 셔플 사운드 (Shuffle)',
+        btn_sound_test: '▶ 듣기',
+        btn_sound_test_title: '소리 미리듣기',
+        sound_none: '🔇 소리 없음',
+        sound_btn_defaults: '↺ 기본값 복원',
+        sound_btn_close: '확인 완료',
+        snd_opt_wood_select: '🪵 단단한 우드블록 탁 (원목 타격 · 명리 기본)',
+        snd_opt_jade_select: '💎 쫀득한 옥조각 딱! (비취 옥패 부딪침)',
+        snd_opt_real_select: '🀄 리얼 마작패 톡 (실물 수지 접촉)',
+        snd_opt_crystal_select: '🔔 크리스탈 핑 (청아한 유리)',
+        snd_opt_synth_select: '✨ 클래식 뾱 (경쾌한 전자음)',
+        snd_opt_real_flip: '🀄 실제 마작패-뒤집기 (실물 패 뒤집기 · 추천)',
+        snd_opt_crystal_flip: '🔔 크리스탈 핑 (청아한 유리)',
+        snd_opt_wood_flip: '🪵 우드 톡 (경쾌한 목재음)',
+        snd_opt_synth_flip: '✨ 클래식 뾱 (전자음)',
+        snd_opt_real_pair: '🀄 실제 마작패-짝 (실물 마작패 충돌음 · 단독음)',
+        snd_opt_ceramic_match: '🏺 도자기 맑은 딱! (선명한 크랙)',
+        snd_opt_real_match: '🀄 리얼 마작 짝! (실물 강한 충돌)',
+        snd_opt_crystal_match: '🔔 크리스탈 벨 댕~ (깊은 공명)',
+        snd_opt_punch_match: '⚡ 묵직한 펀치 챡! (강한 임팩트)',
+        snd_opt_celesta_chime: '⭐ 첼레스타 오르골 (따뜻한 벨)',
+        snd_opt_lydian_chime: '🎶 메탈 바차임 뾰로로롱 (12음 글리산도)',
+        snd_opt_shimmer_chime: '✨ 반짝이는 크리스탈 쉬머 (고음 하모닉)',
+        snd_opt_retro_chime: '🎮 아케이드 스타 (8비트 징글)',
+        snd_opt_cheer_firework: '🎉 축하 팝 & 팡파레 (경쾌한 축제)',
+        snd_opt_sparkle_firework: '✨ 화려한 스파크 파라락 (불꽃 연출)',
+        snd_opt_real_firework: '💥 리얼 파열 폭죽 쾅! (실제 폭발음 · 기본값)',
+        snd_opt_cannon_firework: '💣 묵직한 대포 쾅 (서브베이스 펀치)',
+        snd_opt_real_shuffle: '🀄 실제 마작패-섞기 (실물 마작패 촤르륵)',
+        snd_opt_synth_shuffle: '🎲 클래식 셔플 (디지털 사운드)',
+        guide_modal_title: '게임 환경설정 옵션 설명',
+        guide_modal_subtitle: '각 설정 탭별 옵션 기능과 추천 활용 팁',
+        guide_btn_close: '확인 완료',
+        guide_tab_game_title: '[게임] 난이도 & 진행 옵션',
+        guide_tab_game_desc: '• <strong>게임 난이도</strong>: 초급(슬롯 5칸/180초), 보통(4칸/150초), 고급(3칸/120초) 중 선택합니다.<br>• <strong>판당 시간 제한</strong>: On/Off 가능. 시간 만료 시 하트 1개를 소진하여 60초가 자동 연장됩니다.<br>• <strong>슬롯 만석 탈출(💔)</strong>: 슬롯이 다 찼을 때 하트 1개를 사용하여 패 2개를 보드로 되돌려 게임 오버를 모면합니다.<br>• <strong>슬롯 만석 경고 연출</strong>: 슬롯이 위험하게 찰 때 붉은색 경고 점멸을 표시합니다.<br>• <strong>진행판 재도전</strong>: 현재 진행 중인 판을 처음부터 다시 시작합니다.',
+        guide_tab_assist_title: '[보조] 연출 & 조작 편의 옵션',
+        guide_tab_assist_desc: '• <strong>짝선택 자동슬롯</strong>: 블라인드 패 확인 중 보드의 짝을 누르면 두 패가 동시에 슬롯으로 이동해 즉시 매칭되는 빠른 조작 기능입니다.<br>• <strong>마지막 10개 자동매칭</strong>: 남은 패가 10개 이하가 되면 자동으로 짝을 맞추며 신속하게 클리어합니다.<br>• <strong>블라인드 물음표 패</strong>: 뒷면 패를 자유롭게 터치하여 앞면을 살짝 엿볼 수 있는 흥미 요소입니다.<br>• <strong>동적 자동 확대</strong>: 패가 줄어듦에 따라 보드 화면을 최적 크기로 자동 확대하여 패를 크게 보여줍니다.<br>• <strong>콤보 이펙트 &amp; 진동</strong>: 연속 짝맞춤 시 화려한 콤보 연출 및 햅틱 진동을 제공합니다.<br>• <strong>시니어 모드</strong>: 큰 패 위주의 특화 레이아웃(5열×7행 이하)만 출제되어 눈의 피로를 덜어줍니다.',
+        guide_tab_sound_title: '[소리] 효과음 & 화면 옵션',
+        guide_tab_sound_desc: '• <strong>효과음 켜기/끄기</strong>: 게임의 전체 효과음을 On/Off 전환합니다.<br>• <strong>효과음 테마</strong>: 명리 기본, 리얼 마작패, 크리스탈 벨, 클래식 신디 등 사운드 프리셋을 적용합니다.<br>• <strong>효과음 상세 소리 설정</strong>: 선택, 뒤집기, 짝맞춤, 알림, 폭죽, 셔플 등 6가지 효과음을 취향대로 개별 지정합니다.<br>• <strong>전체화면</strong>: 상단 주소창과 여백을 숨기고 스마트폰 전체화면으로 넓게 플레이합니다.',
+        guide_tab_advanced_title: '[고급] 관리 & 테마 옵션',
+        guide_tab_advanced_desc: '• <strong>레벨/판 직행 이동</strong>: 원하는 난이도와 1~30판 중 원하는 스테이지로 즉시 점프합니다.<br>• <strong>전통패 글자(라벨) 표시</strong>: 전통 마작패 모서리의 숫자·기호 및 하단 라벨 표시 여부를 선택합니다. (기본: 숨김)<br>• <strong>난이도별 상세 시간 제한</strong>: 초급, 보통, 고급 각 난이도의 제한 시간을 초 단위로 정밀 조절합니다.<br>• <strong>30판 폭죽 발사 속도</strong>: 30판 클리어 축하 폭죽이 연속으로 터지는 주기(0.20초~1.40초)를 조절합니다.<br>• <strong>배경화면 테마</strong>: 명리 녹색, 오룡이 주황, 클래식 블루 테마를 선택합니다.<br>• <strong>모든 설정 기본값으로 복원</strong>: 모든 옵션을 최초 표준 상태로 되돌립니다.'
       },
       en: {
         app_title: 'SY Tile Match',
@@ -6884,7 +7051,174 @@
         btn_warp_confirm: 'Jump to Stage',
         btn_cancel: 'Cancel',
         bgm_on: 'Turn Off BGM (Arirang)',
-        bgm_off: 'Turn On BGM (Arirang)'
+        bgm_off: 'Turn On BGM (Arirang)',
+        // Settings translations
+        settings_tab_game_title: 'Game difficulty & progress settings',
+        settings_tab_assist_title: 'Slot visual FX & control assists',
+        settings_tab_sound_title: 'Sound effects & display mode',
+        settings_tab_advanced_title: 'Advanced settings & admin tools',
+        settings_tab_info_title: 'Game rules, rankings & tile gallery',
+        lang_opt_ko: '🇰🇷 Korean (Default)',
+        lang_opt_en: '🇺🇸 English',
+        settings_diff_select_title: 'Select Difficulty',
+        diff_opt_easy: '🌱 Easy (14 types · 5 slots · Blind 0%➔70%)',
+        diff_opt_normal: '🌿 Normal (39 types · 4 slots · Blind 10%➔80% · Default)',
+        diff_opt_hard: '🔥 Hard (63 types · 4 slots · Blind 20%➔90%)',
+        diff_opt_master: '👑 Master (89 types · 3 slots · Blind 30%➔100% All Blind)',
+        settings_tile_text_select_title: 'Show or hide badges, Korean names, and tile labels',
+        settings_senior_select_title: 'Specialized 5x7 large tile mode for seniors and low-vision users',
+        btn_save_progress_title: 'Save current progress',
+        btn_reset_stage: 'Restart from Stage 1',
+        btn_reset_stage_title: 'Reset progress and restart from Stage 1',
+        settings_slot_effect_label: '💥 Slot Match Effect',
+        slot_effect_badge_firework: 'Festival Fireworks',
+        slot_effect_badge_classic: 'Classic Magic',
+        slot_effect_select_title: 'Visual and sound effect when pairs match in tray',
+        slot_effect_opt_firework: '🎆 Festival Fireworks (Pop! FX & sound · Default)',
+        slot_effect_opt_classic: '✨ Classic Magic (Gentle chime & sparkle FX)',
+        settings_slot_speed_label: '✈️ Slot Travel Speed',
+        slot_speed_select_title: 'Adjust tile travel speed to tray slots',
+        slot_speed_opt_very_slow: '🐢 Very Slow (0.8s)',
+        slot_speed_opt_slow: '🦥 Slow (0.6s · Default)',
+        slot_speed_opt_normal: '🌿 Normal (0.45s)',
+        slot_speed_opt_fast: '⚡ Fast (0.3s)',
+        slot_speed_opt_instant: '🚀 Instant (0s · No Animation)',
+        slot_speed_badge_very_slow: '🐢 Very Slow (0.8s)',
+        slot_speed_badge_slow: '🦥 Slow (0.6s)',
+        slot_speed_badge_normal: '🌿 Normal (0.45s)',
+        slot_speed_badge_fast: '⚡ Fast (0.3s)',
+        slot_speed_badge_instant: '🚀 Instant (0s)',
+        dynamic_zoom_title: 'Auto-adjust board zoom as remaining tiles decrease',
+        zoom_on: 'Dynamic Zoom: On',
+        zoom_off: 'Dynamic Zoom: Off',
+        auto_end_match_title: 'Automatically match pairs when 10 or fewer tiles remain',
+        auto_end_on: 'Auto Clear (Last 10): On',
+        auto_end_off: 'Auto Clear (Last 10): Off',
+        auto_blind_pair_title: 'Auto-move pair to slot when selecting matching tile after flipping',
+        auto_blind_on: 'Auto Slot Pair: On',
+        auto_blind_off: 'Auto Slot Pair: Off',
+        btn_sound_toggle_title: 'Toggle sound effects On/Off',
+        sound_on: 'Sound On',
+        sound_off: 'Sound Off (Muted)',
+        settings_sound_theme_label: '🎵 Sound Theme',
+        sound_theme_select_title: 'Select sound effects theme',
+        sound_theme_opt_myeongri: '🀄 Saju Default (Woodblock · Real Mahjong)',
+        sound_theme_opt_jade: '💎 SY Jade Carving (Jade Tile · Real Mahjong)',
+        sound_theme_opt_real: '🀄 Real Mahjong Tiles (Physical Hit · Bar Chime)',
+        sound_theme_opt_wood: '🪵 Natural Wood (Wood & Music Box)',
+        sound_theme_opt_synth: '🎮 Classic Synth (Arcade Chiptune)',
+        btn_sound_detail: 'Custom Sound Effects...',
+        btn_sound_detail_title: 'Customize individual sounds for select, match, chime, fireworks',
+        btn_fullscreen_title: 'Toggle fullscreen mode',
+        btn_warp_modal_title: 'Jump directly to selected difficulty and stage',
+        settings_classic_label_mode: '🀄 Classic Tile Labels',
+        classic_label_badge_hide: 'Labels Hidden',
+        classic_label_badge_show: 'Labels Shown',
+        classic_label_select_title: 'Toggle corner numbers and labels on Classic Mahjong tiles',
+        classic_label_opt_hide: 'Hidden (Tile illustrations only · Default)',
+        classic_label_opt_show: 'Shown (Show numbers & auxiliary labels)',
+        settings_time_limit_label: '⏱️ Time Limit by Difficulty',
+        time_limit_label_easy: '🌱 Easy',
+        time_limit_label_normal: '🌿 Normal',
+        time_limit_label_hard: '🔥 Hard',
+        time_limit_label_master: '👑 Master',
+        unlimited: 'Unlimited',
+        time_opt_unlimited: 'Unlimited (0s)',
+        settings_dynamic_zoom_cols_label: '🔍 Dynamic Zoom Limit (Column Limit)',
+        dynamic_zoom_cols_title: 'Maximum zoom limit based on remaining columns',
+        zoom_cols_opt_3: 'Up to 3 cols (Max: Very large)',
+        zoom_cols_opt_4: 'Up to 4 cols (Max: Large)',
+        zoom_cols_opt_5: 'Up to 5 cols (Default: Moderate)',
+        zoom_cols_opt_6: 'Up to 6 cols (Gentle zoom)',
+        zoom_cols_opt_7: 'Up to 7 cols (Slight zoom)',
+        zoom_cols_opt_8: 'Up to 8 cols (Minimal zoom)',
+        settings_stage30_firework_speed_label: '🎆 Stage 30 Fireworks Speed',
+        stage30_firework_speed_title: 'Consecutive launch interval for Stage 30 celebration fireworks',
+        firework_spd_opt_200: '🚀 Very Fast (0.20s interval)',
+        firework_spd_opt_350: '⚡ Fast (0.35s interval)',
+        firework_spd_opt_550: '🌿 Normal (0.55s interval)',
+        firework_spd_opt_900: '🕊️ Leisurely (0.90s interval)',
+        firework_spd_opt_1400: '🐢 Relaxed (1.40s interval · Default)',
+        stage30_firework_speed_badge_200: '🚀 Very Fast (0.20s)',
+        stage30_firework_speed_badge_350: '⚡ Fast (0.35s)',
+        stage30_firework_speed_badge_550: '🌿 Normal (0.55s)',
+        stage30_firework_speed_badge_900: '🕊️ Leisurely (0.90s)',
+        stage30_firework_speed_badge_1400: '🐢 Relaxed (1.40s)',
+        settings_stage30_firework_count_label: '✨ Stage 30 Fireworks Burst Count',
+        stage30_firework_count_title: 'Number of fireworks exploding simultaneously on Stage 30',
+        firework_cnt_opt_1: '🌱 1 (Simple)',
+        firework_cnt_opt_2: '🌿 2 (Lively)',
+        firework_cnt_opt_3: '🎉 3 (Rich · Default)',
+        firework_cnt_opt_4: '🎆 4 (Festival)',
+        firework_cnt_opt_5: '👑 5 (Grand Gala)',
+        stage30_firework_count_badge_1: '🌱 1 (Simple)',
+        stage30_firework_count_badge_2: '🌿 2 (Lively)',
+        stage30_firework_count_badge_3: '🎉 3 (Default)',
+        stage30_firework_count_badge_4: '🎆 4 (Festival)',
+        stage30_firework_count_badge_5: '👑 5 (Grand)',
+        btn_clear_cache: 'Clear Cache & Reload',
+        btn_clear_cache_title: 'Clear browser cache and reload the latest version',
+        btn_reset_all_settings: 'Reset All Settings to Default',
+        btn_reset_all_settings_title: 'Restore all game settings (Normal difficulty, Saju theme, Auto slot On, etc.) to defaults',
+        settings_btn_rules: 'Quick Game Guide',
+        settings_btn_rules_title: 'Quick Game Guide (Card News)',
+        settings_btn_detail_rules: 'Detailed Game Rules',
+        settings_btn_detail_rules_title: 'View all 6 detailed game rules',
+        settings_btn_settings_guide: 'Settings Options Guide',
+        settings_btn_settings_guide_title: 'Explanation of game settings options',
+        settings_btn_rank: 'My High Scores',
+        settings_btn_rank_title: 'View top records',
+        settings_btn_tile_gallery: 'Tile Gallery',
+        settings_btn_tile_gallery_title: 'Browse all game tiles',
+        btn_exit_app_title: 'Exit the game and close the app',
+        sound_modal_title: 'Custom Sound Effects',
+        sound_modal_desc: 'Select preferred sounds for each action. A preview plays immediately when changed.',
+        sound_title_select: '👆 Tile Select / Move to Slot',
+        sound_title_flip: '🔄 Tile Flip Sound',
+        sound_title_match: '💥 Match Impact Sound',
+        sound_title_chime: '✨ Match Chime Sound',
+        sound_title_firework: '🎆 Celebration Fireworks Sound',
+        sound_title_shuffle: '🔀 Shuffle Sound',
+        btn_sound_test: '▶ Play',
+        btn_sound_test_title: 'Preview sound',
+        sound_none: '🔇 Mute (No Sound)',
+        sound_btn_defaults: '↺ Reset to Defaults',
+        sound_btn_close: 'Got It',
+        snd_opt_wood_select: '🪵 Solid Woodblock (Wooden · Saju Default)',
+        snd_opt_jade_select: '💎 Jade Carving (Jade Tile Clack)',
+        snd_opt_real_select: '🀄 Real Mahjong Tap (Physical Tile)',
+        snd_opt_crystal_select: '🔔 Crystal Ping (Clear Glass)',
+        snd_opt_synth_select: '✨ Classic Synth (Retro Blip)',
+        snd_opt_real_flip: '🀄 Real Tile Flip (Physical Flip · Recommended)',
+        snd_opt_crystal_flip: '🔔 Crystal Ping (Clear Glass)',
+        snd_opt_wood_flip: '🪵 Wood Tap (Crisp Wooden)',
+        snd_opt_synth_flip: '✨ Classic Synth (Digital Blip)',
+        snd_opt_real_pair: '🀄 Real Mahjong Clack (Physical Tile Hit)',
+        snd_opt_ceramic_match: '🏺 Crisp Porcelain (Clear Ceramic)',
+        snd_opt_real_match: '🀄 Heavy Tile Strike (Solid Impact)',
+        snd_opt_crystal_match: '🔔 Crystal Bell Ding (Deep Ring)',
+        snd_opt_punch_match: '⚡ Solid Punch Impact (Punch Clack)',
+        snd_opt_celesta_chime: '⭐ Celesta Music Box (Warm Bell)',
+        snd_opt_lydian_chime: '🎶 Metal Bar Chime (12-note Glissando)',
+        snd_opt_shimmer_chime: '✨ Sparkling Shimmer (Harmonic)',
+        snd_opt_retro_chime: '🎮 Arcade Star (8-bit Jingle)',
+        snd_opt_cheer_firework: '🎉 Celebration Pop & Fanfare (Lively Fest)',
+        snd_opt_sparkle_firework: '✨ Glittering Sparks (Firework Sizzle)',
+        snd_opt_real_firework: '💥 Realistic Fireworks Boom! (Real Blast · Default)',
+        snd_opt_cannon_firework: '💣 Heavy Cannon Boom (Sub-bass Punch)',
+        snd_opt_real_shuffle: '🀄 Real Tile Shuffle (Mahjong Rattle)',
+        snd_opt_synth_shuffle: '🎲 Classic Digital Shuffle',
+        guide_modal_title: 'Game Settings Guide',
+        guide_modal_subtitle: 'Detailed guide and tips for every settings tab',
+        guide_btn_close: 'Got It',
+        guide_tab_game_title: '[Game] Difficulty & Progress Options',
+        guide_tab_game_desc: '• <strong>Difficulty</strong>: Choose from Easy, Normal, Hard, or Master.<br>• <strong>Time Limits</strong>: On/Off per stage. When time expires, 1 Heart extends time.<br>• <strong>Tray Escape (💔)</strong>: When tray fills up, use 1 Heart to return 2 tiles to board and avoid Game Over.<br>• <strong>Restart Stage</strong>: Restart current stage from scratch.',
+        guide_tab_assist_title: '[Controls] Visual FX & Convenience Options',
+        guide_tab_assist_desc: '• <strong>Auto Slot Pair</strong>: After flipping a tile, tap its pair to auto-move both to tray.<br>• <strong>Auto Clear (Last 10)</strong>: Automatically matches remaining tiles when 10 or fewer remain.<br>• <strong>Dynamic Zoom</strong>: Auto-zooms the board as remaining tiles decrease.<br>• <strong>Senior Mode</strong>: 5x7 large tile layouts to ease eye strain.',
+        guide_tab_sound_title: '[Audio] Sound FX & Display Options',
+        guide_tab_sound_desc: '• <strong>Sound FX On/Off</strong>: Toggle all game sound effects.<br>• <strong>Sound Themes</strong>: Saju Default, Real Mahjong, Jade, Wood, or Classic Synth.<br>• <strong>Custom Sounds</strong>: Individually customize each of 6 sound events.<br>• <strong>Fullscreen</strong>: Play in full screen without browser bars.',
+        guide_tab_advanced_title: '[Advanced] Settings & Fine-Tuning',
+        guide_tab_advanced_desc: '• <strong>Stage Warp</strong>: Jump directly to any stage and difficulty.<br>• <strong>Classic Tile Labels</strong>: Show or hide corner numbers on classic tiles.<br>• <strong>Time Limits by Difficulty</strong>: Customize time limits in seconds per difficulty.<br>• <strong>Stage 30 Fireworks</strong>: Adjust firework burst interval and count.<br>• <strong>Reset All Settings</strong>: Reset all options back to default values.'
       }
     };
 
@@ -6955,13 +7289,16 @@
           selectLang.value = lang;
         }
 
-        // 7. 인게임 헤더 및 독 UI 동기화
+        // 7. 인게임 헤더, 독 UI 및 설정 UI 동기화
         if (window.gameInstance) {
           if (typeof window.gameInstance.updateHeaderUI === 'function') {
             window.gameInstance.updateHeaderUI();
           }
           if (typeof window.gameInstance.updateToolButtonsUI === 'function') {
             window.gameInstance.updateToolButtonsUI();
+          }
+          if (typeof window.gameInstance.updateSettingsLanguageUI === 'function') {
+            window.gameInstance.updateSettingsLanguageUI();
           }
         }
 
@@ -13966,7 +14303,13 @@
         // 난이도 셀렉트 종수 동적 갱신
         const updateDifficultySelectLabels = () => {
           const theme = this.activeTheme;
-          const diffMeta = [
+          const isEn = I18nManager.currentLang === 'en';
+          const diffMeta = isEn ? [
+            { val: 'easy', prefix: '🌱 Easy', suffix: '5 slots · Open' },
+            { val: 'normal', prefix: '🌿 Normal', suffix: '4 slots · 4 Blinds' },
+            { val: 'hard', prefix: '🔥 Hard', suffix: '4 slots · 12 Blinds' },
+            { val: 'master', prefix: '👑 Master', suffix: '3 slots · 18 Blinds · Bottleneck' }
+          ] : [
             { val: 'easy', prefix: '🌱 쉬움', suffix: '슬롯 5개 · 공개' },
             { val: 'normal', prefix: '🌿 보통', suffix: '슬롯 4개 · 블라인드 4개' },
             { val: 'hard', prefix: '🔥 어려움', suffix: '슬롯 4개 · 블라인드 12개' },
@@ -13980,7 +14323,7 @@
               const opt = sel.querySelector(`option[value="${m.val}"]`);
               if (opt) {
                 const count = calcThemePoolCount(theme, m.val);
-                opt.textContent = `${m.prefix} (${count}종 · ${m.suffix})`;
+                opt.textContent = isEn ? `${m.prefix} (${count} types · ${m.suffix})` : `${m.prefix} (${count}종 · ${m.suffix})`;
               }
             });
           });
@@ -14774,6 +15117,37 @@
         });
         this.updateTimeLimitUI();
 
+        // 시간 제한 옵션 텍스트 다국어 갱신 헬퍼
+        const updateTimeLimitOptionsLanguage = () => {
+          const isEn = I18nManager.currentLang === 'en';
+          const formatOptText = (sec, isDef) => {
+            if (sec === 0) return isEn ? 'Unlimited (0s)' : '무제한 (0초)';
+            const min = Math.floor(sec / 60);
+            const rem = sec % 60;
+            let timeStr = '';
+            if (isEn) {
+              timeStr = (min > 0 && rem > 0) ? `${min}m ${rem}s` : (min > 0 ? `${min} min (${sec}s)` : `${sec}s`);
+              if (isDef) timeStr += ' · Default';
+            } else {
+              timeStr = (min > 0 && rem > 0) ? `${min}분 ${rem}초 (${sec}초)` : (min > 0 ? `${min}분 (${sec}초)` : `${sec}초`);
+              if (isDef) timeStr += ' · 기본';
+            }
+            return timeStr;
+          };
+
+          const defaultMap = { easy: 240, normal: 180, hard: 140, master: 100 };
+          ['easy', 'normal', 'hard', 'master'].forEach(d => {
+            const sel = document.getElementById(`select-time-${d}`);
+            if (!sel) return;
+            const defSec = defaultMap[d];
+            Array.from(sel.options).forEach(opt => {
+              const sec = parseInt(opt.value, 10);
+              opt.textContent = formatOptText(sec, sec === defSec);
+            });
+          });
+        };
+        updateTimeLimitOptionsLanguage();
+
         // 소리 On / Off 토글 버튼 이벤트
         const btnSound = document.getElementById('btn-sound-toggle');
         const updateSoundUI = () => {
@@ -14781,7 +15155,7 @@
           const text = document.getElementById('sound-toggle-text');
           if (icon && text) {
             icon.textContent = this.sound.muted ? '🔇' : '🔊';
-            text.textContent = this.sound.muted ? '소리 꺼짐 (음소거)' : '소리 켜짐';
+            text.textContent = this.sound.muted ? I18nManager.t('sound_off', '소리 꺼짐 (음소거)') : I18nManager.t('sound_on', '소리 켜짐');
           }
         };
         updateSoundUI();
@@ -14823,7 +15197,7 @@
           const text = document.getElementById('auto-blind-pair-text');
           if (icon && text) {
             icon.textContent = this.autoBlindPairMatch ? '🔓' : '🔒';
-            text.textContent = this.autoBlindPairMatch ? '짝선택 자동슬롯: 켜짐' : '짝선택 자동슬롯: 꺼짐';
+            text.textContent = this.autoBlindPairMatch ? I18nManager.t('auto_blind_on', '짝선택 자동슬롯: 켜짐') : I18nManager.t('auto_blind_off', '짝선택 자동슬롯: 꺼짐');
           }
         };
         updateAutoBlindPairUI();
@@ -14852,7 +15226,7 @@
           const text = document.getElementById('auto-end-match-text');
           if (icon && text) {
             icon.textContent = this.autoEndMatch ? '⚡' : '🔒';
-            text.textContent = this.autoEndMatch ? '마지막10개 자동매칭: 켜짐' : '마지막10개 자동매칭: 꺼짐';
+            text.textContent = this.autoEndMatch ? I18nManager.t('auto_end_on', '마지막10개 자동매칭: 켜짐') : I18nManager.t('auto_end_off', '마지막10개 자동매칭: 꺼짐');
           }
         };
         updateAutoEndMatchUI();
@@ -14883,7 +15257,7 @@
           const text = document.getElementById('dynamic-zoom-text');
           if (icon && text) {
             icon.textContent = this.dynamicZoom ? '🔍' : '🔒';
-            text.textContent = this.dynamicZoom ? '동적확대: 켜짐' : '동적확대: 꺼짐';
+            text.textContent = this.dynamicZoom ? I18nManager.t('zoom_on', '동적확대: 켜짐') : I18nManager.t('zoom_off', '동적확대: 꺼짐');
           }
         };
         updateDynamicZoomUI();
@@ -14905,7 +15279,7 @@
           const isHide = (this.classicLabelMode === 'hide');
           if (selectClassicLabelMode) selectClassicLabelMode.value = isHide ? 'hide' : 'show';
           if (badgeClassicLabel) {
-            badgeClassicLabel.textContent = isHide ? '글자 숨김' : '글자 표시';
+            badgeClassicLabel.textContent = isHide ? I18nManager.t('classic_label_badge_hide', '글자 숨김') : I18nManager.t('classic_label_badge_show', '글자 표시');
             badgeClassicLabel.style.background = isHide ? '#fef3c7' : '#dcfce7';
             badgeClassicLabel.style.color = isHide ? '#b45309' : '#166534';
           }
@@ -14950,23 +15324,23 @@
           if (selectStage30FireworkSpeed) selectStage30FireworkSpeed.value = String(spd);
           if (badgeStage30FireworkSpeed) {
             if (spd <= 250) {
-              badgeStage30FireworkSpeed.textContent = '🚀 매우 빠름 (0.20초)';
+              badgeStage30FireworkSpeed.textContent = I18nManager.t('stage30_firework_speed_badge_200', '🚀 매우 빠름 (0.20초)');
               badgeStage30FireworkSpeed.style.background = '#fee2e2';
               badgeStage30FireworkSpeed.style.color = '#991b1b';
             } else if (spd <= 400) {
-              badgeStage30FireworkSpeed.textContent = '⚡ 빠름 (0.35초)';
+              badgeStage30FireworkSpeed.textContent = I18nManager.t('stage30_firework_speed_badge_350', '⚡ 빠름 (0.35초)');
               badgeStage30FireworkSpeed.style.background = '#dcfce7';
               badgeStage30FireworkSpeed.style.color = '#166534';
             } else if (spd <= 700) {
-              badgeStage30FireworkSpeed.textContent = '🌿 보통 (0.55초)';
+              badgeStage30FireworkSpeed.textContent = I18nManager.t('stage30_firework_speed_badge_550', '🌿 보통 (0.55초)');
               badgeStage30FireworkSpeed.style.background = '#e0f2fe';
               badgeStage30FireworkSpeed.style.color = '#075985';
             } else if (spd <= 1100) {
-              badgeStage30FireworkSpeed.textContent = '🕊️ 느긋함 (0.90초)';
+              badgeStage30FireworkSpeed.textContent = I18nManager.t('stage30_firework_speed_badge_900', '🕊️ 느긋함 (0.90초)');
               badgeStage30FireworkSpeed.style.background = '#fef3c7';
               badgeStage30FireworkSpeed.style.color = '#92400e';
             } else {
-              badgeStage30FireworkSpeed.textContent = '🐢 여유로움 (1.40초)';
+              badgeStage30FireworkSpeed.textContent = I18nManager.t('stage30_firework_speed_badge_1400', '🐢 여유로움 (1.40초)');
               badgeStage30FireworkSpeed.style.background = '#f3e8ff';
               badgeStage30FireworkSpeed.style.color = '#6b21a8';
             }
@@ -14996,23 +15370,23 @@
           if (selectStage30FireworkCount) selectStage30FireworkCount.value = String(cnt);
           if (badgeStage30FireworkCount) {
             if (cnt === 1) {
-              badgeStage30FireworkCount.textContent = '🌱 1개 (단아함)';
+              badgeStage30FireworkCount.textContent = I18nManager.t('stage30_firework_count_badge_1', '🌱 1개 (단아함)');
               badgeStage30FireworkCount.style.background = '#fef3c7';
               badgeStage30FireworkCount.style.color = '#92400e';
             } else if (cnt === 2) {
-              badgeStage30FireworkCount.textContent = '🌿 2개 (경쾌함)';
+              badgeStage30FireworkCount.textContent = I18nManager.t('stage30_firework_count_badge_2', '🌿 2개 (경쾌함)');
               badgeStage30FireworkCount.style.background = '#e0f2fe';
               badgeStage30FireworkCount.style.color = '#075985';
             } else if (cnt === 3) {
-              badgeStage30FireworkCount.textContent = '🎉 3개 (기본값)';
+              badgeStage30FireworkCount.textContent = I18nManager.t('stage30_firework_count_badge_3', '🎉 3개 (기본값)');
               badgeStage30FireworkCount.style.background = '#dcfce7';
               badgeStage30FireworkCount.style.color = '#15803d';
             } else if (cnt === 4) {
-              badgeStage30FireworkCount.textContent = '🎆 4개 (축제)';
+              badgeStage30FireworkCount.textContent = I18nManager.t('stage30_firework_count_badge_4', '🎆 4개 (축제)');
               badgeStage30FireworkCount.style.background = '#f3e8ff';
               badgeStage30FireworkCount.style.color = '#6b21a8';
             } else {
-              badgeStage30FireworkCount.textContent = '👑 5개 (초호화)';
+              badgeStage30FireworkCount.textContent = I18nManager.t('stage30_firework_count_badge_5', '👑 5개 (초호화)');
               badgeStage30FireworkCount.style.background = '#fee2e2';
               badgeStage30FireworkCount.style.color = '#991b1b';
             }
@@ -15050,9 +15424,17 @@
         const badgeSlotSpeed = document.getElementById('slot-anim-speed-badge');
         const updateSlotSpeedUI = () => {
           const curKey = this.slotAnimSpeed || 'slow';
-          const cfg = (typeof SLOT_ANIM_SPEED_MAP !== 'undefined' && SLOT_ANIM_SPEED_MAP[curKey]) ? SLOT_ANIM_SPEED_MAP[curKey] : { label: '느림 (0.6초)' };
           if (selectSlotSpeed) selectSlotSpeed.value = curKey;
-          if (badgeSlotSpeed) badgeSlotSpeed.textContent = cfg.label;
+          if (badgeSlotSpeed) {
+            const badgeMap = {
+              very_slow: I18nManager.t('slot_speed_badge_very_slow', '🐢 아주 느림 (0.8초)'),
+              slow: I18nManager.t('slot_speed_badge_slow', '🦥 느림 (0.6초)'),
+              normal: I18nManager.t('slot_speed_badge_normal', '🌿 보통 (0.45초)'),
+              fast: I18nManager.t('slot_speed_badge_fast', '⚡ 빠름 (0.3초)'),
+              instant: I18nManager.t('slot_speed_badge_instant', '🚀 즉시 이동 (0초)')
+            };
+            badgeSlotSpeed.textContent = badgeMap[curKey] || badgeMap.slow;
+          }
         };
         updateSlotSpeedUI();
         if (selectSlotSpeed) {
@@ -15074,7 +15456,7 @@
           const curEffect = this.slotMatchEffect || 'firework';
           if (selectSlotMatchEffect) selectSlotMatchEffect.value = curEffect;
           if (badgeSlotMatchEffect) {
-            badgeSlotMatchEffect.textContent = curEffect === 'classic' ? '클래식 마법' : '축제 폭죽';
+            badgeSlotMatchEffect.textContent = curEffect === 'classic' ? I18nManager.t('slot_effect_badge_classic', '클래식 마법') : I18nManager.t('slot_effect_badge_firework', '축제 폭죽');
             badgeSlotMatchEffect.style.background = curEffect === 'classic' ? '#e0e7ff' : '#fef3c7';
             badgeSlotMatchEffect.style.color = curEffect === 'classic' ? '#3730a3' : '#b45309';
           }
@@ -15097,6 +15479,28 @@
             }
           });
         }
+
+        // 전역 다국어 전환 시 설정창 내부 동적 텍스트 및 배지 일괄 동기화 메서드
+        this.updateSettingsLanguageUI = () => {
+          updateSoundUI();
+          updateAutoBlindPairUI();
+          updateAutoEndMatchUI();
+          updateDynamicZoomUI();
+          updateClassicLabelUI();
+          updateStage30FireworkSpeedUI();
+          updateStage30FireworkCountUI();
+          updateSlotSpeedUI();
+          updateSlotMatchEffectUI();
+          updateDifficultySelectLabels();
+          updateTimeLimitOptionsLanguage();
+          this.updateTimeLimitUI();
+          if (typeof updateWarpInfoBadge === 'function') updateWarpInfoBadge();
+        };
+
+        // 언어 변경 커스텀 이벤트 리스너 등록
+        window.addEventListener('mahjong-language-change', () => {
+          if (this.updateSettingsLanguageUI) this.updateSettingsLanguageUI();
+        });
 
         document.getElementById('btn-undo').addEventListener('click', () => this.undo());
         document.getElementById('btn-hint').addEventListener('click', () => this.showHint());
@@ -15461,8 +15865,11 @@
           this.updateTimerDisplay();
         }
         const diffCfg = DIFFICULTY_CONFIG[diffKey] || DIFFICULTY_CONFIG.normal;
-        const timeText = seconds === 0 ? '무제한' : this.formatTime(seconds);
-        this.showToast(`⏱️ [${diffCfg.name}] 제한 시간: ${timeText} 설정 완료`);
+        const isEn = typeof I18nManager !== 'undefined' && I18nManager.currentLang === 'en';
+        const diffName = (typeof I18nManager !== 'undefined' && I18nManager.t) ? I18nManager.t(`diff_${diffKey}`, diffCfg.name) : diffCfg.name;
+        const unlimitText = (typeof I18nManager !== 'undefined' && I18nManager.t) ? I18nManager.t('unlimited', '무제한') : '무제한';
+        const timeText = seconds === 0 ? unlimitText : this.formatTime(seconds);
+        this.showToast(isEn ? `⏱️ [${diffName}] Time Limit: ${timeText} set` : `⏱️ [${diffName}] 제한 시간: ${timeText} 설정 완료`);
       }
 
       updateTimeLimitUI() {
@@ -15477,7 +15884,9 @@
         if (badge) {
           const curLimit = limits[this.difficulty] !== undefined ? limits[this.difficulty] : (DEFAULT_TIME_LIMITS[this.difficulty] || 0);
           const diffCfg = DIFFICULTY_CONFIG[this.difficulty] || DIFFICULTY_CONFIG.normal;
-          badge.textContent = `${diffCfg.name}: ${curLimit === 0 ? '무제한' : this.formatTime(curLimit)}`;
+          const diffName = (typeof I18nManager !== 'undefined' && I18nManager.t) ? I18nManager.t(`diff_${this.difficulty}`, diffCfg.name) : diffCfg.name;
+          const unlimitText = (typeof I18nManager !== 'undefined' && I18nManager.t) ? I18nManager.t('unlimited', '무제한') : '무제한';
+          badge.textContent = `${diffName}: ${curLimit === 0 ? unlimitText : this.formatTime(curLimit)}`;
         }
       }
 
