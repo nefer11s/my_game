@@ -4425,8 +4425,9 @@
       align-items: center;
       justify-content: center;
       opacity: 0;
+      visibility: hidden;
       pointer-events: none;
-      transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.22s;
       user-select: none;
       -webkit-user-select: none;
       -webkit-tap-highlight-color: transparent;
@@ -4435,6 +4436,7 @@
 
     .tile-lightbox-modal.active {
       opacity: 1;
+      visibility: visible;
       pointer-events: auto;
     }
 
@@ -4475,7 +4477,6 @@
       animation: lightboxPopCenter 0.28s cubic-bezier(0.18, 0.89, 0.32, 1.25);
       text-align: center;
       gap: 12px;
-      pointer-events: auto;
     }
 
     @keyframes lightboxPopCenter {
@@ -4573,7 +4574,6 @@
       width: 100%;
       max-width: 280px;
       text-align: center;
-      pointer-events: auto;
       display: flex;
       flex-direction: column;
       gap: 4px;
