@@ -9686,23 +9686,353 @@
           cs_sorghum: `<path d="M120,185 L120,115" stroke="#5d4037" stroke-width="4"/><ellipse cx="120" cy="128" rx="20" ry="28" fill="#880e4f"/><ellipse cx="120" cy="124" rx="16" ry="24" fill="#ad1457"/><circle cx="114" cy="122" r="3" fill="#ff80ab"/><circle cx="126" cy="130" r="3" fill="#ff80ab"/>`,
           cs_persimmon: `<ellipse cx="120" cy="150" rx="38" ry="32" fill="#ef6c00"/><path d="M106,122 Q120,126 134,122 Q120,114 106,122 Z" fill="#2e7d32"/><path d="M120,118 L120,108" stroke="#3e2723" stroke-width="3"/>`,
 
-          cs_ganggang: `<circle cx="120" cy="145" r="48" fill="none" stroke="#ffd54f" stroke-width="3" stroke-dasharray="8,6"/><circle cx="120" cy="98" r="10" fill="#ec407a"/><circle cx="165" cy="135" r="10" fill="#42a5f5"/><circle cx="148" cy="180" r="10" fill="#66bb6a"/><circle cx="92" cy="180" r="10" fill="#ffa726"/><circle cx="75" cy="135" r="10" fill="#ab47bc"/>`,
-          cs_ssireum: `<ellipse cx="120" cy="160" rx="60" ry="24" fill="#ffe082" stroke="#ffb300" stroke-width="3"/><circle cx="105" cy="135" r="18" fill="#e53935"/><circle cx="135" cy="135" r="18" fill="#1e88e5"/><path d="M98,145 Q120,158 142,145" stroke="#ffffff" stroke-width="5" fill="none"/>`,
-          cs_tugoofwar: `<path d="M60,145 Q120,120 180,145" stroke="#8d6e63" stroke-width="14" stroke-linecap="round" fill="none"/><path d="M60,145 Q120,120 180,145" stroke="#d7ccc8" stroke-width="3" stroke-dasharray="6,4" fill="none"/><rect x="114" y="126" width="12" height="18" fill="#d32f2f"/>`,
-          cs_sonori: `<ellipse cx="120" cy="150" rx="46" ry="34" fill="#a1887f"/><path d="M82,130 Q70,105 85,108" stroke="#5d4037" stroke-width="6" stroke-linecap="round" fill="none"/><path d="M158,130 Q170,105 155,108" stroke="#5d4037" stroke-width="6" stroke-linecap="round" fill="none"/><ellipse cx="120" cy="160" rx="22" ry="14" fill="#d7ccc8"/><circle cx="112" cy="160" r="3" fill="#3e2723"/><circle cx="128" cy="160" r="3" fill="#3e2723"/>`,
-          cs_gamassaum: `<rect x="85" y="118" width="70" height="54" rx="8" fill="#c2185b" stroke="#880e4f" stroke-width="3"/><polygon points="120,95 76,120 164,120" fill="#ffd54f" stroke="#ff8f00" stroke-width="2"/><line x1="55" y1="152" x2="185" y2="152" stroke="#5d4037" stroke-width="6" stroke-linecap="round"/>`,
-          cs_yutnori: `<g transform="translate(10, 0)"><rect x="75" y="115" width="14" height="64" rx="6" fill="#ffb74d" stroke="#e65100" stroke-width="2"/><rect x="95" y="115" width="14" height="64" rx="6" fill="#ffb74d" stroke="#e65100" stroke-width="2"/><rect x="115" y="115" width="14" height="64" rx="6" fill="#d7ccc8" stroke="#5d4037" stroke-width="2"/><rect x="135" y="115" width="14" height="64" rx="6" fill="#ffb74d" stroke="#e65100" stroke-width="2"/><circle cx="82" cy="132" r="2" fill="#b71c1c"/><circle cx="82" cy="162" r="2" fill="#b71c1c"/></g>`,
-          cs_neolttwigi: `<rect x="68" y="145" width="104" height="10" rx="3" fill="#8d6e63" transform="rotate(-15 120 150)"/><polygon points="120,150 106,174 134,174" fill="#a1887f"/><circle cx="78" cy="115" r="10" fill="#ec407a"/><circle cx="162" cy="155" r="10" fill="#42a5f5"/>`,
-          cs_sangmo: `<circle cx="120" cy="158" r="28" fill="#212121"/><path d="M120,132 Q150,110 170,128 Q185,150 150,165" stroke="#ffffff" stroke-width="5" stroke-linecap="round" fill="none"/><circle cx="120" cy="132" r="5" fill="#f44336"/>`,
+          cs_ganggang: `
+          <defs>
+            <radialGradient id="gg_bg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff9c4"/><stop offset="65%" stop-color="#ffe082"/><stop offset="100%" stop-color="#ffd54f" stop-opacity="0.35"/></radialGradient>
+            <linearGradient id="gg_p" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff4081"/><stop offset="100%" stop-color="#ad1457"/></linearGradient>
+            <linearGradient id="gg_b" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#40c4ff"/><stop offset="100%" stop-color="#01579b"/></linearGradient>
+            <linearGradient id="gg_g" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#69f0ae"/><stop offset="100%" stop-color="#1b5e20"/></linearGradient>
+            <linearGradient id="gg_y" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffd740"/><stop offset="100%" stop-color="#ff6f00"/></linearGradient>
+            <filter id="gg_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#000" flood-opacity="0.25"/></filter>
+          </defs>
+          <circle cx="120" cy="145" r="64" fill="url(#gg_bg)"/>
+          <ellipse cx="120" cy="170" rx="56" ry="18" fill="none" stroke="#ffb300" stroke-width="2.5" stroke-dasharray="6,5"/>
+          <!-- 3D 춤추는 소녀들 원무 -->
+          <g filter="url(#gg_sh)">
+            <!-- 뒤쪽 소녀 -->
+            <circle cx="120" cy="115" r="9" fill="#ffe0b2"/>
+            <circle cx="120" cy="113" r="9" fill="#37474f"/>
+            <ellipse cx="120" cy="132" rx="12" ry="14" fill="url(#gg_y)"/>
+            <!-- 좌측 소녀 -->
+            <circle cx="86" cy="135" r="10" fill="#ffe0b2"/>
+            <circle cx="86" cy="133" r="10" fill="#37474f"/>
+            <ellipse cx="86" cy="154" rx="14" ry="17" fill="url(#gg_p)"/>
+            <!-- 우측 소녀 -->
+            <circle cx="154" cy="135" r="10" fill="#ffe0b2"/>
+            <circle cx="154" cy="133" r="10" fill="#37474f"/>
+            <ellipse cx="154" cy="154" rx="14" ry="17" fill="url(#gg_b)"/>
+            <!-- 앞쪽 중앙 소녀 -->
+            <circle cx="120" cy="148" r="11" fill="#ffe0b2"/>
+            <circle cx="120" cy="146" r="11" fill="#212121"/>
+            <ellipse cx="120" cy="170" rx="16" ry="18" fill="url(#gg_g)"/>
+          </g>
+          <!-- 맞잡은 손과 흩날리는 옷고름 -->
+          <path d="M96,155 Q108,168 120,162 Q132,168 144,155" stroke="#ffe0b2" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <path d="M120,165 Q126,178 122,186" stroke="#ff4081" stroke-width="3" stroke-linecap="round" fill="none"/>
+        `,
+          cs_ssireum: `
+          <defs>
+            <radialGradient id="sr_sand" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fff8e1"/><stop offset="70%" stop-color="#ffe082"/><stop offset="100%" stop-color="#ffb300"/></radialGradient>
+            <linearGradient id="sr_red" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff5252"/><stop offset="100%" stop-color="#b71c1c"/></linearGradient>
+            <linearGradient id="sr_blue" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#448aff"/><stop offset="100%" stop-color="#0d47a1"/></linearGradient>
+            <linearGradient id="sr_skin" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffcc80"/><stop offset="100%" stop-color="#f57c00"/></linearGradient>
+            <filter id="sr_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <!-- 둥근 원형 모래판 -->
+          <ellipse cx="120" cy="165" rx="66" ry="25" fill="url(#sr_sand)" stroke="#f57f17" stroke-width="2.5"/>
+          <ellipse cx="120" cy="165" rx="55" ry="18" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="4,4" opacity="0.6"/>
+          <!-- 두 3D 씨름 선수 맞붙은 역동적 구도 -->
+          <g filter="url(#sr_sh)">
+            <!-- 청샅바 선수 (좌) -->
+            <ellipse cx="98" cy="146" rx="16" ry="14" fill="url(#sr_skin)" transform="rotate(20 98 146)"/>
+            <circle cx="86" cy="136" r="10" fill="#37474f"/>
+            <ellipse cx="106" cy="155" rx="11" ry="8" fill="url(#sr_blue)"/>
+            <!-- 홍샅바 선수 (우) -->
+            <ellipse cx="142" cy="146" rx="16" ry="14" fill="url(#sr_skin)" transform="rotate(-20 142 146)"/>
+            <circle cx="154" cy="136" r="10" fill="#37474f"/>
+            <ellipse cx="134" cy="155" rx="11" ry="8" fill="url(#sr_red)"/>
+            <!-- 팽팽하게 맞잡은 샅바와 팔다리 -->
+            <path d="M102,148 Q120,136 138,148" stroke="#ffcc80" stroke-width="6" stroke-linecap="round" fill="none"/>
+            <path d="M108,154 Q120,158 132,154" stroke="#ffeb3b" stroke-width="4" stroke-linecap="round" fill="none"/>
+          </g>
+        `,
+          cs_tugoofwar: `
+          <defs>
+            <linearGradient id="tw_rope" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffe082"/><stop offset="50%" stop-color="#bcaaa4"/><stop offset="100%" stop-color="#5d4037"/></linearGradient>
+            <filter id="tw_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <ellipse cx="120" cy="178" rx="60" ry="12" fill="rgba(0,0,0,0.18)"/>
+          <!-- 굵은 볏짚 동아줄 본체 -->
+          <g filter="url(#tw_sh)">
+            <path d="M55,152 Q120,122 185,152" stroke="url(#tw_rope)" stroke-width="18" stroke-linecap="round" fill="none"/>
+            <!-- 꼬임새 디테일 스트로크 -->
+            <path d="M55,152 Q120,122 185,152" stroke="#fff8e1" stroke-width="3" stroke-dasharray="6,8" stroke-linecap="round" fill="none" opacity="0.8"/>
+            <path d="M58,155 Q120,125 182,155" stroke="#4e342e" stroke-width="2.5" stroke-dasharray="4,10" stroke-linecap="round" fill="none" opacity="0.6"/>
+            <!-- 중앙 붉은 승부 깃발 리본 -->
+            <rect x="113" y="125" width="14" height="24" rx="3" fill="#d50000" stroke="#ff8a80" stroke-width="1.5"/>
+            <polygon points="120,135 142,122 120,148" fill="#ff1744" filter="drop-shadow(0 2px 3px rgba(0,0,0,0.3))"/>
+          </g>
+        `,
+          cs_sonori: `
+          <defs>
+            <linearGradient id="sn_straw" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe082"/><stop offset="100%" stop-color="#8d6e63"/></linearGradient>
+            <radialGradient id="sn_bell" cx="40%" cy="40%" r="50%"><stop offset="0%" stop-color="#fff59d"/><stop offset="70%" stop-color="#fbc02d"/><stop offset="100%" stop-color="#f57f17"/></radialGradient>
+            <filter id="sn_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <ellipse cx="120" cy="180" rx="50" ry="12" fill="rgba(0,0,0,0.2)"/>
+          <!-- 3D 볏짚 소머리 탈 -->
+          <g filter="url(#sn_sh)">
+            <ellipse cx="120" cy="144" rx="42" ry="34" fill="url(#sn_straw)"/>
+            <!-- 뿔 -->
+            <path d="M84,124 Q70,95 90,98 Q85,115 92,122 Z" fill="#5d4037"/>
+            <path d="M156,124 Q170,95 150,98 Q155,115 148,122 Z" fill="#5d4037"/>
+            <!-- 주둥이 및 코뚜레 -->
+            <ellipse cx="120" cy="156" rx="22" ry="15" fill="#d7ccc8"/>
+            <circle cx="112" cy="154" r="3.5" fill="#3e2723"/>
+            <circle cx="128" cy="154" r="3.5" fill="#3e2723"/>
+            <ellipse cx="120" cy="162" rx="7" ry="5" fill="none" stroke="#fbc02d" stroke-width="2.5"/>
+            <!-- 황금 워낭 방울 -->
+            <circle cx="120" cy="174" r="8" fill="url(#sn_bell)"/>
+            <circle cx="120" cy="176" r="2" fill="#3e2723"/>
+          </g>
+        `,
+          cs_gamassaum: `
+          <defs>
+            <linearGradient id="gm_roof" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe082"/><stop offset="100%" stop-color="#ff6f00"/></linearGradient>
+            <linearGradient id="gm_body" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff4081"/><stop offset="100%" stop-color="#880e4f"/></linearGradient>
+            <linearGradient id="gm_pole" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#8d6e63"/><stop offset="50%" stop-color="#d7ccc8"/><stop offset="100%" stop-color="#4e342e"/></linearGradient>
+            <filter id="gm_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <ellipse cx="120" cy="182" rx="60" ry="12" fill="rgba(0,0,0,0.2)"/>
+          <g filter="url(#gm_sh)">
+            <!-- 가마 메는 통나무 채 -->
+            <rect x="52" y="152" width="136" height="8" rx="4" fill="url(#gm_pole)"/>
+            <!-- 가마 본체 -->
+            <rect x="85" y="122" width="70" height="46" rx="6" fill="url(#gm_body)" stroke="#ffd54f" stroke-width="2"/>
+            <!-- 창문 문양 -->
+            <rect x="105" y="132" width="30" height="24" rx="4" fill="#fff9c4" stroke="#ff8f00" stroke-width="1.5"/>
+            <line x1="120" y1="132" x2="120" y2="156" stroke="#ff8f00" stroke-width="1.5"/>
+            <!-- 기와 지붕 갓 -->
+            <polygon points="120,96 74,124 166,124" fill="url(#gm_roof)" stroke="#e65100" stroke-width="1.5"/>
+            <!-- 상단 금빛 봉 -->
+            <circle cx="120" cy="94" r="5" fill="#ffd740"/>
+          </g>
+        `,
+          cs_yutnori: `
+          <defs>
+            <linearGradient id="yt_wood" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffcc80"/><stop offset="50%" stop-color="#ffa726"/><stop offset="100%" stop-color="#e65100"/></linearGradient>
+            <linearGradient id="yt_flat" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fff8e1"/><stop offset="100%" stop-color="#d7ccc8"/></linearGradient>
+            <filter id="yt_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="4" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <!-- 멍석 받침 -->
+          <ellipse cx="120" cy="172" rx="64" ry="22" fill="#ffe082" stroke="#bcaaa4" stroke-width="2"/>
+          <ellipse cx="120" cy="172" rx="56" ry="16" fill="none" stroke="#d7ccc8" stroke-width="1.5" stroke-dasharray="5,4"/>
+          <!-- 공중에 솟구쳐 흩어진 4개의 3D 윷가락 -->
+          <g filter="url(#yt_sh)">
+            <!-- 1번 윷 (등) -->
+            <rect x="72" y="112" width="16" height="56" rx="8" fill="url(#yt_wood)" transform="rotate(-15 80 140)"/>
+            <line x1="77" y1="122" x2="83" y2="158" stroke="#3e2723" stroke-width="2" stroke-linecap="round" transform="rotate(-15 80 140)"/>
+            <!-- 2번 윷 (평평한 배 - X표시) -->
+            <rect x="98" y="105" width="16" height="56" rx="6" fill="url(#yt_flat)" stroke="#8d6e63" stroke-width="1.5" transform="rotate(5 106 133)"/>
+            <text x="106" y="128" text-anchor="middle" font-size="10" font-weight="900" fill="#d50000" transform="rotate(5 106 133)">✕</text>
+            <text x="106" y="148" text-anchor="middle" font-size="10" font-weight="900" fill="#d50000" transform="rotate(5 106 133)">✕</text>
+            <!-- 3번 윷 (등) -->
+            <rect x="124" y="110" width="16" height="56" rx="8" fill="url(#yt_wood)" transform="rotate(18 132 138)"/>
+            <line x1="129" y1="120" x2="135" y2="156" stroke="#3e2723" stroke-width="2" stroke-linecap="round" transform="rotate(18 132 138)"/>
+            <!-- 4번 윷 (배) -->
+            <rect x="146" y="124" width="16" height="52" rx="6" fill="url(#yt_flat)" stroke="#8d6e63" stroke-width="1.5" transform="rotate(35 154 150)"/>
+          </g>
+        `,
+          cs_neolttwigi: `
+          <defs>
+            <linearGradient id="nt_wood" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#d7ccc8"/><stop offset="50%" stop-color="#a1887f"/><stop offset="100%" stop-color="#4e342e"/></linearGradient>
+            <linearGradient id="nt_girl" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff4081"/><stop offset="100%" stop-color="#c2185b"/></linearGradient>
+            <filter id="nt_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <ellipse cx="120" cy="182" rx="62" ry="12" fill="rgba(0,0,0,0.18)"/>
+          <!-- 널빤지 중심 짚단 받침 -->
+          <polygon points="120,146 104,178 136,178" fill="#ffe082" stroke="#ff8f00" stroke-width="1.5"/>
+          <g filter="url(#nt_sh)">
+            <!-- 비스듬한 3D 널빤지 -->
+            <rect x="62" y="146" width="116" height="10" rx="3" fill="url(#nt_wood)" transform="rotate(-16 120 151)"/>
+            <!-- 높이 점프한 소녀 (좌상단) -->
+            <g transform="translate(68, 96)">
+              <circle cx="10" cy="0" r="9" fill="#ffe0b2"/>
+              <circle cx="10" cy="-2" r="9" fill="#212121"/>
+              <!-- 풍성하게 퍼지는 분홍 한복 치마 -->
+              <path d="M0,15 Q10,8 20,15 L26,34 Q10,40 -6,34 Z" fill="url(#nt_girl)"/>
+              <ellipse cx="4" cy="36" rx="4" ry="3" fill="#fff"/>
+              <ellipse cx="16" cy="36" rx="4" ry="3" fill="#fff"/>
+            </g>
+            <!-- 반대편 디딤목에 선 소녀 실루엣 (우하단) -->
+            <circle cx="164" cy="142" r="8" fill="#37474f"/>
+            <ellipse cx="164" cy="158" rx="10" ry="12" fill="#42a5f5"/>
+          </g>
+        `,
+          cs_sangmo: `
+          <defs>
+            <radialGradient id="sm_hat" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#424242"/><stop offset="70%" stop-color="#212121"/><stop offset="100%" stop-color="#000000"/></radialGradient>
+            <linearGradient id="sm_rib" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="70%" stop-color="#f5f5f5"/><stop offset="100%" stop-color="#cfd8dc"/></linearGradient>
+            <filter id="sm_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.35"/></filter>
+          </defs>
+          <ellipse cx="120" cy="180" rx="45" ry="12" fill="rgba(0,0,0,0.2)"/>
+          <g filter="url(#sm_sh)">
+            <!-- 3D 칠흑 전립 모자 -->
+            <ellipse cx="120" cy="156" rx="36" ry="14" fill="#212121"/>
+            <ellipse cx="120" cy="150" rx="26" ry="20" fill="url(#sm_hat)"/>
+            <!-- 붉은 꼭지 구슬 -->
+            <circle cx="120" cy="128" r="6" fill="#d50000" stroke="#ff8a80" stroke-width="1.5"/>
+            <!-- 허공을 가르는 역동적인 상모 긴 띠 회전 궤적 -->
+            <path d="M120,126 C155,95 190,120 170,150 C150,180 90,185 70,150 C55,125 90,95 130,105" stroke="url(#sm_rib)" stroke-width="9" stroke-linecap="round" fill="none"/>
+            <path d="M120,126 C155,95 190,120 170,150 C150,180 90,185 70,150 C55,125 90,95 130,105" stroke="#ffffff" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.9"/>
+          </g>
+        `,
 
-          cs_charyesang: `<rect x="70" y="140" width="100" height="24" rx="4" fill="#b78103" stroke="#8c6200" stroke-width="2"/><rect x="80" y="164" width="10" height="22" fill="#8c6200"/><rect x="150" y="164" width="10" height="22" fill="#8c6200"/><circle cx="95" cy="132" r="8" fill="#d32f2f"/><circle cx="120" cy="130" r="9" fill="#fbc02d"/><circle cx="145" cy="132" r="8" fill="#ffffff" stroke="#b0bec5"/>`,
-          cs_screen: `<g transform="translate(10, 0)"><rect x="65" y="112" width="26" height="68" fill="#e0f2f1" stroke="#004d40" stroke-width="2"/><rect x="95" y="112" width="26" height="68" fill="#e0f2f1" stroke="#004d40" stroke-width="2"/><rect x="125" y="112" width="26" height="68" fill="#e0f2f1" stroke="#004d40" stroke-width="2"/><circle cx="108" cy="130" r="7" fill="#d32f2f"/><path d="M78,165 Q90,140 108,155" stroke="#2e7d32" stroke-width="3" fill="none"/></g>`,
-          cs_brassyware: `<ellipse cx="120" cy="138" rx="46" ry="18" fill="#ffd54f" stroke="#b78103" stroke-width="3"/><path d="M78,142 Q86,170 120,172 Q154,170 162,142 Z" fill="#ffca28" stroke="#b78103" stroke-width="2"/><ellipse cx="120" cy="172" rx="24" ry="7" fill="#ffd54f" stroke="#b78103" stroke-width="2"/>`,
-          cs_incense: `<ellipse cx="120" cy="150" rx="36" ry="16" fill="#78909c" stroke="#455a64" stroke-width="2"/><path d="M88,152 Q94,175 120,175 Q146,175 152,152 Z" fill="#607d8b"/><line x1="102" y1="174" x2="96" y2="186" stroke="#455a64" stroke-width="4"/><line x1="138" y1="174" x2="144" y2="186" stroke="#455a64" stroke-width="4"/><line x1="120" y1="175" x2="120" y2="188" stroke="#455a64" stroke-width="4"/><path d="M120,140 Q112,118 128,105" stroke="#cfd8dc" stroke-width="3" stroke-linecap="round" fill="none"/>`,
-          cs_candlestick: `<rect x="116" y="125" width="8" height="52" fill="#cfd8dc" stroke="#90a4ae" stroke-width="2"/><ellipse cx="120" cy="176" rx="28" ry="8" fill="#b0bec5"/><ellipse cx="120" cy="125" rx="12" ry="4" fill="#90a4ae"/><path d="M120,118 Q126,104 120,95 Q114,104 120,118 Z" fill="#ff5722"/><circle cx="120" cy="110" r="4" fill="#ffeb3b"/>`,
-          cs_seongmyo: `<ellipse cx="120" cy="165" rx="65" ry="24" fill="#81c784"/><path d="M72,165 Q120,118 168,165 Z" fill="#4caf50" stroke="#388e3c" stroke-width="2"/><rect x="114" y="160" width="12" height="18" fill="#cfd8dc" stroke="#90a4ae" stroke-width="1.5"/>`,
-          cs_beolcho: `<path d="M95,168 L142,168" stroke="#5d4037" stroke-width="8" stroke-linecap="round"/><path d="M142,168 Q158,165 162,142 Q158,125 136,132" stroke="#78909c" stroke-width="7" stroke-linecap="round" fill="none"/>`,
-          cs_jibang: `<rect x="94" y="110" width="52" height="74" rx="4" fill="#fff" stroke="#37474f" stroke-width="2"/><path d="M94,118 L120,105 L146,118" stroke="#37474f" stroke-width="2" fill="none"/><line x1="120" y1="124" x2="120" y2="170" stroke="#212121" stroke-width="3" stroke-dasharray="5,4"/>`,
+          cs_charyesang: `
+          <defs>
+            <linearGradient id="cy_wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8d6e63"/><stop offset="40%" stop-color="#5d4037"/><stop offset="100%" stop-color="#3e2723"/></linearGradient>
+            <radialGradient id="cy_brass" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#fff59d"/><stop offset="60%" stop-color="#fbc02d"/><stop offset="100%" stop-color="#f57f17"/></radialGradient>
+            <filter id="cy_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.35"/></filter>
+          </defs>
+          <ellipse cx="120" cy="184" rx="64" ry="12" fill="rgba(0,0,0,0.25)"/>
+          <g filter="url(#cy_sh)">
+            <!-- 옻칠 차례상 상판 및 다리 -->
+            <rect x="66" y="142" width="108" height="18" rx="4" fill="url(#cy_wood)" stroke="#3e2723" stroke-width="1.5"/>
+            <rect x="74" y="160" width="12" height="24" rx="2" fill="url(#cy_wood)"/>
+            <rect x="154" y="160" width="12" height="24" rx="2" fill="url(#cy_wood)"/>
+            <!-- 황금 유기 제기 및 차림 음식 -->
+            <!-- 좌측 사과 탑 -->
+            <ellipse cx="88" cy="138" rx="14" ry="5" fill="url(#cy_brass)"/>
+            <circle cx="88" cy="128" r="9" fill="#d50000"/>
+            <!-- 중앙 떡/유과 -->
+            <ellipse cx="120" cy="137" rx="15" ry="5" fill="url(#cy_brass)"/>
+            <rect x="110" y="124" width="20" height="14" rx="3" fill="#fff9c4" stroke="#fbc02d" stroke-width="1"/>
+            <!-- 우측 배 -->
+            <ellipse cx="152" cy="138" rx="14" ry="5" fill="url(#cy_brass)"/>
+            <circle cx="152" cy="128" r="9" fill="#fbc02d"/>
+          </g>
+        `,
+          cs_screen: `
+          <defs>
+            <linearGradient id="sc_silk" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e0f2f1"/><stop offset="100%" stop-color="#b2dfdb"/></linearGradient>
+            <linearGradient id="sc_frame" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4e342e"/><stop offset="100%" stop-color="#1b0000"/></linearGradient>
+            <filter id="sc_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <ellipse cx="120" cy="184" rx="58" ry="10" fill="rgba(0,0,0,0.2)"/>
+          <g filter="url(#sc_sh)">
+            <!-- 3폭 전통 병풍 입체 접힘 -->
+            <!-- 1폭 -->
+            <rect x="62" y="108" width="34" height="72" rx="2" fill="url(#sc_frame)"/>
+            <rect x="65" y="112" width="28" height="64" fill="url(#sc_silk)"/>
+            <!-- 2폭 (중앙 해와 학) -->
+            <rect x="100" y="106" width="40" height="74" rx="2" fill="url(#sc_frame)"/>
+            <rect x="103" y="110" width="34" height="66" fill="url(#sc_silk)"/>
+            <circle cx="120" cy="126" r="9" fill="#ff1744"/>
+            <path d="M110,154 Q120,138 132,152" stroke="#2e7d32" stroke-width="3" fill="none"/>
+            <!-- 3폭 -->
+            <rect x="144" y="108" width="34" height="72" rx="2" fill="url(#sc_frame)"/>
+            <rect x="147" y="112" width="28" height="64" fill="url(#sc_silk)"/>
+            <path d="M152,160 Q160,140 170,158" stroke="#1565c0" stroke-width="2.5" fill="none"/>
+          </g>
+        `,
+          cs_brassyware: `
+          <defs>
+            <radialGradient id="bw_gold" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#fffde7"/><stop offset="35%" stop-color="#ffd54f"/><stop offset="75%" stop-color="#ffb300"/><stop offset="100%" stop-color="#e65100"/></radialGradient>
+            <filter id="bw_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <ellipse cx="120" cy="184" rx="46" ry="12" fill="rgba(0,0,0,0.22)"/>
+          <g filter="url(#bw_sh)">
+            <!-- 굽 높은 3D 방짜유기 놋제기 -->
+            <!-- 굽 받침 -->
+            <ellipse cx="120" cy="174" rx="28" ry="8" fill="url(#bw_gold)"/>
+            <rect x="114" y="152" width="12" height="22" fill="url(#bw_gold)"/>
+            <!-- 상단 둥근 대접 본체 -->
+            <path d="M72,138 Q82,162 120,164 Q158,162 168,138 Z" fill="url(#bw_gold)"/>
+            <!-- 그릇 안쪽 타원 면 -->
+            <ellipse cx="120" cy="138" rx="48" ry="18" fill="url(#bw_gold)" stroke="#ffecb3" stroke-width="1.5"/>
+            <ellipse cx="120" cy="138" rx="40" ry="13" fill="#ffe082" opacity="0.6"/>
+          </g>
+        `,
+          cs_incense: `
+          <defs>
+            <radialGradient id="ic_bronze" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#b0bec5"/><stop offset="60%" stop-color="#546e7a"/><stop offset="100%" stop-color="#263238"/></radialGradient>
+            <linearGradient id="ic_smoke" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#cfd8dc" stop-opacity="0.9"/><stop offset="60%" stop-color="#eceff1" stop-opacity="0.6"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/></linearGradient>
+            <filter id="ic_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <ellipse cx="120" cy="186" rx="42" ry="10" fill="rgba(0,0,0,0.2)"/>
+          <g filter="url(#ic_sh)">
+            <!-- 세 발 청동 향로 -->
+            <line x1="98" y1="168" x2="90" y2="184" stroke="#263238" stroke-width="5" stroke-linecap="round"/>
+            <line x1="142" y1="168" x2="150" y2="184" stroke="#263238" stroke-width="5" stroke-linecap="round"/>
+            <line x1="120" y1="170" x2="120" y2="186" stroke="#263238" stroke-width="5" stroke-linecap="round"/>
+            <!-- 둥근 향로 본체 -->
+            <ellipse cx="120" cy="154" rx="38" ry="20" fill="url(#ic_bronze)"/>
+            <ellipse cx="120" cy="144" rx="34" ry="10" fill="#37474f" stroke="#78909c" stroke-width="1.5"/>
+            <!-- 꽂힌 붉은 선향 -->
+            <line x1="120" y1="144" x2="120" y2="122" stroke="#b71c1c" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="120" cy="122" r="2" fill="#ff5722"/>
+          </g>
+          <!-- 피어오르는 부드러운 입체 연기 -->
+          <path d="M120,120 C110,105 132,95 122,78 C115,68 126,58 120,50" stroke="url(#ic_smoke)" stroke-width="6" stroke-linecap="round" fill="none"/>
+        `,
+          cs_candlestick: `
+          <defs>
+            <radialGradient id="cs_metal" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#ffffff"/><stop offset="50%" stop-color="#cfd8dc"/><stop offset="100%" stop-color="#78909c"/></radialGradient>
+            <radialGradient id="cs_flame" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#fff9c4"/><stop offset="40%" stop-color="#ffeb3b"/><stop offset="80%" stop-color="#ff5722"/><stop offset="100%" stop-color="#b71c1c"/></radialGradient>
+            <filter id="cs_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <ellipse cx="120" cy="184" rx="38" ry="10" fill="rgba(0,0,0,0.2)"/>
+          <g filter="url(#cs_sh)">
+            <!-- 백동 촛대 본체 -->
+            <ellipse cx="120" cy="176" rx="30" ry="8" fill="url(#cs_metal)"/>
+            <rect x="116" y="128" width="8" height="48" fill="url(#cs_metal)"/>
+            <ellipse cx="120" cy="128" rx="14" ry="4" fill="url(#cs_metal)"/>
+            <!-- 붉은 전통 양초 -->
+            <rect x="114" y="104" width="12" height="24" rx="2" fill="#d50000" stroke="#b71c1c" stroke-width="1"/>
+            <line x1="120" y1="104" x2="120" y2="98" stroke="#212121" stroke-width="2"/>
+            <!-- 타오르는 3D 촛불 -->
+            <path d="M120,98 C128,86 126,72 120,68 C114,72 112,86 120,98 Z" fill="url(#cs_flame)"/>
+          </g>
+        `,
+          cs_seongmyo: `
+          <defs>
+            <linearGradient id="sm_grass" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#aed581"/><stop offset="60%" stop-color="#689f38"/><stop offset="100%" stop-color="#33691e"/></linearGradient>
+            <linearGradient id="sm_stone" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eceff1"/><stop offset="100%" stop-color="#90a4ae"/></linearGradient>
+            <filter id="sm_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <ellipse cx="120" cy="180" rx="68" ry="18" fill="#c8e6c9" opacity="0.6"/>
+          <g filter="url(#sm_sh)">
+            <!-- 둥근 잔디 봉분 3D 볼륨 -->
+            <path d="M68,166 Q120,105 172,166 Z" fill="url(#sm_grass)"/>
+            <!-- 봉분 앞 화강암 상석(돌 제단) -->
+            <rect x="96" y="162" width="48" height="14" rx="3" fill="url(#sm_stone)" stroke="#546e7a" stroke-width="1.5"/>
+            <!-- 제주 놋술잔 -->
+            <circle cx="120" cy="160" r="5" fill="#ffd54f"/>
+          </g>
+        `,
+          cs_beolcho: `
+          <defs>
+            <linearGradient id="bc_steel" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="50%" stop-color="#cfd8dc"/><stop offset="100%" stop-color="#546e7a"/></linearGradient>
+            <linearGradient id="bc_wood" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#8d6e63"/><stop offset="100%" stop-color="#3e2723"/></linearGradient>
+            <filter id="bc_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <ellipse cx="120" cy="180" rx="55" ry="12" fill="rgba(0,0,0,0.18)"/>
+          <g filter="url(#bc_sh)">
+            <!-- 나무 손잡이 자루 -->
+            <rect x="74" y="160" width="70" height="9" rx="4" fill="url(#bc_wood)" transform="rotate(-15 109 164)"/>
+            <!-- 반달형 강철 낫날 -->
+            <path d="M140,152 C158,148 168,128 162,112 C154,124 138,135 128,140 Z" fill="url(#bc_steel)" stroke="#37474f" stroke-width="1.5"/>
+            <!-- 베어진 풀잎들 -->
+            <path d="M78,172 Q92,154 84,142" stroke="#43a047" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <path d="M90,174 Q106,156 100,146" stroke="#2e7d32" stroke-width="4" stroke-linecap="round" fill="none"/>
+          </g>
+        `,
+          cs_jibang: `
+          <defs>
+            <linearGradient id="jb_paper" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#f5f5f5"/></linearGradient>
+            <linearGradient id="jb_wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5d4037"/><stop offset="100%" stop-color="#212121"/></linearGradient>
+            <filter id="jb_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <ellipse cx="120" cy="184" rx="44" ry="10" fill="rgba(0,0,0,0.2)"/>
+          <g filter="url(#jb_sh)">
+            <!-- 목제 신주패 받침대 -->
+            <rect x="88" y="172" width="64" height="12" rx="3" fill="url(#jb_wood)"/>
+            <!-- 전통 한지 지방(상원하방 - 위는 둥글고 아래는 네모) -->
+            <path d="M95,124 Q120,106 145,124 L145,172 L95,172 Z" fill="url(#jb_paper)" stroke="#37474f" stroke-width="1.5"/>
+            <!-- 단정한 먹글씨 세로 선 -->
+            <line x1="120" y1="124" x2="120" y2="164" stroke="#212121" stroke-width="2.5" stroke-dasharray="4,4"/>
+          </g>
+        `,
 
           cs_saekdong: `<path d="M85,142 L120,125 L155,142 L146,172 L94,172 Z" fill="#f8bbd0"/><rect x="72" y="140" width="15" height="28" fill="#ff5252" transform="rotate(20 72 140)"/><rect x="67" y="152" width="15" height="28" fill="#ffd740" transform="rotate(20 67 152)"/><rect x="62" y="164" width="15" height="28" fill="#40c4ff" transform="rotate(20 62 164)"/><path d="M115,128 L110,165" stroke="#c2185b" stroke-width="4"/>`,
           cs_durumagi: `<path d="M92,118 L120,112 L148,118 L158,185 L82,185 Z" fill="#e3f2fd" stroke="#90caf9" stroke-width="2"/><path d="M112,120 L128,145 L120,185" stroke="#1565c0" stroke-width="3" fill="none"/>`,
@@ -9711,16 +10041,165 @@
           cs_bokjumeoni: `<path d="M96,132 Q120,118 144,132 L152,168 Q120,185 88,168 Z" fill="#e91e63" stroke="#ad1457" stroke-width="2"/><path d="M102,132 Q120,138 138,132" stroke="#ffd54f" stroke-width="4" fill="none"/><circle cx="120" cy="155" r="10" fill="#ffd54f"/><text x="120" y="159" text-anchor="middle" font-size="10" font-weight="900" fill="#b71c1c">福</text>`,
           cs_gat: `<ellipse cx="120" cy="165" rx="64" ry="16" fill="#212121"/><path d="M100,162 L106,120 L134,120 L140,162 Z" fill="#37474f"/><line x1="102" y1="165" x2="88" y2="188" stroke="#ffeb3b" stroke-width="2"/><line x1="138" y1="165" x2="152" y2="188" stroke="#ffeb3b" stroke-width="2"/>`,
           cs_jokduri: `<polygon points="120,115 88,138 100,165 140,165 152,138" fill="#b71c1c" stroke="#d32f2f" stroke-width="2"/><circle cx="120" cy="138" r="6" fill="#ffeb3b"/><circle cx="106" cy="148" r="4" fill="#00e676"/><circle cx="134" cy="148" r="4" fill="#00e676"/>`,
-          cs_bojagi: `<polygon points="120,112 168,145 120,178 72,145" fill="#f44336"/><polygon points="120,112 144,128 120,145 96,128" fill="#ffeb3b"/><polygon points="144,128 168,145 144,162 120,145" fill="#4caf50"/><polygon points="120,145 144,162 120,178 96,162" fill="#2196f3"/><polygon points="96,128 120,145 96,162 72,145" fill="#ab47bc"/>`,
+          cs_bojagi: `
+          <defs>
+            <linearGradient id="bj_red" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff5252"/><stop offset="100%" stop-color="#b71c1c"/></linearGradient>
+            <linearGradient id="bj_teal" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#64ffda"/><stop offset="100%" stop-color="#00695c"/></linearGradient>
+            <linearGradient id="bj_yellow" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffe57f"/><stop offset="100%" stop-color="#ff8f00"/></linearGradient>
+            <linearGradient id="bj_blue" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#82b1ff"/><stop offset="100%" stop-color="#1565c0"/></linearGradient>
+            <filter id="bj_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <ellipse cx="120" cy="182" rx="55" ry="14" fill="rgba(0,0,0,0.2)"/>
+          <g filter="url(#bj_sh)">
+            <!-- 조각보 보자기 3D 입체 바디 -->
+            <path d="M72,145 Q120,105 168,145 Q158,185 120,188 Q82,185 72,145 Z" fill="url(#bj_red)"/>
+            <path d="M120,116 L168,145 L144,168 L120,146 Z" fill="url(#bj_teal)"/>
+            <path d="M72,145 L120,116 L120,146 L94,166 Z" fill="url(#bj_yellow)"/>
+            <path d="M94,166 L120,146 L144,168 L120,188 Z" fill="url(#bj_blue)"/>
+            <!-- 중앙 상단 나비 매듭과 옥구슬 -->
+            <circle cx="120" cy="120" r="7" fill="#00e676" stroke="#00b248" stroke-width="1.5"/>
+            <path d="M116,126 L108,146" stroke="#ff1744" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M124,126 L132,146" stroke="#ff1744" stroke-width="3.5" stroke-linecap="round"/>
+          </g>
+        `,
 
           cs_rabbit: `<ellipse cx="120" cy="145" r="52" fill="#fff9c4"/><ellipse cx="120" cy="154" rx="20" ry="22" fill="#ffffff" stroke="#e0e0e0"/><circle cx="120" cy="134" r="14" fill="#ffffff" stroke="#e0e0e0"/><ellipse cx="114" cy="116" rx="4" ry="12" fill="#ffffff" transform="rotate(-15 114 116)"/><ellipse cx="126" cy="116" rx="4" ry="12" fill="#ffffff" transform="rotate(15 126 116)"/><rect x="136" y="152" width="16" height="20" fill="#b0bec5"/>`,
-          cs_jeolgu: `<path d="M92,132 L148,132 L140,175 L100,175 Z" fill="#78909c" stroke="#455a64" stroke-width="2"/><ellipse cx="120" cy="132" rx="28" ry="8" fill="#90a4ae"/><path d="M125,110 L155,142" stroke="#5d4037" stroke-width="6" stroke-linecap="round"/>`,
-          cs_laurel: `<circle cx="120" cy="145" r="50" fill="#fffde7"/><path d="M120,175 Q115,145 122,125" stroke="#5d4037" stroke-width="5" fill="none"/><circle cx="114" cy="125" r="16" fill="#33691e" opacity="0.8"/><circle cx="130" cy="120" r="14" fill="#558b2f" opacity="0.85"/>`,
-          cs_gwiseong: `<rect x="88" y="132" width="64" height="46" rx="10" fill="#ff9800" stroke="#f57c00" stroke-width="2"/><path d="M120,132 L120,178" stroke="#ffffff" stroke-width="4"/><path d="M88,155 L152,155" stroke="#ffffff" stroke-width="4"/><circle cx="120" cy="130" r="6" fill="#e53935"/>`,
-          cs_gohyang: `<path d="M75,145 Q120,120 165,145 L155,178 L85,178 Z" fill="#ffe0b2"/><path d="M70,145 Q120,115 170,145" stroke="#8d6e63" stroke-width="6" fill="none"/><ellipse cx="120" cy="136" rx="8" ry="6" fill="#c8e6c9"/>`,
-          cs_magpie: `<ellipse cx="120" cy="150" rx="32" ry="18" fill="#212121"/><circle cx="100" cy="142" r="10" fill="#212121"/><polygon points="92,142 84,144 92,146" fill="#ffb300"/><ellipse cx="125" cy="152" rx="14" ry="10" fill="#ffffff"/><path d="M148,154 L175,162" stroke="#1565c0" stroke-width="5" stroke-linecap="round"/>`,
-          cs_chorong: `<rect x="105" y="125" width="30" height="25" fill="#e53935"/><rect x="105" y="150" width="30" height="25" fill="#1e88e5"/><path d="M120,105 L120,125" stroke="#5d4037" stroke-width="3"/><path d="M120,175 L120,192" stroke="#ffeb3b" stroke-width="3"/>`,
-          cs_pungdeung: `<path d="M102,120 Q120,112 138,120 L144,162 Q120,170 96,162 Z" fill="#ff9800" stroke="#f57c00" stroke-width="2"/><ellipse cx="120" cy="162" rx="24" ry="6" fill="#ffeb3b"/><ellipse cx="120" cy="120" rx="18" ry="4" fill="#ffb74d"/>`
+          cs_jeolgu: `
+          <defs>
+            <radialGradient id="jg_stone" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#cfd8dc"/><stop offset="60%" stop-color="#78909c"/><stop offset="100%" stop-color="#37474f"/></radialGradient>
+            <linearGradient id="jg_pestle" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffcc80"/><stop offset="100%" stop-color="#8d6e63"/></linearGradient>
+            <filter id="jg_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="7" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <ellipse cx="120" cy="184" rx="46" ry="12" fill="rgba(0,0,0,0.22)"/>
+          <g filter="url(#jg_sh)">
+            <!-- 묵직한 화강암 돌절구 본체 -->
+            <path d="M86,134 L154,134 L142,176 L98,176 Z" fill="url(#jg_stone)"/>
+            <ellipse cx="120" cy="134" rx="34" ry="12" fill="url(#jg_stone)" stroke="#eceff1" stroke-width="1.5"/>
+            <!-- 절구 안 뽀얀 찹쌀 떡반죽 -->
+            <ellipse cx="120" cy="134" rx="26" ry="8" fill="#ffffff"/>
+            <!-- 참나무 절굿공이 -->
+            <rect x="120" y="98" width="12" height="52" rx="6" fill="url(#jg_pestle)" stroke="#4e342e" stroke-width="1.5" transform="rotate(32 126 124)"/>
+          </g>
+        `,
+          cs_laurel: `
+          <defs>
+            <radialGradient id="lr_moon" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#fffde7"/><stop offset="65%" stop-color="#fff59d"/><stop offset="100%" stop-color="#fbc02d" stop-opacity="0.3"/></radialGradient>
+            <linearGradient id="lr_wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8d6e63"/><stop offset="100%" stop-color="#3e2723"/></linearGradient>
+            <radialGradient id="lr_leaf" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#aed581"/><stop offset="70%" stop-color="#558b2f"/><stop offset="100%" stop-color="#1b5e20"/></radialGradient>
+            <filter id="lr_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.25"/></filter>
+          </defs>
+          <!-- 은은한 보름달 배경 -->
+          <circle cx="120" cy="145" r="62" fill="url(#lr_moon)"/>
+          <g filter="url(#lr_sh)">
+            <!-- 우아한 계수나무 줄기 -->
+            <path d="M120,180 Q112,145 124,124" stroke="url(#lr_wood)" stroke-width="8" stroke-linecap="round" fill="none"/>
+            <!-- 풍성한 3D 수관 잎무리 -->
+            <circle cx="106" cy="120" r="22" fill="url(#lr_leaf)"/>
+            <circle cx="134" cy="116" r="20" fill="url(#lr_leaf)"/>
+            <circle cx="120" cy="100" r="20" fill="url(#lr_leaf)"/>
+            <!-- 흩날리는 황금 꽃송이 -->
+            <circle cx="114" cy="108" r="3.5" fill="#ffd740"/>
+            <circle cx="130" cy="124" r="3.5" fill="#ffd740"/>
+          </g>
+        `,
+          cs_gwiseong: `
+          <defs>
+            <linearGradient id="gw_bag" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffb74d"/><stop offset="100%" stop-color="#e65100"/></linearGradient>
+            <linearGradient id="gw_rib" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#ffcdd2"/></linearGradient>
+            <filter id="gw_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <ellipse cx="120" cy="184" rx="55" ry="12" fill="rgba(0,0,0,0.2)"/>
+          <g filter="url(#gw_sh)">
+            <!-- 풍성한 귀성길 보따리 가방 -->
+            <rect x="78" y="130" width="84" height="50" rx="14" fill="url(#gw_bag)" stroke="#bf360c" stroke-width="2"/>
+            <!-- 십자 묶음 비단 리본 띠 -->
+            <rect x="114" y="130" width="12" height="50" fill="url(#gw_rib)"/>
+            <rect x="78" y="150" width="84" height="10" fill="url(#gw_rib)"/>
+            <!-- 상단 손잡이 매듭 -->
+            <path d="M106,130 Q120,114 134,130" stroke="#d50000" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <circle cx="120" cy="130" r="5" fill="#d50000"/>
+          </g>
+        `,
+          cs_gohyang: `
+          <defs>
+            <linearGradient id="gh_roof" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe082"/><stop offset="60%" stop-color="#ffb300"/><stop offset="100%" stop-color="#8d6e63"/></linearGradient>
+            <linearGradient id="gh_wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff8e1"/><stop offset="100%" stop-color="#d7ccc8"/></linearGradient>
+            <filter id="gh_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <ellipse cx="120" cy="182" rx="60" ry="12" fill="rgba(0,0,0,0.2)"/>
+          <g filter="url(#gh_sh)">
+            <!-- 흙벽과 창호지 문 -->
+            <rect x="76" y="146" width="88" height="34" rx="3" fill="url(#gh_wall)"/>
+            <rect x="108" y="152" width="24" height="26" rx="2" fill="#ffe082" stroke="#8d6e63" stroke-width="1.5"/>
+            <!-- 포근한 볏짚 초가지붕 3D 곡선 -->
+            <path d="M64,148 Q120,112 176,148 Q120,138 64,148 Z" fill="url(#gh_roof)"/>
+            <!-- 지붕 위 열린 둥근 탐스러운 박 -->
+            <circle cx="106" cy="136" r="7" fill="#e8f5e9" stroke="#81c784" stroke-width="1.5"/>
+            <circle cx="134" cy="134" r="8" fill="#e8f5e9" stroke="#81c784" stroke-width="1.5"/>
+          </g>
+        `,
+          cs_magpie: `
+          <defs>
+            <radialGradient id="mp_body" cx="30%" cy="30%" r="70%"><stop offset="0%" stop-color="#37474f"/><stop offset="60%" stop-color="#212121"/><stop offset="100%" stop-color="#0d47a1"/></radialGradient>
+            <linearGradient id="mp_wing" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1976d2"/><stop offset="100%" stop-color="#0d47a1"/></linearGradient>
+            <filter id="mp_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <g filter="url(#mp_sh)">
+            <!-- 감나무 가지 -->
+            <path d="M56,168 Q110,162 178,172" stroke="#5d4037" stroke-width="6" stroke-linecap="round" fill="none"/>
+            <!-- 주황빛 단감 -->
+            <circle cx="78" cy="174" r="9" fill="#ff6d00"/>
+            <circle cx="158" cy="178" r="9" fill="#ff6d00"/>
+            <!-- 3D 길조 까치 본체 -->
+            <ellipse cx="120" cy="148" rx="26" ry="16" fill="url(#mp_body)"/>
+            <circle cx="98" cy="140" r="10" fill="url(#mp_body)"/>
+            <!-- 노란 부리 -->
+            <polygon points="88,140 80,142 88,144" fill="#ffd600"/>
+            <!-- 흰 배 -->
+            <ellipse cx="118" cy="154" rx="12" ry="8" fill="#ffffff"/>
+            <!-- 푸른빛 날개와 긴 꼬리깃 -->
+            <path d="M124,146 Q146,146 154,158 L142,160 Z" fill="url(#mp_wing)"/>
+            <line x1="140" y1="152" x2="175" y2="162" stroke="#0d47a1" stroke-width="5" stroke-linecap="round"/>
+          </g>
+        `,
+          cs_chorong: `
+          <defs>
+            <linearGradient id="cr_red" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff5252"/><stop offset="100%" stop-color="#c62828"/></linearGradient>
+            <linearGradient id="cr_blue" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#448aff"/><stop offset="100%" stop-color="#1565c0"/></linearGradient>
+            <filter id="cr_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000" flood-opacity="0.3"/></filter>
+          </defs>
+          <ellipse cx="120" cy="188" rx="35" ry="8" fill="rgba(0,0,0,0.2)"/>
+          <g filter="url(#cr_sh)">
+            <!-- 걸이 대나무 살 -->
+            <line x1="120" y1="98" x2="120" y2="118" stroke="#4e342e" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="120" cy="98" r="4" fill="#ffb300"/>
+            <!-- 청사초롱 본체 (상단 홍색 비단, 하단 청색 비단) -->
+            <rect x="98" y="118" width="44" height="28" rx="4" fill="url(#cr_red)"/>
+            <rect x="98" y="146" width="44" height="28" rx="4" fill="url(#cr_blue)"/>
+            <!-- 중앙 빛 투과 하이라이트 -->
+            <ellipse cx="120" cy="146" rx="14" ry="18" fill="#fff9c4" opacity="0.45"/>
+            <!-- 하단 황금 술 태슬 -->
+            <path d="M120,174 L120,192" stroke="#ffd740" stroke-width="4" stroke-linecap="round"/>
+          </g>
+        `,
+          cs_pungdeung: `
+          <defs>
+            <radialGradient id="pd_glow" cx="50%" cy="60%" r="60%"><stop offset="0%" stop-color="#ffffff"/><stop offset="35%" stop-color="#ffe57f"/><stop offset="75%" stop-color="#ff9100"/><stop offset="100%" stop-color="#d84315"/></radialGradient>
+            <filter id="pd_sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#ff6d00" flood-opacity="0.4"/></filter>
+          </defs>
+          <!-- 밤하늘 별무리 -->
+          <circle cx="82" cy="110" r="1.5" fill="#fff"/>
+          <circle cx="158" cy="120" r="1.5" fill="#fff"/>
+          <circle cx="145" cy="95" r="2" fill="#ffe082"/>
+          <g filter="url(#pd_sh)">
+            <!-- 둥실 떠오르는 소원풍등 본체 -->
+            <path d="M96,122 Q120,110 144,122 L152,162 Q120,172 88,162 Z" fill="url(#pd_glow)"/>
+            <!-- 하단 대나무 살 테두리 -->
+            <ellipse cx="120" cy="162" rx="32" ry="7" fill="none" stroke="#ffe082" stroke-width="2"/>
+            <!-- 내부 불꽃 핵 -->
+            <circle cx="120" cy="154" r="7" fill="#ffffff" filter="drop-shadow(0 0 5px #fff)"/>
+          </g>
+        `
         };
 
         const defIcon = `<circle cx="120" cy="145" r="48" fill="${color}" opacity="0.18"/><circle cx="120" cy="145" r="40" fill="none" stroke="${color}" stroke-width="3"/><text x="120" y="154" text-anchor="middle" font-size="28" font-weight="900" fill="${color}">🌾</text>`;
