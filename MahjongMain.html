@@ -6091,7 +6091,7 @@
             <span>📅</span> 2026. 09. 19 (v1.6.04)
           </div>
           <ul style="margin: 0; padding-left: 18px; font-size: 12.5px; color: #374151; line-height: 1.6;">
-            <li style="margin-bottom: 4px;"><strong>🎵 초기화면 잔잔한 아리랑 BGM & 환영 음성 안내 탑재:</strong> Web Audio API 가야금 핑거 플럭 신디사이저 기반 전통 민요 '아리랑' 멜로디 BGM 및 로딩 완료 웰컴 TTS 음성 안내("환영합니다. 즐거운 시간 되세요~") 탑재, 자동 오디오 덕킹 및 스플래시 화면 BGM ON/OFF 토글 지원.</li>
+            <li style="margin-bottom: 4px;"><strong>🎵 정통 본조 아리랑 BGM (세련된 K-Chill 모던 사운드) & 환영 음성 안내 탑재:</strong> Web Audio API 기반 대한민국 대표 정통 민요 '본조 아리랑'의 정확한 가락과 세련된 네오소울 코드 패드, 서브 베이스, 감각적인 세마치 칠 비트 사운드 탑재, 자동 오디오 덕킹 및 스플래시 화면 BGM ON/OFF 토글 지원.</li>
             <li style="margin-bottom: 4px;"><strong>🌐 한국어 / English 완전 다국어(i18n) 시스템 신규 탑재:</strong> 스플래시 화면 언어 원터치 토글 버튼 및 환경설정 언어 선택 메뉴를 통해 인게임 UI, 안내 모달, 툴팁이 완벽히 실시간 전환 지원.</li>
           </ul>
         </div>
@@ -8421,79 +8421,207 @@
       }
 
       /**
-       * 가야금(Gayageum) 명주실 뜯는 소리(Pluck) 합성기
+       * 세련된 모던 K-퓨전 가야금/벨 플럭(Pluck) 신디사이저
        */
-      playGayageumPluck(freq, startTime, duration = 1.8, velocity = 0.22, withVibrato = false) {
+      playModernLead(freq, startTime, duration = 1.4, velocity = 0.24, withVibrato = false) {
         if (!this.ctx || this.muted || !this.bgmEnabled || !freq) return;
         const now = Math.max(this.ctx.currentTime, startTime || this.ctx.currentTime);
         const masterOut = this.arirangMasterGain || this.getDestination();
 
-        // 1. 메인 발현 오실레이터 (삼각파 - 명주실 따뜻한 바디감)
+        // 1. 메인 발현 오실레이터 (삼각파 - 따뜻한 우드/명주실 바디감)
         const oscMain = this.ctx.createOscillator();
         oscMain.type = 'triangle';
         oscMain.frequency.setValueAtTime(freq, now);
 
         // 2. 배음 서브 오실레이터 (사인파 2배음 - 맑은 청아함)
-        const oscHarmonic = this.ctx.createOscillator();
-        oscHarmonic.type = 'sine';
-        oscHarmonic.frequency.setValueAtTime(freq * 2, now);
+        const oscHarm = this.ctx.createOscillator();
+        oscHarm.type = 'sine';
+        oscHarm.frequency.setValueAtTime(freq * 2, now);
 
-        // 미세 농현(Vibrato LFO) - 0.35초 후 은은하게 흔들림
+        // 3. FM 어택 모듈레이터 (초단기 맑은 차임벨 어택)
+        const modOsc = this.ctx.createOscillator();
+        const modGain = this.ctx.createGain();
+        modOsc.type = 'sine';
+        modOsc.frequency.setValueAtTime(freq * 3.5, now);
+        modGain.gain.setValueAtTime(freq * 0.45, now);
+        modGain.gain.exponentialRampToValueAtTime(0.001, now + 0.045);
+        modOsc.connect(modGain);
+        modGain.connect(oscMain.frequency);
+
+        // 미세 농현(Vibrato LFO) - 0.25초 후 은은하고 자연스럽게 진동
         let lfo = null, lfoGain = null;
         if (withVibrato) {
           lfo = this.ctx.createOscillator();
           lfoGain = this.ctx.createGain();
-          lfo.frequency.setValueAtTime(4.2, now);
+          lfo.frequency.setValueAtTime(4.6, now);
           lfoGain.gain.setValueAtTime(0, now);
-          lfoGain.gain.setValueAtTime(0, now + 0.3);
-          lfoGain.gain.linearRampToValueAtTime(freq * 0.025, now + 0.7);
+          lfoGain.gain.setValueAtTime(0, now + 0.25);
+          lfoGain.gain.linearRampToValueAtTime(freq * 0.022, now + 0.6);
           lfo.connect(lfoGain);
           lfoGain.connect(oscMain.frequency);
           lfo.start(now);
           lfo.stop(now + duration);
         }
 
-        // 3. 로우패스 필터 (현의 초기 어택 고음이 빠르게 닫히며 깊은 잔향 형성)
+        // 로우패스 필터 (귀를 찌르지 않고 깊고 감성적인 톤)
         const filter = this.ctx.createBiquadFilter();
         filter.type = 'lowpass';
-        const cutoffStart = Math.min(3800, freq * 5.5);
-        const cutoffEnd = Math.min(800, freq * 1.8);
+        const cutoffStart = Math.min(4200, freq * 5.2);
+        const cutoffEnd = Math.min(950, freq * 2.0);
         filter.frequency.setValueAtTime(cutoffStart, now);
         filter.frequency.exponentialRampToValueAtTime(cutoffEnd, now + Math.min(duration, 0.45));
-        filter.Q.setValueAtTime(2.2, now);
+        filter.Q.setValueAtTime(1.8, now);
 
-        // 4. 게인 엔벨로프 (현 뜯는 타격 어택 0.004s -> 초기 감쇠 -> 부드러운 롱 서스테인 릴리즈)
+        // 게인 엔벨로프 (현 뜯는 타격감 0.007s -> 부드러운 감쇠)
         const noteGain = this.ctx.createGain();
-        const peakGain = Math.min(0.35, velocity * 1.0);
+        const peakGain = Math.min(0.28, velocity);
         noteGain.gain.setValueAtTime(0.0001, now);
-        noteGain.gain.linearRampToValueAtTime(peakGain, now + 0.005);
-        noteGain.gain.exponentialRampToValueAtTime(peakGain * 0.55, now + 0.12);
+        noteGain.gain.linearRampToValueAtTime(peakGain, now + 0.007);
+        noteGain.gain.exponentialRampToValueAtTime(peakGain * 0.65, now + 0.12);
         noteGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
 
         const harmGain = this.ctx.createGain();
-        harmGain.gain.setValueAtTime(0.35, now);
+        harmGain.gain.setValueAtTime(0.32, now);
 
-        // 노드 결합
         oscMain.connect(filter);
-        oscHarmonic.connect(harmGain);
+        oscHarm.connect(harmGain);
         harmGain.connect(filter);
         filter.connect(noteGain);
         noteGain.connect(masterOut);
 
         oscMain.start(now);
         oscMain.stop(now + duration + 0.05);
-        oscHarmonic.start(now);
-        oscHarmonic.stop(now + duration + 0.05);
+        oscHarm.start(now);
+        oscHarm.stop(now + duration + 0.05);
+        modOsc.start(now);
+        modOsc.stop(now + 0.06);
 
         if (lfo && lfoGain) {
-          this.autoDisconnect(oscMain, oscHarmonic, filter, noteGain, harmGain, lfo, lfoGain);
+          this.autoDisconnect(oscMain, oscHarm, modOsc, modGain, filter, noteGain, harmGain, lfo, lfoGain);
         } else {
-          this.autoDisconnect(oscMain, oscHarmonic, filter, noteGain, harmGain);
+          this.autoDisconnect(oscMain, oscHarm, modOsc, modGain, filter, noteGain, harmGain);
         }
       }
 
       /**
-       * 초기화면 잔잔한 아리랑 BGM 루프 시퀀서 시작
+       * 가야금 플럭 하위 호환
+       */
+      playGayageumPluck(freq, startTime, duration = 1.8, velocity = 0.22, withVibrato = false) {
+        this.playModernLead(freq, startTime, duration, velocity, withVibrato);
+      }
+
+      /**
+       * 배경 공간을 은은하게 채워주는 앰비언트 코드 패드
+       */
+      playAmbientChord(chordFreqs, startTime, duration = 1.5, velocity = 0.048) {
+        if (!this.ctx || this.muted || !this.bgmEnabled || !chordFreqs || !chordFreqs.length) return;
+        const now = Math.max(this.ctx.currentTime, startTime || this.ctx.currentTime);
+        const masterOut = this.arirangMasterGain || this.getDestination();
+
+        const chordGain = this.ctx.createGain();
+        chordGain.gain.setValueAtTime(0.0001, now);
+        chordGain.gain.linearRampToValueAtTime(velocity, now + 0.25);
+        chordGain.gain.setValueAtTime(velocity, now + duration - 0.25);
+        chordGain.gain.linearRampToValueAtTime(0.0001, now + duration);
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(620, now);
+
+        chordGain.connect(filter);
+        filter.connect(masterOut);
+
+        const oscs = [];
+        chordFreqs.forEach(freq => {
+          const osc = this.ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+          osc.connect(chordGain);
+          osc.start(now);
+          osc.stop(now + duration + 0.05);
+          oscs.push(osc);
+        });
+
+        setTimeout(() => {
+          oscs.forEach(o => { try { o.disconnect(); } catch(e){} });
+          try { chordGain.disconnect(); filter.disconnect(); } catch(e){}
+        }, Math.max(100, (duration + 0.2) * 1000));
+      }
+
+      /**
+       * 1박 루트 베이스 (따뜻한 서브 베이스)
+       */
+      playModernBass(freq, startTime, duration = 1.2, velocity = 0.14) {
+        if (!this.ctx || this.muted || !this.bgmEnabled || !freq) return;
+        const now = Math.max(this.ctx.currentTime, startTime || this.ctx.currentTime);
+        const masterOut = this.arirangMasterGain || this.getDestination();
+
+        const osc = this.ctx.createOscillator();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(240, now);
+
+        const gain = this.ctx.createGain();
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.linearRampToValueAtTime(velocity, now + 0.02);
+        gain.gain.exponentialRampToValueAtTime(velocity * 0.5, now + 0.25);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterOut);
+
+        osc.start(now);
+        osc.stop(now + duration + 0.05);
+        this.autoDisconnect(osc, filter, gain);
+      }
+
+      /**
+       * 세마치 칠 그루브 펄스 (스냅 & 틱)
+       */
+      playChillTap(type, startTime, velocity = 0.035) {
+        if (!this.ctx || this.muted || !this.bgmEnabled) return;
+        const now = Math.max(this.ctx.currentTime, startTime || this.ctx.currentTime);
+        const masterOut = this.arirangMasterGain || this.getDestination();
+
+        if (type === 'snap') {
+          const osc = this.ctx.createOscillator();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(80, now + 0.03);
+
+          const gain = this.ctx.createGain();
+          gain.gain.setValueAtTime(velocity, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
+
+          osc.connect(gain);
+          gain.connect(masterOut);
+          osc.start(now);
+          osc.stop(now + 0.04);
+          this.autoDisconnect(osc, gain);
+        } else if (type === 'tick') {
+          const osc = this.ctx.createOscillator();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(1400, now);
+          osc.frequency.exponentialRampToValueAtTime(400, now + 0.015);
+
+          const gain = this.ctx.createGain();
+          gain.gain.setValueAtTime(velocity * 0.7, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.02);
+
+          osc.connect(gain);
+          gain.connect(masterOut);
+          osc.start(now);
+          osc.stop(now + 0.025);
+          this.autoDisconnect(osc, gain);
+        }
+      }
+
+      /**
+       * 초기화면 정통 한국 아리랑 (세련된 K-Chill Modern BGM) 루프 시퀀서
        */
       playArirangBGM(fadeDuration = 1.0) {
         if (!this.bgmEnabled || this.muted) return;
@@ -8510,97 +8638,248 @@
         if (!this.arirangMasterGain) {
           this.arirangMasterGain = this.ctx.createGain();
           
-          const delayNode = this.ctx.createDelay();
-          delayNode.delayTime.value = 0.28;
-          const delayGain = this.ctx.createGain();
-          delayGain.gain.value = 0.20;
-          const delayFilter = this.ctx.createBiquadFilter();
-          delayFilter.type = 'lowpass';
-          delayFilter.frequency.value = 1600;
+          // 듀얼 딜레이 리버브 네트워크 (스튜디오급 앰비언트 공간감)
+          const delay1 = this.ctx.createDelay();
+          delay1.delayTime.value = 0.24;
+          const delayGain1 = this.ctx.createGain();
+          delayGain1.gain.value = 0.22;
+          const filter1 = this.ctx.createBiquadFilter();
+          filter1.type = 'lowpass';
+          filter1.frequency.value = 1800;
+
+          const delay2 = this.ctx.createDelay();
+          delay2.delayTime.value = 0.48;
+          const delayGain2 = this.ctx.createGain();
+          delayGain2.gain.value = 0.14;
+          const filter2 = this.ctx.createBiquadFilter();
+          filter2.type = 'lowpass';
+          filter2.frequency.value = 1200;
 
           this.arirangMasterGain.connect(this.getDestination());
-          this.arirangMasterGain.connect(delayNode);
-          delayNode.connect(delayFilter);
-          delayFilter.connect(delayGain);
-          delayGain.connect(this.getDestination());
+          this.arirangMasterGain.connect(delay1);
+          delay1.connect(filter1);
+          filter1.connect(delayGain1);
+          delayGain1.connect(this.getDestination());
+
+          this.arirangMasterGain.connect(delay2);
+          delay2.connect(filter2);
+          filter2.connect(delayGain2);
+          delayGain2.connect(this.getDestination());
         }
 
-        const targetVol = 0.16;
+        const targetVol = 0.17;
         const now = this.ctx.currentTime;
         this.arirangMasterGain.gain.cancelScheduledValues(now);
         this.arirangMasterGain.gain.setValueAtTime(0.0001, now);
         this.arirangMasterGain.gain.linearRampToValueAtTime(targetVol, now + fadeDuration);
 
-        const beatSec = 0.68;
+        // 세마치 칠 템포 (분당 약 115박)
+        const beatSec = 0.52;
         const NOTE = {
-          D3: 146.83, G3: 196.00, A3: 220.00,
-          D4: 293.66, E4: 329.63, G4: 392.00, A4: 440.00, B4: 493.88,
+          C2: 65.41, D2: 73.42, E2: 82.41, F2: 87.31, G2: 98.00, A2: 110.00, B2: 123.47,
+          C3: 130.81, D3: 146.83, E3: 164.81, F3: 174.61, G3: 196.00, A3: 220.00, B3: 246.94,
+          C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.00, A4: 440.00, B4: 493.88,
           C5: 523.25, D5: 587.33, E5: 659.25, G5: 783.99, A5: 880.00,
           REST: 0
         };
 
-        const score = [
-          // 1~4마디: 아리랑 아리랑 아라리요
-          { f: NOTE.D4, b: 1.5, bass: NOTE.G3 },
-          { f: NOTE.E4, b: 0.5 },
-          { f: NOTE.G4, b: 2.0, vib: true },
+        // 20마디 정통 본조 아리랑 + 모던 K-Chill 화성 구조 (3/4 박자 세마치)
+        const measures = [
+          // [Intro 2마디] 영롱한 감성 인트로
+          {
+            chord: [NOTE.C3, NOTE.G3, NOTE.B3, NOTE.E4], bass: NOTE.C2, snap: true,
+            notes: [
+              { f: NOTE.E4, b: 0.75 },
+              { f: NOTE.G4, b: 0.75 },
+              { f: NOTE.B4, b: 0.75 },
+              { f: NOTE.C5, b: 0.75, vib: true }
+            ]
+          },
+          {
+            chord: [NOTE.G3, NOTE.C4, NOTE.D4, NOTE.G4], bass: NOTE.G2, tick: true,
+            notes: [
+              { f: NOTE.D5, b: 1.0 },
+              { f: NOTE.C5, b: 1.0 },
+              { f: NOTE.A4, b: 0.5 },
+              { f: NOTE.G4, b: 0.5, vib: true }
+            ]
+          },
 
-          { f: NOTE.G4, b: 1.5, bass: NOTE.D3 },
-          { f: NOTE.A4, b: 0.5 },
-          { f: NOTE.G4, b: 1.0 },
-          { f: NOTE.E4, b: 1.0 },
+          // [Section A: 8마디] "아리랑 아리랑 아라리요 / 아리랑 고개로 넘어간다"
+          // M1: 아 - 리 - 랑 -
+          {
+            chord: [NOTE.C3, NOTE.G3, NOTE.C4, NOTE.E4], bass: NOTE.C2, snap: true,
+            notes: [
+              { f: NOTE.G3, b: 1.0 },
+              { f: NOTE.A3, b: 1.0 },
+              { f: NOTE.C4, b: 1.0, tick: true }
+            ]
+          },
+          // M2: 아 - - 리 랑 -
+          {
+            chord: [NOTE.E3, NOTE.B3, NOTE.E4, NOTE.G4], bass: NOTE.E2, snap: true,
+            notes: [
+              { f: NOTE.D4, b: 1.5 },
+              { f: NOTE.E4, b: 0.5 },
+              { f: NOTE.D4, b: 1.0, tick: true, vib: true }
+            ]
+          },
+          // M3: 아 - 라 - 리 -
+          {
+            chord: [NOTE.F3, NOTE.C4, NOTE.E4, NOTE.A4], bass: NOTE.F2, snap: true,
+            notes: [
+              { f: NOTE.E4, b: 1.0 },
+              { f: NOTE.D4, b: 0.5 },
+              { f: NOTE.C4, b: 0.5 },
+              { f: NOTE.C4, b: 0.5 },
+              { f: NOTE.D4, b: 0.5, tick: true }
+            ]
+          },
+          // M4: 요 - - - - -
+          {
+            chord: [NOTE.G3, NOTE.D4, NOTE.F4, NOTE.B4], bass: NOTE.G2, snap: true,
+            notes: [
+              { f: NOTE.C4, b: 1.5, vib: true },
+              { f: NOTE.A3, b: 0.5 },
+              { f: NOTE.G3, b: 0.5 },
+              { f: NOTE.A3, b: 0.5, tick: true }
+            ]
+          },
+          // M5: 아 리 랑 - -
+          {
+            chord: [NOTE.A3, NOTE.E4, NOTE.G4, NOTE.C5], bass: NOTE.A2, snap: true,
+            notes: [
+              { f: NOTE.C4, b: 0.5 },
+              { f: NOTE.D4, b: 0.5 },
+              { f: NOTE.C4, b: 0.5 },
+              { f: NOTE.D4, b: 0.5 },
+              { f: NOTE.E4, b: 1.0, tick: true, vib: true }
+            ]
+          },
+          // M6: 고 - 개 - 로 -
+          {
+            chord: [NOTE.D3, NOTE.A3, NOTE.C4, NOTE.F4], bass: NOTE.D2, snap: true,
+            notes: [
+              { f: NOTE.D4, b: 1.0 },
+              { f: NOTE.C4, b: 1.0 },
+              { f: NOTE.A3, b: 0.5 },
+              { f: NOTE.G3, b: 0.5, tick: true }
+            ]
+          },
+          // M7: 넘 - 어 - 간 -
+          {
+            chord: [NOTE.G3, NOTE.D4, NOTE.F4, NOTE.B4], bass: NOTE.G2, snap: true,
+            notes: [
+              { f: NOTE.A3, b: 1.0 },
+              { f: NOTE.C4, b: 1.0 },
+              { f: NOTE.D4, b: 1.0, tick: true }
+            ]
+          },
+          // M8: 다 - - - - -
+          {
+            chord: [NOTE.C3, NOTE.G3, NOTE.D4, NOTE.E4], bass: NOTE.C2, snap: true,
+            notes: [
+              { f: NOTE.C4, b: 2.0, vib: true },
+              { f: NOTE.REST, b: 1.0, tick: true }
+            ]
+          },
 
-          { f: NOTE.D4, b: 1.5, bass: NOTE.G3 },
-          { f: NOTE.E4, b: 0.5 },
-          { f: NOTE.G4, b: 1.0 },
-          { f: NOTE.A4, b: 0.5 },
-          { f: NOTE.G4, b: 1.5, vib: true },
+          // [Section B: 8마디] "나를 버리고 가시는 님은 / 십리도 못가서 발병난다"
+          // M9: 나 - 를 - 버 - (옥타브 도약)
+          {
+            chord: [NOTE.C3, NOTE.G3, NOTE.C4, NOTE.E4], bass: NOTE.C2, snap: true,
+            notes: [
+              { f: NOTE.G4, b: 1.0 },
+              { f: NOTE.G4, b: 1.0 },
+              { f: NOTE.G4, b: 1.0, tick: true }
+            ]
+          },
+          // M10: 리 - - 고 - -
+          {
+            chord: [NOTE.E3, NOTE.B3, NOTE.E4, NOTE.G4], bass: NOTE.E2, snap: true,
+            notes: [
+              { f: NOTE.E4, b: 1.5 },
+              { f: NOTE.D4, b: 0.5 },
+              { f: NOTE.E4, b: 1.0, tick: true, vib: true }
+            ]
+          },
+          // M11: 가 - 시 - 는 -
+          {
+            chord: [NOTE.F3, NOTE.C4, NOTE.E4, NOTE.A4], bass: NOTE.F2, snap: true,
+            notes: [
+              { f: NOTE.E4, b: 1.0 },
+              { f: NOTE.D4, b: 0.5 },
+              { f: NOTE.C4, b: 0.5 },
+              { f: NOTE.C4, b: 0.5 },
+              { f: NOTE.D4, b: 0.5, tick: true }
+            ]
+          },
+          // M12: 님 - 은 - - -
+          {
+            chord: [NOTE.G3, NOTE.D4, NOTE.F4, NOTE.B4], bass: NOTE.G2, snap: true,
+            notes: [
+              { f: NOTE.C4, b: 1.5, vib: true },
+              { f: NOTE.A3, b: 0.5 },
+              { f: NOTE.G3, b: 0.5 },
+              { f: NOTE.A3, b: 0.5, tick: true }
+            ]
+          },
+          // M13: 십 - 리 - 도 -
+          {
+            chord: [NOTE.A3, NOTE.E4, NOTE.G4, NOTE.C5], bass: NOTE.A2, snap: true,
+            notes: [
+              { f: NOTE.C4, b: 0.5 },
+              { f: NOTE.D4, b: 0.5 },
+              { f: NOTE.C4, b: 0.5 },
+              { f: NOTE.D4, b: 0.5 },
+              { f: NOTE.E4, b: 1.0, tick: true, vib: true }
+            ]
+          },
+          // M14: 못 - 가 - 서 -
+          {
+            chord: [NOTE.D3, NOTE.A3, NOTE.C4, NOTE.F4], bass: NOTE.D2, snap: true,
+            notes: [
+              { f: NOTE.D4, b: 1.0 },
+              { f: NOTE.C4, b: 1.0 },
+              { f: NOTE.A3, b: 0.5 },
+              { f: NOTE.G3, b: 0.5, tick: true }
+            ]
+          },
+          // M15: 발 - 병 - 난 -
+          {
+            chord: [NOTE.G3, NOTE.D4, NOTE.F4, NOTE.B4], bass: NOTE.G2, snap: true,
+            notes: [
+              { f: NOTE.A3, b: 1.0 },
+              { f: NOTE.C4, b: 1.0 },
+              { f: NOTE.D4, b: 1.0, tick: true }
+            ]
+          },
+          // M16: 다 - - - - -
+          {
+            chord: [NOTE.C3, NOTE.G3, NOTE.D4, NOTE.E4], bass: NOTE.C2, snap: true,
+            notes: [
+              { f: NOTE.C4, b: 2.0, vib: true },
+              { f: NOTE.REST, b: 1.0, tick: true }
+            ]
+          },
 
-          { f: NOTE.A4, b: 1.5, bass: NOTE.D3 },
-          { f: NOTE.C5, b: 0.5 },
-          { f: NOTE.D5, b: 2.0, vib: true },
-
-          // 5~7마디: 아리랑 고개로 넘어간다
-          { f: NOTE.E5, b: 1.5, bass: NOTE.G3 },
-          { f: NOTE.D5, b: 0.5 },
-          { f: NOTE.C5, b: 1.0 },
-          { f: NOTE.D5, b: 1.0 },
-
-          { f: NOTE.E5, b: 1.0, bass: NOTE.D3 },
-          { f: NOTE.D5, b: 1.0 },
-          { f: NOTE.C5, b: 1.0 },
-          { f: NOTE.A4, b: 1.0 },
-
-          { f: NOTE.G4, b: 3.5, bass: NOTE.G3, vib: true },
-
-          // 8~11마디: 나를 버리고 가시는 님은
-          { f: NOTE.D4, b: 1.5, bass: NOTE.G3 },
-          { f: NOTE.E4, b: 0.5 },
-          { f: NOTE.G4, b: 1.0 },
-          { f: NOTE.A4, b: 0.5 },
-          { f: NOTE.G4, b: 1.0 },
-          { f: NOTE.E4, b: 0.5 },
-
-          { f: NOTE.D4, b: 1.5, bass: NOTE.D3 },
-          { f: NOTE.E4, b: 0.5 },
-          { f: NOTE.G4, b: 1.0 },
-          { f: NOTE.A4, b: 0.5 },
-          { f: NOTE.G4, b: 2.0, vib: true },
-
-          // 12~14마디: 십리도 못가서 발병난다
-          { f: NOTE.A4, b: 1.5, bass: NOTE.G3 },
-          { f: NOTE.C5, b: 0.5 },
-          { f: NOTE.D5, b: 1.0 },
-          { f: NOTE.E5, b: 0.5 },
-          { f: NOTE.D5, b: 1.0 },
-          { f: NOTE.C5, b: 0.5 },
-
-          { f: NOTE.D5, b: 1.0, bass: NOTE.D3 },
-          { f: NOTE.C5, b: 0.5 },
-          { f: NOTE.A4, b: 1.0 },
-          { f: NOTE.G4, b: 0.5 },
-
-          { f: NOTE.G4, b: 4.0, bass: NOTE.G3, vib: true }
+          // [Outro: 2마디] 펜타토닉 하강 여운 & 루프 연결
+          {
+            chord: [NOTE.F3, NOTE.C4, NOTE.E4, NOTE.A4], bass: NOTE.F2, snap: true,
+            notes: [
+              { f: NOTE.E5, b: 0.75 },
+              { f: NOTE.D5, b: 0.75 },
+              { f: NOTE.C5, b: 0.75 },
+              { f: NOTE.A4, b: 0.75, tick: true }
+            ]
+          },
+          {
+            chord: [NOTE.C3, NOTE.G3, NOTE.B3, NOTE.E4], bass: NOTE.C2, snap: true,
+            notes: [
+              { f: NOTE.G4, b: 1.5, vib: true },
+              { f: NOTE.C4, b: 1.5, tick: true, vib: true }
+            ]
+          }
         ];
 
         const scheduleLoop = () => {
@@ -8608,18 +8887,39 @@
           const startPlayTime = this.ctx.currentTime + 0.05;
           let currentBeatOffset = 0;
 
-          for (const item of score) {
-            const noteStartTime = startPlayTime + currentBeatOffset * beatSec;
-            const noteDuration = item.b * beatSec * 1.35;
+          for (const m of measures) {
+            const measureStartTime = startPlayTime + currentBeatOffset * beatSec;
+            const measureDuration = 3 * beatSec;
 
-            if (item.f) {
-              this.playGayageumPluck(item.f, noteStartTime, noteDuration, 0.22, !!item.vib);
+            // 1. 배경 화음 패드
+            if (m.chord && m.chord.length) {
+              this.playAmbientChord(m.chord, measureStartTime, measureDuration * 1.05, 0.048);
             }
-            if (item.bass) {
-              this.playGayageumPluck(item.bass, noteStartTime, noteDuration * 1.2, 0.18, true);
+            // 2. 1박 서브 베이스
+            if (m.bass) {
+              this.playModernBass(m.bass, measureStartTime, measureDuration * 0.85, 0.15);
+            }
+            // 3. 세마치 그루브 탭 (1박 스냅)
+            if (m.snap) {
+              this.playChillTap('snap', measureStartTime, 0.032);
             }
 
-            currentBeatOffset += item.b;
+            // 4. 마디 내 멜로디 연주
+            let noteOffset = 0;
+            for (const n of m.notes) {
+              const noteStartTime = measureStartTime + noteOffset * beatSec;
+              const noteDuration = n.b * beatSec * 1.35;
+
+              if (n.f && n.f > 0) {
+                this.playModernLead(n.f, noteStartTime, noteDuration, 0.23, !!n.vib);
+              }
+              if (n.tick) {
+                this.playChillTap('tick', noteStartTime, 0.025);
+              }
+              noteOffset += n.b;
+            }
+
+            currentBeatOffset += 3;
           }
 
           const totalLoopSec = currentBeatOffset * beatSec;
@@ -8627,7 +8927,7 @@
             if (this.isArirangPlaying) {
               scheduleLoop();
             }
-          }, Math.max(1000, (totalLoopSec - 0.25) * 1000));
+          }, Math.max(1000, (totalLoopSec - 0.20) * 1000));
         };
 
         scheduleLoop();
